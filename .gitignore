@@ -1,0 +1,14 @@
+/application/config/
+/application/logs/
+/ddbb/
+/fonts/
+/system/
+/nbproject/
+/vendor/
+/img/pictos/
+/mp3/
+.htaccess
+composer.phar
+/application/controllers/Inputfitxer.php
+/application/controllers/Autotests.php
+/application/controllers/Resultats.php
