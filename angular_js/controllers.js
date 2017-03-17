@@ -19,7 +19,7 @@ angular.module('controllers', [])
             $scope.img.fletxaLogin2 = '/img/srcWeb/Login/fletxaLogin2.png';
             $scope.img.BotoEntra = '/img/srcWeb/Login/login.png';
             $scope.img.BotoEntra2 = '/img/srcWeb/Login/login-hov.png';
-            
+
             //HTML text content
             Resources.register.get({'section': 'login', 'idLanguage': $rootScope.contentLanguageUserNonLoged}, {'funct': "content"}).$promise
                     .then(function (results) {
@@ -133,7 +133,7 @@ angular.module('controllers', [])
             //Inicializamos el formulario y las variables necesarias
             $scope.formData = {};  //Datos del formulario
             $scope.languageList = []; //lista de idiomas seleccionados por el usuario
-            $scope.state = {user: "", password: ""};// estado de cada campo del formulario
+            $scope.state = {user: "", password: "", email : ""}; // estado de cada campo del formulario
             var userOk = false; // variables de validación
             var emailOk = false; // variables de validación
             var languageOk = false; // variables de validación
@@ -297,27 +297,40 @@ angular.module('controllers', [])
             $scope.checkEmail = function (formData) {
                 if (formData.email == null || formData.email == '' || formData.email.length >= 300) { // comprovacion de formato y minimo y maximo de caracteres requeridos
                     $scope.state.email = 'has-warning';
+                    $scope.confirmEmail = 'has-warning';
                     emailOk = false;
                     return;
                 }
                 if (String(formData.email).search(emailFormat) == -1) {
                     $scope.state.email = 'has-warning';
+                    $scope.confirmEmail = 'has-warning';
                     emailOk = false;
-                } else {
+                }
+                else{
                     Resources.register.get({//enviamos los datos de la tabla de la base de datos donde queremos comprobar el nombre
                         'table': "SuperUser",
                         'column': "email",
-                        'data': formData.email}, {'funct': "checkData"}).$promise
+                        'data': formData.email}, {'funct': "checkData"}
+                        ).$promise
                             .then(function (results) {
                                 if (results.exist == "false") {
                                     $scope.state.email = 'has-success'; //Si no exixte el nombre ponemos el checkbox en success
-                                    emailOk = true;
                                 } else if (results.exist == "true") {
                                     $scope.state.email = 'has-error'; //Si exixte el nombre ponemos el checkbox en error
                                     emailOk = false;
                                 }
                             });
+                  /* Check matching password
+                  * @rjlopezdev
+                  */
+                } if(formData.email != formData.confirmEmail){
+                  $scope.state.confirmEmail = 'has-warning';
+                  emailOk = false;
+                }else{
+                  $scope.state.confirmEmail = 'has-success';
+                  emailOk = true;
                 }
+
             };
 
             //Añadir idiomas
@@ -404,6 +417,10 @@ angular.module('controllers', [])
                     //Borramos los campos inecesarios
                     delete formData.confirmPassword;
                     delete formData.languageSelected;
+                    /* Delete unnecesary data
+                    * @rjlopezdev
+                    */
+                    delete formData.confirmEmail;
                     //Ponemos como idioma por defecto el primero de la lista que ha seleccionado el usuario
                     var defLanguage = $scope.languageList[0].ID_Language;
                     //Ciframos el password en md5
@@ -423,13 +440,13 @@ angular.module('controllers', [])
                                                 deferred.resolve(response);//PROMESAS
                                                 $id_su = response.ID_SU;
                                                 $id_usu = response.ID_U;
-                                                
+
                                                 //Cargamos la board inicial (Oscar)
                                                 Resources.register.save({'idsu': $id_su, 'idusu' :$id_usu}, {'funct': "copyDefaultGroupBoard"}).$promise
                                                 .then(function (results) {
                                                     console.log(results);
                                                 });
-                                                
+
                                             });
                                     promises.push(deferred.promise);//PROMESAS
                                 });
@@ -834,20 +851,20 @@ angular.module('controllers', [])
                                 //Enable content view
                                 $scope.viewActived = true;
                             });
-                            
+
                             // If a voices error had been triggered while using the app
                             // the error is shown and set back to 0 with errorVoicesSeen.
                             if ($scope.userData.errorTemp !== '0' &&
                                     $scope.userData.errorTemp !== null) {
-                                
+
                                 var errorcode = parseInt($scope.userData.errorTemp);
-                                                                
+
                                 txtContent("errorVoices").then(function (content) {
                                         $scope.errorMessage = content.data['errorVoicesText2'] + content.data[errorcode];
                                         $scope.errorCode = content.data['errorVoicesTitle'] + " " + errorcode;
-                                        
+
                                         Resources.main.get({'funct': "errorVoicesSeen"});
-                                        
+
                                         $scope.toggleInfoModal($scope.errorCode, $scope.errorMessage);
                                     });
                             }
@@ -1201,17 +1218,17 @@ angular.module('controllers', [])
                             $rootScope.dropdownMenuBarValue = '/panelGroups'; //Dropdown bar button selected on this view
                         });
             };
-            
+
             $scope.style_changes_title = '';
-            
+
              // Activate information modals (popups)
             $scope.toggleInfoModal = function (title, text) {
                 $scope.infoModalContent = text;
                 $scope.infoModalTitle = title;
-                
+
                 $('#infoModal').modal('toggle');
             };
-            
+
             $scope.viewActived = false; // para activar el gif del loading
         })
         .controller('myCtrl', function (Resources, $location, $scope, $http, ngDialog, txtContent, $rootScope, $interval, $timeout, dropdownMenuBarInit, AuthService) {
@@ -1220,7 +1237,7 @@ angular.module('controllers', [])
             $timeout(function () {
                 $scope.viewActived = true;
             }, 1000);
-    
+
             //Dropdown Menu Bar
             $rootScope.dropdownMenuBar = null;
             $rootScope.dropdownMenuBarValue = '/'; //Button selected on this view
@@ -1453,7 +1470,7 @@ angular.module('controllers', [])
                 }
             };
 
-            // Get the number of scan blocks 
+            // Get the number of scan blocks
             $scope.getMaxScanBlock1 = function ()
             {
                 var maxCustomScanBlockProv = 0;
@@ -1500,7 +1517,7 @@ angular.module('controllers', [])
                             }
                         }
                     }
-                    //Works like the last one except that the cell will be added to the array anyway (to avoid strange empty slots in the scan) and we have not to read all the cell, we acces to the cell by the pos 
+                    //Works like the last one except that the cell will be added to the array anyway (to avoid strange empty slots in the scan) and we have not to read all the cell, we acces to the cell by the pos
                 } else if ($scope.cfgScanningCustomRowCol == 1) {
                     if ($scope.indexScannedBlock > $scope.rows - 1) {
                         $scope.nextBlockToScan($scope.cfgScanOrderPanel);
@@ -1547,7 +1564,7 @@ angular.module('controllers', [])
                 var moreThanOneGroup = false;
                 var lastGroup = -1;
                 var toScan = false;
-                //Search in the array cell the cells that are in the current scan block 2 
+                //Search in the array cell the cells that are in the current scan block 2
                 for (var i = 0; i < $scope.arrayScannedCells.length; i++) {
                     //Check if there are only one subgroup
                     if ($scope.arrayScannedCells[i].customScanBlock2 != lastGroup) {
@@ -1957,13 +1974,13 @@ angular.module('controllers', [])
                     }
                 });
             };
-            //When the user press acept (in the no primaryboard modal) panelgroups it's loaded 
+            //When the user press acept (in the no primaryboard modal) panelgroups it's loaded
             $scope.aceptErrorNPB = function () {
-                
+
                 $timeout(function () {
                     $location.path('/panelGroups');
                 }, 500);
-                
+
             };
             /*
              * Return: array from 0 to repeatnum
@@ -2233,7 +2250,7 @@ angular.module('controllers', [])
              *      Link to another board: the user will be redirected to this new board
              *      Function: go to the historic, change the tipus or tme of the sentence...
              * The last three can be together in the same cell
-             *      
+             *
              */
             $scope.clickOnCell = function (cell) {
 
@@ -2314,7 +2331,7 @@ angular.module('controllers', [])
                             $scope.sound = "mp3/" + $scope.dataAudio[0];
                             var audiotoplay = $('#utterance');
                             audiotoplay.src = "mp3/" + $scope.dataAudio[0];
-                            
+
                             console.log($scope.dataAudio[0]);
                             if ($scope.cfgTimeOverOnOff) {
                                 $timeout(function () {
@@ -2651,7 +2668,7 @@ angular.module('controllers', [])
                         });
             };
             /*
-             * Return pictograms from database. The result depends on 
+             * Return pictograms from database. The result depends on
              * Searchtype (noms, verbs...) and Name (letters with the word start with)
              */
             $scope.searchDone = function (name, Searchtype)
@@ -2759,7 +2776,7 @@ angular.module('controllers', [])
 
 
             /*
-             * PosInBoard is the element over we drop the "draggable data". Data contains the info we drag 
+             * PosInBoard is the element over we drop the "draggable data". Data contains the info we drag
              */
             $scope.onDropSwap = function (posInBoard, data, evt) {
                 var URL = "";
@@ -2809,7 +2826,7 @@ angular.module('controllers', [])
             /***************************************************
              *
              *  editFolders functions
-             *  
+             *
              ***************************************************/
             $scope.CreateBoard = function () {
                 var postdata = {id: $scope.idboard};
@@ -2913,9 +2930,9 @@ angular.module('controllers', [])
                     });
                 }
             };
-            
+
             $scope.style_changes_title = '';
-            
+
              // Activate information modals (popups)
             $scope.toggleInfoModal = function (title, text) {
                 $scope.infoModalContent = text;
@@ -2925,7 +2942,7 @@ angular.module('controllers', [])
             };
         })
 
-        // Edit controller 
+        // Edit controller
         .controller('Edit', function ($scope, $http, ngDialog, $timeout) {
             // Get the cell clicked (the cell in the cicked position in the current board
             var url = $scope.baseurl + "Board/getCell";
@@ -3028,12 +3045,12 @@ angular.module('controllers', [])
                     $scope.sFolderSelectedImg = img;
                     $scope.sFolderSelectedText = text;
                 };
-                
+
                 // Closes the editCell dialog
                 $scope.closeDialog = function() {
                     ngDialog.close();
                 };
-                
+
                 //Initialize the dropdwon menus and all the variables that will be shown to the user
                 $scope.getFunctions();
                 $scope.getBoards();
@@ -3416,7 +3433,7 @@ angular.module('controllers', [])
             {
 
                 $scope.inScan = true;
-                //When the scan is automatic, this timer manage when the scan have to move to the next block            
+                //When the scan is automatic, this timer manage when the scan have to move to the next block
 
                 $scope.scanningFolder = -1;
                 $scope.scanningSentence = -1;
@@ -3808,4 +3825,3 @@ angular.module('controllers', [])
                 }
             }
         });
-
