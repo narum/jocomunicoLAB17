@@ -480,18 +480,22 @@ angular.module('controllers')
                 $scope.style_changes_title = 'padding-top: 2vh;';
                 $('#infoModal').modal('toggle');
             };
-            
+
             /* Browser detection
             * @rjlopezdev
             */
             $scope.isNotChrome = function () {
-              var isChromium = window.chrome,
-                  winNav = window.navigator,
-                  vendorName = winNav.vendor,
-                  isOpera = winNav.userAgent.indexOf("OPR") > -1,
-                  isIEedge = winNav.userAgent.indexOf("Edge") > -1;
+              if($cookie.get('browserAdvice') != 'true'){
+                var isChromium = window.chrome,
+                    winNav = window.navigator,
+                    vendorName = winNav.vendor,
+                    isOpera = winNav.userAgent.indexOf("OPR") > -1,
+                    isIEedge = winNav.userAgent.indexOf("Edge") > -1;
 
-                  if(!(isChromium !== null && isChromium !== undefined && vendorName === "Google Inc." && isOpera == false && isIEedge == false))
-                    $scope.toggleInfoModal(content.chromeAdviceTitle, content.chromeAdviceText);
+                if(!(isChromium !== null && isChromium !== undefined && vendorName === "Google Inc." && isOpera == false && isIEedge == false)){
+                  $scope.toggleInfoModal(content.chromeAdviceTitle, content.chromeAdviceText);
+                }
+                $coockie.put('browserAdvice', 'true');
+              }
             };
         });
