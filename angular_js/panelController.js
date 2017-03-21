@@ -147,11 +147,11 @@ angular.module('controllers')
 
             });
         };
-        
+
         /***************************************************
         *
         *  editFolders functions
-        *  
+        *
         ***************************************************/
         $scope.CreateBoard = function (ID_GB) {
             $scope.idGroupBoard = ID_GB;
@@ -237,7 +237,7 @@ angular.module('controllers')
                     //alert(response.errorText);
                 });
         };
-        
+
             $scope.range = function ($repeatnum)
             {
                 var n = [];
@@ -360,7 +360,7 @@ angular.module('controllers')
                             if ($scope.id === null) {//MODIF:--Modal no tiene panel pricipal, se añade uno para que pueda hacer algo (no se si se puede hacer, ya que el modal creo que se ira. Si pasa esto meter una variable en el objeto editpanelinfo)
                                 $scope.id = response.boards[0].ID_Board;
                             }
-                            // Put the panel to edit info, and load the edit panel  
+                            // Put the panel to edit info, and load the edit panel
                             $rootScope.editPanelInfo = {idBoard: $scope.id};
                             $timeout(function () {
                                 $location.path('/');
@@ -469,7 +469,7 @@ angular.module('controllers')
                     $scope.searchDoneAddWord(name, Searchtype);
                 }, 500);
             };
-            
+
             $scope.SearchTypeAddWord = "Tots";
             $scope.style_changes_title = '';
 
@@ -480,5 +480,22 @@ angular.module('controllers')
                 $scope.style_changes_title = 'padding-top: 2vh;';
                 $('#infoModal').modal('toggle');
             };
-            
+
+            /* Browser detection
+            * @rjlopezdev
+            */
+            $scope.isNotChrome = function () {
+              if($cookie.get('browserAdvice') != 'true'){
+                var isChromium = window.chrome,
+                    winNav = window.navigator,
+                    vendorName = winNav.vendor,
+                    isOpera = winNav.userAgent.indexOf("OPR") > -1,
+                    isIEedge = winNav.userAgent.indexOf("Edge") > -1;
+
+                if(!(isChromium !== null && isChromium !== undefined && vendorName === "Google Inc." && isOpera == false && isIEedge == false)){
+                  $scope.toggleInfoModal(content.chromeAdviceTitle, content.chromeAdviceText);
+                }
+                $coockie.put('browserAdvice', 'true');
+              }
+            };
         });

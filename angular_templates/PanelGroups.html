@@ -17,7 +17,12 @@
 <div ng-include="'/angular_templates/ConfirmCreateGroupBoard.html'"></div>
 
 <div class="loadingGif" ng-show="!viewActived"><img class="img-loadingGif" ng-src={{img.loading}}/></div>
+
 <div class="row folderContainer" ng-if="viewActived">
+    <!-- Check browser on load page
+         @rjlopezdev
+    -->
+    <div ng-init="isNotChrome()"></div>
     <div class="row">
         <!--Panel Groups box-->
         <div class="col-xs-6 rightPadding">
@@ -138,7 +143,3 @@
         </div>
     </div>
 </div>
-
-
-
-
