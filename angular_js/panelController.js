@@ -1,5 +1,5 @@
 angular.module('controllers')
-        .controller('panelCtrl', function ($scope, $rootScope, txtContent, $location, $http, ngDialog, dropdownMenuBarInit, AuthService, Resources, $timeout) {
+        .controller('panelCtrl', function ($scope, $rootScope, $cookies, txtContent, $location, $http, ngDialog, dropdownMenuBarInit, AuthService, Resources, $timeout) {
             // Comprobación del login   IMPORTANTE!!! PONER EN TODOS LOS CONTROLADORES
             if (!$rootScope.isLogged) {
                 $location.path('/home');
@@ -485,17 +485,14 @@ angular.module('controllers')
             * @rjlopezdev
             */
             $scope.isNotChrome = function () {
-              if($cookie.get('browserAdvice') != 'true'){
-                var isChromium = window.chrome,
-                    winNav = window.navigator,
-                    vendorName = winNav.vendor,
-                    isOpera = winNav.userAgent.indexOf("OPR") > -1,
-                    isIEedge = winNav.userAgent.indexOf("Edge") > -1;
-
-                if(!(isChromium !== null && isChromium !== undefined && vendorName === "Google Inc." && isOpera == false && isIEedge == false)){
-                  $scope.toggleInfoModal(content.chromeAdviceTitle, content.chromeAdviceText);
+              //If cookie is not saved, show modal
+              if($cookies.get('browserAdvice') != 'true'){
+                $scope.isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
+                if($scope.isChrome){} else {
+                  $scope.toggleInfoModal($scope.content.chromeAdviceTitle, $scope.content.chromeAdviceBody);
                 }
-                $coockie.put('browserAdvice', 'true');
               }
+              //Save cookie inconditionally after show modal if neccessary
+              $cookies.put('browserAdvice', 'true');
             };
         });
