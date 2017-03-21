@@ -52,7 +52,10 @@ html *
     html *{
         font-size: 1.4vw;
     }
+
 }
+
+
 
 /*MODIF: esto es no comun, propio de las vistas asi que...*/
 #footer{
@@ -367,10 +370,10 @@ html *
     right: 5px;
     top: 5px;
     /*max-width: 10%;*/
-    max-width: 15%;
+    max-width: 18%;
     height: auto;
     /*max-height: 10%;*/
-    max-height: 15%;
+    max-height: 18%;
     width: auto;
     z-index: 3;
     position: absolute;
@@ -381,10 +384,10 @@ html *
     left: 5px;
     top: 5px;
     /*max-width: 10%;*/
-    max-width: 15%;
+    max-width: 18%;
     height: auto;
     /*max-height: 10%;*/
-    max-width: 15%;
+    max-height: 18%;
     width: auto;
     z-index: 3;
     position: absolute;
@@ -448,6 +451,19 @@ html *
     background-size: 100% 100%;
     border-radius: 7px;
 }
+
+/* Nuevo código para cambiar el background del boton de copiar frase en el portapapeles*/
+.backgroundCopyClipboard{
+  width: 94%;
+  left: 6%;
+  height: 100%;
+  position: absolute;
+  background: url('/img/srcWeb/Menu/copiar_port_fons.png');
+  background-size: 100% 100%;
+  border-radius: 7px;
+}
+
+
 .icon{
     position: absolute;
     max-height: 80%;
