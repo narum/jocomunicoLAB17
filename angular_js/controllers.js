@@ -19,7 +19,7 @@ angular.module('controllers', [])
             $scope.img.fletxaLogin2 = '/img/srcWeb/Login/fletxaLogin2.png';
             $scope.img.BotoEntra = '/img/srcWeb/Login/login.png';
             $scope.img.BotoEntra2 = '/img/srcWeb/Login/login-hov.png';
-            
+
             //HTML text content
             Resources.register.get({'section': 'login', 'idLanguage': $rootScope.contentLanguageUserNonLoged}, {'funct': "content"}).$promise
                     .then(function (results) {
@@ -423,13 +423,13 @@ angular.module('controllers', [])
                                                 deferred.resolve(response);//PROMESAS
                                                 $id_su = response.ID_SU;
                                                 $id_usu = response.ID_U;
-                                                
+
                                                 //Cargamos la board inicial (Oscar)
                                                 Resources.register.save({'idsu': $id_su, 'idusu' :$id_usu}, {'funct': "copyDefaultGroupBoard"}).$promise
                                                 .then(function (results) {
                                                     console.log(results);
                                                 });
-                                                
+
                                             });
                                     promises.push(deferred.promise);//PROMESAS
                                 });
@@ -454,7 +454,7 @@ angular.module('controllers', [])
             $scope.viewActived = false; // para activar el gif de loading...
         })
 
-//User email validation
+        //User email validation
         .controller('emailValidationCtrl', function ($scope, $routeParams, Resources, $rootScope, $location, dropdownMenuBarInit) {
             //Variables
             $scope.activedValidation = false;// para activar el gif de loading
@@ -741,6 +741,9 @@ angular.module('controllers', [])
             $scope.img.menuButton1 = '/img/srcWeb/UserConfig/menuButton1.jpg';
             $scope.img.menuButton2 = '/img/srcWeb/UserConfig/menuButton2.jpg';
             $scope.img.menuButton3 = '/img/srcWeb/UserConfig/menuButton3.jpg';
+            //Nuevo codigo
+            $scope.img.menuButton4 = '/img/srcWeb/UserConfig/menuButton4.jpg';
+
             $scope.img.textInCellOff = '/img/srcWeb/UserConfig/textInCellOff.png';
             $scope.img.textInCellOn = '/img/srcWeb/UserConfig/textInCellOn.png';
             $scope.img.cfgUsageMouse = '/img/srcWeb/UserConfig/cfgUsageMouse.png';
@@ -805,6 +808,11 @@ angular.module('controllers', [])
                             $scope.userData.cfgUserExpansionFeedback = ($scope.userData.cfgUserExpansionFeedback === "1");
                             $scope.userData.cfgInterfaceVoiceMascFem = ($scope.userData.cfgInterfaceVoiceMascFem === "masc");
                             $scope.scanOrder = $scope.userData.cfgScanOrderPred + $scope.userData.cfgScanOrderMenu + $scope.userData.cfgScanOrderPanel;
+                            /*Nuevo codigo menu copiar en el portapapeles.*/
+                            $scope.userData.cfgMenuCopyClipboard = ($scope.userData.cfgMenuCopyClipboard === "1");
+
+
+
 
                             var count = results.users[0].ID_ULanguage;
                             angular.forEach(results.users, function (value) {
@@ -834,20 +842,20 @@ angular.module('controllers', [])
                                 //Enable content view
                                 $scope.viewActived = true;
                             });
-                            
+
                             // If a voices error had been triggered while using the app
                             // the error is shown and set back to 0 with errorVoicesSeen.
                             if ($scope.userData.errorTemp !== '0' &&
                                     $scope.userData.errorTemp !== null) {
-                                
+
                                 var errorcode = parseInt($scope.userData.errorTemp);
-                                                                
+
                                 txtContent("errorVoices").then(function (content) {
                                         $scope.errorMessage = content.data['errorVoicesText2'] + content.data[errorcode];
                                         $scope.errorCode = content.data['errorVoicesTitle'] + " " + errorcode;
-                                        
+
                                         Resources.main.get({'funct': "errorVoicesSeen"});
-                                        
+
                                         $scope.toggleInfoModal($scope.errorCode, $scope.errorMessage);
                                     });
                             }
@@ -1201,17 +1209,17 @@ angular.module('controllers', [])
                             $rootScope.dropdownMenuBarValue = '/panelGroups'; //Dropdown bar button selected on this view
                         });
             };
-            
+
             $scope.style_changes_title = '';
-            
+
              // Activate information modals (popups)
             $scope.toggleInfoModal = function (title, text) {
                 $scope.infoModalContent = text;
                 $scope.infoModalTitle = title;
-                
+
                 $('#infoModal').modal('toggle');
             };
-            
+
             $scope.viewActived = false; // para activar el gif del loading
         })
         .controller('myCtrl', function (Resources, $location, $scope, $http, ngDialog, txtContent, $rootScope, $interval, $timeout, dropdownMenuBarInit, AuthService) {
@@ -1220,7 +1228,7 @@ angular.module('controllers', [])
             $timeout(function () {
                 $scope.viewActived = true;
             }, 1000);
-    
+
             //Dropdown Menu Bar
             $rootScope.dropdownMenuBar = null;
             $rootScope.dropdownMenuBarValue = '/'; //Button selected on this view
@@ -1453,7 +1461,7 @@ angular.module('controllers', [])
                 }
             };
 
-            // Get the number of scan blocks 
+            // Get the number of scan blocks
             $scope.getMaxScanBlock1 = function ()
             {
                 var maxCustomScanBlockProv = 0;
@@ -1500,7 +1508,7 @@ angular.module('controllers', [])
                             }
                         }
                     }
-                    //Works like the last one except that the cell will be added to the array anyway (to avoid strange empty slots in the scan) and we have not to read all the cell, we acces to the cell by the pos 
+                    //Works like the last one except that the cell will be added to the array anyway (to avoid strange empty slots in the scan) and we have not to read all the cell, we acces to the cell by the pos
                 } else if ($scope.cfgScanningCustomRowCol == 1) {
                     if ($scope.indexScannedBlock > $scope.rows - 1) {
                         $scope.nextBlockToScan($scope.cfgScanOrderPanel);
@@ -1547,7 +1555,7 @@ angular.module('controllers', [])
                 var moreThanOneGroup = false;
                 var lastGroup = -1;
                 var toScan = false;
-                //Search in the array cell the cells that are in the current scan block 2 
+                //Search in the array cell the cells that are in the current scan block 2
                 for (var i = 0; i < $scope.arrayScannedCells.length; i++) {
                     //Check if there are only one subgroup
                     if ($scope.arrayScannedCells[i].customScanBlock2 != lastGroup) {
@@ -1612,7 +1620,8 @@ angular.module('controllers', [])
                         break;
                     case "sentence":
                         $scope.isScanning = "sentence";
-                        if ($scope.cfgMenuDeleteLastActive + $scope.cfgMenuDeleteAllActive + $scope.cfgMenuReadActive + $scope.cfgMenuHomeActive < 1) {
+                        //if ($scope.cfgMenuDeleteLastActive + $scope.cfgMenuDeleteAllActive + $scope.cfgMenuReadActive + $scope.cfgMenuHomeActive < 1) {
+                        if($scope.cfgMenuDeletelastActive + $scope.cfgMenuDeleAllActive + $scope.cfgMenuCopyClipboard + $scope.cfgMenuReadActive + $scope.cfgMenuHomeActive < 1){
                             $scope.nextBlockToScan($scope.cfgScanOrderMenu);
                         }
                         break;
@@ -1690,8 +1699,15 @@ angular.module('controllers', [])
                             }
                             break;
                         case "deleteall":
+                            $scope.isScanning = "copyclipboard";
+                            if($scope.cfgMenuCopyClipboard == 0){
+                              $scope.nextBlockScan();
+                            }
+                            break;
+                        case "copyclipboard":
                             $scope.isScanning = "nowait";
                             $scope.InitScan();
+
                     }
 
                 }
@@ -1766,6 +1782,10 @@ angular.module('controllers', [])
                             break;
                         case "deleteall":
                             $scope.deleteAll();
+                            $scope.InitScan();
+                            break;
+                        case "copyclipboard":
+                            $scope.deleteLast();
                             $scope.InitScan();
                             break;
 
@@ -1862,8 +1882,12 @@ angular.module('controllers', [])
                 $scope.cfgMenuReadActive = userConfig.cfgMenuReadActive;
                 $scope.cfgMenuDeleteLastActive = userConfig.cfgMenuDeleteLastActive;
                 $scope.cfgMenuDeleteAllActive = userConfig.cfgMenuDeleteAllActive;
+                //Nuevo codigo.
+                $scope.cfgMenuCopyClipboard = userConfig.cfgMenuCopyClipboard;
+                //Fin nuevo codigo
                 $scope.cfgSentenceBarUpDown = userConfig.cfgSentenceBarUpDown;
-                $scope.pictoBarWidth = 12 - $scope.cfgMenuHomeActive - $scope.cfgMenuReadActive - $scope.cfgMenuDeleteLastActive - $scope.cfgMenuDeleteAllActive;
+                //$scope.pictoBarWidth = 12 - $scope.cfgMenuHomeActive - $scope.cfgMenuReadActive - $scope.cfgMenuDeleteLastActive - $scope.cfgMenuDeleteAllActive;
+                $scope.pictoBarWidth = 12 - $scope.cfgMenuHomeActive - $scope.cfgMenuReadActive - $scope.cfgMenuDeleteLastActive - $scope.cfgMenuCopyClipboard - $scope.cfgMenuDeleteAllActive;
                 $scope.cfgAutoEraseSentenceBar = userConfig.cfgAutoEraseSentenceBar;
                 $scope.cfgScanningCustomRowCol = userConfig.cfgScanningCustomRowCol;
                 $scope.longclick = userConfig.cfgScanningAutoOnOff == 0 ? true : false;
@@ -1957,13 +1981,13 @@ angular.module('controllers', [])
                     }
                 });
             };
-            //When the user press acept (in the no primaryboard modal) panelgroups it's loaded 
+            //When the user press acept (in the no primaryboard modal) panelgroups it's loaded
             $scope.aceptErrorNPB = function () {
-                
+
                 $timeout(function () {
                     $location.path('/panelGroups');
                 }, 500);
-                
+
             };
             /*
              * Return: array from 0 to repeatnum
@@ -2233,7 +2257,7 @@ angular.module('controllers', [])
              *      Link to another board: the user will be redirected to this new board
              *      Function: go to the historic, change the tipus or tme of the sentence...
              * The last three can be together in the same cell
-             *      
+             *
              */
             $scope.clickOnCell = function (cell) {
 
@@ -2314,7 +2338,7 @@ angular.module('controllers', [])
                             $scope.sound = "mp3/" + $scope.dataAudio[0];
                             var audiotoplay = $('#utterance');
                             audiotoplay.src = "mp3/" + $scope.dataAudio[0];
-                            
+
                             console.log($scope.dataAudio[0]);
                             if ($scope.cfgTimeOverOnOff) {
                                 $timeout(function () {
@@ -2363,12 +2387,21 @@ angular.module('controllers', [])
                         $scope.OverAutoClick = $timeout(function () {
                             $scope.deleteLast();
                         }, $scope.cfgTimeOver);
-                    } else if (object === 'deleteAll')
+                    }
+                    else if (object === 'deleteAll')
                     {
                         $scope.OverAutoClick = $timeout(function () {
                             $scope.deleteAll();
                         }, $scope.cfgTimeOver);
                     }
+
+                    else if (object === 'copyClipboard'){
+                        $scope.OverAutoClick = $timeout(function () {
+                          $scope.copyClipboard();
+                        }, $scope.cfgTimeOver);
+                    }
+
+
                 } else if (type === 3)
                 {
                     if (object === 'Good')
@@ -2541,6 +2574,32 @@ angular.module('controllers', [])
                 });
             };
 
+
+            /*
+            * New function: Copy the text in the clipboard.
+            */
+
+            $scope.copyClipboard = function (){
+
+              var url = $scope.baseurl + "Board/copyClipboard";
+
+
+              $http.post(url).success(function (response){
+
+                $scope.dataTemp = response.data;
+                $scope.info = response.info;
+
+
+                /* Forma facil de conseguir la copia del clipboard */
+                window.prompt("Copiar en el portapapeles: Ctrl+C, Enter", $scope.info.frasefinal);
+
+              });
+
+
+            };
+
+
+
             $scope.goPrimaryBoard = function () {
                 $scope.config();
             };
@@ -2651,7 +2710,7 @@ angular.module('controllers', [])
                         });
             };
             /*
-             * Return pictograms from database. The result depends on 
+             * Return pictograms from database. The result depends on
              * Searchtype (noms, verbs...) and Name (letters with the word start with)
              */
             $scope.searchDone = function (name, Searchtype)
@@ -2759,7 +2818,7 @@ angular.module('controllers', [])
 
 
             /*
-             * PosInBoard is the element over we drop the "draggable data". Data contains the info we drag 
+             * PosInBoard is the element over we drop the "draggable data". Data contains the info we drag
              */
             $scope.onDropSwap = function (posInBoard, data, evt) {
                 var URL = "";
@@ -2809,7 +2868,7 @@ angular.module('controllers', [])
             /***************************************************
              *
              *  editFolders functions
-             *  
+             *
              ***************************************************/
             $scope.CreateBoard = function () {
                 var postdata = {id: $scope.idboard};
@@ -2913,9 +2972,9 @@ angular.module('controllers', [])
                     });
                 }
             };
-            
+
             $scope.style_changes_title = '';
-            
+
              // Activate information modals (popups)
             $scope.toggleInfoModal = function (title, text) {
                 $scope.infoModalContent = text;
@@ -2925,7 +2984,7 @@ angular.module('controllers', [])
             };
         })
 
-        // Edit controller 
+        // Edit controller
         .controller('Edit', function ($scope, $http, ngDialog, $timeout) {
             // Get the cell clicked (the cell in the cicked position in the current board
             var url = $scope.baseurl + "Board/getCell";
@@ -3028,12 +3087,12 @@ angular.module('controllers', [])
                     $scope.sFolderSelectedImg = img;
                     $scope.sFolderSelectedText = text;
                 };
-                
+
                 // Closes the editCell dialog
                 $scope.closeDialog = function() {
                     ngDialog.close();
                 };
-                
+
                 //Initialize the dropdwon menus and all the variables that will be shown to the user
                 $scope.getFunctions();
                 $scope.getBoards();
@@ -3416,7 +3475,7 @@ angular.module('controllers', [])
             {
 
                 $scope.inScan = true;
-                //When the scan is automatic, this timer manage when the scan have to move to the next block            
+                //When the scan is automatic, this timer manage when the scan have to move to the next block
 
                 $scope.scanningFolder = -1;
                 $scope.scanningSentence = -1;
@@ -3783,7 +3842,7 @@ angular.module('controllers', [])
 
 
 
-//Add a directive in order to recognize the right click
+        //Add a directive in order to recognize the right click
         .directive('ngRightClick', function ($parse) {
             return function (scope, element, attrs) {
                 var fn = $parse(attrs.ngRightClick);
@@ -3808,4 +3867,3 @@ angular.module('controllers', [])
                 }
             }
         });
-

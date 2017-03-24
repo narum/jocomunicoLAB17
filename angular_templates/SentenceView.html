@@ -66,3 +66,11 @@
         <img class="imgResponsive icon" ng-src="{{baseurl}}img/srcWeb/Menu/borrar_tot_icon.png"/>
     </div>
 </div>
+
+<!-- Este sera el nuevo boton para hacer la copia de la frase en el portapapeles -->
+<div ng-if="cfgMenuCopyClipboard == 1" class="col-xs-1 fullheight"  ng-mousedown="isClickEnable() ? copyClipboard() : null" ng-mouseenter="cfgTimeOverOnOff?TimeoutOverClick(2,'copyClipboard'):null" ng-mouseleave="cfgTimeOverOnOff ? CancelTimeoutOverClick() : null">
+    <div ng-if='inScan && isScanning == "copyclipboard" && isScanningCancel === false' class="scaneo" style="margin: 0px;" ng-style="{'border':'7px solid #{{cfgScanColor}}'}"></div>
+    <div class="backgroundCopyClipboard">
+        <img class="imgResponsive icon" ng-src="{{baseurl}}img/srcWeb/Menu/copiar-port-icon.png"/>
+    </div>
+</div>

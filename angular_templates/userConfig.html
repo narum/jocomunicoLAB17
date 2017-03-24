@@ -8,32 +8,32 @@
 </style>
 
 <script>
-    
+
     var myVar;
     var exit = 0;
-    
+
     function audiohallelujah() {
         console.log("audio");
 
         var aux = document.getElementById('utterance');
         aux.src="mp3/empty.m4a";
         var audiotoplayinitial = aux.src;
-        
+
         var myVar = setInterval(function(){ waitloop(audiotoplayinitial, myVar) }, 500);
     }
-    
+
     function waitloop(audiotoplayinitial, myVar) {
         var aux = document.getElementById('utterance');
         var audiotoplayfinal = aux.src;
-        
+
         if (audiotoplayinitial !== audiotoplayfinal) {
             exit = 0;
             aux.play();
             clearInterval(myVar);
         }
-        
+
         exit = exit+1;
-        
+
         if (exit > 8) {
             exit = 0;
             clearInterval(myVar);
@@ -255,7 +255,7 @@
             <div class="col-xs-12">
                 <div id="header" class="row"><div class="col-xs-10 headerTitle">{{content.titleBar2}}</div></div>
                 <div class="marginBoxCentral">
-<!--InterfaceLanguage-->                    
+<!--InterfaceLanguage-->
                 <!--    <div class="row menuBar">
                         <div class="row headerBar" ng-class="{disabledBar: !interfaceLanguageBarEnable}">
                             <div class="col-xs-6">
@@ -294,7 +294,7 @@
                         </div>
                         </div>
                     </div> -->
-<!--LanguagesModal-->                       
+<!--LanguagesModal-->
                                  <!--       <div class="modal fade" id="LanguageModal" role="dialog">
                                             <div class="modal-dialog modal-lg">
                                                  <div class="row marginModalTopOwl"><img class="img-owl pull-right" src={{img.lowHolaFlecha}}/></div>
@@ -329,7 +329,7 @@
                                                 </div>
                                             </div>
                                         </div> -->
-<!--ExpansionLanguage-->                    
+<!--ExpansionLanguage-->
                   <!--  <div class="row menuBar">
                         <div class="row headerBar" ng-class="{disabledBar: !expansionLanguageEnable||!userData.cfgExpansionOnOff}">
                             <div class="col-xs-6">
@@ -374,7 +374,7 @@
                         </div>
                         </div>
                     </div> -->
-<!--Your Voice-->                           
+<!--Your Voice-->
                     <div class="row menuBar">
                         <div class="row headerBar">
                             <div class="col-xs-6">
@@ -405,7 +405,7 @@
                                     </select>
                                 </div>
                                 <div class="col-xs-1"></div>
-                                <div class="col-xs-1" ng-init="imgsrc3=img.audioPlay" ng-mouseover="imgsrc3=img.audioPlay2" 
+                                <div class="col-xs-1" ng-init="imgsrc3=img.audioPlay" ng-mouseover="imgsrc3=img.audioPlay2"
                                      ng-mouseout="imgsrc3=img.audioPlay" onmousedown="audiohallelujah()">
                                     <input type="image" class="img-audioButton" ng-src="{{imgsrc3}}" ng-click="generateAudio(userData.cfgExpansionVoiceOnline,'offline');"></div>
                             </div>
@@ -420,7 +420,7 @@
                                     </select>
                                 </div>
                                 <div class="col-xs-1"></div>
-                                <div class="col-xs-1" ng-init="imgsrc4=img.audioPlay" ng-mouseover="imgsrc4=img.audioPlay2" 
+                                <div class="col-xs-1" ng-init="imgsrc4=img.audioPlay" ng-mouseover="imgsrc4=img.audioPlay2"
                                      ng-mouseout="imgsrc4=img.audioPlay" onmousedown="audiohallelujah()">
                                     <input type="image" class="img-audioButton" ng-src="{{imgsrc4}}" ng-click="generateAudio(userData.cfgExpansionVoiceOffline,'offline');"></div>
                             </div>
@@ -441,7 +441,7 @@
                         </div>
                         </div>
                     </div>
-<!--Feedback Voice-->                       
+<!--Feedback Voice-->
                     <div class="row menuBar">
                         <div class="row headerBar" ng-class="{disabledBar:!userData.cfgInterfaceVoiceOnOff}">
                             <div class="col-xs-6">
@@ -480,7 +480,7 @@
                                     </select>
                                 </div>
                                 <div class="col-xs-1"></div>
-                                <div class="col-xs-1" ng-init="imgsrc1=img.audioPlay" ng-mouseover="imgsrc1=img.audioPlay2" 
+                                <div class="col-xs-1" ng-init="imgsrc1=img.audioPlay" ng-mouseover="imgsrc1=img.audioPlay2"
                                      ng-mouseout="imgsrc1=img.audioPlay" onmousedown="audiohallelujah()">
                                     <input type="image" class="img-audioButton" ng-src="{{imgsrc1}}" ng-click="generateAudio(userData.cfgInterfaceVoiceOnline,'offline');"></div>
                             </div>
@@ -495,7 +495,7 @@
                                     </select>
                                 </div>
                                 <div class="col-xs-1"></div>
-                                <div class="col-xs-1" ng-init="imgsrc2=img.audioPlay" ng-mouseover="imgsrc2=img.audioPlay2" 
+                                <div class="col-xs-1" ng-init="imgsrc2=img.audioPlay" ng-mouseover="imgsrc2=img.audioPlay2"
                                      ng-mouseout="imgsrc2=img.audioPlay" onmousedown="audiohallelujah()">
                                     <input type="image" class="img-audioButton" ng-src="{{imgsrc2}}" ng-click="generateAudio(userData.cfgInterfaceVoiceOffline,'offline');"></div>
                             </div>
@@ -503,7 +503,7 @@
                         </div>
                         </div>
                     </div>
-<!--Menu-->                                 
+<!--Menu-->
                     <div class="row menuBar">
                         <div class="row headerBar">
                             <div class="col-xs-6">
@@ -539,13 +539,17 @@
                                         <label for="checkMenu2"><img class="img-configSwitch" ng-src={{img.menuButton2}}/></label>
                                     <input type="checkbox" id="checkMenu3" class="imageSwitch" ng-model="userData.cfgMenuDeleteAllActive" ng-click="changeOnOff(userData.cfgMenuDeleteAllActive, 'MenuDeleteAllActive')" ng-show="false">
                                         <label for="checkMenu3"><img class="img-configSwitch" ng-src={{img.menuButton3}}/></label>
+
+                                    <!--Nuevo codigo para el checkbox de MenuCopyClipboard -->
+                                    <input type="checkbox" id="checkMenu4" class="imageSwitch" ng-model="userData.cfgMenuCopyClipboard" ng-click="changeOnOff(userData.cfgMenuCopyClipboard, 'MenuCopyClipboard')" ng-show="false">
+                                      <label for="checkMenu4"><img class="img-configSwitch" ng-src={{img.menuButton4}}/></label>
                                 </div>
                             </div>
                         </div>
                         </div>
                         </div>
                     </div>
-<!--Configuración interficie-->             
+<!--Configuración interficie-->
                     <div class="row menuBar">
                         <div class="row headerBar">
                             <div class="col-xs-6">
@@ -653,7 +657,7 @@
                         </div>
                         </div>
                     </div>
-<!--Sistema Predicción-->                   
+<!--Sistema Predicción-->
                     <div class="row menuBar">
                         <div id="predSistem" class="row headerBar" ng-class="{disabledBar:!userData.cfgPredOnOff}">
                             <div class="col-xs-6">
@@ -687,7 +691,7 @@
                         </div>
                         </div>-->
                     </div>
-<!--Configuración harware-->                
+<!--Configuración harware-->
                     <div class="row menuBar">
                         <div class="row headerBar">
                             <div class="col-xs-6">
@@ -707,17 +711,17 @@
                         <div class="row contentBar">
                             <div class="row">
                                 <div class="col-xs-2 paddingLeft">
-                                    <input type="radio" id="radioHardwareUsage1" class="imageRadio" ng-model="userData.cfgUsageMouseOneCTwoC" value="0" 
+                                    <input type="radio" id="radioHardwareUsage1" class="imageRadio" ng-model="userData.cfgUsageMouseOneCTwoC" value="0"
                                            ng-click="changeRadioState(userData.cfgUsageMouseOneCTwoC, 'UsageMouseOneCTwoC');userData.cfgScanningOnOff=0;changeRadioState(userData.cfgScanningOnOff, 'ScanningOnOff')" ng-show="false">
                                         <label for="radioHardwareUsage1"><img class="img-configRadio" ng-src={{img.cfgUsageMouse}}/></label>
                                 </div>
                                 <div class="col-xs-2 paddingLeft2">
-                                    <input type="radio" id="radioHardwareUsage2" class="imageRadio" ng-model="userData.cfgUsageMouseOneCTwoC" value="1" 
+                                    <input type="radio" id="radioHardwareUsage2" class="imageRadio" ng-model="userData.cfgUsageMouseOneCTwoC" value="1"
                                            ng-click="changeRadioState(userData.cfgUsageMouseOneCTwoC, 'UsageMouseOneCTwoC');userData.cfgScanningOnOff=1;changeRadioState(userData.cfgScanningOnOff, 'ScanningOnOff')" ng-show="false">
                                         <label for="radioHardwareUsage2"><img class="img-configRadio" ng-src={{img.cfgUsageOneC}}/></label>
                                 </div>
                                 <div class="col-xs-2">
-                                    <input type="radio" id="radioHardwareUsage3" class="imageRadio" ng-model="userData.cfgUsageMouseOneCTwoC" value="2" 
+                                    <input type="radio" id="radioHardwareUsage3" class="imageRadio" ng-model="userData.cfgUsageMouseOneCTwoC" value="2"
                                            ng-click="changeRadioState(userData.cfgUsageMouseOneCTwoC, 'UsageMouseOneCTwoC');userData.cfgScanningOnOff=1;changeRadioState(userData.cfgScanningOnOff, 'ScanningOnOff')" ng-show="false">
                                         <label for="radioHardwareUsage3"><img class="img-configRadio" ng-src={{img.cfgUsageTwoC}}/></label>
                                 </div>
@@ -746,7 +750,7 @@
                         </div>
                         </div>
                     </div>
-<!--Scan Sistem-->                          
+<!--Scan Sistem-->
                     <div class="row menuBar">
                         <div class="row headerBar" ng-class="{disabledBar:!userData.cfgScanningOnOff}">
                             <div class="col-xs-6">
@@ -949,7 +953,7 @@
                                                                             </div>
                                                                         </div>
                                                                     </div>
-<!--Historial-->                            
+<!--Historial-->
                     <!--<div class="row menuBar">
                         <div class="row headerBar" ng-class="{disabledBar:!userData.cfgHistOnOff}">
                             <div class="col-xs-6">
