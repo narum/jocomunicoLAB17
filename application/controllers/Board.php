@@ -350,7 +350,6 @@ class Board extends REST_Controller {
 
         $idusu = $this->session->userdata('idusu');
         $this->BoardInterface->removeSentence($idusu);
-
         $data = $this->Lexicon->recuperarFrase($idusu);
 
         $newdata = $this->inserty($data);

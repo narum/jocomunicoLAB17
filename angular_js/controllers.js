@@ -127,7 +127,7 @@ angular.module('controllers', [])
             $scope.viewActivated = false; // para activar el gif de loading...
         })
 
-//Controlador del registro de usuario
+        //Controlador del registro de usuario
         .controller('RegisterCtrl', function ($scope, $rootScope, $captcha, Resources, md5, $q, $location, dropdownMenuBarInit) {
 
             //Inicializamos el formulario y las variables necesarias
@@ -1222,8 +1222,9 @@ angular.module('controllers', [])
 
             $scope.viewActived = false; // para activar el gif del loading
         })
-        .controller('myCtrl', function (Resources, $location, $scope, $http, ngDialog, txtContent, $rootScope, $interval, $timeout, dropdownMenuBarInit, AuthService) {
 
+
+        .controller('myCtrl', function (Resources, $location, $scope, $http, ngDialog, txtContent, $rootScope, $interval, $timeout, dropdownMenuBarInit, AuthService, ngClipboard) {
             $scope.viewActived = false;
             $timeout(function () {
                 $scope.viewActived = true;
@@ -2574,35 +2575,48 @@ angular.module('controllers', [])
                 });
             };
 
-
             /*
-            * New function: Copy the text in the clipboard.
+            * New function: Copy the text in the clipboard. Only works in Firefox. Works in the other browsers.
             */
 
             $scope.copyClipboard = function (){
 
               var url = $scope.baseurl + "Board/copyClipboard";
 
-
               $http.post(url).success(function (response){
 
                 $scope.dataTemp = response.data;
                 $scope.info = response.info;
 
+                var btnCopyClipboard = angular.element(document.getElementById('btnCopyClipboard'));
+                btnCopyClipboard.on('click',function(){
 
-                /* Forma facil de conseguir la copia del clipboard */
-                window.prompt("Copiar en el portapapeles: Ctrl+C, Enter", $scope.info.frasefinal);
+                  if(navigator.userAgent.toLowerCase().indexOf('firefox') > -1){
+                    ngClipboard.toFirefoxClipboard();
+                  }
 
-              });
+                  else if(navigator.userAgent.toLowerCase().indexOf('chrome') > -1){
+                    ngClipboard.toAllBrowsersClipboard();
+                  }
+
+                  else if(navigator.userAgent.toLowerCase().indexOf('opera') > -1){
+                    ngClipboard.toAllBrowsersClipboard();
+                  }
 
 
+                  else{
+                    window.prompt("Copiar en el portapapeles: Ctrl+C, Enter", $scope.info.frasefinal);
+                  }
+
+                  });
+                });
             };
-
-
 
             $scope.goPrimaryBoard = function () {
                 $scope.config();
             };
+
+
             /*
              * Generate the current senence under contruction.
              * Add the pictograms (and the sentence itself) in the historic
@@ -3810,6 +3824,7 @@ angular.module('controllers', [])
             if ($scope.cfgScanningOnOff == 1) {
                 $scope.InitScan();
             }
+
             //Init the pag
 
             $scope.pagNextFolderEnabled = true;
@@ -3840,7 +3855,59 @@ angular.module('controllers', [])
         })
 
 
+        .factory('ngClipboard', function($compile,$rootScope,$document) {
+          return {
+              'toFirefoxClipboard': function(){
 
+                var ngClipboardElement = angular.element(document.getElementById('frase'));
+                document.getElementById('frase').contentEditable = true;
+                ngClipboardElement.focus();
+                var range = document.createRange();
+                range.extractContents();
+                range.collapse();
+                range.selectNode(ngClipboardElement[0]);
+                window.getSelection().removeAllRanges();
+                window.getSelection().addRange(range);
+
+                /* Execute the command copy to get the text in the clipboard */
+                var successful = document.execCommand('copy');
+                document.getElementById('frase').contentEditable = false;
+                var msg = successful ? 'successful' : 'unsuccessful';
+                console.log('Copying text command was ' + msg);
+                window.getSelection().removeAllRanges();
+
+              },
+
+              'toAllBrowsersClipboard': function(){
+                var ngClipboardElement = angular.element(document.getElementById('frase'));
+                document.getElementById('frase').contentEditable = true;
+                ngClipboardElement.focus();
+                var range = document.createRange();
+                range.extractContents();
+                range.collapse();
+                range.selectNode(ngClipboardElement[0]);
+                window.getSelection().removeAllRanges();
+                window.getSelection().addRange(range);
+
+                /* Create a element textarea in HTML to copy the text in the clipboard and later we delete this element*/
+                var input = document.createElement('textarea');
+                document.body.appendChild(input);
+                input.value = ngClipboardElement[0].innerHTML;
+                input.focus();
+                input.select();
+                document.execCommand('Copy');
+                document.getElementById('frase').contentEditable = fa;
+                input.remove();
+
+                /* Execute the command copy to get the text in the clipboard */
+
+                var successful = document.execCommand('copy');
+                var msg = successful ? 'successful' : 'unsuccessful';
+                console.log('Copying text command was ' + msg);
+                window.getSelection().removeAllRanges();
+              },
+            }
+          })
 
         //Add a directive in order to recognize the right click
         .directive('ngRightClick', function ($parse) {

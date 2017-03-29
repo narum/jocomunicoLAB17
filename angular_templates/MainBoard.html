@@ -1,4 +1,4 @@
-<!-- This view is the main board where the picto will be shown. In addition it 
+<!-- This view is the main board where the picto will be shown. In addition it
      includes others view like sentece, edit (board/cell) panel, etc etc
 -->
 <link rel="stylesheet" type="text/css" href="css/editCell.css">
@@ -8,33 +8,40 @@
     -webkit-background-size: cover;-moz-background-size: cover;-o-background-size: cover;background-size: cover; overflow-y:hidden;}
 </style>
 
+<!-- Nuevo código: Añadido nueva libreria al fichero MainBoard.html -->
+
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular.min.js"></script>
+<script src="/libraries/clipboard.min.js"></script>
+
+<!--Nuevo codigo-->
+
 <script>
-    
+
     var myVar;
     var exit = 0;
-    
+
     function audiohallelujah() {
         console.log("audio");
 
         var aux = document.getElementById('utterance');
         aux.src="mp3/empty.m4a";
         var audiotoplayinitial = aux.src;
-        
+
         var myVar = setInterval(function(){ waitloop(audiotoplayinitial, myVar) }, 500);
     }
-    
+
     function waitloop(audiotoplayinitial, myVar) {
         var aux = document.getElementById('utterance');
         var audiotoplayfinal = aux.src;
-        
+
         if (audiotoplayinitial !== audiotoplayfinal) {
             exit = 0;
             aux.play();
             clearInterval(myVar);
         }
-        
+
         exit = exit+1;
-        
+
         if (exit > 8) {
             exit = 0;
             clearInterval(myVar);
@@ -65,7 +72,7 @@
 
         <div id="userview" class="col-xs-{{userViewWidth}}" style="height:{{userViewHeight}}%" >
             <div class="col-xs-12" ng-if="cfgSentenceBarUpDown === '0' && !inEdit" style="height:{{sentenceViewHeight}}%;margin-bottom: 1vh">
-                <div class="row fullheight" ng-include="baseurl + '/angular_templates/SentenceView.html'">                     
+                <div class="row fullheight" ng-include="baseurl + '/angular_templates/SentenceView.html'">
                 </div>
             </div>
 
@@ -82,7 +89,7 @@
                         <img ng-if="picto.boardLink != null || picto.folderName !== null || picto.ID_CFunction === '23'" class="sfolder" ng-src="{{baseurl}}img/srcWeb/Mainboard/folder.png"/>
                         <img ng-if="inEdit" class="removePicto" ng-src="{{baseurl}}img/srcWeb/Edit/cross.png" ng-click="removePicto(picto)"/>
                         <img ng-if="inEdit" class="editPicto" ng-src="{{baseurl}}img/srcWeb/Edit/edit.png" ng-click="openEditCellMenu({{picto.posInBoard}});"/>
-                        
+
                         <div class="backgroundCell" ng-style="{'background-color':'#{{picto.color}}'}"></div>
                         <!-- put the scan color over the image.
                              Only if we are in Scan mode
@@ -103,7 +110,7 @@
 
                         <div ng-if="isPictoActive(picto)" class="contentCell">
                             <div ng-style="cfgTextInCell ? {'height':'78%'}:{'height':'100%'}">
-                                <img ng-if="picto.imgCell" class="imgResponsive" ng-src="{{baseurl}}{{picto.imgCell}}"/>   
+                                <img ng-if="picto.imgCell" class="imgResponsive" ng-src="{{baseurl}}{{picto.imgCell}}"/>
                                 <img ng-if="picto.imgPicto && !picto.imgCell" ng-src="{{baseurl}}img/pictos/{{picto.imgPicto}}" class="imgResponsive"/>
                                 <img ng-if="picto.imgSFolder && !picto.imgPicto && !picto.imgCell && !picto.imgFunct" ng-src="{{baseurl}}{{picto.imgSFolder}}" class="imgResponsive"/>
                                 <img ng-if="picto.sPreRecImg1 && !picto.imgSFolder && !picto.imgPicto && !picto.imgCell && !picto.imgFunct" ng-src="{{baseurl}}{{picto.sPreRecImg1}}" class="imgResponsive"/>
@@ -120,7 +127,7 @@
                 </div>
             </div>
             <div id="sentenceView" class="col-xs-12" ng-if="cfgSentenceBarUpDown === '1' && !inEdit" style="height:{{sentenceViewHeight}}%;margin-top: 1vh">
-                <div class="row fullheight" ng-include="baseurl + '/angular_templates/SentenceView.html'">                     
+                <div class="row fullheight" ng-include="baseurl + '/angular_templates/SentenceView.html'">
                 </div>
             </div>
         </div>
@@ -187,6 +194,3 @@
                                                     </div>
                                                 </div>
                                             </div>
-
-
-

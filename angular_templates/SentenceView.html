@@ -33,8 +33,8 @@
                     {{picto.text}}
                 </div>
             </div>
-            <!--Display the phrase-->
-            <div ng-if="!info.error || info.errorcode == 7 || info.errorcode == 6" class="col-xs-12 phraseText text-uppercase">
+            <!--Display the phrase. Changes in the div container, I add the values contenteditable and readonly, to do the copy clipboard-->
+            <div id="frase" ng-if="!info.error || info.errorcode == 7 || info.errorcode == 6" class="col-xs-12 phraseText text-uppercase">
                 {{info.frasefinal}}
             </div>
             <!--Display the eror text-->
@@ -68,7 +68,7 @@
 </div>
 
 <!-- Este sera el nuevo boton para hacer la copia de la frase en el portapapeles -->
-<div ng-if="cfgMenuCopyClipboard == 1" class="col-xs-1 fullheight"  ng-mousedown="isClickEnable() ? copyClipboard() : null" ng-mouseenter="cfgTimeOverOnOff?TimeoutOverClick(2,'copyClipboard'):null" ng-mouseleave="cfgTimeOverOnOff ? CancelTimeoutOverClick() : null">
+<div id="btnCopyClipboard" ng-if="cfgMenuCopyClipboard == 1" class="col-xs-1 botonCopyClipboard fullheight" ng-mousedown="isClickEnable() ? copyClipboard() : null" ng-mouseenter="cfgTimeOverOnOff?TimeoutOverClick(2,'copyClipboard'):null" ng-mouseleave="cfgTimeOverOnOff ? CancelTimeoutOverClick() : null">
     <div ng-if='inScan && isScanning == "copyclipboard" && isScanningCancel === false' class="scaneo" style="margin: 0px;" ng-style="{'border':'7px solid #{{cfgScanColor}}'}"></div>
     <div class="backgroundCopyClipboard">
         <img class="imgResponsive icon" ng-src="{{baseurl}}img/srcWeb/Menu/copiar-port-icon.png"/>
