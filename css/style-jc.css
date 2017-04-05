@@ -463,6 +463,18 @@ html *
   border-radius: 7px;
 }
 
+/*Nuevo código para cambiar el background del boton de copiar frase y imágenes en el portapapeles */
+
+.backgroundCopyTxtImgClipboard{
+  width: 94%;
+  left: 6%;
+  height: 100%;
+  position: absolute;
+  background: url('/img/srcWeb/Menu/copiar_port_fons.png');
+  background-size: 100% 100%;
+  border-radius: 7px;
+}
+
 
 .icon{
     position: absolute;
