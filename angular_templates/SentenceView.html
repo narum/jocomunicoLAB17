@@ -69,13 +69,13 @@
 
 <!-- Este sera el nuevo boton para hacer la copia de la frase en el portapapeles -->
 <div copytext ng-if="cfgMenuCopyClipboard == 1" class="col-xs-1 fullheight" ng-mouseenter="cfgTimeOverOnOff?TimeoutOverClick(2,'copyClipboard'):null" ng-mouseleave="cfgTimeOverOnOff ? CancelTimeoutOverClick() : null">
-    <div ng-if='inScan && isScanning == "" && isScanningCancel === false' class="scaneo" style="margin: 0px;" ng-style="{'border':'7px solid #{{cfgScanColor}}'}"></div>
+    <div ng-if='inScan && isScanning == "copyclipboard" && isScanningCancel === false' class="scaneo" style="margin: 0px;" ng-style="{'border':'7px solid #{{cfgScanColor}}'}"></div>
     <div class="backgroundCopyClipboard">
         <img class="imgResponsive icon" ng-src="{{baseurl}}img/srcWeb/Menu/copiar-port-icon.png"/>
     </div>
 </div>
 
-<div copytextandimage id="btnTxtImgCopyClipboard" ng-if="cfgMenuCopyTxtImgClipboard == 1" class="col-xs-1 fullheight" ng-mouseenter="cfgTimeOverOnOff?TimeoutOverClick(2,'copyTxtImgClipboard'):null" ng-mouseleave="cfgTimeOverOnOff ? CancelTimeoutOverClick() : null">
+<div copytextandimage ng-if="cfgMenuCopyTxtImgClipboard == 1" class="col-xs-1 fullheight" ng-mouseenter="cfgTimeOverOnOff?TimeoutOverClick(2,'copyTxtImgClipboard'):null" ng-mouseleave="cfgTimeOverOnOff ? CancelTimeoutOverClick() : null">
     <div ng-if='inScan && isScanning == "copytxtimgclipboard" && isScanningCancel === false' class="scaneo" style="margin: 0px;" ng-style="{'border':'7px solid #{{cfgScanColor}}'}"></div>
     <div class="backgroundCopyTxtImgClipboard">
         <img class="imgResponsive icon" ng-src="{{baseurl}}img/srcWeb/Menu/copy-txt-img-port-icon.png"/>

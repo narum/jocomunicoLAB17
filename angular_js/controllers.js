@@ -3987,40 +3987,52 @@ angular.module('controllers', [])
 
               'toAllBrowsersTxtImgClipboard': function(){
 
-                var ngClipboardElement = angular.element($window.document.getElementById('txtImgContainer'));
-                //document.getElementById('txtImgContainer').contentEditable = true;
-                ngClipboardElement.contentEditable = true;
-                ngClipboardElement.focus();
-                var range = $window.document.createRange();
-                range.extractContents();
-                range.collapse();
-                range.selectNode(ngClipboardElement[0]);
-                $window.getSelection().removeAllRanges();
-                $window.getSelection().addRange(range);
-
-                var input = $window.document.createElement('textarea');
-                $window.document.body.appendChild(input);
-                input.value = ngClipboardElement[0].innerHTML;
+                var img = document.getElementById('txtImgContainer');
+                var elements = img.getElementsByTagName('img');
+                console.log(elements.length);
+                document.getElementById('txtImgContainer').contentEditable = true;
 
 
-                //var doc = new DOMParser().parseFromString(input.value, 'text/html');
-                //var text = input.innerText;
-                //console.log(text);
+                var div = document.createElement('div');
+                div.id = 'prueba'
+
+                // Add image elements to the div.
+                for(index = 0; index < elements.length; index++){
+                  var img2 = document.createElement('img');
+                  img2.id = 'img' + index.toString();
+                  img2.width = 70;
+                  img2.height = 70;
+                  console.log(elements[index].src)
+                  img2.src= elements[index].src;
+                  div.appendChild(img2);
+                }
+
+                // Add phrase to the div
+                var frase = document.getElementById('frase');
+                var input = document.createElement('div');
+                document.body.appendChild(input);
+                input.append(frase.innerHTML);
+                div.appendChild(input);
+
+                // We select the div to copy in the clipboard
+                console.log(div);
+                document.body.appendChild(div);
+                getSelection().removeAllRanges();
+                var r = document.createRange();
+                r.setStartBefore(div);
+                r.setEndAfter(div);
+                r.selectNode(div);
+                getSelection().addRange(r);
 
 
+                /* Execute the command copy to get the text and the images in the clipboard */
 
-                input.focus();
-                input.select();
-                $window.document.execCommand('copy');
-                ngClipboardElement.contentEditable = false;
-                input.remove();
-
-
-                /* Execute the command copy to get the text in the clipboard */
-                var successful = $window.document.execCommand('copy');
+                var successful = document.execCommand('copy');
+                div.remove();
+                document.getElementById('txtImgContainer').contentEditable = false;
                 var msg = successful ? 'successful' : 'unsuccessful';
                 console.log('Copying text and images command was ' + msg);
-                $window.getSelection().removeAllRanges();
+                getSelection().removeAllRanges();
               },
 
             }
@@ -4057,7 +4069,7 @@ angular.module('controllers', [])
               document.getElementById('frase').contentEditable = false;
               input.remove();
 
-              //Execute the command copy to get the text in the clipboard */
+              //Execute the command copy to get the text in the clipboard
 
               var successful = document.execCommand('copy');
               var msg = successful ? 'successful' : 'unsuccessful';
@@ -4069,43 +4081,59 @@ angular.module('controllers', [])
           }
         }])
 
-
         .directive('copytextandimage', ['$document', function($document) {
           return {
             link: function(scope, element, attr) {
               element.on('mousedown', function(event) {
-              // Prevent default dragging of selected content
-              event.preventDefault();
+                // Prevent default dragging of selected content
+                event.preventDefault();
 
-              var ngClipboardElement = angular.element(document.getElementById('txtImgContainer'));
-              //document.getElementById('txtImgContainer').contentEditable = true;
-              ngClipboardElement.contentEditable = true;
-              ngClipboardElement.focus();
-              var range = document.createRange();
-              range.extractContents();
-              range.collapse();
-              range.selectNode(ngClipboardElement[0]);
-              getSelection().removeAllRanges();
-              getSelection().addRange(range);
+                var img = document.getElementById('txtImgContainer');
+                var elements = img.getElementsByTagName('img');
+                console.log(elements.length);
+                document.getElementById('txtImgContainer').contentEditable = true;
 
 
-              var input = document.createElement('textarea');
-              document.body.appendChild(input);
-              input.value = ngClipboardElement[0].innerHTML;
-              //console.log(input.value);
-              input.focus();
-              input.select();
-              document.execCommand('copy');
-              //ngClipboardElement.contentEditable = false;
-              input.remove();
+                var div = document.createElement('div');
+                div.id = 'prueba'
+
+                // Add image elements to the div.
+                for(index = 0; index < elements.length; index++){
+                  var img2 = document.createElement('img');
+                  img2.id = 'img' + index.toString();
+                  img2.width = 70;
+                  img2.height = 70;
+                  console.log(elements[index].src)
+                  img2.src= elements[index].src;
+                  div.appendChild(img2);
+                }
+
+                // Add phrase to the div
+                var frase = document.getElementById('frase');
+                var input = document.createElement('div');
+                document.body.appendChild(input);
+                input.append(frase.innerHTML);
+                div.appendChild(input);
+
+                // We select the div to copy in the clipboard
+                console.log(div);
+                document.body.appendChild(div);
+                getSelection().removeAllRanges();
+                var r = document.createRange();
+                r.setStartBefore(div);
+                r.setEndAfter(div);
+                r.selectNode(div);
+                getSelection().addRange(r);
 
 
-              /* Execute the command copy to get the text in the clipboard */
-              var successful = document.execCommand('copy');
-              var msg = successful ? 'successful' : 'unsuccessful';
-              console.log('Copying text and images command was ' + msg);
-              getSelection().removeAllRanges();
+                /* Execute the command copy to get the text and the images in the clipboard */
 
+                var successful = document.execCommand('copy');
+                div.remove();
+                document.getElementById('txtImgContainer').contentEditable = false;
+                var msg = successful ? 'successful' : 'unsuccessful';
+                console.log('Copying text and images command was ' + msg);
+                getSelection().removeAllRanges();
             });
             }
           }
