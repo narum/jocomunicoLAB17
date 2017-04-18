@@ -222,7 +222,7 @@ angular.module('controllers', [])
                     userOk = false;  // Usamos una variable en vez del return por que la función promise tarda mas en retornar el resultado y nos dava error al comprobarlo en el submit
                     return;
                 }
-                if (formData.SUname.length < 4 || formData.SUname.length >= 50) { // minimo y maximo de caracteres requeridos
+                if (formData.SUname.length < 4 || formData.SUname.length >= 15 || formData.SUname.indexOf(' ') !== -1) { // minimo y maximo de caracteres requeridos y NOT whitespaces
                     $scope.state.user = 'has-warning';
                     userOk = false;
                 } else {
