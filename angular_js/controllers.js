@@ -1213,6 +1213,16 @@ angular.module('controllers', [])
             };
             
             $scope.viewActived = false; // para activar el gif del loading
+            
+             $scope.deleteUser = function () {
+                 
+                var URL = $scope.baseurl + "DeleteUser/deleteUser";
+                $http.get(URL).success(function (response) {
+                    console.log(response);
+                });
+            };
+            
+            
         })
         .controller('myCtrl', function (Resources, $location, $scope, $http, ngDialog, txtContent, $rootScope, $interval, $timeout, dropdownMenuBarInit, AuthService) {
 
@@ -2464,12 +2474,12 @@ angular.module('controllers', [])
                 $http.post(url, postdata).success(function (response)
                 {
                     var control = response.control;
-
+                    console.log(control);
                     $scope.dataTemp = response.data;
                     $scope.tense = response.tense;
                     $scope.tipusfrase = response.tipusfrase;
                     $scope.negativa = response.negativa;
-                    if ((control !== "") && (control !== "home") && (control !== "historic")) {
+                    if ((control !== "") && (control !== "home") && (control !== "historic") && (control !== "stopAudio")) {
                         var url = $scope.baseurl + "Board/" + control;
                         var postdata = {tense: $scope.tense, tipusfrase: $scope.tipusfrase, negativa: $scope.negativa};
 
@@ -2502,7 +2512,12 @@ angular.module('controllers', [])
                     } else if ((control === "historic")) {
                         $rootScope.senteceFolderToShow = {folder: null, boardID: $scope.idboard};
                         $location.path('/historic');
-                    } else {
+                    } else if ((control === "stopAudio")){
+                        var aux = document.getElementById('utterance');
+                        aux.pause();
+                        aux.currentTime = 0;
+                    }
+                    else {
                         if (!readed) {
                             $scope.readText(text, true);
                         }

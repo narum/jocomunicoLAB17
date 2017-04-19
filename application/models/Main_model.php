@@ -6,6 +6,7 @@ class Main_model extends CI_Model {
     {
         parent::__construct();
         $this->load->database();
+        $this->load->library("session");
     }
     
     // Petición del contenido para mostrar en las vistas (textos)
@@ -121,7 +122,7 @@ class Main_model extends CI_Model {
     public function saveArrayData($table, $data){
 
         $saved = $this->db->insert_batch($table, $data);
-
+        
         return $saved;
     }
     // Cambiar contenido de una tabla.
@@ -129,7 +130,7 @@ class Main_model extends CI_Model {
 
         $this->db->where($column, $id);
         $saved = $this->db->update($table, $data);
-
+            
         return $saved;
     }
     
@@ -142,11 +143,11 @@ class Main_model extends CI_Model {
         $ID_SU = $this->db->get()->result_array();
 
         $id = array_column($ID_SU, 'ID_SU');
-
+       
         $data = [
             "ID_USU" => $id[0],
             "ID_ULanguage" => $ID_ULanguage,
-            "cfgExpansionLanguage" => $ID_ULanguage,
+            "cfgExpansionLanguage" => $ID_ULanguage,   
         ];
 
         $saved = $this->db->insert('User', $data);
@@ -157,6 +158,10 @@ class Main_model extends CI_Model {
         $ID_User = $this->db->get()->result_array();
 
         $idU = array_column($ID_User, 'ID_User');
+        
+        //#H
+        //Insertamos la fecha
+        $this->db->query("UPDATE superuser SET insertDate = CURRENT_DATE WHERE ID_SU = ?", $ID_SU);
 
         //Retornamos el ID_SUser y el ID_User
         $dataSaved = [
@@ -166,6 +171,8 @@ class Main_model extends CI_Model {
         ];
 
         return $dataSaved;
+
+
     }
     
     // Validar usuario al registrarse

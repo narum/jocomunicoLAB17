@@ -93,6 +93,33 @@ border-radius:10px;
     padding-right: 1vw;
     border-radius: 8px;
 }
+
+.btn-lightturquoise {
+    font-size: 2.5vh;
+    color: #333333;
+    background-color: #e9fbfa;
+    border-top: 0.3vh solid #333333;
+    border-right: 0.4vh solid #333333;
+    border-left: none;
+    border-bottom: none;
+    height: 5.2vh;
+    padding-left: 1vw;
+    padding-right: 1vw;
+    border-radius: 8px;
+}
+.btn-lightred {
+    font-size: 2.5vh;
+    color: #333333;
+    background-color: #F75A5A;
+    border-top: 0.3vh solid #333333;
+    border-right: 0.4vh solid #333333;
+    border-left: none;
+    border-bottom: none;
+    height: 5.2vh;
+    padding-left: 1vw;
+    padding-right: 1vw;
+    border-radius: 8px;
+}
 .btn-turquoise:hover{
     height: 5vh;
     border:none;

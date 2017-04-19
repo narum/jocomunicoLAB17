@@ -13,6 +13,9 @@
     var myVar;
     var exit = 0;
     
+    //Timer that will refresh the page after 10min if the user dont click anything.
+    var Timer = window.setTimeout(refreshPage, 600000); 
+    
     function audiohallelujah() {
         console.log("audio");
 
@@ -21,8 +24,14 @@
         var audiotoplayinitial = aux.src;
         
         var myVar = setInterval(function(){ waitloop(audiotoplayinitial, myVar) }, 500);
+        
+        //Reset the timer and postpone the refresh in the next 10min.
+        clearTimeout(Timer);
+        Timer = window.setTimeout(refreshPage, 600000); 
     }
-    
+    function refreshPage() {
+            location.reload(true);
+    }
     function waitloop(audiotoplayinitial, myVar) {
         var aux = document.getElementById('utterance');
         var audiotoplayfinal = aux.src;
@@ -84,7 +93,7 @@
                         <img ng-if="inEdit" class="editPicto" ng-src="{{baseurl}}img/srcWeb/Edit/edit.png" ng-click="openEditCellMenu({{picto.posInBoard}});"/>
                         
                         <div class="backgroundCell" ng-style="{'background-color':'#{{picto.color}}'}"></div>
-                        <!-- put the scan color over the image.
+                        <!-- put the scan color over the image.mousedown
                              Only if we are in Scan mode
                         MODIF: Añadir variable if inScan-->
 

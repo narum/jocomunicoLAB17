@@ -135,13 +135,21 @@
                     {{content.text}}
                 </div>
                 <div class="col-xs-offset-2 col-xs-1 buttonTitle">
-                    <input id="switch3" class="switch" type="checkbox"
-                           ng-model="checkboxTextInCell" ng-show="false"/>
+                    <input ng-if="cellType != 'picto'"
+                           id="switch3" class="switch" type="checkbox"
+                           ng-model="checkboxTextInCell" ng-show="false"
+         
+                           />
                     <label for="switch3">&nbsp;</label>
                 </div>
             </div>
-            <div class="col-xs-12 content1" ng-click="checkboxTextInCell = true;">
-                <input id="textInCell" class="boxEdit" type="text" ng-model="textInCell"  ng-disabled="!checkboxTextInCell"placeholder="{{textInCell == null ? Editinfo.pictotext : null}}"/>
+            <div ng-if="cellType === 'picto'" class="col-xs-12 content1 contentNull1">
+                <input ng-if="cellType != 'picto'" id="textInCell" class="boxEdit" type="text" ng-model="textInCell" ng-disabled="!checkboxTextInCell "placeholder="{{textInCell == null ? Editinfo.pictotext : null}}"
+                />
+            </div>
+            <div ng-if="cellType != 'picto'" class="col-xs-12 content1" ng-click="checkboxTextInCell = true;">
+                <input ng-if="cellType != 'picto'" id="textInCell" class="boxEdit" type="text" ng-model="textInCell" ng-disabled="!checkboxTextInCell "placeholder="{{textInCell == null ? Editinfo.pictotext : null}}"
+                />
             </div>
 
         </div>
