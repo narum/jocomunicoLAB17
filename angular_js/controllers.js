@@ -1317,6 +1317,26 @@ angular.module('controllers', [])
                 $scope.InitScan();
             });
 
+
+            /*$scope.confirmPassword = function (){
+
+              //$('#confirmPassword').modal({backdrop: 'static'});
+              var URL = $scope.baseurl + "Main/confirmPassword";
+              //alert($scope.idGroupBoard);
+              var postdata = {idGroupBoard: $scope.idGroupBoard};
+              $http.post(URL, postdata).success(function (response){
+                $('#confirmPassword').modal({backdrop: 'static'});
+
+                //if (response.error) {
+                //    console.log(response.errorText);
+                //    $scope.errorText = response.errorText;
+
+                //    }
+              });
+
+
+            }*/
+
             $scope.setTimer = function () {
                 $interval.cancel($scope.intervalScan);
                 var Intervalscan = $scope.cfgTimeScanning;
@@ -1717,6 +1737,7 @@ angular.module('controllers', [])
                         case "copytxtimgclipboard":
                             $scope.isScanning = "nowait";
                             $scope.InitScan();
+                            break;
 
                     }
 
@@ -2595,75 +2616,10 @@ angular.module('controllers', [])
                 });
             };
 
-            /*
-            * New function: Copy the text in the clipboard. Works in normal mode but when we use the scaneo system it doesn't work because we can't do double click to active the function.
-            */
-
-            /*$scope.copyClipboard = function (){
-
-              var url = $scope.baseurl + "Board/copyClipboard";
-
-              $http.post(url).success(function (response){
-
-                $scope.dataTemp = response.data;
-                $scope.info = response.info;
-
-                var btnCopyClipboard = angular.element(document.getElementById('btnCopyClipboard'));
-                btnCopyClipboard.on('click',function(){
-
-                  if(navigator.userAgent.toLowerCase().indexOf('firefox') > -1){
-                    ngClipboard.toFirefoxClipboard();
-                  }
-
-                  else if(navigator.userAgent.toLowerCase().indexOf('chrome') > -1){
-                    ngClipboard.toAllBrowsersClipboard();
-                  }
-
-                  else if(navigator.userAgent.toLowerCase().indexOf('opera') > -1){
-                    ngClipboard.toAllBrowsersClipboard();
-                  }
-
-                  else{
-                    //window.prompt("Copiar en el portapapeles: Ctrl+C, Enter", $scope.info.frasefinal);
-                    ngClipboard.toAllBrowsersClipboard();
-                  }
 
 
-                });
-                });
-            };
 
 
-            $scope.copyTxtImgClipboard = function(){
-              var url = $scope.baseurl + "Board/copyTxtImgClipboard";
-
-              $http.post(url).success(function (response){
-
-                $scope.dataTemp = response.data;
-                $scope.info = response.info;
-
-                var btnTxtImgCopyClipboard = angular.element(document.getElementById('btnTxtImgCopyClipboard'));
-                btnTxtImgCopyClipboard.on('click',function(){
-
-                  if(navigator.userAgent.toLowerCase().indexOf('firefox') > -1){
-                    ngClipboard.toFirefoxTxtImgClipboard();
-                  }
-
-                  else if(navigator.userAgent.toLowerCase().indexOf('chrome') > -1){
-                    ngClipboard.toAllBrowsersTxtImgClipboard();
-                  }
-
-                  else if(navigator.userAgent.toLowerCase().indexOf('opera') > -1){
-                    ngClipboard.toAllBrowsersTxtImgClipboard();
-                  }
-
-                  else{
-                    ngClipboard.toAllBrowsersTxtImgClipboard();
-                  }
-
-                  });
-                });
-            };*/
 
             $scope.goPrimaryBoard = function () {
                 $scope.config();
@@ -3910,7 +3866,7 @@ angular.module('controllers', [])
 
         .factory('ngClipboard', function($compile,$rootScope,$window) {
           return {
-              'toFirefoxClipboard': function(){
+              /*'toFirefoxClipboard': function(){
 
                   var ngClipboardElement = angular.element($window.document.getElementById('frase'));
                   $window.document.getElementById('frase').contentEditable = true;
@@ -3922,7 +3878,7 @@ angular.module('controllers', [])
                   $window.getSelection().removeAllRanges();
                   $window.getSelection().addRange(range);
 
-                  /* Execute the command copy to get the text in the clipboard */
+                  // Execute the command copy to get the text in the clipboard
 
                   var successful = $window.document.execCommand('copy');
                   $window.document.getElementById('frase').contentEditable = false;
@@ -3930,7 +3886,7 @@ angular.module('controllers', [])
                   console.log('Copying text command was ' + msg);
                   $window.getSelection().removeAllRanges();
 
-              },
+              },*/
 
               'toAllBrowsersClipboard': function(){
 
@@ -3948,7 +3904,7 @@ angular.module('controllers', [])
 
                   var input = $window.document.createElement('textarea');
                   $window.document.body.appendChild(input);
-                  input.value = ngClipboardElement[0].innerHTML;
+                  input.value = ngClipboardElement[0].innerHTML.trim();
                   input.focus();
                   input.select();
                   $window.document.execCommand('copy');
@@ -3963,7 +3919,7 @@ angular.module('controllers', [])
                   $window.getSelection().removeAllRanges();
               },
 
-              'toFirefoxTxtImgClipboard':function(){
+              /*'toFirefoxTxtImgClipboard':function(){
                 var ngClipboardElement = angular.element($window.document.getElementById('txtImgContainer'));
                 $window.document.getElementById('txtImgContainer').contentEditable = true;
                 ngClipboardElement.focus();
@@ -3974,7 +3930,7 @@ angular.module('controllers', [])
                 $window.getSelection().removeAllRanges();
                 $window.getSelection().addRange(range);
 
-                /* Execute the command copy to get the text in the clipboard */
+                // Execute the command copy to get the text in the clipboard
 
                 var successful = $window.document.execCommand('copy');
                 $window.document.getElementById('txtImgContainer').contentEditable = false;
@@ -3982,7 +3938,7 @@ angular.module('controllers', [])
                 console.log('Copying text and images command was ' + msg);
                 $window.getSelection().removeAllRanges();
 
-              },
+              },*/
 
 
               'toAllBrowsersTxtImgClipboard': function(){
@@ -4039,7 +3995,9 @@ angular.module('controllers', [])
           })
 
 
-        /*New code*/
+          /*
+          * New directive function: Copy the text in the clipboard and copy text and images in the clipboard.
+          */
 
         .directive('copytext', ['$document', function($document) {
           return {
@@ -4062,16 +4020,17 @@ angular.module('controllers', [])
 
               var input = document.createElement('textarea');
               document.body.appendChild(input);
-              input.value = ngClipboardElement[0].innerHTML;
+              input.value = ngClipboardElement[0].innerHTML.trim();
               input.focus();
               input.select();
               document.execCommand('copy');
               document.getElementById('frase').contentEditable = false;
-              input.remove();
+
 
               //Execute the command copy to get the text in the clipboard
 
               var successful = document.execCommand('copy');
+              input.remove();
               var msg = successful ? 'successful' : 'unsuccessful';
               console.log('Copying text command was ' + msg);
               getSelection().removeAllRanges();
@@ -4093,7 +4052,7 @@ angular.module('controllers', [])
                 console.log(elements.length);
                 document.getElementById('txtImgContainer').contentEditable = true;
 
-
+                //Create a new element div that we delete later.
                 var div = document.createElement('div');
                 div.id = 'prueba'
 
@@ -4164,5 +4123,5 @@ angular.module('controllers', [])
                         });
                     }
                 }
-            }
-        });
+              };
+      })

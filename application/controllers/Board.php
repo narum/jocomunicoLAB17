@@ -386,29 +386,6 @@ class Board extends REST_Controller {
 
     }
 
-    /*
-    * New function: Copy the text in the
-    */
-
-    public function copyTxtImgClipboard_post() {
-
-      $idusu = $this->session->userdata('idusu');
-      $data = $this->Lexicon->recuperarFrase($idusu);
-      $newdata = $this->inserty($data);
-
-      $expander = new Myexpander();
-      $expander->expand();
-      $info = $expander->info;
-
-      $response = [
-          'data' => $newdata,
-          'info' => $info,
-        ];
-
-
-      $this->response($response, REST_Controller::HTTP_OK);
-
-    }
 
     /*
      * Copy the S_Temp table to the S_Historic table and all this dependecies.
