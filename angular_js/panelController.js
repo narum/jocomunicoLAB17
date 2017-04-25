@@ -88,6 +88,9 @@ angular.module('controllers')
             };
             //Delet historic sentences 30 days old
             Resources.main.get({'funct': "getHistoric"});
+            if(Resources.main.get({})){
+              Resources.main.get({'funct': "getHistoric"});
+            }
 
             //Up folder order
             $scope.upFolder = function (order, folderId) {
@@ -492,7 +495,21 @@ angular.module('controllers')
                   $scope.toggleInfoModal($scope.content.chromeAdviceTitle, $scope.content.chromeAdviceBody);
                 }
               }
-              //Save cookie inconditionally after show modal if neccessary
+              //Save cookie unconditionally after show modal if neccessary
               $cookies.put('browserAdvice', 'true');
             };
+
+            /* Enable or disable Historial
+            * @rjlopezdev
+            */
+            $scope.historialState = $http.get('Historic/getState');
+            $scope.enableHistorial = function () {
+              //Enable or disable Historial
+              $http.post('Historic/enableDisable_Historic')
+              .success(function (response) {
+
+              });
+            };
+
+
         });
