@@ -1215,14 +1215,21 @@ angular.module('controllers', [])
             $scope.viewActived = false; // para activar el gif del loading
             
              $scope.deleteUser = function () {
-                 
                 var URL = $scope.baseurl + "DeleteUser/deleteUser";
                 $http.get(URL).success(function (response) {
                     console.log(response);
                 });
             };
-            
-            
+
+            Resources.main.get({'funct': "runningLocalOrServer"}).$promise
+                    .then(function (results) {
+                       if( results.appRunning == 'server' ){
+                        $scope.runningLocal=false;
+                    }else{
+                        $scope.runningLocal=true;   
+                    }
+                    });
+    
         })
         .controller('myCtrl', function (Resources, $location, $scope, $http, ngDialog, txtContent, $rootScope, $interval, $timeout, dropdownMenuBarInit, AuthService) {
 
@@ -2022,10 +2029,11 @@ angular.module('controllers', [])
                 console.log("What's happening...");
                 var url = $scope.baseurl + "Board/getPrediction";
                 $http.post(url).success(function (response)
-                {
+                {   
                     $scope.recommenderArray = response.recommenderArray;
                 });
             };
+            console.log($scope.recommenderArray);
 
             /*
              * Show edit view board

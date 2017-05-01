@@ -159,10 +159,12 @@ class Main_model extends CI_Model {
 
         $idU = array_column($ID_User, 'ID_User');
         
-        //#H
         //Insertamos la fecha
-        $this->db->query("UPDATE superuser SET insertDate = CURRENT_DATE WHERE ID_SU = ?", $ID_SU);
-
+        $this->db->query("UPDATE Superuser SET insertDate = CURRENT_DATE WHERE ID_SU = ?", $ID_SU);
+        
+        //#H Eliminar cuando tengamos SuperUsers.
+        $this->db->query("UPDATE User SET SuperUserIs = ID_USU WHERE ID_User = ?", $ID_User);
+        
         //Retornamos el ID_SUser y el ID_User
         $dataSaved = [
             "ID_SU" => $id[0],

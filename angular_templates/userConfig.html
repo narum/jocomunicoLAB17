@@ -397,9 +397,10 @@
                         <div class="row">
                             <div class="col-xs-12" uib-collapse="!contentBar11">
                                 <div class="row contentBar Voices">
-                                    <div class="row verticalMarginBottom">
-                                        <div class="col-xs-3 verticalMarginVoice paddingLeft" ng-show="!local"></div>
-                                        <div class="col-xs-4 verticalMarginVoice paddingLeft" ng-show="local">{{content.currentVoice}}</div>
+                                    <!-- Voces con conexión-->
+                                    <div ng-if="runningLocal === false" class="row verticalMarginBottom" >
+                                        <div class="col-xs-3 verticalMarginVoice paddingLeft3" ng-show="!local"></div>
+                                        <div class="col-xs-4 verticalMarginVoice paddingLeft3" ng-show="local">{{content.currentVoice}}</div>
                                         <div class="col-xs-6 verticalMarginVoice">
                                             <select class="boxEdit dropdown-arrow"
                                                     ng-options="voice.voiceName as voice.voiceCompleteName for voice in expansionVoicesList"
@@ -414,7 +415,7 @@
                                             <input type="image" class="img-audioButton" ng-src="{{imgsrc3}}" ng-click="generateAudio(userData.cfgExpansionVoiceOnline, 'offline');"></div>
                                     </div>
                                     <div class="row" ng-show="local">
-                                        <div class="col-xs-4 verticalMarginVoice paddingLeft">{{content.offlineVoice}}</div>
+                                        <div class="col-xs-4 verticalMarginVoice paddingLeft3">{{content.onlyVoice}}</div>
                                         <div class="col-xs-6 verticalMarginVoice">
                                             <select class="boxEdit dropdown-arrow"
                                                     ng-options="voice.voiceName as voice.voiceCompleteName for voice in expansionVoicesOffline"
@@ -472,9 +473,9 @@
                         <div class="row">
                             <div class="col-xs-12" uib-collapse="!contentBar10 || !userData.cfgInterfaceVoiceOnOff">
                                 <div class="row contentBar Voices">
-                                    <div class="row verticalMarginBottom">
-                                        <div class="col-xs-3 verticalMarginVoice paddingLeft" ng-show="!local"></div>
-                                        <div class="col-xs-4 verticalMarginVoice paddingLeft" ng-show="local">{{content.currentVoice}}</div>
+                                    <div ng-if="runningLocal === false" class="row verticalMarginBottom">
+                                        <div class="col-xs-3 verticalMarginVoice paddingLeft3" ng-show="!local"></div>
+                                        <div class="col-xs-4 verticalMarginVoice paddingLeft3" ng-show="local">{{content.currentVoice}}</div>
                                         <div class="col-xs-6 verticalMarginVoice">
                                             <select class="boxEdit dropdown-arrow"
                                                     ng-options="voice.voiceName as voice.voiceCompleteName for voice in interfaceVoicesList"
@@ -489,7 +490,7 @@
                                             <input type="image" class="img-audioButton" ng-src="{{imgsrc1}}" ng-click="generateAudio(userData.cfgInterfaceVoiceOnline, 'offline');"></div>
                                     </div>
                                     <div class="row" ng-show="local">
-                                        <div class="col-xs-4 verticalMarginVoice paddingLeft">{{content.offlineVoice}}</div>
+                                        <div class="col-xs-4 verticalMarginVoice paddingLeft3">{{content.onlyVoice}}</div>
                                         <div class="col-xs-6 verticalMarginVoice">
                                             <select class="boxEdit dropdown-arrow"
                                                     ng-options="voice.voiceName as voice.voiceCompleteName for voice in interfaceVoicesListOffline"

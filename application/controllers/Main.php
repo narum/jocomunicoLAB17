@@ -573,4 +573,14 @@ class Main extends REST_Controller {
         $idusu = $this->session->userdata('idusu');
         $this->main_model->restartErrorVoices($idusu);
     }
+    
+    public function runningLocalOrServer_get()
+    {
+        $audio = new Myaudio();
+        $appRunning = $audio->AppLocalOrServer();
+        $response = [
+            'appRunning'=>$appRunning
+            ];
+        $this->response($response, REST_Controller::HTTP_OK); // OK (200) being the HTTP response code
+    }
 }
