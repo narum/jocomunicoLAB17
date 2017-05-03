@@ -200,7 +200,7 @@
                                     <span class="glyphicon glyphicon-remove form-control-feedback" ng-show=" state.confirmEmail =='has-error'"></span>
                                     <span class="glyphicon glyphicon-alert form-control-feedback" ng-show=" state.confirmEmail =='has-warning'"></span>
                                     <span class="glyphicon glyphicon-ok form-control-feedback" ng-show="state.confirmEmail =='has-success'"></span>
-                                    <span class="errorcoment" ng-show="state.confirmEmail =='has-error'">{{ content.alreadyMailExist }}</span>
+                                    <span class="errorcoment" ng-show="state.confirmEmail =='has-error'">{{ content.confirmMailDontMatch }}</span>
                                     <span class="warningcoment" ng-show="state.confirmEmail =='has-warning'">{{ content.incorrectFormat }}</span>
                                     <span class="errorcoment"
                                           ng-show="registerForm.email.$touched && registerForm.email.$pristine && (state.email == undefined)">{{ content.required }}</span>

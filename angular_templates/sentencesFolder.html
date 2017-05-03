@@ -39,7 +39,7 @@
                         </div>
                         <div class="col-xs-6">
                             <button ng-show="!historicFolder" ng-click="editHistoricFolder()" class="turquoiseButton">{{content.editHistoryEditFolderButton1}} <div class="icon-pencil"></div><br/>{{content.editHistoryEditFolderButton2}}</button>
-                            <button ng-show="!historicFolder" ng-click="downloadWord()" class="turquoiseButton"> <a href="{{WordDocumentPath.documentPath}}"></a> {{content.downloadWordButton}} <div class="icon-download"></div></button>
+                            <button ng-show="!historicFolder" ng-click="downloadWord()" class="turquoiseButton"> <a href="{{WordDocumentPath.documentPath}}"></a> <h6>{{content.downloadWordButton}}</h6> <div class="icon-download"></div></button>
                             <button ng-show="!historicFolder" class="turquoiseButton" ng-click="deleteFolderModal()">{{content.editHistoryEraseSentence}} <div class="icon-trash"></div><br/>{{content.editHistoryEditFolderButton2}}</button>
                             <button ng-click="go('/panelGroups')" class="grayButton">{{content.editHistoryBackButton}} <div class="icon-reply"></div><br/>{{content.editHistoryBackButton2}}</button>
                         </div>

@@ -323,8 +323,8 @@ angular.module('controllers', [])
                   /* Check matching password
                   * @rjlopezdev
                   */
-                } if(formData.email != formData.confirmEmail){
-                  $scope.state.confirmEmail = 'has-warning';
+                } if(formData.email != formData.confirmEmail && !formData.confirmEmail.$dirty){
+                  $scope.state.confirmEmail = 'has-error';
                   emailOk = false;
                 }else{
                   $scope.state.confirmEmail = 'has-success';
