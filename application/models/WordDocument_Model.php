@@ -13,6 +13,7 @@ class WordDocument_Model extends CI_Model {
   var $sentences;
   //WordDocument Styles
   var $imgStyle;
+  var $specialImgStyle;
   var $headerStyle;
   var $sentenceStyle;
   var $tableStyle;
@@ -39,20 +40,26 @@ class WordDocument_Model extends CI_Model {
       $table = $section->addTable($this->tableStyle);
 
       $table->addRow();
-      $table->addCell(150)->addImage(
-        $i['image1'],
-        $this->imgStyle
-      );
-      $table->addCell(150)->addImage(
-        $i['image2'],
-        $this->imgStyle
-      );
-      $table->addCell(150)->addImage(
-        $i['image3'],
-        $this->imgStyle
-      );
 
-      $section->addText($i['imgText'], $this->sentenceStyle);
+      if(array_key_exists('image1', $i[0]))
+        $table->addCell(150)->addImage(
+          $i[0]['image1'],
+          $this->imgStyle
+        );
+
+      if(array_key_exists('image2', $i[0]))
+        $table->addCell(150)->addImage(
+          $i[0]['image2'],
+          $this->imgStyle
+        );
+
+      if(array_key_exists('image3', $i[0]))
+        $table->addCell(150)->addImage(
+          $i[0]['image3'],
+          $this->imgStyle
+        );
+
+      $section->addText($i[0]['sentence'], $this->sentenceStyle);
       $section->addTextBreak();
     }
 
@@ -60,42 +67,36 @@ class WordDocument_Model extends CI_Model {
       $count = 0;
 
       $table = $section->addTable($this->tableStyle);
-      $first = $i[0];
 
-      foreach ($i as $e) {
-        if($e === $first){
-          $section->addText($e, $this->sentenceStyle);
-          $section->addTextBreak();
-        }else {
-          if($count++ % 5 == 0) $table->addRow();
-          switch ($e) {
-            case 'y.png':
-              $table->addCell(150)->addImage(
-                'img/pictosespeciales/' . $e,
-                $this->imgStyle
-              );
-              break;
-            case 'plural.png':
-              $table->addCell(150)->addImage(
-                'img/pictosespeciales/' . $e,
-                $this->imgStyle
-              );
-              break;
-            case 'femenino.png':
-              $table->addCell(150)->addImage(
-                'img/pictosespeciales/' . $e,
-                $this->imgStyle
-              );
-              break;
-            default:
-              $table->addCell(150)->addImage(
-                'img/pictos/' . $e,
-                $this->imgStyle
-              );
-              break;
-          }
+      for ($pos=0; $pos < count($i); $pos++) {
+
+        if($count++ % 5 == 0) $table->addRow();
+
+        //ADD IMAGE
+        $table->addCell(150)->addImage(
+          'img/pictos/' . $i[$pos]['imgPicto'],
+          $this->imgStyle
+        );
+
+        //CHECK IF isPlural
+        if($i[$pos]['isPlural'] == '1'){
+          $table->addCell(50)->addImage(
+            'img/pictosespeciales/' . 'plural.png',
+            $this->specialImgStyle
+          );
+        }
+
+        //CHECK IF isFem
+        if($i[$pos]['isFem'] == '1'){
+          $table->addCell(50)->addImage(
+            'img/pictosespeciales/' . 'femenino.png',
+            $this->specialImgStyle
+          );
         }
       }
+
+      $section->addText($i[0]['sentence'], $this->sentenceStyle);
+      $section->addTextBreak();
     }
 
     //Save WordDocument on tempory folder
@@ -118,6 +119,14 @@ class WordDocument_Model extends CI_Model {
         'marginLeft'    => -1,
         'wrappingStyle' => 'behind'
     );
+    //Plural or Femenine image
+    $this->specialImgStyle = array(
+        'width'         => 25,
+        'height'        => 25,
+        'marginTop'     => -1,
+        'marginLeft'    => -1,
+        'wrappingStyle' => 'behind'
+    );
     //Title style
     $this->headerStyle = array(
       'bold'            => true,
@@ -126,8 +135,8 @@ class WordDocument_Model extends CI_Model {
     );
     //Table style
     $this->tableStyle = array(
-      'borderColor'     => '#000000',
-      'borderSize'      => 10,
+      'borderColor'     => '#FFFFFF',
+      'borderSize'      => 0,
       'cellMargin'      => 50
     );
     //Sentence style
