@@ -13,3 +13,13 @@ composer.phar
 /application/controllers/Inputfitxer.php
 /application/controllers/Autotests.php
 /application/controllers/Resultats.php
+/dashboard/
+/ddbb/
+/fonts/
+/libraries/
+/webalizer/
+/xampp/
+viewBootService.vbs
+favicon.ico
+bootServices.bat
+bitnami.css

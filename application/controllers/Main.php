@@ -94,13 +94,14 @@ class Main extends REST_Controller {
     /* Nueva función para probar como lanzar el popup */
 
 
-    /*public function confirmPassword_post(){
+    public function confirmPassword_post(){
+
       $ID_SU = $this->query('IdSu');
       $password = md5($this->query('pass'));
       $response = $this->main_model->checkSingleData('SuperUser', 'ID_SU', $ID_SU, 'pswd', $password);
       //respuesta
       $this->response($response, REST_Controller::HTTP_OK); // OK (200) being the HTTP response code
-    }*/
+    }
 
     /* Nueva función para probar como lanzar el popup */
 

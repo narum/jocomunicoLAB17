@@ -362,11 +362,12 @@ class Board extends REST_Controller {
 
 
 
+
     /*
-    * New function: Copy the text in the
+    * New function: Copy the text in the clipboard
     */
 
-    public function _post() {
+    /*public function toAllBrowsersClipboard_post() {
 
       $idusu = $this->session->userdata('idusu');
       $data = $this->Lexicon->recuperarFrase($idusu);
@@ -385,6 +386,26 @@ class Board extends REST_Controller {
       $this->response($response, REST_Controller::HTTP_OK);
 
     }
+
+    public function toAllBrowsersTxtImgClipboard_post() {
+
+      $idusu = $this->session->userdata('idusu');
+      $data = $this->Lexicon->recuperarFrase($idusu);
+      $newdata = $this->inserty($data);
+
+      $expander = new Myexpander();
+      $expander->expand();
+      $info = $expander->info;
+
+      $response = [
+          'data' => $newdata,
+          'info' => $info,
+        ];
+
+
+      $this->response($response, REST_Controller::HTTP_OK);
+
+    }*/
 
 
     /*
@@ -502,6 +523,7 @@ class Board extends REST_Controller {
         $negativa = $request->negativa;
 
         $control = "";
+        $control2 = "";
         $function = $this->BoardInterface->getFunction($id);
         $value = $function[0]->functValue;
         $type = $function[0]->functType;
@@ -523,6 +545,11 @@ class Board extends REST_Controller {
             case "control":
                 $control = $value;
                 break;
+                //New code
+            case "control2":
+                $control2 = $value;
+                break;
+
         }
         $idusu = $this->session->userdata('idusu');
         $data = $this->Lexicon->recuperarFrase($idusu);
@@ -534,6 +561,7 @@ class Board extends REST_Controller {
             'tipusfrase' => $tipusfrase,
             'negativa' => $negativa,
             'control' => $control,
+            'control2' => $control2,
             'data' => $newdata
         ];
 
