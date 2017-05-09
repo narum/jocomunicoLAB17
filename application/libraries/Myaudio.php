@@ -29,7 +29,7 @@ class Myaudio {
      */
     public function AppLocalOrServer()
     {
-        if (preg_match('/localhost/i', base_url())) return "local";
+        if (preg_match('/localhost/i', base_url())) return "server";
         else return "server";
     }
     
@@ -594,69 +594,69 @@ class Myaudio {
      * @return array $output calling function should check for returned errors in $output[0],
      * errormessage in $output[1] errorcode in $output[2]
      */
-//    function synthesizeOnline($vocalwareLID, $vocalwareVID, $text, $filename)
-//    {
-//        $error = false;
-//        $errormessage = null;
-//        $errorcode = 0;
-//        $output = array();
-//        
-//        $curl = curl_init();
-//
-//        $url = "http://www.vocalware.com/tts/gen.php";
-//        $secret_phrase = " ";
-//
-//        $data = array(
-//            'EID' => '2',
-//            'LID' => $vocalwareLID,
-//            'VID' => $vocalwareVID,
-//            'TXT' => $text,
-//            'EXT' => 'mp3',
-//            'ACC' => ' ',
-//            'API' => ' '                    
-//        );
-//
-//        $data['CS'] = md5($data['EID'].$data['LID'].$data['VID'].$data['TXT'].$data['EXT'].$data['ACC'].$data['API'].$secret_phrase);
-//
-//        curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
-//
-//        curl_setopt($curl, CURLOPT_URL, $url);
-//        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-//
-//        $result = curl_exec($curl);
-//
-//        curl_close($curl);
-//                
-//        // if no error occurred (we assume there's an error if the mp3 data is less than 1000 characters)
-//        if ($result && !strpos($result, "Error: ") && (strlen($result) > 1000)) {
-//
-//            try {
-//                $filenamewrite = "mp3/".$filename.".mp3";
-//                $fitxertxtwrite = fopen($filenamewrite,"w+b");
-//
-//                if (flock($fitxertxtwrite, LOCK_EX)) {
-//                    fwrite($fitxertxtwrite, $result);
-//                    flock($fitxertxtwrite, LOCK_UN);
-//                    fclose($fitxertxtwrite);
-//                }
-//            } catch (Exception $ex) {
-//                $error = true;
-//                $errormessage = "Error. An error occurred while writing the audio file.";
-//                $errorcode = 108;
-//            }
-//        }
-//        // if there was an error
-//        else {
-//            $error = true;
-//            $errormessage = "Error. An error occurred while contacting the online voice service. Try again.";
-//            $errorcode = 109;
-//        }
-//        
-//        $output[0] = $error;
-//        $output[1] = $errormessage;
-//        $output[2] = $errorcode;
-//        return $output;
-//    }
+    function synthesizeOnline($vocalwareLID, $vocalwareVID, $text, $filename)
+    {
+        $error = false;
+        $errormessage = null;
+        $errorcode = 0;
+        $output = array();
+        
+        $curl = curl_init();
+
+        $url = "http://www.vocalware.com/tts/gen.php";
+        $secret_phrase = " ";
+
+        $data = array(
+            'EID' => '2',
+            'LID' => $vocalwareLID,
+            'VID' => $vocalwareVID,
+            'TXT' => $text,
+            'EXT' => 'mp3',
+            'ACC' => ' ',
+            'API' => ' '                    
+        );
+
+        $data['CS'] = md5($data['EID'].$data['LID'].$data['VID'].$data['TXT'].$data['EXT'].$data['ACC'].$data['API'].$secret_phrase);
+
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+
+        $result = curl_exec($curl);
+
+        curl_close($curl);
+                
+        // if no error occurred (we assume there's an error if the mp3 data is less than 1000 characters)
+        if ($result && !strpos($result, "Error: ") && (strlen($result) > 1000)) {
+
+            try {
+                $filenamewrite = "mp3/".$filename.".mp3";
+                $fitxertxtwrite = fopen($filenamewrite,"w+b");
+
+                if (flock($fitxertxtwrite, LOCK_EX)) {
+                    fwrite($fitxertxtwrite, $result);
+                    flock($fitxertxtwrite, LOCK_UN);
+                    fclose($fitxertxtwrite);
+                }
+            } catch (Exception $ex) {
+                $error = true;
+                $errormessage = "Error. An error occurred while writing the audio file.";
+                $errorcode = 108;
+            }
+        }
+        // if there was an error
+        else {
+            $error = true;
+            $errormessage = "Error. An error occurred while contacting the online voice service. Try again.";
+            $errorcode = 109;
+        }
+        
+        $output[0] = $error;
+        $output[1] = $errormessage;
+        $output[2] = $errorcode;
+        return $output;
+    }
     
     /**
      * Requests and saves audio file from online voice service

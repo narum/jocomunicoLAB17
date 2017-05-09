@@ -12,33 +12,23 @@ class DeleteUserModel extends CI_Model {
        
         $superUserid = $this->session->userdata('idsu');
         $userid = $this->session->userdata('idusu');
-        $isSuperUserOf = $this->db->query(
-                "SELECT SuperUserIs FROM User WHERE ID_USU = ?", $superUserid);
-        $users_superUserIs = $this->db->query(
-                "SELECT ID_User FROM User WHERE SuperUserIs = ?", $superUserid);
-        $superusers_superUserIs = $this->db->query(
-                "SELECT ID_USU FROM User WHERE SuperUserIs = ?", $superUserid);
-        
-        //if ($users_superUserIs->num_rows() > 1) {
-        /* CAMBIAR CUANDO RAUL IMPLEMENTE SUPERUSUARIOS */
-        if ($isSuperUserOf->num_rows() > 1) {//ES SUPERUSUARIO
-            foreach ($users_superUserIs->result() as $row) {
-                /* Relate all the Users related to the SuperUser
+        $usersOfSuperUser = $this->db->query(
+                   "SELECT Child FROM SUSU WHERE Parent = ?", $superUserid);
+  
+        if ($usersOfSuperUser->num_rows() > 0) {//IS SUPERUSER
+            foreach ($usersOfSuperUser->result() as $row) {
+                /* Delete all the Users related to the SuperUser
                  * and the SuperUser (itself).
                  */
-                $this->deleteUserPictograms($userid);
-                $this->deleteUser($row->ID_User);
+                $idUSUChild = $this->db->query(
+                   "SELECT ID_User FROM User WHERE ID_USU = ?", $row->Child)->row(ID_User);
+                $this->DeleteAll($row->Child, $idUSUChild);
             }
-            //Delete SuperUsers Related to our SuperUser and their Images
-            foreach ($superusers_superUserIs->result() as $row) {
-                $this->deleteSuperUserImages($row->ID_USU);
-                $this->deleteSuperUser($row->ID_USU);
-            }
+                $this->DeleteAll($superUserid,$userid);
+                $this->deleteParentChilds($superUserid);
+            
         }else {// Only is SuperUser of himself.
-               $this->deleteUserPictograms($userid);
-               $this->deleteUser($userid);
-               $this->deleteSuperUserImages($superUserid);
-               $this->deleteSuperUser($superUserid);
+               $this->DeleteAll($superUserid,$userid);
         }
     }
     
@@ -63,13 +53,24 @@ class DeleteUserModel extends CI_Model {
     }
     
     function deleteUserPictograms($idUser){
-        $imgPictoPaths = $this->db->query(
-                "SELECT imgPicto FROM Pictograms WHERE ID_PUser = ?", $idUser);
-                foreach($imgPictoPaths->result() as $row){
-                    $img = strval($row->imgPicto);
-                    unlink('img/pictos/'.$img);
-                }
-                $this->db->query("DELETE FROM Pictograms WHERE ID_PUser = ?", $idUser);    
+                $imgPictoPaths = $this->db->query(
+                        "SELECT imgPicto FROM Pictograms WHERE ID_PUser = ?", $idUser);
+                        foreach($imgPictoPaths->result() as $row){
+                            $img = strval($row->imgPicto);
+                            unlink('img/pictos/'.$img);
+                        }
+                        $this->db->query("DELETE FROM Pictograms WHERE ID_PUser = ?", $idUser);    
+    }
+    
+    function DeleteAll($superUserid,$userid){
+               $this->deleteUserPictograms($userid);
+               $this->deleteUser($userid);
+               $this->deleteSuperUserImages($superUserid);
+               $this->deleteSuperUser($superUserid);  
+    }
+    
+    function deleteParentChilds($idSuperUser){
+                $this->db->query("DELETE FROM SUSU WHERE Parent = ?", $idSuperUser);
     }
     
 }
