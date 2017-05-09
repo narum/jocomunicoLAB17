@@ -18,6 +18,10 @@
 
 <div class="loadingGif" ng-show="!viewActived"><img class="img-loadingGif" ng-src={{img.loading}}/></div>
 <div class="row folderContainer" ng-if="viewActived">
+        <!-- Check browser on load page
+         #Raul
+    -->
+    <div ng-init="isNotChrome()"></div>
     <div class="row">
         <!--Panel Groups box-->
         <div class="col-xs-6 rightPadding">
@@ -66,7 +70,8 @@
                     <div class="col-xs-offset-1 col-xs-1 infoIconBox">
                         <input type="image" class="img-icon" ng-src="/img/icons/info-blanc.png" ng-click="toggleInfoModal(content.modalInfoTitle, content.historyInfo);">
                     </div>
-                    <div class="col-xs-9 headerTitle-panelgroup">{{content.historyTitle}}</div>
+                    <div class="col-xs-7 headerTitle-panelgroup">{{content.historyTitle}}</div>
+                    
                 </div>
                 <div class="row">
                     <div class="col-xs-offset-1 scrollMenuPanels" ng-style="!isScrollH ? {'width': '98%'} : {'width': '84%'}" ng-scrollbar rebuild-on-resize rebuild-on="rebuild:meH" is-bar-shown="isScrollH">

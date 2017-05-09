@@ -176,6 +176,37 @@
                                 </div>
                             </div>
                         </div>
+                        <!-- Adding checkEmail form component
+                          @rjlopezdev
+                        -->
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="form-group {{state.confirmEmail}} has-feedback">
+                                    <div class="input-group input-group-auto">
+                                        <span class="input-group-addon"><i class="icon-envelope"></i></span>
+                                        <input
+                                            type="text"
+                                            class="form-control"
+                                            placeholder="{{ content.confirmEmail }}"
+                                            name="confirmEmail"
+                                            required="string"
+                                            ng-model="formData.confirmEmail"
+                                            ng-change="checkEmail(formData)"
+                                            ng-class="{
+                                                error: state.confirmEmail =='has-error',
+                                                warning: state.confirmEmail =='has-warning',
+                                                success: state.confirmEmail =='has-success'}">
+                                    </div>
+                                    <span class="glyphicon glyphicon-remove form-control-feedback" ng-show=" state.confirmEmail =='has-error'"></span>
+                                    <span class="glyphicon glyphicon-alert form-control-feedback" ng-show=" state.confirmEmail =='has-warning'"></span>
+                                    <span class="glyphicon glyphicon-ok form-control-feedback" ng-show="state.confirmEmail =='has-success'"></span>
+                                    <span class="errorcoment" ng-show="state.confirmEmail =='has-error'">{{ content.confirmMailDontMatch }}</span>
+                                    <span class="warningcoment" ng-show="state.confirmEmail =='has-warning'">{{ content.incorrectFormat }}</span>
+                                    <span class="errorcoment"
+                                          ng-show="registerForm.email.$touched && registerForm.email.$pristine && (state.email == undefined)">{{ content.required }}</span>
+                                </div>
+                            </div>
+                        </div>
                         <div class="row">
                             <div class="col-xs-6">
                                 <div class="form-group {{state.female}} has-feedback">
@@ -216,7 +247,7 @@
                                     <span class="glyphicon glyphicon-ok form-control-feedback" ng-show="state.languageSelected =='has-success'"></span>
                                     <span class="errorcoment" ng-show="state.languageSelected =='has-error'">{{ content.required }}</span>
                                     <span class="errorcoment"
-                                          ng-show="registerForm.languageSelected.$touched && registerForm.languageSelected.$pristine && state.languageSelected ==''">{{ content.required }}</span>  
+                                          ng-show="registerForm.languageSelected.$touched && registerForm.languageSelected.$pristine && state.languageSelected ==''">{{ content.required }}</span>
                                 </div>
                             </div>
                             <div class="col-xs-6 llistaIdiomesFormulariRegistre">
@@ -239,7 +270,7 @@
                                     </div>-->
                                 </div>
                             </div>
-                            
+
                             <div class="col-xs-3 FonsEquacio">
                                 <button type="button" ng-disabled="false" ng-click="checkCaptcha()" class="icon-refresh buttonCaptcha pull-right"/>
                                     <captcha field1="{{field1}}" operator="{{operator}}" field2="{{field2}}"></captcha>

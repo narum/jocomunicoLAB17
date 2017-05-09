@@ -1,5 +1,5 @@
 angular.module('controllers')
-        .controller('panelCtrl', function ($scope, $rootScope, txtContent, $location, $http, ngDialog, dropdownMenuBarInit, AuthService, Resources, $timeout) {
+        .controller('panelCtrl', function ($scope, $rootScope, $cookies, txtContent, $location, $http, ngDialog, dropdownMenuBarInit, AuthService, Resources, $timeout) {
             // Comprobación del login   IMPORTANTE!!! PONER EN TODOS LOS CONTROLADORES
             if (!$rootScope.isLogged) {
                 $location.path('/home');
@@ -473,12 +473,39 @@ angular.module('controllers')
             $scope.SearchTypeAddWord = "Tots";
             $scope.style_changes_title = '';
 
-            // Activate information modals (popups)
+  // Activate information modals (popups)
             $scope.toggleInfoModal = function (title, text) {
                 $scope.infoModalContent = text;
                 $scope.infoModalTitle = title;
                 $scope.style_changes_title = 'padding-top: 2vh;';
                 $('#infoModal').modal('toggle');
             };
-            
+            /* Browser detection
+            * @rjlopezdev
+            */
+            $scope.isNotChrome = function () {
+              //If cookie is not saved, show modal
+              if($cookies.get('browserAdvice') != 'true'){
+                $scope.isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
+                if($scope.isChrome){} else {
+                  $scope.toggleInfoModal($scope.content.chromeAdviceTitle, $scope.content.chromeAdviceBody);
+                }
+              }
+              //Save cookie unconditionally after show modal if neccessary
+              $cookies.put('browserAdvice', 'true');
+            };
+
+            /* Enable or disable Historial
+            * @rjlopezdev
+            */
+            $scope.historialState = $http.get('Historic/getState');
+            $scope.enableHistorial = function () {
+              //Enable or disable Historial
+              $http.post('Historic/enableDisable_Historic')
+              .success(function (response) {
+
+              });
+            };
+
+
         });

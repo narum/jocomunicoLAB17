@@ -133,7 +133,8 @@ angular.module('controllers', [])
             //Inicializamos el formulario y las variables necesarias
             $scope.formData = {};  //Datos del formulario
             $scope.languageList = []; //lista de idiomas seleccionados por el usuario
-            $scope.state = {user: "", password: ""};// estado de cada campo del formulario
+            //#Raul
+            $scope.state = {user: "", password: "", email : ""}; // estado de cada campo del formulario
             var userOk = false; // variables de validación
             var emailOk = false; // variables de validación
             var languageOk = false; // variables de validación
@@ -222,7 +223,7 @@ angular.module('controllers', [])
                     userOk = false;  // Usamos una variable en vez del return por que la función promise tarda mas en retornar el resultado y nos dava error al comprobarlo en el submit
                     return;
                 }
-                if (formData.SUname.length < 4 || formData.SUname.length >= 50) { // minimo y maximo de caracteres requeridos
+                if (formData.SUname.length < 4 || formData.SUname.length >= 15 || formData.SUname.indexOf(' ') !== -1) { // minimo y maximo de caracteres requeridos y NOT whitespaces
                     $scope.state.user = 'has-warning';
                     userOk = false;
                 } else {
@@ -297,27 +298,41 @@ angular.module('controllers', [])
             $scope.checkEmail = function (formData) {
                 if (formData.email == null || formData.email == '' || formData.email.length >= 300) { // comprovacion de formato y minimo y maximo de caracteres requeridos
                     $scope.state.email = 'has-warning';
+                    //#Raul
+                    $scope.confirmEmail = 'has-warning';
                     emailOk = false;
                     return;
                 }
                 if (String(formData.email).search(emailFormat) == -1) {
                     $scope.state.email = 'has-warning';
+                    //#Raul
+                    $scope.confirmEmail = 'has-warning';
                     emailOk = false;
                 } else {
                     Resources.register.get({//enviamos los datos de la tabla de la base de datos donde queremos comprobar el nombre
                         'table': "SuperUser",
                         'column': "email",
-                        'data': formData.email}, {'funct': "checkData"}).$promise
+                        'data': formData.email}, {'funct': "checkData"}
+                        ).$promise
                             .then(function (results) {
                                 if (results.exist == "false") {
                                     $scope.state.email = 'has-success'; //Si no exixte el nombre ponemos el checkbox en success
-                                    emailOk = true;
                                 } else if (results.exist == "true") {
                                     $scope.state.email = 'has-error'; //Si exixte el nombre ponemos el checkbox en error
                                     emailOk = false;
                                 }
                             });
+                  /* Check matching password
+                  * @rjlopezdev
+                  */
+                } if(formData.email != formData.confirmEmail && !formData.confirmEmail.$dirty){
+                  $scope.state.confirmEmail = 'has-error';
+                  emailOk = false;
+                }else{
+                  $scope.state.confirmEmail = 'has-success';
+                  emailOk = true;
                 }
+
             };
 
             //Añadir idiomas
@@ -404,6 +419,10 @@ angular.module('controllers', [])
                     //Borramos los campos inecesarios
                     delete formData.confirmPassword;
                     delete formData.languageSelected;
+                     /* Delete unnecesary data
+                    *#Raul
+                    */
+                    delete formData.confirmEmail;
                     //Ponemos como idioma por defecto el primero de la lista que ha seleccionado el usuario
                     var defLanguage = $scope.languageList[0].ID_Language;
                     //Ciframos el password en md5
