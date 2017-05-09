@@ -41,7 +41,7 @@ class WordDocument_Model extends CI_Model {
 
       $table->addRow();
 
-      if(array_key_exists('image1', $i[0]))
+      if(array_key_exists('image1', $i[0]) && $i[0]['image1'] )
         $table->addCell(150)->addImage(
           $i[0]['image1'],
           $this->imgStyle

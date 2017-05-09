@@ -357,6 +357,8 @@ class Myaudio {
                 // if the app is run locally
                 if ($applocal == "local") {
                     // if it has internet connection
+                    // user on local must use local voices not online.
+                    /* 
                     if ($this->isOnline()) {
                         $voice = $userinfo->cfgInterfaceVoiceOnline;
                         // if it uses the default online voices for the interface
@@ -370,6 +372,9 @@ class Myaudio {
                         $voice = $userinfo->cfgInterfaceVoiceOffline;
                         $type = "offline";                    
                     }
+                    */
+                    $voice = $userinfo->cfgInterfaceVoiceOffline;
+                    $type = "offline"; 
                 }
                 // if the app is run from the server
                 else {
@@ -394,15 +399,18 @@ class Myaudio {
             // if the app is run locally
             if ($applocal == "local") {
                 // if it has internet connection
-                if ($this->isOnline()) {
-                    $voice = $userinfo->cfgExpansionVoiceOnline;
-                    $type = $userinfo->cfgExpansionVoiceOnlineType;
-                }
-                // no internet connection
-                else {
-                    $voice = $userinfo->cfgExpansionVoiceOffline;
-                    $type = "offline";                    
-                }
+//                if ($this->isOnline()) {
+//                    $voice = $userinfo->cfgExpansionVoiceOnline;
+//                    $type = $userinfo->cfgExpansionVoiceOnlineType;
+//                }
+//                // no internet connection
+//                else {
+//                    $voice = $userinfo->cfgExpansionVoiceOffline;
+//                    $type = "offline";                    
+//                }
+                $voice = $userinfo->cfgExpansionVoiceOffline;
+                $type = "offline";
+                                 
             }
             // if the app is run from the server
             else {
@@ -462,71 +470,71 @@ class Myaudio {
         $extension = "mp3";
         
         // if it's an online voice
-        if ($type == "online") {
-            
-            // default voice ES masc (Jorge)
-            $vocalwareLID = 2;
-            $vocalwareVID = 6;
-                        
-            // if it's a default interface voice
-            if (preg_match("/DEFAULT \(/i", $voice)) {
-                $isfem = true;
-                if (preg_match("/DEFAULT \(masc\)/i", $voice)) $isfem = false;
-                
-                // get default values for the interface voice in each language
-                switch ($language) {
-                    
-                    // CA
-                    case 1:
-                        $vocalwareLID = 5;
-                        if ($isfem) $vocalwareVID = 1;
-                        else $vocalwareVID = 2;
-                        break;
-                    
-                    // ES
-                    case 2:
-                        $vocalwareLID = 2;
-                        if ($isfem) $vocalwareVID = 1;
-                        else $vocalwareVID = 6;
-                        break;
-                    
-                    // EN
-                    case 3:
-                        $vocalwareLID = 1;
-                        if ($isfem) $vocalwareVID = 1;
-                        else $vocalwareVID = 2;
-                        break;
-                    
-                    default:
-                        $error = true;
-                        $errormessage = "Error. Default voice not found for this language.";
-                        $errorcode = 106;
-                        break;
-                }                
-            }
-            // the voice is the id of the voice in the database
-            else {
-                // we get the info of the voice from the database
-                $auxrow = $CI->Audio_model->getOnlineVoices((int) $voice);
-                $voiceinfo = $auxrow[0];
-                
-                $vocalwareLID = $voiceinfo->vocalwareIdLang;
-                $vocalwareVID = $voiceinfo->vocalwareVoiceId;
-            }
-            
-            if (!$error) {
-                $auxresponse = $this->synthesizeOnline($vocalwareLID, $vocalwareVID, $text, $md5);
-                // if there was an error
-                if ($auxresponse[0]) {
-                    $error = true;
-                    $errormessage = $auxresponse[1];
-                    $errorcode = $auxresponse[2];
-                }
-            }
-            
-        }
+//        if ($type == "online") {
+//            
+//            // default voice ES masc (Jorge)
+//            $vocalwareLID = 2;
+//            $vocalwareVID = 6;
+//                        
+//            // if it's a default interface voice
+//            if (preg_match("/DEFAULT \(/i", $voice)) {
+//                $isfem = true;
+//                if (preg_match("/DEFAULT \(masc\)/i", $voice)) $isfem = false;
+//                
+//                // get default values for the interface voice in each language
+//                switch ($language) {
+//                    
+//                    // CA
+//                    case 1:
+//                        $vocalwareLID = 5;
+//                        if ($isfem) $vocalwareVID = 1;
+//                        else $vocalwareVID = 2;
+//                        break;
+//                    
+//                    // ES
+//                    case 2:
+//                        $vocalwareLID = 2;
+//                        if ($isfem) $vocalwareVID = 1;
+//                        else $vocalwareVID = 6;
+//                        break;
+//                    
+//                    // EN
+//                    case 3:
+//                        $vocalwareLID = 1;
+//                        if ($isfem) $vocalwareVID = 1;
+//                        else $vocalwareVID = 2;
+//                        break;
+//                    
+//                    default:
+//                        $error = true;
+//                        $errormessage = "Error. Default voice not found for this language.";
+//                        $errorcode = 106;
+//                        break;
+//                }                
+//            }
+//            // the voice is the id of the voice in the database
+//            else {
+//                // we get the info of the voice from the database
+//                $auxrow = $CI->Audio_model->getOnlineVoices((int) $voice);
+//                $voiceinfo = $auxrow[0];
+//                
+//                $vocalwareLID = $voiceinfo->vocalwareIdLang;
+//                $vocalwareVID = $voiceinfo->vocalwareVoiceId;
+//            }
+//            
+//            if (!$error) {
+//                $auxresponse = $this->synthesizeOnline($vocalwareLID, $vocalwareVID, $text, $md5);
+//                // if there was an error
+//                if ($auxresponse[0]) {
+//                    $error = true;
+//                    $errormessage = $auxresponse[1];
+//                    $errorcode = $auxresponse[2];
+//                }
+//            }
+//            
+//        }
         // si la veu és offline
-        else {
+//        else {
             $user_agent = $this->getOS();
             
             switch ($user_agent) {
@@ -562,7 +570,7 @@ class Myaudio {
                     $errorcode = 107;
                     break;
             }
-        }
+//        }
         
         if (!$error) {
             $filename = $md5.".".$extension;
@@ -586,7 +594,7 @@ class Myaudio {
      * @return array $output calling function should check for returned errors in $output[0],
      * errormessage in $output[1] errorcode in $output[2]
      */
-    function synthesizeOnline($vocalwareLID, $vocalwareVID, $text, $filename)
+function synthesizeOnline($vocalwareLID, $vocalwareVID, $text, $filename)
     {
         $error = false;
         $errormessage = null;
@@ -649,7 +657,6 @@ class Myaudio {
         $output[2] = $errorcode;
         return $output;
     }
-    
     /**
      * Requests and saves audio file from online voice service
      * @param type $voice

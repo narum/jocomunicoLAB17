@@ -50,7 +50,7 @@ angular.module('controllers')
                     AuthService.logout();
                 }, 1000);
             };
-
+        
         //scrollbars
         $scope.$on('scrollbarSentences', function () {
             $scope.$broadcast('rebuild:meS');
@@ -80,12 +80,12 @@ angular.module('controllers')
         $scope.img.addPhotoSelected = '/img/icons/add_photo_selected.png';
         $scope.img.info = '/img/icons/info.png';
         $scope.img.Loading_icon = '/img/icons/Loading_icon.gif';
-
+        
         //Variable declaration
         $scope.viewActived = false;
         $scope.historicFolder = false;
         $scope.newSentenceImage=[];
-
+        
         //Folder info
         if($routeParams.folderId<0){
             $scope.historicFolder = true;
@@ -99,7 +99,7 @@ angular.module('controllers')
         }
         //Get sentences folder or Historic folder
         var getSentences = function(){
-            Resources.main. save({'ID_Folder': $routeParams.folderId},{'funct': "getSentencesOrHistoricFolder"}).$promise
+            Resources.main.save({'ID_Folder': $routeParams.folderId},{'funct': "getSentencesOrHistoricFolder"}).$promise
             .then(function (results) {
                 $scope.sentences = results.sentences;
                 if($scope.sentences!=null){
@@ -144,7 +144,7 @@ angular.module('controllers')
             });
         };
         getSentences();
-
+        
         //Copy sentence on folder
         $scope.copySentence = function(ID_SHistoric,ID_SSentence){
             if($scope.historicFolder){
@@ -233,7 +233,7 @@ angular.module('controllers')
                     $scope.addImg=false;
                     getSentences();
                 });
-
+                
             }else{
                 $('#createSentenceModal').modal('hide'); //Close modal
                 var pictograms = JSON.stringify($scope.newSentenceImage) //array to json format
@@ -265,7 +265,7 @@ angular.module('controllers')
             $('#createSentenceModal').modal('toggle');//Show static modal
             console.log(generatorString,sPreRecImg1,sPreRecImg2,sPreRecImg3,ID_SSentence);
         }
-
+        
         //Change sentence order in folder
         $scope.upSentenceOrder = function(idSentence){
             $scope.showUpDownButtons=false;
@@ -343,8 +343,8 @@ angular.module('controllers')
                     //alert(response.errorText);
                 });
         };
-
-
+        
+        
         $scope.style_changes_title = '';
 
          // Activate information modals (popups)
@@ -353,67 +353,5 @@ angular.module('controllers')
             $scope.infoModalTitle = title;
             $scope.style_changes_title = 'padding-top: 2vh;';
             $('#infoModal').modal('toggle');
-        };
-
-        /* Download WordDocument generated based on tematic folder
-         * @rjlopezdev
-        */
-        $scope.WordIsGenerated = false;
-        $scope.WordDocumentPath;
-        //Send info about current tematic folder
-        $scope.downloadWord = function(){
-
-          $scope.sentencesToWord = {
-            preRecSentences: [],
-            NOTpreRecSentences: [],
-            folderTitle: $scope.folderSelected.folderName
-          };
-
-          console.log($scope.sentences);
-          // SAVE preRecSentences
-          $scope.sentencesToWord.preRecSentences = $scope.sentences.reduce((previous, i) => {
-            if(i.isPreRec === '1')
-              (previous[i.ID_SSentence] = previous[i.ID_SSentence] || [])
-                .push({
-                  sentence: i.generatorString,
-                  image1:   i.sPreRecImg1,
-                  image2:   i.sPreRecImg2,
-                  image3:   i.sPreRecImg3
-                });
-                console.log(previous);
-            return previous;
-          }, []).filter((element) => element !== undefined);
-
-          // SAVE NOTpreRecSentences
-          $scope.sentencesToWord.NOTpreRecSentences = $scope.sentences.reduce((previous, i) => {
-            if(i.isPreRec === '0')
-              (previous[i.ID_SSentence] = previous[i.ID_SSentence] || [])
-                .push({
-                  sentence: i.generatorString,
-                  imgPicto: i.imgPicto,
-                  isFem:    i.isfem,
-                  isPlural: i.isplural
-                });
-            return previous;
-          }, []).filter((element) => element !== undefined);
-
-          console.log($scope.sentencesToWord);
-
-          //GET WordDocument
-          $http.post('WordDocument', {'sentences' : $scope.sentencesToWord})
-            .success( function (response) {
-              $scope.WordDocumentPath = $scope.baseurl + response.documentPath;
-              //console.log(response);
-              $scope.WordIsGenerated = true;
-              $scope.toggleDownloadModal('Descarga', 'Su documento');
-            });
-        };
-
-        //SHOW Download Document Modal
-        $scope.toggleDownloadModal = function (title, text) {
-            $scope.infoModalContent = text;
-            $scope.infoModalTitle = title;
-            $scope.style_changes_title = 'padding-top: 2vh;';
-            $('#downloadModal').modal('toggle');
         };
     });

@@ -15,8 +15,8 @@
 <!-- I know there is a lot of condition here. I will try to explain. The picto text have to be displayed only if there is no error or no phrase the sentencecell have to contain the img an the picto text, so we have to expand the it. If there is one of both (error or frase) the sentencecell is shorter (but not the img picto, the picto text is removed) and the error or phrase will be displayed in the same space where the imgpicto was.-->
 <div class="col-xs-{{pictoBarWidth}} prediction imgRounded PaddingSent" style="background-image: url({{baseurl}}img/srcWeb/patterns/pattern0.png)" id="idSentenceBar">
     <div class="col-xs-12 imgRounded" style="background-image:url({{baseurl}}img/srcWeb/Menu/sentenceFieldLong.png); background-size: 100% 100%;">
-        <div class="sentencePadding col-xs-10 fullheight" >
-            <!--If there is no error or frase to show, under picto will be displayed the picto text so we have to adapt the content height to keep the img with the same height-->
+          <div id="txtImgContainer" class="sentencePadding col-xs-10 fullheight" >
+            <!--If there is no error or phrase to show, under picto will be displayed the picto text so we have to adapt the content height to keep the img with the same height-->
             <div class="col-xs-1 sentenceCell" ng-repeat="picto in dataTemp | limitTo:9" ng-style="!info.error && !info.frasefinal  ? {'height': '100%'} : {'height': '80%'}">
                 <div class="col-xs-12 fullheight" ng-class="{'col-xs-9' : picto.plural || picto.fem}" ng-style="!info.error && !info.frasefinal  ? {'height': '80%'} : {'height': '100%'}">
                     <img ng-if="picto.imgtemp != null && picto.imgtemp != ''" ng-src="{{baseurl}}{{picto.imgtemp}}" class="imgResponsiveSentence"/>
@@ -33,8 +33,8 @@
                     {{picto.text}}
                 </div>
             </div>
-            <!--Display the phrase-->
-            <div ng-if="!info.error || info.errorcode == 7 || info.errorcode == 6" class="col-xs-12 phraseText text-uppercase">
+            <!--Display the phrase. Changes in the div container, I add the values contenteditable and readonly, to do the copy clipboard-->
+            <div id="frase" ng-if="!info.error || info.errorcode == 7 || info.errorcode == 6" class="col-xs-12 phraseText text-uppercase">
                 {{info.frasefinal}}
             </div>
             <!--Display the eror text-->
@@ -64,5 +64,20 @@
     <div ng-if='inScan && isScanning == "deleteall" && isScanningCancel === false' class="scaneo" style="margin: 0px;" ng-style="{'border':'7px solid #{{cfgScanColor}}'}"></div>
     <div class="backgroundDeleteAll">
         <img class="imgResponsive icon" ng-src="{{baseurl}}img/srcWeb/Menu/borrar_tot_icon.png"/>
+    </div>
+</div>
+
+<!-- Este sera el nuevo boton para hacer la copia de la frase en el portapapeles -->
+<div copytext ng-if="cfgMenuCopyClipboard == 1" class="col-xs-1 fullheight" ng-mouseenter="cfgTimeOverOnOff?TimeoutOverClick(2,'copyClipboard'):null" ng-mouseleave="cfgTimeOverOnOff ? CancelTimeoutOverClick() : null">
+    <div ng-if='inScan && isScanning == "copyclipboard" && isScanningCancel === false' class="scaneo" style="margin: 0px;" ng-style="{'border':'7px solid #{{cfgScanColor}}'}"></div>
+    <div class="backgroundCopyClipboard">
+        <img class="imgResponsive icon" ng-src="{{baseurl}}img/srcWeb/Menu/copiar-port-icon.png"/>
+    </div>
+</div>
+
+<div copytextandimage ng-if="cfgMenuCopyTxtImgClipboard == 1" class="col-xs-1 fullheight" ng-mouseenter="cfgTimeOverOnOff?TimeoutOverClick(2,'copyTxtImgClipboard'):null" ng-mouseleave="cfgTimeOverOnOff ? CancelTimeoutOverClick() : null">
+    <div ng-if='inScan && isScanning == "copytxtimgclipboard" && isScanningCancel === false' class="scaneo" style="margin: 0px;" ng-style="{'border':'7px solid #{{cfgScanColor}}'}"></div>
+    <div class="backgroundCopyTxtImgClipboard">
+        <img class="imgResponsive icon" ng-src="{{baseurl}}img/srcWeb/Menu/copy-txt-img-port-icon.png"/>
     </div>
 </div>

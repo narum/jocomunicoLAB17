@@ -19,7 +19,7 @@ angular.module('controllers', [])
             $scope.img.fletxaLogin2 = '/img/srcWeb/Login/fletxaLogin2.png';
             $scope.img.BotoEntra = '/img/srcWeb/Login/login.png';
             $scope.img.BotoEntra2 = '/img/srcWeb/Login/login-hov.png';
-
+            
             //HTML text content
             Resources.register.get({'section': 'login', 'idLanguage': $rootScope.contentLanguageUserNonLoged}, {'funct': "content"}).$promise
                     .then(function (results) {
@@ -133,7 +133,7 @@ angular.module('controllers', [])
             //Inicializamos el formulario y las variables necesarias
             $scope.formData = {};  //Datos del formulario
             $scope.languageList = []; //lista de idiomas seleccionados por el usuario
-            $scope.state = {user: "", password: "", email : ""}; // estado de cada campo del formulario
+            $scope.state = {user: "", password: ""};// estado de cada campo del formulario
             var userOk = false; // variables de validación
             var emailOk = false; // variables de validación
             var languageOk = false; // variables de validación
@@ -222,7 +222,7 @@ angular.module('controllers', [])
                     userOk = false;  // Usamos una variable en vez del return por que la función promise tarda mas en retornar el resultado y nos dava error al comprobarlo en el submit
                     return;
                 }
-                if (formData.SUname.length < 4 || formData.SUname.length >= 15 || formData.SUname.indexOf(' ') !== -1) { // minimo y maximo de caracteres requeridos y NOT whitespaces
+                if (formData.SUname.length < 4 || formData.SUname.length >= 50) { // minimo y maximo de caracteres requeridos
                     $scope.state.user = 'has-warning';
                     userOk = false;
                 } else {
@@ -297,40 +297,27 @@ angular.module('controllers', [])
             $scope.checkEmail = function (formData) {
                 if (formData.email == null || formData.email == '' || formData.email.length >= 300) { // comprovacion de formato y minimo y maximo de caracteres requeridos
                     $scope.state.email = 'has-warning';
-                    $scope.confirmEmail = 'has-warning';
                     emailOk = false;
                     return;
                 }
                 if (String(formData.email).search(emailFormat) == -1) {
                     $scope.state.email = 'has-warning';
-                    $scope.confirmEmail = 'has-warning';
                     emailOk = false;
-                }
-                else{
+                } else {
                     Resources.register.get({//enviamos los datos de la tabla de la base de datos donde queremos comprobar el nombre
                         'table': "SuperUser",
                         'column': "email",
-                        'data': formData.email}, {'funct': "checkData"}
-                        ).$promise
+                        'data': formData.email}, {'funct': "checkData"}).$promise
                             .then(function (results) {
                                 if (results.exist == "false") {
                                     $scope.state.email = 'has-success'; //Si no exixte el nombre ponemos el checkbox en success
+                                    emailOk = true;
                                 } else if (results.exist == "true") {
                                     $scope.state.email = 'has-error'; //Si exixte el nombre ponemos el checkbox en error
                                     emailOk = false;
                                 }
                             });
-                  /* Check matching password
-                  * @rjlopezdev
-                  */
-                } if(formData.email != formData.confirmEmail && !formData.confirmEmail.$dirty){
-                  $scope.state.confirmEmail = 'has-error';
-                  emailOk = false;
-                }else{
-                  $scope.state.confirmEmail = 'has-success';
-                  emailOk = true;
                 }
-
             };
 
             //Añadir idiomas
@@ -417,10 +404,6 @@ angular.module('controllers', [])
                     //Borramos los campos inecesarios
                     delete formData.confirmPassword;
                     delete formData.languageSelected;
-                    /* Delete unnecesary data
-                    * @rjlopezdev
-                    */
-                    delete formData.confirmEmail;
                     //Ponemos como idioma por defecto el primero de la lista que ha seleccionado el usuario
                     var defLanguage = $scope.languageList[0].ID_Language;
                     //Ciframos el password en md5
@@ -440,13 +423,13 @@ angular.module('controllers', [])
                                                 deferred.resolve(response);//PROMESAS
                                                 $id_su = response.ID_SU;
                                                 $id_usu = response.ID_U;
-
+                                                
                                                 //Cargamos la board inicial (Oscar)
                                                 Resources.register.save({'idsu': $id_su, 'idusu' :$id_usu}, {'funct': "copyDefaultGroupBoard"}).$promise
                                                 .then(function (results) {
                                                     console.log(results);
                                                 });
-
+                                                
                                             });
                                     promises.push(deferred.promise);//PROMESAS
                                 });
@@ -758,6 +741,9 @@ angular.module('controllers', [])
             $scope.img.menuButton1 = '/img/srcWeb/UserConfig/menuButton1.jpg';
             $scope.img.menuButton2 = '/img/srcWeb/UserConfig/menuButton2.jpg';
             $scope.img.menuButton3 = '/img/srcWeb/UserConfig/menuButton3.jpg';
+                   //#Jorge Nuevo codigo
+            $scope.img.menuButton4 = '/img/srcWeb/UserConfig/menuButton4.jpg';
+            $scope.img.menuButton5 = '/img/srcWeb/UserConfig/menuButton5.jpg';
             $scope.img.textInCellOff = '/img/srcWeb/UserConfig/textInCellOff.png';
             $scope.img.textInCellOn = '/img/srcWeb/UserConfig/textInCellOn.png';
             $scope.img.cfgUsageMouse = '/img/srcWeb/UserConfig/cfgUsageMouse.png';
@@ -822,6 +808,9 @@ angular.module('controllers', [])
                             $scope.userData.cfgUserExpansionFeedback = ($scope.userData.cfgUserExpansionFeedback === "1");
                             $scope.userData.cfgInterfaceVoiceMascFem = ($scope.userData.cfgInterfaceVoiceMascFem === "masc");
                             $scope.scanOrder = $scope.userData.cfgScanOrderPred + $scope.userData.cfgScanOrderMenu + $scope.userData.cfgScanOrderPanel;
+                            /*#Jorge Nuevo codigo menu copiar en el portapapeles.*/
+                            $scope.userData.cfgMenuCopyClipboard = ($scope.userData.cfgMenuCopyClipboard === "1");
+                            $scope.userData.cfgMenuCopyTxtImgClipboard = ($scope.userData.cfgMenuCopyTxtImgClipboard === "1");
 
                             var count = results.users[0].ID_ULanguage;
                             angular.forEach(results.users, function (value) {
@@ -851,20 +840,20 @@ angular.module('controllers', [])
                                 //Enable content view
                                 $scope.viewActived = true;
                             });
-
+                            
                             // If a voices error had been triggered while using the app
                             // the error is shown and set back to 0 with errorVoicesSeen.
                             if ($scope.userData.errorTemp !== '0' &&
                                     $scope.userData.errorTemp !== null) {
-
+                                
                                 var errorcode = parseInt($scope.userData.errorTemp);
-
+                                                                
                                 txtContent("errorVoices").then(function (content) {
                                         $scope.errorMessage = content.data['errorVoicesText2'] + content.data[errorcode];
                                         $scope.errorCode = content.data['errorVoicesTitle'] + " " + errorcode;
-
+                                        
                                         Resources.main.get({'funct': "errorVoicesSeen"});
-
+                                        
                                         $scope.toggleInfoModal($scope.errorCode, $scope.errorMessage);
                                     });
                             }
@@ -993,7 +982,9 @@ angular.module('controllers', [])
             }
             $scope.changeCfgVoices = function (value, data) {
                 Resources.main.save({'IdU': $rootScope.userId, 'data': data, 'value': value}, {'funct': "changeCfgVoices"}).$promise
-                if ($scope.userData.UserValidated == '1' && $scope.userData.cfgExpansionVoiceOnline != null && (!$scope.local || $scope.userData.cfgExpansionVoiceOffline != null)) {
+                if (($scope.userData.UserValidated == '1' && $scope.userData.cfgExpansionVoiceOnline != null && (!$scope.local || $scope.userData.cfgExpansionVoiceOffline != null)) 
+                   || ($scope.local && $scope.userData.cfgExpansionVoiceOnline == null && $scope.local))
+                {
                     Resources.main.save({'IdSu': $rootScope.sUserId, 'data': 'UserValidated', 'value': '2'}, {'funct': "userValidate2"}).$promise
                 }
             }
@@ -1139,7 +1130,8 @@ angular.module('controllers', [])
                         }
                     }
                 });
-                if ($scope.userData.UserValidated == '1' && $scope.userData.cfgExpansionVoiceOnline != null && (!$scope.local || $scope.userData.cfgExpansionVoiceOffline != null)) {
+                if (($scope.userData.UserValidated == '1' && $scope.userData.cfgExpansionVoiceOnline != null && (!$scope.local || $scope.userData.cfgExpansionVoiceOffline != null))
+                    || ($scope.local && $scope.userData.cfgExpansionVoiceOnline == null && $scope.local)) {
                     Resources.main.save({'IdSu': $rootScope.sUserId, 'data': 'UserValidated', 'value': '2'}, {'funct': "userValidate2"}).$promise
                     //Cargamos la board inicial (Oscar)
                     $http.post($scope.baseurl + "PanelGroup/copyDefaultGroupBoard");
@@ -1218,18 +1210,35 @@ angular.module('controllers', [])
                             $rootScope.dropdownMenuBarValue = '/panelGroups'; //Dropdown bar button selected on this view
                         });
             };
-
+            
             $scope.style_changes_title = '';
-
+            
              // Activate information modals (popups)
             $scope.toggleInfoModal = function (title, text) {
                 $scope.infoModalContent = text;
                 $scope.infoModalTitle = title;
-
+                
                 $('#infoModal').modal('toggle');
             };
-
+            
             $scope.viewActived = false; // para activar el gif del loading
+            
+             $scope.deleteUser = function () {
+                var URL = $scope.baseurl + "DeleteUser/deleteUser";
+                $http.get(URL).success(function (response) {
+                    console.log(response);
+                });
+            };
+
+            Resources.main.get({'funct': "runningLocalOrServer"}).$promise
+                    .then(function (results) {
+                       if( results.appRunning == 'server' ){
+                        $scope.runningLocal=false;
+                    }else{
+                        $scope.runningLocal=true;   
+                    }
+                    });
+    
         })
         .controller('myCtrl', function (Resources, $location, $scope, $http, ngDialog, txtContent, $rootScope, $interval, $timeout, dropdownMenuBarInit, AuthService) {
 
@@ -1237,7 +1246,7 @@ angular.module('controllers', [])
             $timeout(function () {
                 $scope.viewActived = true;
             }, 1000);
-
+    
             //Dropdown Menu Bar
             $rootScope.dropdownMenuBar = null;
             $rootScope.dropdownMenuBarValue = '/'; //Button selected on this view
@@ -1470,7 +1479,7 @@ angular.module('controllers', [])
                 }
             };
 
-            // Get the number of scan blocks
+            // Get the number of scan blocks 
             $scope.getMaxScanBlock1 = function ()
             {
                 var maxCustomScanBlockProv = 0;
@@ -1517,7 +1526,7 @@ angular.module('controllers', [])
                             }
                         }
                     }
-                    //Works like the last one except that the cell will be added to the array anyway (to avoid strange empty slots in the scan) and we have not to read all the cell, we acces to the cell by the pos
+                    //Works like the last one except that the cell will be added to the array anyway (to avoid strange empty slots in the scan) and we have not to read all the cell, we acces to the cell by the pos 
                 } else if ($scope.cfgScanningCustomRowCol == 1) {
                     if ($scope.indexScannedBlock > $scope.rows - 1) {
                         $scope.nextBlockToScan($scope.cfgScanOrderPanel);
@@ -1564,7 +1573,7 @@ angular.module('controllers', [])
                 var moreThanOneGroup = false;
                 var lastGroup = -1;
                 var toScan = false;
-                //Search in the array cell the cells that are in the current scan block 2
+                //Search in the array cell the cells that are in the current scan block 2 
                 for (var i = 0; i < $scope.arrayScannedCells.length; i++) {
                     //Check if there are only one subgroup
                     if ($scope.arrayScannedCells[i].customScanBlock2 != lastGroup) {
@@ -1785,7 +1794,15 @@ angular.module('controllers', [])
                             $scope.deleteAll();
                             $scope.InitScan();
                             break;
-
+                            //#Jorge
+                            case "copyclipboard":
+                            ngClipboard.toAllBrowsersClipboard();
+                            $scope.InitScan();
+                            break;
+                        case "copytxtimgclipboard":
+                            ngClipboard.toAllBrowsersTxtImgClipboard();
+                            $scope.InitScan();
+                            break;
                     }
                 }
             };
@@ -1879,8 +1896,13 @@ angular.module('controllers', [])
                 $scope.cfgMenuReadActive = userConfig.cfgMenuReadActive;
                 $scope.cfgMenuDeleteLastActive = userConfig.cfgMenuDeleteLastActive;
                 $scope.cfgMenuDeleteAllActive = userConfig.cfgMenuDeleteAllActive;
+                //#Jorge Nuevo codigo.
+                $scope.cfgMenuCopyClipboard = userConfig.cfgMenuCopyClipboard;
+                $scope.cfgMenuCopyTxtImgClipboard = userConfig.cfgMenuCopyTxtImgClipboard;
+                //Fin nuevo codigo
                 $scope.cfgSentenceBarUpDown = userConfig.cfgSentenceBarUpDown;
-                $scope.pictoBarWidth = 12 - $scope.cfgMenuHomeActive - $scope.cfgMenuReadActive - $scope.cfgMenuDeleteLastActive - $scope.cfgMenuDeleteAllActive;
+                //#Jorge nuevo codigo
+                $scope.pictoBarWidth = 12 - $scope.cfgMenuHomeActive - $scope.cfgMenuReadActive - $scope.cfgMenuDeleteLastActive - $scope.cfgMenuCopyClipboard - $scope.cfgMenuCopyTxtImgClipboard - $scope.cfgMenuDeleteAllActive;
                 $scope.cfgAutoEraseSentenceBar = userConfig.cfgAutoEraseSentenceBar;
                 $scope.cfgScanningCustomRowCol = userConfig.cfgScanningCustomRowCol;
                 $scope.longclick = userConfig.cfgScanningAutoOnOff == 0 ? true : false;
@@ -1974,13 +1996,13 @@ angular.module('controllers', [])
                     }
                 });
             };
-            //When the user press acept (in the no primaryboard modal) panelgroups it's loaded
+            //When the user press acept (in the no primaryboard modal) panelgroups it's loaded 
             $scope.aceptErrorNPB = function () {
-
+                
                 $timeout(function () {
                     $location.path('/panelGroups');
                 }, 500);
-
+                
             };
             /*
              * Return: array from 0 to repeatnum
@@ -2029,10 +2051,11 @@ angular.module('controllers', [])
                 console.log("What's happening...");
                 var url = $scope.baseurl + "Board/getPrediction";
                 $http.post(url).success(function (response)
-                {
+                {   
                     $scope.recommenderArray = response.recommenderArray;
                 });
             };
+            console.log($scope.recommenderArray);
 
             /*
              * Show edit view board
@@ -2250,7 +2273,7 @@ angular.module('controllers', [])
              *      Link to another board: the user will be redirected to this new board
              *      Function: go to the historic, change the tipus or tme of the sentence...
              * The last three can be together in the same cell
-             *
+             *      
              */
             $scope.clickOnCell = function (cell) {
 
@@ -2331,7 +2354,7 @@ angular.module('controllers', [])
                             $scope.sound = "mp3/" + $scope.dataAudio[0];
                             var audiotoplay = $('#utterance');
                             audiotoplay.src = "mp3/" + $scope.dataAudio[0];
-
+                            
                             console.log($scope.dataAudio[0]);
                             if ($scope.cfgTimeOverOnOff) {
                                 $timeout(function () {
@@ -2386,6 +2409,19 @@ angular.module('controllers', [])
                             $scope.deleteAll();
                         }, $scope.cfgTimeOver);
                     }
+                    //#Jorge
+                    else if (object === 'copyClipboard'){
+                        $scope.OverAutoClick = $timeout(function () {
+                          ngClipboard.toAllBrowsersClipboard();
+                        }, $scope.cfgTimeOver);
+                    }
+
+                    else if(object === 'copyTxtImgClipboard'){
+                      $scope.OverAutoClick = $timeout(function () {
+                        ngClipboard.toAllBrowsersTxtImgClipboard();
+                      }, $scope.cfgTimeOver);
+                    }
+
                 } else if (type === 3)
                 {
                     if (object === 'Good')
@@ -2481,12 +2517,12 @@ angular.module('controllers', [])
                 $http.post(url, postdata).success(function (response)
                 {
                     var control = response.control;
-
+                    console.log(control);
                     $scope.dataTemp = response.data;
                     $scope.tense = response.tense;
                     $scope.tipusfrase = response.tipusfrase;
                     $scope.negativa = response.negativa;
-                    if ((control !== "") && (control !== "home") && (control !== "historic")) {
+                    if ((control !== "") && (control !== "home") && (control !== "historic") && (control !== "stopAudio")) {
                         var url = $scope.baseurl + "Board/" + control;
                         var postdata = {tense: $scope.tense, tipusfrase: $scope.tipusfrase, negativa: $scope.negativa};
 
@@ -2519,7 +2555,12 @@ angular.module('controllers', [])
                     } else if ((control === "historic")) {
                         $rootScope.senteceFolderToShow = {folder: null, boardID: $scope.idboard};
                         $location.path('/historic');
-                    } else {
+                    } else if ((control === "stopAudio")){
+                        var aux = document.getElementById('utterance');
+                        aux.pause();
+                        aux.currentTime = 0;
+                    }
+                    else {
                         if (!readed) {
                             $scope.readText(text, true);
                         }
@@ -2668,7 +2709,7 @@ angular.module('controllers', [])
                         });
             };
             /*
-             * Return pictograms from database. The result depends on
+             * Return pictograms from database. The result depends on 
              * Searchtype (noms, verbs...) and Name (letters with the word start with)
              */
             $scope.searchDone = function (name, Searchtype)
@@ -2776,7 +2817,7 @@ angular.module('controllers', [])
 
 
             /*
-             * PosInBoard is the element over we drop the "draggable data". Data contains the info we drag
+             * PosInBoard is the element over we drop the "draggable data". Data contains the info we drag 
              */
             $scope.onDropSwap = function (posInBoard, data, evt) {
                 var URL = "";
@@ -2826,7 +2867,7 @@ angular.module('controllers', [])
             /***************************************************
              *
              *  editFolders functions
-             *
+             *  
              ***************************************************/
             $scope.CreateBoard = function () {
                 var postdata = {id: $scope.idboard};
@@ -2930,9 +2971,9 @@ angular.module('controllers', [])
                     });
                 }
             };
-
+            
             $scope.style_changes_title = '';
-
+            
              // Activate information modals (popups)
             $scope.toggleInfoModal = function (title, text) {
                 $scope.infoModalContent = text;
@@ -2942,7 +2983,7 @@ angular.module('controllers', [])
             };
         })
 
-        // Edit controller
+        // Edit controller 
         .controller('Edit', function ($scope, $http, ngDialog, $timeout) {
             // Get the cell clicked (the cell in the cicked position in the current board
             var url = $scope.baseurl + "Board/getCell";
@@ -3045,12 +3086,12 @@ angular.module('controllers', [])
                     $scope.sFolderSelectedImg = img;
                     $scope.sFolderSelectedText = text;
                 };
-
+                
                 // Closes the editCell dialog
                 $scope.closeDialog = function() {
                     ngDialog.close();
                 };
-
+                
                 //Initialize the dropdwon menus and all the variables that will be shown to the user
                 $scope.getFunctions();
                 $scope.getBoards();
@@ -3433,7 +3474,7 @@ angular.module('controllers', [])
             {
 
                 $scope.inScan = true;
-                //When the scan is automatic, this timer manage when the scan have to move to the next block
+                //When the scan is automatic, this timer manage when the scan have to move to the next block            
 
                 $scope.scanningFolder = -1;
                 $scope.scanningSentence = -1;
@@ -3797,6 +3838,205 @@ angular.module('controllers', [])
 
         })
 
+//#Jorge
+.factory('ngClipboard', function($compile,$rootScope,$window) {
+          return {
+              'toAllBrowsersClipboard': function(){
+
+                  var ngClipboardElement = angular.element($window.document.getElementById('frase'));
+                  $window.document.getElementById('frase').contentEditable = true;
+                  ngClipboardElement.focus();
+                  var range = $window.document.createRange();
+                  range.extractContents();
+                  range.collapse();
+                  range.selectNode(ngClipboardElement[0]);
+                  $window.getSelection().removeAllRanges();
+                  $window.getSelection().addRange(range);
+
+                  /* Create a element textarea in HTML to copy the text in the clipboard and later we delete this element*/
+
+                  var input = $window.document.createElement('textarea');
+                  $window.document.body.appendChild(input);
+                  input.value = ngClipboardElement[0].innerHTML.trim();
+                  input.focus();
+                  input.select();
+                  $window.document.execCommand('copy');
+                  $window.document.getElementById('frase').contentEditable = false;
+                  input.remove();
+
+                  /* Execute the command copy to get the text in the clipboard */
+
+                  var successful = $window.document.execCommand('copy');
+                  var msg = successful ? 'successful' : 'unsuccessful';
+                  console.log('Copying text command was ' + msg);
+                  $window.getSelection().removeAllRanges();
+              },
+
+              'toAllBrowsersTxtImgClipboard': function(){
+
+                var img = document.getElementById('txtImgContainer');
+                var elements = img.getElementsByTagName('img');
+                console.log(elements.length);
+                document.getElementById('txtImgContainer').contentEditable = true;
+
+
+                var div = document.createElement('div');
+                div.id = 'prueba'
+
+                // Add image elements to the div.
+                for(index = 0; index < elements.length; index++){
+                  var img2 = document.createElement('img');
+                  img2.id = 'img' + index.toString();
+                  img2.width = 70;
+                  img2.height = 70;
+                  console.log(elements[index].src)
+                  img2.src= elements[index].src;
+                  div.appendChild(img2);
+                }
+
+                // Add phrase to the div
+                var frase = document.getElementById('frase');
+                var input = document.createElement('div');
+                document.body.appendChild(input);
+                input.append(frase.innerHTML);
+                div.appendChild(input);
+
+                // We select the div to copy in the clipboard
+                console.log(div);
+                document.body.appendChild(div);
+                getSelection().removeAllRanges();
+                var r = document.createRange();
+                r.setStartBefore(div);
+                r.setEndAfter(div);
+                r.selectNode(div);
+                getSelection().addRange(r);
+
+
+                /* Execute the command copy to get the text and the images in the clipboard */
+
+                var successful = document.execCommand('copy');
+                div.remove();
+                document.getElementById('txtImgContainer').contentEditable = false;
+                var msg = successful ? 'successful' : 'unsuccessful';
+                console.log('Copying text and images command was ' + msg);
+                getSelection().removeAllRanges();
+              },
+
+            }
+          })
+
+
+          /*
+          * New directive function: Copy the text in the clipboard and copy text and images in the clipboard.
+          */
+
+        .directive('copytext', ['$compile', function($compile) {
+          return {
+            restrict: 'EAC',
+            link: function(scope, element, attr) {
+              element.on('mousedown', function(event) {
+              //Prevent default dragging of selected content
+              event.preventDefault();
+
+              var ngClipboardElement = angular.element(document.getElementById('frase'));
+              document.getElementById('frase').contentEditable = true;
+              ngClipboardElement.focus();
+              var range = document.createRange();
+              range.extractContents();
+              range.collapse();
+              range.selectNode(ngClipboardElement[0]);
+              getSelection().removeAllRanges();
+              getSelection().addRange(range);
+
+              //Create a element textarea in HTML to copy the text in the clipboard and later we delete this element
+
+              var input = document.createElement('textarea');
+              document.body.appendChild(input);
+
+              //Cambiar estilo para eliminar espacio en el textarea
+              //input.style.display='block';
+
+              input.value = ngClipboardElement[0].innerHTML.trim();
+              input.focus();
+              input.select();
+              document.execCommand('copy');
+              input.remove();
+              document.getElementById('frase').contentEditable = false;
+
+
+              //Execute the command copy to get the text in the clipboard
+
+              var successful = document.execCommand('copy');
+              var msg = successful ? 'successful' : 'unsuccessful';
+              console.log('Copying text command was ' + msg);
+              getSelection().removeAllRanges();
+
+            });
+            }
+          }
+        }])
+
+        .directive('copytextandimage', ['$document', function($document) {
+          return {
+            restrict: 'EAC',
+            link: function(scope, element, attr) {
+              element.on('mousedown', function(event) {
+                // Prevent default dragging of selected content
+                event.preventDefault();
+                var img = document.getElementById('txtImgContainer');
+                var elements = img.getElementsByTagName('img');
+                console.log(elements.length);
+                document.getElementById('txtImgContainer').contentEditable = true;
+
+                //Create a new element div that we delete later.
+                var div = document.createElement('div');
+                div.id = 'prueba'
+
+                // Add image elements to the div.
+                for(index = 0; index < elements.length; index++){
+                  var img2 = document.createElement('img');
+                  img2.id = 'img' + index.toString();
+                  img2.width = 70;
+                  img2.height = 70;
+                  console.log(elements[index].src)
+                  img2.src= elements[index].src;
+                  div.appendChild(img2);
+                }
+
+                // Add phrase to the div
+                var frase = document.getElementById('frase');
+                var input = document.createElement('div');
+                document.body.appendChild(input);
+                input.append(frase.innerHTML);
+                div.appendChild(input);
+
+                // We select the div to copy in the clipboard
+                console.log(div);
+                document.body.appendChild(div);
+                getSelection().removeAllRanges();
+                var r = document.createRange();
+                r.setStartBefore(div);
+                r.setEndAfter(div);
+                r.selectNode(div);
+                getSelection().addRange(r);
+
+
+                // Execute the command copy to get the text and the images in the clipboard
+
+                var successful = document.execCommand('copy');
+                div.remove();
+                document.getElementById('txtImgContainer').contentEditable = false;
+                var msg = successful ? 'successful' : 'unsuccessful';
+                console.log('Copying text and images command was ' + msg);
+                getSelection().removeAllRanges();
+            });
+          }
+          }
+        }])
+
+
+
+        /*New code*/
 
 
 
@@ -3825,3 +4065,4 @@ angular.module('controllers', [])
                 }
             }
         });
+

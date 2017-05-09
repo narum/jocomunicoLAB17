@@ -37,13 +37,12 @@
                                </div>
                             </div>
                         </div>
-                        <div class="col-xs-6">
+                        <div class="col-xs-4">
                             <button ng-show="!historicFolder" ng-click="editHistoricFolder()" class="turquoiseButton">{{content.editHistoryEditFolderButton1}} <div class="icon-pencil"></div><br/>{{content.editHistoryEditFolderButton2}}</button>
-                            <button ng-show="!historicFolder" ng-click="downloadWord()" class="turquoiseButton"> <a href="{{WordDocumentPath.documentPath}}"></a> <h6>{{content.downloadWordButton}}</h6> <div class="icon-download"></div></button>
+                            <!--<button class="turquoiseButton">{{content.editHistoryDownloadButton1}} <div class="icon-download-alt"></div><br/>{{content.editHistoryDownloadButton2}}</button>-->
                             <button ng-show="!historicFolder" class="turquoiseButton" ng-click="deleteFolderModal()">{{content.editHistoryEraseSentence}} <div class="icon-trash"></div><br/>{{content.editHistoryEditFolderButton2}}</button>
-                            <button ng-click="go('/panelGroups')" class="grayButton">{{content.editHistoryBackButton}} <div class="icon-reply"></div><br/>{{content.editHistoryBackButton2}}</button>
                         </div>
-
+                        <div class="col-xs-2"><button ng-click="go('/panelGroups')" class="grayButton pull-right">{{content.editHistoryBackButton}} <div class="icon-reply"></div><br/>{{content.editHistoryBackButton2}}</button></div>
                     </div>
                     <!--Historic Sentences-->
                     <div class="row scrollBox" ng-if="historicFolder">
@@ -61,7 +60,7 @@
                                                         <div class="row pictoType"><img class="pictoTypeImg" ng-src="{{baseurl}}img/pictos/femenino.png" ng-show="pictos.isfem == '1'"/></div>
                                                     </div>
                                                 </div>
-
+                                                
                                             </div>
                                             <div class="row">
                                                 <div class="col-xs-9 col-xs-offset-1 sentenceText">
@@ -100,11 +99,7 @@
                                     <div class="row">
                                         <div class="col-xs-9">
                                             <div class="row">
-                                              <!-- [To generate] WordDocument checkbox
-                                                   @rjlopezdev
-                                              -->
-                                                <div class="col-xs-1 text-center">
-                                                </div>
+                                                <div class="col-xs-1"></div>
                                                 <div ng-if="sentence.isPreRec=='0'">
                                                     <div class="col-xs-1" ng-repeat="pictos in sentences | filter:{ID_SSentence: sentence.ID_SSentence}">
                                                         <div class="col-xs-8 sentencePicto"><img class="pictoImg" ng-src="{{baseurl}}img/pictos/{{pictos.imgPicto}}"/></div>
@@ -169,8 +164,8 @@
         </div>
     </div>
 </div>
-
-
+                                
+                                
 <!--Copy Sentnce Modal-->
 <div class="modal fade" id="copySentenceModal" role="dialog">
     <div class="modal-dialog modal-lg">
@@ -260,28 +255,7 @@
         </div>
     </div>
 </div>
-
-<!-- Download Modal -->
-<div class="modal fade" id="downloadModal" role="dialog" style="z-index: 1000000;}">
-    <div class="modal-dialog modal-lg">
-        <div class="row marginModalTopOwl"><img class="img-owl pull-right" src="img/srcWeb/Mus/lowSabiFlecha.png"/></div>
-        <div class="row" id="boxUserConfig" style="background-image: url({{img.Patterns1_08}})">
-            <div id="header" class="row">
-                <div class="col-xs-10 headerTitle-infomodal" style="{{style_changes_title}}">{{content.downloadWordTitle}}</div>
-            </div>
-            <div class="row backgroundUserConfigBox">
-                <div class="row fonsAlert-info text-info-modal" >
-                    <div class="col-xs-12"><p>{{content.downloadWordBody}}</p></div>
-                    <div class="col-xs-12" style="margin-top: 1vh;">
-                        <button type="reset" class="btn-gray pull-right"><a style="color: white" href="{{WordDocumentPath}}" download>{{content.downloadWordButton}}</a></button>
-                    </div>
-                </div>
-            </div>
-        <div class="row verticalMarginTop"></div>
-        </div>
-    </div>
-</div>
-
+                    
 <!--Create Sentence Modal-->
 <div class="modal fade" id="createSentenceModal" role="dialog">
     <div class="modal-dialog modal-lg">
