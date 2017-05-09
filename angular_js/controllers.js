@@ -741,6 +741,9 @@ angular.module('controllers', [])
             $scope.img.menuButton1 = '/img/srcWeb/UserConfig/menuButton1.jpg';
             $scope.img.menuButton2 = '/img/srcWeb/UserConfig/menuButton2.jpg';
             $scope.img.menuButton3 = '/img/srcWeb/UserConfig/menuButton3.jpg';
+                   //#Jorge Nuevo codigo
+            $scope.img.menuButton4 = '/img/srcWeb/UserConfig/menuButton4.jpg';
+            $scope.img.menuButton5 = '/img/srcWeb/UserConfig/menuButton5.jpg';
             $scope.img.textInCellOff = '/img/srcWeb/UserConfig/textInCellOff.png';
             $scope.img.textInCellOn = '/img/srcWeb/UserConfig/textInCellOn.png';
             $scope.img.cfgUsageMouse = '/img/srcWeb/UserConfig/cfgUsageMouse.png';
@@ -805,6 +808,9 @@ angular.module('controllers', [])
                             $scope.userData.cfgUserExpansionFeedback = ($scope.userData.cfgUserExpansionFeedback === "1");
                             $scope.userData.cfgInterfaceVoiceMascFem = ($scope.userData.cfgInterfaceVoiceMascFem === "masc");
                             $scope.scanOrder = $scope.userData.cfgScanOrderPred + $scope.userData.cfgScanOrderMenu + $scope.userData.cfgScanOrderPanel;
+                            /*#Jorge Nuevo codigo menu copiar en el portapapeles.*/
+                            $scope.userData.cfgMenuCopyClipboard = ($scope.userData.cfgMenuCopyClipboard === "1");
+                            $scope.userData.cfgMenuCopyTxtImgClipboard = ($scope.userData.cfgMenuCopyTxtImgClipboard === "1");
 
                             var count = results.users[0].ID_ULanguage;
                             angular.forEach(results.users, function (value) {
@@ -1788,7 +1794,15 @@ angular.module('controllers', [])
                             $scope.deleteAll();
                             $scope.InitScan();
                             break;
-
+                            //#Jorge
+                            case "copyclipboard":
+                            ngClipboard.toAllBrowsersClipboard();
+                            $scope.InitScan();
+                            break;
+                        case "copytxtimgclipboard":
+                            ngClipboard.toAllBrowsersTxtImgClipboard();
+                            $scope.InitScan();
+                            break;
                     }
                 }
             };
@@ -1882,8 +1896,13 @@ angular.module('controllers', [])
                 $scope.cfgMenuReadActive = userConfig.cfgMenuReadActive;
                 $scope.cfgMenuDeleteLastActive = userConfig.cfgMenuDeleteLastActive;
                 $scope.cfgMenuDeleteAllActive = userConfig.cfgMenuDeleteAllActive;
+                //#Jorge Nuevo codigo.
+                $scope.cfgMenuCopyClipboard = userConfig.cfgMenuCopyClipboard;
+                $scope.cfgMenuCopyTxtImgClipboard = userConfig.cfgMenuCopyTxtImgClipboard;
+                //Fin nuevo codigo
                 $scope.cfgSentenceBarUpDown = userConfig.cfgSentenceBarUpDown;
-                $scope.pictoBarWidth = 12 - $scope.cfgMenuHomeActive - $scope.cfgMenuReadActive - $scope.cfgMenuDeleteLastActive - $scope.cfgMenuDeleteAllActive;
+                //#Jorge nuevo codigo
+                $scope.pictoBarWidth = 12 - $scope.cfgMenuHomeActive - $scope.cfgMenuReadActive - $scope.cfgMenuDeleteLastActive - $scope.cfgMenuCopyClipboard - $scope.cfgMenuCopyTxtImgClipboard - $scope.cfgMenuDeleteAllActive;
                 $scope.cfgAutoEraseSentenceBar = userConfig.cfgAutoEraseSentenceBar;
                 $scope.cfgScanningCustomRowCol = userConfig.cfgScanningCustomRowCol;
                 $scope.longclick = userConfig.cfgScanningAutoOnOff == 0 ? true : false;
@@ -2390,6 +2409,19 @@ angular.module('controllers', [])
                             $scope.deleteAll();
                         }, $scope.cfgTimeOver);
                     }
+                    //#Jorge
+                    else if (object === 'copyClipboard'){
+                        $scope.OverAutoClick = $timeout(function () {
+                          ngClipboard.toAllBrowsersClipboard();
+                        }, $scope.cfgTimeOver);
+                    }
+
+                    else if(object === 'copyTxtImgClipboard'){
+                      $scope.OverAutoClick = $timeout(function () {
+                        ngClipboard.toAllBrowsersTxtImgClipboard();
+                      }, $scope.cfgTimeOver);
+                    }
+
                 } else if (type === 3)
                 {
                     if (object === 'Good')
@@ -3806,6 +3838,205 @@ angular.module('controllers', [])
 
         })
 
+//#Jorge
+.factory('ngClipboard', function($compile,$rootScope,$window) {
+          return {
+              'toAllBrowsersClipboard': function(){
+
+                  var ngClipboardElement = angular.element($window.document.getElementById('frase'));
+                  $window.document.getElementById('frase').contentEditable = true;
+                  ngClipboardElement.focus();
+                  var range = $window.document.createRange();
+                  range.extractContents();
+                  range.collapse();
+                  range.selectNode(ngClipboardElement[0]);
+                  $window.getSelection().removeAllRanges();
+                  $window.getSelection().addRange(range);
+
+                  /* Create a element textarea in HTML to copy the text in the clipboard and later we delete this element*/
+
+                  var input = $window.document.createElement('textarea');
+                  $window.document.body.appendChild(input);
+                  input.value = ngClipboardElement[0].innerHTML.trim();
+                  input.focus();
+                  input.select();
+                  $window.document.execCommand('copy');
+                  $window.document.getElementById('frase').contentEditable = false;
+                  input.remove();
+
+                  /* Execute the command copy to get the text in the clipboard */
+
+                  var successful = $window.document.execCommand('copy');
+                  var msg = successful ? 'successful' : 'unsuccessful';
+                  console.log('Copying text command was ' + msg);
+                  $window.getSelection().removeAllRanges();
+              },
+
+              'toAllBrowsersTxtImgClipboard': function(){
+
+                var img = document.getElementById('txtImgContainer');
+                var elements = img.getElementsByTagName('img');
+                console.log(elements.length);
+                document.getElementById('txtImgContainer').contentEditable = true;
+
+
+                var div = document.createElement('div');
+                div.id = 'prueba'
+
+                // Add image elements to the div.
+                for(index = 0; index < elements.length; index++){
+                  var img2 = document.createElement('img');
+                  img2.id = 'img' + index.toString();
+                  img2.width = 70;
+                  img2.height = 70;
+                  console.log(elements[index].src)
+                  img2.src= elements[index].src;
+                  div.appendChild(img2);
+                }
+
+                // Add phrase to the div
+                var frase = document.getElementById('frase');
+                var input = document.createElement('div');
+                document.body.appendChild(input);
+                input.append(frase.innerHTML);
+                div.appendChild(input);
+
+                // We select the div to copy in the clipboard
+                console.log(div);
+                document.body.appendChild(div);
+                getSelection().removeAllRanges();
+                var r = document.createRange();
+                r.setStartBefore(div);
+                r.setEndAfter(div);
+                r.selectNode(div);
+                getSelection().addRange(r);
+
+
+                /* Execute the command copy to get the text and the images in the clipboard */
+
+                var successful = document.execCommand('copy');
+                div.remove();
+                document.getElementById('txtImgContainer').contentEditable = false;
+                var msg = successful ? 'successful' : 'unsuccessful';
+                console.log('Copying text and images command was ' + msg);
+                getSelection().removeAllRanges();
+              },
+
+            }
+          })
+
+
+          /*
+          * New directive function: Copy the text in the clipboard and copy text and images in the clipboard.
+          */
+
+        .directive('copytext', ['$compile', function($compile) {
+          return {
+            restrict: 'EAC',
+            link: function(scope, element, attr) {
+              element.on('mousedown', function(event) {
+              //Prevent default dragging of selected content
+              event.preventDefault();
+
+              var ngClipboardElement = angular.element(document.getElementById('frase'));
+              document.getElementById('frase').contentEditable = true;
+              ngClipboardElement.focus();
+              var range = document.createRange();
+              range.extractContents();
+              range.collapse();
+              range.selectNode(ngClipboardElement[0]);
+              getSelection().removeAllRanges();
+              getSelection().addRange(range);
+
+              //Create a element textarea in HTML to copy the text in the clipboard and later we delete this element
+
+              var input = document.createElement('textarea');
+              document.body.appendChild(input);
+
+              //Cambiar estilo para eliminar espacio en el textarea
+              //input.style.display='block';
+
+              input.value = ngClipboardElement[0].innerHTML.trim();
+              input.focus();
+              input.select();
+              document.execCommand('copy');
+              input.remove();
+              document.getElementById('frase').contentEditable = false;
+
+
+              //Execute the command copy to get the text in the clipboard
+
+              var successful = document.execCommand('copy');
+              var msg = successful ? 'successful' : 'unsuccessful';
+              console.log('Copying text command was ' + msg);
+              getSelection().removeAllRanges();
+
+            });
+            }
+          }
+        }])
+
+        .directive('copytextandimage', ['$document', function($document) {
+          return {
+            restrict: 'EAC',
+            link: function(scope, element, attr) {
+              element.on('mousedown', function(event) {
+                // Prevent default dragging of selected content
+                event.preventDefault();
+                var img = document.getElementById('txtImgContainer');
+                var elements = img.getElementsByTagName('img');
+                console.log(elements.length);
+                document.getElementById('txtImgContainer').contentEditable = true;
+
+                //Create a new element div that we delete later.
+                var div = document.createElement('div');
+                div.id = 'prueba'
+
+                // Add image elements to the div.
+                for(index = 0; index < elements.length; index++){
+                  var img2 = document.createElement('img');
+                  img2.id = 'img' + index.toString();
+                  img2.width = 70;
+                  img2.height = 70;
+                  console.log(elements[index].src)
+                  img2.src= elements[index].src;
+                  div.appendChild(img2);
+                }
+
+                // Add phrase to the div
+                var frase = document.getElementById('frase');
+                var input = document.createElement('div');
+                document.body.appendChild(input);
+                input.append(frase.innerHTML);
+                div.appendChild(input);
+
+                // We select the div to copy in the clipboard
+                console.log(div);
+                document.body.appendChild(div);
+                getSelection().removeAllRanges();
+                var r = document.createRange();
+                r.setStartBefore(div);
+                r.setEndAfter(div);
+                r.selectNode(div);
+                getSelection().addRange(r);
+
+
+                // Execute the command copy to get the text and the images in the clipboard
+
+                var successful = document.execCommand('copy');
+                div.remove();
+                document.getElementById('txtImgContainer').contentEditable = false;
+                var msg = successful ? 'successful' : 'unsuccessful';
+                console.log('Copying text and images command was ' + msg);
+                getSelection().removeAllRanges();
+            });
+          }
+          }
+        }])
+
+
+
+        /*New code*/
 
 
 

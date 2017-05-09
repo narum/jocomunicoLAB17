@@ -29,7 +29,7 @@ class Myaudio {
      */
     public function AppLocalOrServer()
     {
-        if (preg_match('/localhost/i', base_url())) return "server";
+        if (preg_match('/localhost/i', base_url())) return "local";
         else return "server";
     }
     
@@ -594,7 +594,7 @@ class Myaudio {
      * @return array $output calling function should check for returned errors in $output[0],
      * errormessage in $output[1] errorcode in $output[2]
      */
-    function synthesizeOnline($vocalwareLID, $vocalwareVID, $text, $filename)
+function synthesizeOnline($vocalwareLID, $vocalwareVID, $text, $filename)
     {
         $error = false;
         $errormessage = null;
@@ -604,7 +604,7 @@ class Myaudio {
         $curl = curl_init();
 
         $url = "http://www.vocalware.com/tts/gen.php";
-        $secret_phrase = " ";
+        $secret_phrase = "5a823f715692c02de9e215fef94c5dc2";
 
         $data = array(
             'EID' => '2',
@@ -612,8 +612,8 @@ class Myaudio {
             'VID' => $vocalwareVID,
             'TXT' => $text,
             'EXT' => 'mp3',
-            'ACC' => ' ',
-            'API' => ' '                    
+            'ACC' => '5795433',
+            'API' => '2490514'                    
         );
 
         $data['CS'] = md5($data['EID'].$data['LID'].$data['VID'].$data['TXT'].$data['EXT'].$data['ACC'].$data['API'].$secret_phrase);
@@ -657,7 +657,6 @@ class Myaudio {
         $output[2] = $errorcode;
         return $output;
     }
-    
     /**
      * Requests and saves audio file from online voice service
      * @param type $voice

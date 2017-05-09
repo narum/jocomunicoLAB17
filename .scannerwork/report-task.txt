@@ -1,5 +1,0 @@
-projectKey=project:Jocomunico
-serverUrl=http://192.168.1.38:9000/sonar
-dashboardUrl=http://192.168.1.38:9000/sonar/dashboard/index/project:Jocomunico
-ceTaskId=AVvpik8gP0n5Nk5V3gq9
-ceTaskUrl=http://192.168.1.38:9000/sonar/api/ce/task?id=AVvpik8gP0n5Nk5V3gq9
