@@ -27,7 +27,7 @@ class BoardInterface extends CI_Model {
     }
 
     /*
-     * Get the board struct (columns, rows, name...) 
+     * Get the board struct (columns, rows, name...)
      */
 
     function getBoardStruct($id) {
@@ -48,7 +48,7 @@ class BoardInterface extends CI_Model {
     }
 
     /*
-     * Change the board struct (columns and rows) 
+     * Change the board struct (columns and rows)
      */
 
     function updateNumCR($c, $r, $id) {
@@ -74,7 +74,7 @@ class BoardInterface extends CI_Model {
     }
 
     /*
-     * Return all pictograms from board 
+     * Return all pictograms from board
      */
 
     function getCellsBoard($id) {
@@ -107,7 +107,7 @@ class BoardInterface extends CI_Model {
     }
 
     /*
-     * Return one pictogram from the board with the given position in this board 
+     * Return one pictogram from the board with the given position in this board
      */
 
     function getCell($pos, $idboard) {
@@ -133,7 +133,7 @@ class BoardInterface extends CI_Model {
     }
 
     /*
-     * Change one pictogram from the board to another position 
+     * Change one pictogram from the board to another position
      */
 
     function updatePosCell($oldPos, $newPos, $idBoard) {
@@ -175,7 +175,7 @@ class BoardInterface extends CI_Model {
     }
 
     /*
-     * Change scan values by the output scan values 
+     * Change scan values by the output scan values
      */
 
     function updateScanCell($id, $num1, $text1, $num2, $text2) {
@@ -207,7 +207,7 @@ class BoardInterface extends CI_Model {
     }
 
     /*
-     * Create a NULL cell (blank cell) in the position ($Pos) 
+     * Create a NULL cell (blank cell) in the position ($Pos)
      * and add the cell to the board ($idBoard)
      */
 
@@ -254,7 +254,7 @@ class BoardInterface extends CI_Model {
     }
 
     /*
-     * Change the data of one pictogram ($cell) from the board ($idpicto)    
+     * Change the data of one pictogram ($cell) from the board ($idpicto)
      */
 
     function updateDataCell($idpicto, $cell) {
@@ -278,7 +278,7 @@ class BoardInterface extends CI_Model {
     }
 
     /*
-     * Remove the data of one pictogram ($cell) from the board ($idpicto)    
+     * Remove the data of one pictogram ($cell) from the board ($idpicto)
      */
 
     function removeDataCell($cell) {
@@ -331,7 +331,7 @@ class BoardInterface extends CI_Model {
     }
 
     /*
-     * Init a DB transaction 
+     * Init a DB transaction
      */
 
     function initTrans() {
@@ -340,7 +340,7 @@ class BoardInterface extends CI_Model {
 
     /*
      * Ends a DB transaction. Commit change if nothing gone worng. Otherwise
-     * makes a rollback 
+     * makes a rollback
      */
 
     function commitTrans() {
@@ -749,38 +749,38 @@ class BoardInterface extends CI_Model {
         return $output;
     }
 
-    function copyBoardTables($idDst, $sameGroupBoard, $row) {
-        if ($sameGroupBoard === 0) {
-            $row->boardLink = null;
+    function copyBoardTables(&$idDst, &$sameGroupBoard, &$row) {
+            if ($sameGroupBoard === 0) {
+                $row->boardLink = null;
+            }
+            $data = array(
+                'isFixedInGroupBoards' => $row->isFixedInGroupBoards,
+                'imgCell' => $row->imgCell,
+                'ID_CPicto' => $row->ID_CPicto,
+                'ID_CSentence' => $row->D_CSentence,
+                'sentenceFolder' => $row->sentenceFolder,
+                'boardLink' => $row->boardLink,
+                'color' => $row->color,
+                'ID_CFunction' => $row->ID_CFunction,
+                'textInCell' => $row->textInCell,
+                'textInCellTextOnOff' => $row->textInCellTextOnOff,
+                'cellType' => $row->cellType,
+                'activeCell' => $row->activeCell
+            );
+            $this->db->insert('Cell', $data);
+            $id = $this->db->insert_id();
+            $data2 = array(
+                'ID_RBoard' => $idDst,
+                'ID_RCell' => $id,
+                'posInBoard' => $row->posInBoard,
+                'isMenu' => $row->isMenu,
+                'customScanBlock1' => $row->customScanBlock1,
+                'customScanBlockText1' => $row->customScanBlockText1,
+                'customScanBlock2' => $row->customScanBlock2,
+                'customScanBlockText2' => $row->customScanBlockText2
+            );
+            $this->db->insert('R_BoardCell', $data2);
         }
-        $data = array(
-            'isFixedInGroupBoards' => $row->isFixedInGroupBoards,
-            'imgCell' => $row->imgCell,
-            'ID_CPicto' => $row->ID_CPicto,
-            'ID_CSentence' => $row->D_CSentence,
-            'sentenceFolder' => $row->sentenceFolder,
-            'boardLink' => $row->boardLink,
-            'color' => $row->color,
-            'ID_CFunction' => $row->ID_CFunction,
-            'textInCell' => $row->textInCell,
-            'textInCellTextOnOff' => $row->textInCellTextOnOff,
-            'cellType' => $row->cellType,
-            'activeCell' => $row->activeCell
-        );
-        $this->db->insert('Cell', $data);
-        $id = $this->db->insert_id();
-        $data2 = array(
-            'ID_RBoard' => $idDst,
-            'ID_RCell' => $id,
-            'posInBoard' => $row->posInBoard,
-            'isMenu' => $row->isMenu,
-            'customScanBlock1' => $row->customScanBlock1,
-            'customScanBlockText1' => $row->customScanBlockText1,
-            'customScanBlock2' => $row->customScanBlock2,
-            'customScanBlockText2' => $row->customScanBlockText2
-        );
-        $this->db->insert('R_BoardCell', $data2);
-    }
 
     function removeBoard($IDboard) {
         $this->db->where('ID_Board', $IDboard);
@@ -982,12 +982,148 @@ class BoardInterface extends CI_Model {
 
         return $query->result_array();
     }
-    
+
     function ErrorAudioToDB($errorCode) {
         $idUser = $this->session->userdata('idusu');
         $this->db->set('errorTemp', $errorCode);
         $this->db->where('ID_User', $idUser);
         $this->db->update('User');
     }
-    
+    public function AddBoards(){
+      $this->LaunchClean();
+      $this->InsertBoards();
+      $this->InsertCells();
+      return ":D";
+    }
+    private function LaunchClean(){
+      $this->cleanRBoardCell();
+      $this->cleanCells();
+      $this->cleanBoards();
+    }
+    private function cleanRBoardCell(){
+      $ID_User=$this->session->idusu;
+      $boardkey=$this->getBoardkey();
+      for($i=0;$i<count($boardkey);$i++){
+        $sql="DELETE R_BoardCell FROM R_BoardCell INNER JOIN Cell ON
+        R_BoardCell.ID_RCell = Cell.ID_Cell AND R_BoardCell.ID_RBoard=?";
+        $this->db->query($sql,$boardkey[$i]);
+      }
+    }
+    private function cleanCells(){
+      $ID_User=$this->session->idusu;
+      $boardkey=$this->getBoardkey();
+      for($i=0;$i<count($boardkey);$i++){
+      $sql="DELETE Cell FROM Cell INNER JOIN R_BoardCell ON
+      R_BoardCell.ID_RCell = Cell.ID_Cell AND R_BoardCell.ID_RBoard=?";
+      $this->db->query($sql,$boardkey[$i]);
+     }
+    }
+    private function cleanBoards(){
+      $ID_User=$this->session->idusu;
+      $sql="DELETE Boards FROM Boards INNER JOIN GroupBoards ON GroupBoards.ID_GB = Boards.ID_GBBoard AND GroupBoards.ID_GBUser=?
+      AND Boards.Bname NOT LIKE '%T. V.%' AND Boards.Bname NOT LIKE '%T. F.%' AND
+      Boards.Bname NOT LIKE '%P. 1%' AND Boards.Bname NOT LIKE '%P. 2%'";
+      $this->db->query($sql,$ID_User);
+    }
+    private function getGBkey(){
+      $ID_User=$this->session->idusu;
+      $sql="SELECT ID_GB FROM GroupBoards WHERE ID_GBUser=? AND GBname='inicial'";
+      $query=$this->db->query($sql,$ID_User);
+      return $query->result()[0]->ID_GB;
+    }
+    private function InsertBoards(){
+     $gbkey=$this->getGBkey();
+     $file = file_get_contents("./boards/Boards.json");
+     $boards=json_decode($file);
+     $count=count($boards->ID_Board);
+     for($i=0;$i<$count;$i++){
+      $sql="INSERT INTO Boards(ID_GBBoard,primaryboard,Bname,width,height,autoReturn,autoReadSentence)
+       VALUES (?,?,?,?,?,?,?)";
+      $this->db->query($sql,array(
+        $gbkey,
+        0,
+        $boards->Bname[$i],
+        $boards->width[$i],
+        $boards->height[$i],
+        $boards->autoReturn[$i],
+        $boards->autoReadSentence[$i]
+      ));
+    }
+    return $count;
+    }
+    private function getBoardkey(){
+      $keys=array();
+      $ID_User=$this->session->idusu;
+      $sql="SELECT * FROM Boards,GroupBoards WHERE GroupBoards.ID_GBUser=? AND
+      GroupBoards.ID_GB=Boards.ID_GBBoard AND Boards.Bname NOT LIKE '%T. V.%' AND Boards.Bname NOT LIKE '%T. F.%' AND
+      Boards.Bname NOT LIKE '%P. 1%' AND Boards.Bname NOT LIKE '%P. 2%'";
+      $query=$this->db->query($sql,$ID_User);
+      foreach ($query->result() as $row) {
+        array_push($keys,$row->ID_Board);
+      }
+      return $keys;
+    }
+    private function InsertCells(){
+     $ID_Cell=array();
+     $a=array();
+     $boardkey=$this->getBoardkey();
+     $file = file_get_contents("./boards/Cell.json");
+     $cells=json_decode($file);
+     $count=count($cells->ID_Cell);
+     for($i=0;$i<$count;$i++){
+        $sql="INSERT INTO Cell(isFixedInGroupBoards,imgCell,ID_CPicto,ID_CSentence,sentenceFolder,boardLink,color,
+        ID_CFunction,textInCell,textInCellTextOnOff,cellType,activeCell)VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
+        $this->db->query($sql,array(
+        $cells->isFixedInGroupBoards[$i],
+        $cells->imgCell[$i],
+        $cells->ID_CPicto[$i],
+        $cells->ID_CSentence[$i],
+        $cells->sentenceFolder[$i],
+        null,
+        $cells->color[$i],
+        $cells->ID_CFunction[$i],
+        $cells->textInCell[$i],
+        $cells->textInCellTextOnOff[$i],
+        $cells->cellType[$i],
+        $cells->activeCell[$i]
+      ));
+      array_push($a,$sentencekey[$poscs]);
+        $query=$this->db->query("SELECT LAST_INSERT_ID() as s2");
+        $res=$query->result();
+        array_push($ID_Cell,$res[0]->s2);
+    }
+     return $this->InsertRBoardCell($ID_Cell);
+    }
+    private function InsertRBoardCell($ID_Cell){
+       $boardkey=$this->getBoardkey();
+       $file = file_get_contents("./boards/R_BoardCell.json");
+       $rbcell=json_decode($file);
+       $count=count($rbcell->ID_RBoard);
+       sort($rbcell->ID_RBoard);
+       $a=array();
+       $posc=-1;
+       for($i=0;$i<$count;$i++){
+       if($rbcell->ID_RBoard[$i]>$ant){
+         $posc++;
+         $ant=$rbcell->ID_RBoard[$i];
+       }else{
+         $ant=$rbcell->ID_RBoard[$i];
+       }
+        $sql="INSERT INTO R_BoardCell(ID_RBoard,ID_RCell,posInBoard,isMenu,posInMenu,customScanBlock1,customScanBlockText1,customScanBlock2,
+          customScanBlockText2)VALUES (?,?,?,?,?,?,?,?,?)";
+          array_push($a,$boardkey[$posc]);
+        $this->db->query($sql,array(
+          $boardkey[$posc],
+          $ID_Cell[$i],
+          $rbcell->posInBoard[$i],
+          $rbcell->isMenu[$i],
+          $rbcell->posInMenu[$i],
+          $rbcell->customScanBlock1[$i],
+          $rbcell->customScanBlockText1[$i],
+          $rbcell->customScanBlock2[$i],
+          $rbcell->customScanBlockText2[$i]
+        ));
+      }
+      return $boardkey;
+    }
 }
