@@ -147,11 +147,11 @@ angular.module('controllers')
 
             });
         };
-        
+
         /***************************************************
         *
         *  editFolders functions
-        *  
+        *
         ***************************************************/
         $scope.CreateBoard = function (ID_GB) {
             $scope.idGroupBoard = ID_GB;
@@ -237,7 +237,7 @@ angular.module('controllers')
                     //alert(response.errorText);
                 });
         };
-        
+
             $scope.range = function ($repeatnum)
             {
                 var n = [];
@@ -360,7 +360,7 @@ angular.module('controllers')
                             if ($scope.id === null) {//MODIF:--Modal no tiene panel pricipal, se añade uno para que pueda hacer algo (no se si se puede hacer, ya que el modal creo que se ira. Si pasa esto meter una variable en el objeto editpanelinfo)
                                 $scope.id = response.boards[0].ID_Board;
                             }
-                            // Put the panel to edit info, and load the edit panel  
+                            // Put the panel to edit info, and load the edit panel
                             $rootScope.editPanelInfo = {idBoard: $scope.id};
                             $timeout(function () {
                                 $location.path('/');
@@ -469,7 +469,7 @@ angular.module('controllers')
                     $scope.searchDoneAddWord(name, Searchtype);
                 }, 500);
             };
-            
+
             $scope.SearchTypeAddWord = "Tots";
             $scope.style_changes_title = '';
 
@@ -506,6 +506,133 @@ angular.module('controllers')
 
               });
             };
+            //funcion que inicia las opciones de backup
+          $scope.showBackupModal=function(){
+            $scope.content.title="Copia de seguridad";
+            $scope.content.all="Copia total"
+            $scope.content.parcial="Copia parcial"
+            $scope.content.imagenesbackup="imagenes"
+            $scope.content.vocabulariobackup="vocabulario"
+            $scope.content.carpetabackup="carpetas tematicas"
+            $scope.content.cfgbackup="configuracion usuario"
+            $scope.content.panelesbackup="paneles"
+            $('#BackupModal').modal('toggle');
+          }
+          //muestra el modal de recuperacion de backup
+          $scope.showRecoverBackupModal=function(){
+            $scope.content.title="Recuperar Copia de seguridad";
+            $scope.content.parcial="Recuperar"
+            $scope.content.imagenesbackup="imagenes"
+            $scope.content.vocabulariobackup="vocabulario"
+            $scope.content.carpetabackup="carpetas tematicas"
+            $scope.content.cfgbackup="configuracion usuario"
+            $scope.content.panelesbackup="paneles"
+            $('#RecoverBackupModal').modal('toggle');
 
+          }
 
+          $scope.recparcialBackupCall_OW=function(BackupRoute){
+            var postdata = {overwrite: true};
+            $http.post("BackupController/"+BackupRoute,postdata).success(function (results) {});
+          }
+          $scope.recparcialBackupCall_NOW=function(BackupRoute){
+            var postdata = {overwrite: false};
+            $http.post("BackupController/"+BackupRoute,postdata).success(function (results) {});
+          }
+          //funcion que se llama en el click del boton recuperar parcial
+          $scope.recparcialBackup_OW=function(image,voc,folder,cfg,panelb){
+            if((typeof image==='undefined'&& typeof voc==='undefined'&& typeof folder==='undefined'&&
+             typeof cfg==='undefined'&& typeof panelb==='undefined')||(!image&&!voc&&!folder&&!cfg&&!panelb)){
+              $scope.toggleInfoModal("information","Tienes que marcar al menos una casilla para que la recuperacion pueda llevarse a cabo");
+            }else{
+              if(image)$scope.recparcialBackupCall_OW('recimages');
+              if(voc)$scope.recparcialBackupCall_OW('recvocabulary');
+              if(folder)$scope.recparcialBackupCall_OW('recfolder');
+              if(cfg)$scope.recparcialBackupCall_OW('reccfg');
+              if(panelb)$scope.recparcialBackupCall_OW('recpanels');
+
+              $scope.viewActived=false;
+              setTimeout(function(){ $route.reload(); }, 3000);
+            }
+          }
+          $scope.recparcialBackup_NOW=function(image,voc,folder,cfg,panelb){
+            if((typeof image==='undefined'&& typeof voc==='undefined'&& typeof folder==='undefined'&&
+             typeof cfg==='undefined'&& typeof panelb==='undefined')||(!image&&!voc&&!folder&&!cfg&&!panelb)){
+              $scope.toggleInfoModal("information","Tienes que marcar al menos una casilla para que la recuperacion pueda llevarse a cabo");
+            }else{
+              if(image)$scope.recparcialBackupCall_NOW('recimages');
+              if(voc)$scope.recparcialBackupCall_NOW('recvocabulary');
+              if(folder)$scope.recparcialBackupCall_NOW('recfolder');
+              if(cfg)$scope.recparcialBackupCall_NOW('reccfg');
+              if(panelb)$scope.recparcialBackupCall_NOW('recpanels');
+
+              $scope.viewActived=false;
+              setTimeout(function(){ $route.reload(); }, 3000);
+            }
+          }
+      //funcion que llama al backend para hacer una recuperacion total backup
+      $scope.rectotalBackup=function(){
+            $http.get("BackupController/recbackup").success(function (results) {
+              console.log(results);
+              $scope.viewActived=false;
+              setTimeout(function(){
+                $route.reload();
+              }, 3000);
+            });
+      }
+          //funcion que llama al backend para hacer un backup total
+          $scope.totalBackup=function(){
+            $http.get("BackupController").success(function (results) {
+              setTimeout(function(){ window.location.href="DownloadBackup/backup/"+results.data; }, 3000);
+            });
+          }
+          $scope.uploadBackup = function () {
+              $scope.myFile = document.getElementById('file-backup').files;
+              $scope.uploading = true;
+              var i;
+              var uploadUrl = $scope.baseurl + "ImgUploader/uploadBackup";
+
+              var fd = new FormData();
+              fd.append('vocabulary', angular.toJson(false));
+              for (i = 0; i < $scope.myFile.length; i++) {
+                  fd.append('file' + i, $scope.myFile[i]);
+              }
+              $http.post(uploadUrl, fd, {
+                  headers: {'Content-Type': undefined}
+              })
+                      .success(function (response) {
+                          $scope.uploading = false;
+                          console.log(response);
+                          $scope.showRecoverBackupModal();
+                          if (response.error) {
+                              console.log(response.errorText);
+                          }
+                      });
+          };
+          $scope.showparcialBackup=function(images,voc,folder,cfg,panelb){
+            if(images===true&&voc===true&&folder===true&&cfg===true&&panelb===true){
+              $scope.rectotalBackup();
+            }else{
+              $scope.content.title="Recuperar Copia de seguridad";
+              $scope.content.all="Vas a recuperar datos de una copia de seguridad. ¿Quieres que se sobreescriban o que se combinen con los datos existentes?"
+              $scope.content.overwrite="sobreescribir"
+              $scope.content.write="no sobreescribir"
+              $scope.content.imagesr=images
+              $scope.content.voc=voc
+              $scope.content.folder=folder
+              $scope.content.cfg=cfg
+              $scope.content.panelb=panelb
+              $('#recmbackup').modal('toggle');
+            }
+
+          }
+          $scope.AddBoards=function(){
+            $http.get("Board/AddBoards").success(function (results) {
+                    console.log(results.data);
+                    $scope.viewActived=false;
+                    setTimeout(function(){
+                      $route.reload();
+                    }, 3000);
+                });
+          }
         });
