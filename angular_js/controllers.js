@@ -3875,6 +3875,8 @@ angular.module('controllers', [])
                   /* Create a element textarea in HTML to copy the text in the clipboard and later we delete this element*/
 
                   var input = $window.document.createElement('textarea');
+                  input.style.position = 'absolute';
+                  input.style.zIndex = '-100';
                   $window.document.body.appendChild(input);
                   input.value = ngClipboardElement[0].innerHTML.trim();
                   input.focus();
@@ -3970,6 +3972,8 @@ angular.module('controllers', [])
               //Create a element textarea in HTML to copy the text in the clipboard and later we delete this element
 
               var input = document.createElement('textarea');
+              input.style.position = 'absolute';
+              input.style.zIndex = '-100';
               document.body.appendChild(input);
 
               //Cambiar estilo para eliminar espacio en el textarea
