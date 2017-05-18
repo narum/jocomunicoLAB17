@@ -40,8 +40,11 @@
                                     <span class="glyphicon glyphicon-remove form-control-feedback" ng-show=" state.user =='has-error'"></span>
                                     <span class="glyphicon glyphicon-alert form-control-feedback" ng-show=" state.user =='has-warning'"></span>
                                     <span class="glyphicon glyphicon-ok form-control-feedback" ng-show="state.user =='has-success'"></span>
-                                    <span class="errorcoment" ng-show="state.user=='has-error'">{{ content.alreadyNameExist }}</span>
-                                    <span class="warningcoment" ng-show="state.user=='has-warning'">{{ content.minLength }}</span>
+                                    <span class="errorcoment" ng-show="state.user=='has-warning' && usernameErrorType == 'is-empty'">{{content.usernameIsEmpty}}</span>
+                                    <span class="errorcoment" ng-show="state.user=='has-warning' && usernameErrorType =='has-spaces'">{{content.usernameHasSpaces}}</span>
+                                    <span class="errorcoment" ng-show="state.user=='has-warning' && usernameErrorType =='wrong-length'">{{content.usernameWrongLenth}}</span>
+                                    <span class="errorcoment" ng-show="state.user=='has-error' && usernameErrorType == 'alredy-exists'">{{ content.alreadyNameExist}}</span>
+                                    <!-- <span class="warningcoment" ng-show="state.user=='has-warning'">{{ content.minLength }}</span> -->
                                     <span class="errorcoment"
                                           ng-show="registerForm.user.$touched && registerForm.user.$pristine && (state.user == '')">{{ content.required }}</span>
                                 </div>

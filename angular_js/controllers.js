@@ -215,16 +215,25 @@ angular.module('controllers', [])
                 $scope.formData = {};
                 $scope.registerForm.$setPristine();//poner el formulario en estado inicial
             };
-
+            $scope.usernameErrorType;
             //Validación del usuario
             $scope.checkUser = function (formData) {
+                //Is empty
                 if (formData.SUname == null) {
                     $scope.state.user = 'has-warning';
+                    $scope.usernameErrorType = 'is-empty';
                     userOk = false;  // Usamos una variable en vez del return por que la función promise tarda mas en retornar el resultado y nos dava error al comprobarlo en el submit
                     return;
                 }
-                if (formData.SUname.length < 4 || formData.SUname.length >= 15 || formData.SUname.indexOf(' ') !== -1) { // minimo y maximo de caracteres requeridos y NOT whitespaces
+                //Minimum length
+                else if (formData.SUname.length < 4 || formData.SUname.length > 15) {
                     $scope.state.user = 'has-warning';
+                    $scope.usernameErrorType = 'wrong-length';
+                    userOk = false;
+                //Contains spaces
+                } else if(formData.SUname.indexOf(' ') >= 0){
+                    $scope.state.user = 'has-warning';
+                    $scope.usernameErrorType = 'has-spaces';
                     userOk = false;
                 } else {
                     Resources.register.get({//enviamos los datos de la tabla de la base de datos donde queremos comprobar el nombre
@@ -237,6 +246,7 @@ angular.module('controllers', [])
                                     userOk = true;
                                 } else if (results.exist == "true") {
                                     $scope.state.user = 'has-error'; //Si exixte el nombre ponemos el checkbox en error
+                                    $scope.usernameErrorType = 'alredy-exists';
                                     userOk = false;
                                 }
                             })

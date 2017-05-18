@@ -11,6 +11,7 @@ class WordDocument_Model extends CI_Model {
   //WordDocument
   var $phpWord;
   var $sentences;
+
   //WordDocument Styles
   var $imgStyle;
   var $specialImgStyle;
@@ -29,40 +30,47 @@ class WordDocument_Model extends CI_Model {
     $this->sentences = $folder_data;
     $this->setStyles();
 
-    // Adding a Section to the document
+    //Adding a Section to the document
     $section = $this->phpWord->addSection();
 
+    //Adding FOLDER TITLE
     $section->addText($this->sentences['folderTitle'], $this->headerStyle);
     $section->addTextBreak();
 
+    //ITERATE preRecSentences
     foreach ($this->sentences['preRecSentences'] as $i) {
 
       $table = $section->addTable($this->tableStyle);
 
       $table->addRow();
 
-      if(array_key_exists('image1', $i[0]))
+      /*
+       * Append image IF EXISTS
+       */
+      if($i[0]['image1'] !== null)
         $table->addCell(150)->addImage(
           $i[0]['image1'],
           $this->imgStyle
         );
 
-      if(array_key_exists('image2', $i[0]))
+      if($i[0]['image2'] !== null)
         $table->addCell(150)->addImage(
           $i[0]['image2'],
           $this->imgStyle
         );
 
-      if(array_key_exists('image3', $i[0]))
+      if($i[0]['image3'] !== null)
         $table->addCell(150)->addImage(
           $i[0]['image3'],
           $this->imgStyle
         );
 
+      //Adding associated pictogram text
       $section->addText($i[0]['sentence'], $this->sentenceStyle);
       $section->addTextBreak();
     }
 
+    //ITERATE NOTpreRecSentences
     foreach ($this->sentences['NOTpreRecSentences'] as $i) {
       $count = 0;
 
@@ -94,17 +102,17 @@ class WordDocument_Model extends CI_Model {
           );
         }
       }
-
+      //Adding associated pictogram text
       $section->addText($i[0]['sentence'], $this->sentenceStyle);
       $section->addTextBreak();
     }
 
     //Save WordDocument on tempory folder
     $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($this->phpWord, 'Word2007');
-    $file_name = './Temp/' . time() . '.docx';
-    $objWriter->save($file_name);
+    $file_path = './Temp/' . time() . '.docx';
+    $objWriter->save($file_path);
 
-    return $file_name;
+    return $file_path;
   }
 
   /* Preset WordDocument styles
