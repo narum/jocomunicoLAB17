@@ -91,15 +91,16 @@ class RecoverBackup extends CI_Model {
       $this->UpdateUser($Fname);
     }
       //llama a la recuperacion parcial de paneles
-    function LaunchParcialRecover_panels(){
+    function LaunchParcialRecover_panels($mainGboard){
       $Fname=$this->getLastGlobalBackup();
       if(!$this->checkifPictogramsexists()){
       $this->LaunchParcialRecover_Pictograms();
       }
-      $this->InsertGroupBoards($Fname);
+      $this->InsertGroupBoards($Fname,$mainGboard);
       $this->InsertBoards($Fname);
       $this->InsertCells($Fname);
       $this->InsertRBoardCell($Fname);
+      return $mainGboard;
     }
     //devuelve el nombre de la capeta del ultimo backup global
     private function getLastGlobalBackup(){
@@ -350,32 +351,46 @@ private function InsertCells($Folder){
     $cells->cellType[$i],
     $cells->activeCell[$i]
   ));
-  array_push($a,$sentencekey[$poscs]);
     $query=$this->db->query("SELECT LAST_INSERT_ID() as s2");
     $res=$query->result();
     array_push($ID_Cell,$res[0]->s2);
 }
  $this->InsertRBoardCell($Folder,$ID_Cell);
- return $a;
 }
 //Inserta en la base de datos los registros correspondientes a groupboards
-private function InsertGroupBoards($Folder){
+private function InsertGroupBoards($Folder,$mainGboard){
  $ID_User=$this->session->idusu;
  $file = file_get_contents($Folder."/GroupBoards.json");
  $gboards=json_decode($file);
  $count=count($gboards->ID_GBUser);
- for($i=0;$i<$count;$i++){
-  $sql="INSERT INTO GroupBoards(ID_GBUser,GBname,primaryGroupBoard,defWidth,defHeight,imgGB)VALUES (?,?,?,?,?,?)";
-  $this->db->query($sql,
-   array(
-    $ID_User,
-    $gboards->GBname[$i],
-    $gboards->primaryGroupBoard[$i],
-    $gboards->defWidth[$i],
-    $gboards->defHeight[$i],
-    $gboards->imgGB[$i]
-  ));
+ if(!$mainGboard){
+   for($i=0;$i<$count;$i++){
+    $sql="INSERT INTO GroupBoards(ID_GBUser,GBname,primaryGroupBoard,defWidth,defHeight,imgGB)VALUES (?,?,?,?,?,?)";
+    $this->db->query($sql,
+     array(
+      $ID_User,
+      $gboards->GBname[$i],
+      0,
+      $gboards->defWidth[$i],
+      $gboards->defHeight[$i],
+      $gboards->imgGB[$i]
+    ));
+  }
+}else{
+  for($i=0;$i<$count;$i++){
+   $sql="INSERT INTO GroupBoards(ID_GBUser,GBname,primaryGroupBoard,defWidth,defHeight,imgGB)VALUES (?,?,?,?,?,?)";
+   $this->db->query($sql,
+    array(
+     $ID_User,
+     $gboards->GBname[$i],
+     $gboards->primaryGroupBoard[$i],
+     $gboards->defWidth[$i],
+     $gboards->defHeight[$i],
+     $gboards->imgGB[$i]
+   ));
+ }
 }
+
 return $count;
 }
 //Inserta en la base de datos los registros correspondientes a images
