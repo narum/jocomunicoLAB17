@@ -721,3 +721,31 @@ input.switch:checked ~ label:after
 .btn-red {
     background-color: #cc0000;
 }
+
+.btn-lightred {
+    font-size: 2.5vh;
+    color: #333333;
+    background-color: #F75A5A;
+    border-top: 0.3vh solid #333333;
+    border-right: 0.4vh solid #333333;
+    border-left: none;
+    border-bottom: none;
+    height: 5.2vh;
+    padding-left: 1vw;
+    padding-right: 1vw;
+    border-radius: 8px;
+}
+
+.btn-lightgreen {
+    font-size: 2.5vh;
+    color: #333333;
+    background-color: #00C853;
+    border-top: 0.3vh solid #333333;
+    border-right: 0.4vh solid #333333;
+    border-left: none;
+    border-bottom: none;
+    height: 5.2vh;
+    padding-left: 1vw;
+    padding-right: 1vw;
+    border-radius: 8px;
+}

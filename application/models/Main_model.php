@@ -272,7 +272,14 @@ class Main_model extends CI_Model {
     }
     //Return last $day days from historic table
     function getHistoric($idusu, $day){
-        $date = date('Y-m-d', strtotime("-".$day." day"));
+
+        $user = $this->session->userdata('idsu');
+        $date = $this->db->query('SELECT cfgLatestHistorialActivated
+                                  FROM User
+                                  WHERE ID_User = ?',
+                                  array($user)
+                                )->row()->cfgLatestHistorialActivated;
+
         $this->db->from('S_Historic');
         $this->db->where_in('Pictograms.ID_PUser', array('1', $this->session->userdata('idusu')));
         $this->db->where('sentenceDate >', $date);

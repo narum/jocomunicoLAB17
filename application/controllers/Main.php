@@ -227,6 +227,7 @@ class Main extends REST_Controller {
         $idusu = $this->session->userdata('idusu');
         
         $folders = $this->main_model->getData('S_Folder', 'ID_SFUser', $idusu);
+
         $response = [
             'folders' => $folders
         ];

@@ -73,5 +73,21 @@ class Historic extends REST_Controller {
         ];
         $this->response($response, REST_Controller::HTTP_OK);
     }
+
+    function getHistorialState_get() {
+        
+        $this->response(
+            [
+                'state' => $this->HistoricInterface->getHistorialState()
+            ],
+        REST_Controller::HTTP_OK);
+    }
+
+    function changeHistorialState_post() {
+
+        $this->HistoricInterface->changeHistorialState($this->post('newState'));
+
+        $this->response(null, REST_Controller::HTTP_OK);
+    }
     
 }

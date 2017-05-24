@@ -89,17 +89,8 @@ public function reccfg_post(){
 //recupera las panels y las inserta en la nueva base de datos
 public function recpanels_post(){
   $overwrite=$this->post('overwrite');
-  if($overwrite){
-    $mainGboard=true;
-    $this->BackupClean->LaunchParcialClean_panels();
-  }else{
-    $mainGboard=false;
-  }
-  $data=$this->RecoverBackup->LaunchParcialRecover_panels($mainGboard);
-  $response = [
-      'data' => $data
-  ];
-  $this->response($response, REST_Controller::HTTP_OK);
+  if($overwrite) $this->BackupClean->LaunchParcialClean_panels();
+  $this->RecoverBackup->LaunchParcialRecover_panels();
 }
 public function checkifparcialexists_get(){
   $data=$this->RecoverBackup->checkifparcialexists();

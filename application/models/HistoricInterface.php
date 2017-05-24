@@ -98,5 +98,36 @@ class HistoricInterface extends CI_Model {
 
         return $output;
     }
+    
+    //Get if Historial is enable or disable
+    function getHistorialState(){
+        return $this->db->query('SELECT cfgHistorialState
+                                FROM User
+                                WHERE ID_User = ?',
+                                array($this->session->userdata('idsu'))
+                )->row()->cfgHistorialState;
+    }
+
+    //Execute update [cfgHistorialState] and new new latest date [cfgLatestHistrorialActivated]
+    function changeHistorialState($newState) {
+
+        //Change new date (system date)
+        $this->db->query('UPDATE User
+                          SET cfgLatestHistorialActivated = ?
+                          WHERE ID_User = ?',
+                          //Params
+                          array( date('Y-m-d H:i:s')
+                                ,$this->session->userdata('idsu'))
+                        );
+
+        //Change enable or disable
+        $this->db->query('UPDATE User
+                          SET cfgHistorialState = ?
+                          WHERE ID_User = ?',
+                          //Params
+                          array( intval($newState)
+                                ,$this->session->userdata('idsu'))
+                        );
+    }
 
 }

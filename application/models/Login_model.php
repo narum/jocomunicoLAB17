@@ -73,6 +73,7 @@ class Login_model extends CI_Model {
         $this->session->set_userdata('isfem', $userConfig["cfgIsFem"]);
         $this->session->set_userdata('cfgExpansionOnOff', $userConfig["cfgExpansionOnOff"]);
         $this->session->set_userdata('cfgPredBarNumPred', $userConfig["cfgPredBarNumPred"]);
+        $this->session->set_userdata('latest_historial_date', $userConfig['cfgLatestHistorialActivated']);
 
         // Save Expansion language in the COOKIES
         $this->db->select('canExpand');

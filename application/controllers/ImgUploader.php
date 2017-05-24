@@ -27,53 +27,7 @@ class ImgUploader extends REST_Controller {
             }
         }
     }
-    public function uploadBackup_post() {
-      $errorText = array();
-      $ID_User=$this->session->idusu;
-      $target_dir="./Temp/";
-      $error = false;
-      for ($i = 0; $i < count($_FILES); $i++) {
-          $md5Name = $this->Rename_Img(basename($_FILES['file' . $i]['name']));
-          if (!($_FILES['file' . $i]['type'] == "application/zip")) {
-              $errorProv = ["errorImg1", $_FILES['file' . $i]['name']];
-              array_push($errorText, $errorProv);
-              $error = true;
-              continue;
-          }
-          $handle = fopen($target_dir . $md5Name, "r");
-          if (is_resource($handle)) {
-              fclose($handle);
-              //MODIF: lanzar error
-              $errorProv = ["errorImg2", $_FILES['file' . $i]['name']];
-              array_push($errorText, $errorProv);
-              $error = true;
-              continue;
-          }
-          //MODIF: poner tamaño a 100 kb y tamaño 150 minimo
-      //    if ($_FILES['file' . $i]['size'] > 10000) {
-              $success = move_uploaded_file($_FILES['file' . $i]['tmp_name'],
-              $target_dir . basename($_FILES['file' . $i]['name']));
-        //  }
-          if (!$success) {
-              $errorProv = ["errorImadsvg2", $_FILES['file' . $i]['name']];
-              $max_upload = ini_get('memory_limit');
-              array_push($errorText, $max_upload);
-              $error = true;
-              continue;
-          }
-          $dir12=substr(substr($_FILES['file' . $i]['name'],0,-4),9)."-".$ID_User;
-              mkdir("./Temp/$dir12");
-             $this->unzip->extract('./Temp/'.basename($_FILES['file' . $i]['name']),
-              "./Temp/$dir12");
-      }
-      $response = [
-          'url' => $dir12,
-          'errorText' => $errorText,
-          'error' => $error
-      ];
 
-      $this->response($response, REST_Controller::HTTP_OK);
-  }
     public function upload_post() {
         //"vocabulary" is a string.....
         if (filter_input(INPUT_POST, 'vocabulary') == "true") {
@@ -94,7 +48,7 @@ class ImgUploader extends REST_Controller {
             $handle = fopen($target_dir . $md5Name, "r");
             if (is_resource($handle)) {
                 fclose($handle);
-                //MODIF: lanzar error
+                //MODIF: lanzar error 
                 $errorProv = ["errorImg2", $_FILES['file' . $i]['name']];
                 array_push($errorText, $errorProv);
                 $error = true;
@@ -186,12 +140,12 @@ class ImgUploader extends REST_Controller {
                 // removing the black from the placeholder
                 imagecolortransparent($img_base, $background);
 
-                // turning off alpha blending (to ensure alpha channel information
-                // is preserved, rather than removed (blending with the rest of the
+                // turning off alpha blending (to ensure alpha channel information 
+                // is preserved, rather than removed (blending with the rest of the 
                 // image in the form of black))
                 imagealphablending($img_base, false);
 
-                // turning on alpha channel information saving (to ensure the full range
+                // turning on alpha channel information saving (to ensure the full range 
                 // of transparency is preserved)
                 imagesavealpha($img_base, true);
 
