@@ -39,7 +39,7 @@ class Board extends REST_Controller {
         $postdata = file_get_contents("php://input");
         $request = json_decode($postdata);
         $luid = $request->lusuid;
-        //MODIF: mirar que id de lenguage es
+        //MODIF: mirar que id de lenguage es 
         $data = array(
             'uinterfacelangauge' => $luid // Id language
         );
@@ -66,7 +66,7 @@ class Board extends REST_Controller {
     }
 
     /*
-     * Get the cells of the boards that will be displayed and the
+     * Get the cells of the boards that will be displayed and the 
      * number of rows and columns in order to set the proportion
      */
 
@@ -145,7 +145,7 @@ class Board extends REST_Controller {
      * Estos van en otro controlador que seria el de edicion, pero aun no estan hechos
      */
     /*
-     * Returns de cells of the boards that will be displayed and the
+     * Returns de cells of the boards that will be displayed and the 
      * number of rows and columns in order to set the proportion
      * Modify the number of rows and columns and add or remove cells.
      */
@@ -350,6 +350,7 @@ class Board extends REST_Controller {
 
         $idusu = $this->session->userdata('idusu');
         $this->BoardInterface->removeSentence($idusu);
+
         $data = $this->Lexicon->recuperarFrase($idusu);
 
         $newdata = $this->inserty($data);
@@ -360,56 +361,8 @@ class Board extends REST_Controller {
         $this->response($response, REST_Controller::HTTP_OK);
     }
 
-
-
-
     /*
-    * New function: Copy the text in the clipboard
-    */
-
-    /*public function toAllBrowsersClipboard_post() {
-
-      $idusu = $this->session->userdata('idusu');
-      $data = $this->Lexicon->recuperarFrase($idusu);
-      $newdata = $this->inserty($data);
-
-      $expander = new Myexpander();
-      $expander->expand();
-      $info = $expander->info;
-
-      $response = [
-          'data' => $newdata,
-          'info' => $info,
-        ];
-
-
-      $this->response($response, REST_Controller::HTTP_OK);
-
-    }
-
-    public function toAllBrowsersTxtImgClipboard_post() {
-
-      $idusu = $this->session->userdata('idusu');
-      $data = $this->Lexicon->recuperarFrase($idusu);
-      $newdata = $this->inserty($data);
-
-      $expander = new Myexpander();
-      $expander->expand();
-      $info = $expander->info;
-
-      $response = [
-          'data' => $newdata,
-          'info' => $info,
-        ];
-
-
-      $this->response($response, REST_Controller::HTTP_OK);
-
-    }*/
-
-
-    /*
-     * Copy the S_Temp table to the S_Historic table and all this dependecies.
+     * Copy the S_Temp table to the S_Historic table and all this dependecies. 
      * Also remove the entire phrase (pictograms) in the S_Temp database table.
      */
 
@@ -436,14 +389,14 @@ class Board extends REST_Controller {
         } else {
             $expander = new Myexpander();
             $expander->expand();
-
+            
             $info = $expander->info;
             $errorText = "";
-
+            
             if ($info[error]) {
                 $errorCode = $info[errorcode];
                 $errorText = $this->BoardInterface->get_errorText($errorCode);
-
+                
                 $response = [
                     'info' => $info,
                     'errorText' => $errorText[0][content]
@@ -523,7 +476,6 @@ class Board extends REST_Controller {
         $negativa = $request->negativa;
 
         $control = "";
-        $control2 = "";
         $function = $this->BoardInterface->getFunction($id);
         $value = $function[0]->functValue;
         $type = $function[0]->functType;
@@ -545,11 +497,6 @@ class Board extends REST_Controller {
             case "control":
                 $control = $value;
                 break;
-                //New code
-            case "control2":
-                $control2 = $value;
-                break;
-
         }
         $idusu = $this->session->userdata('idusu');
         $data = $this->Lexicon->recuperarFrase($idusu);
@@ -561,7 +508,6 @@ class Board extends REST_Controller {
             'tipusfrase' => $tipusfrase,
             'negativa' => $negativa,
             'control' => $control,
-            'control2' => $control2,
             'data' => $newdata
         ];
 
@@ -569,7 +515,7 @@ class Board extends REST_Controller {
     }
 
     /*
-     * Add the selected pictogram to the board
+     * Add the selected pictogram to the board 
      */
 
     public function addPicto_post() {
@@ -636,7 +582,7 @@ class Board extends REST_Controller {
     }
 
     /*
-     * Get all prerecorded user sentences
+     * Get all prerecorded user sentences 
      */
 
     public function searchSentence_post() {
@@ -667,7 +613,7 @@ class Board extends REST_Controller {
     }
 
     /*
-     *
+     * 
      */
 
     public function searchSFolder_post() {
@@ -890,7 +836,7 @@ class Board extends REST_Controller {
         }
         /*
          * This commented part can update the size of the board if it is implemented.
-         *
+         * 
           $this->addColumns(0, 0, $idBoard, $NEW_width);
           $this->addRows($width, 0, $idBoard, $NEW_height);
          */
@@ -1009,7 +955,7 @@ class Board extends REST_Controller {
     }
 
     public function getPrediction_post() {
-        // CARGA recommenderArray
+        // CARGA recommenderArray                 
         $prediction = new Myprediction();
         $recommenderArray = $prediction->getPrediction();
 
@@ -1060,7 +1006,7 @@ class Board extends REST_Controller {
         $aux = $audio->generateAudio($idusu, $text, $interface);
 
         $audio->waitForFile($aux[0], $aux[1]);
-
+        
         // We save the audio error code in the database
         if ($aux[1]) {
             $this->BoardInterface->ErrorAudioToDB($aux[3]);

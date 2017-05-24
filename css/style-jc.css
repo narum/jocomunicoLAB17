@@ -13,7 +13,7 @@
 
 }
 .mainBoard{
-    padding: 5vh;
+    padding: 5vh; 
     height: 100vh;
 }
 
@@ -52,10 +52,7 @@ html *
     html *{
         font-size: 1.4vw;
     }
-
 }
-
-
 
 /*MODIF: esto es no comun, propio de las vistas asi que...*/
 #footer{
@@ -134,7 +131,7 @@ html *
     border-radius: 10px;
     z-index: 0;
     background-clip: content-box;
-    background-color: white;
+    background-color: white; 
 }
 
 .emptyImg{
@@ -152,7 +149,7 @@ html *
 
 .sentencePadding{
     padding-top: 0.5vh;
-    padding-left: 5.5%;
+    padding-left: 5.5%; 
     width: 90%
 }
 
@@ -419,7 +416,7 @@ html *
 }
 .backgroundHome{
     width: 94%;
-    height: 100%;
+    height: 100%;    
     position: absolute;
     background: url('/img/srcWeb/Menu/borrar_ultim_fons.png');
     background-size: 100% 100%;
@@ -427,7 +424,7 @@ html *
 }
 .backgroundLlegir{
     width: 94%;
-    height: 100%;
+    height: 100%;    
     position: absolute;
     background: url('/img/srcWeb/Menu/llegir_fons.png');
     background-size: 100% 100%;
@@ -436,7 +433,7 @@ html *
 .backgroundDelete{
     width: 94%;
     left: 6%;
-    height: 100%;
+    height: 100%;    
     position: absolute;
     background: url('/img/srcWeb/Menu/borrar_ultim_fons.png');
     background-size: 100% 100%;
@@ -445,7 +442,7 @@ html *
 .backgroundDeleteAll{
     width: 94%;
     left: 6%;
-    height: 100%;
+    height: 100%;    
     position: absolute;
     background: url('/img/srcWeb/Menu/borrar_fons.png');
     background-size: 100% 100%;
@@ -474,7 +471,6 @@ html *
   background-size: 100% 100%;
   border-radius: 7px;
 }
-
 
 .icon{
     position: absolute;
@@ -528,7 +524,7 @@ html *
     float: left;
 }
 .phraseText{
-    bottom:0;
+    bottom:0; 
     position:absolute;
 }
 .searchBox{

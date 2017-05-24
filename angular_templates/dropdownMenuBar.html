@@ -1,12 +1,10 @@
 <!--menu superior dropdown-->
 <link rel="stylesheet" type="text/css" href="css/dropdownMenuBar.css">
-
 <!--Normal Button-->
 <div ng-show="!$root.dropdownMenuBarButtonHide">
     <div id="dropdownMenuButton" ng-init="imgMenuButton='/img/srcWeb/DropdownMenuBar/menuButton1.png';dropdownMenuOpen=false" ng-mouseover="imgMenuButton='/img/srcWeb/DropdownMenuBar/menuButton2.png'" ng-mouseout="imgMenuButton='/img/srcWeb/DropdownMenuBar/menuButton1.png'">
         <input type="image" class="imgDropdownMenuButton" ng-src="{{imgMenuButton}}" ng-click="dropdownMenuOpen=!dropdownMenuOpen">
     </div>
-
     <div class="dropdownMenuBar">
         <div class="menuBarAnimation" ng-class="{menuBarAnimationOpened: dropdownMenuOpen}"></div>
     </div>
@@ -14,8 +12,9 @@
 <!--Hide Button-->
 <div ng-show="$root.dropdownMenuBarButtonHide">
     <div id="dropdownMenuButton" ng-init="imgMenuButton='/img/srcWeb/DropdownMenuBar/menuButton1.png';dropdownMenuOpen=false" ng-mouseover="imgMenuButton='/img/srcWeb/DropdownMenuBar/menuButton2.png';dropdownMenuOpen=true" ng-mouseout="imgMenuButton='/img/srcWeb/DropdownMenuBar/menuButton1.png'">
-        <input type="image" class="imgDropdownMenuButtonHide" ng-class="{imgDropdownMenuButtonHideOpened: dropdownMenuOpen}" ng-src="{{imgMenuButton}}" ng-click="dropdownMenuOpen=!dropdownMenuOpen" ng-mouseover="confirmPassword()">
         <!--<input type="image" class="imgDropdownMenuButtonHide" ng-class="{imgDropdownMenuButtonHideOpened: dropdownMenuOpen}" ng-src="{{imgMenuButton}}" ng-click="dropdownMenuOpen=!dropdownMenuOpen">-->
+        <input type="image" class="imgDropdownMenuButtonHide" ng-class="{imgDropdownMenuButtonHideOpened: dropdownMenuOpen}" ng-src="{{imgMenuButton}}" ng-click="dropdownMenuOpen=!dropdownMenuOpen" ng-mouseover="confirmPassword()">
+
     </div>
     <div class="dropdownMenuBarHide">
         <div class="menuBarAnimationHide" ng-class="{menuBarAnimationOpenedHide: dropdownMenuOpen}"></div>
@@ -59,4 +58,4 @@
     </div>
 </div>
 <!--Close bar outside of div-->
-<div class="clickOutside" ng-show='dropdownMenuOpen' ng-click="dropdownMenuOpen=!dropdownMenuOpen"></div>
+<div id="clkOutside" class="clickOutside" ng-show='dropdownMenuOpen' ng-click="dropdownMenuOpen=!dropdownMenuOpen"></div>

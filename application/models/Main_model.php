@@ -6,6 +6,7 @@ class Main_model extends CI_Model {
     {
         parent::__construct();
         $this->load->database();
+        $this->load->library("session");
     }
     
     // Petición del contenido para mostrar en las vistas (textos)
@@ -121,7 +122,7 @@ class Main_model extends CI_Model {
     public function saveArrayData($table, $data){
 
         $saved = $this->db->insert_batch($table, $data);
-
+        
         return $saved;
     }
     // Cambiar contenido de una tabla.
@@ -129,9 +130,32 @@ class Main_model extends CI_Model {
 
         $this->db->where($column, $id);
         $saved = $this->db->update($table, $data);
-
+            
         return $saved;
     }
+
+
+    // JORGE: Codigo para conseguir el usuario de la base de datos.
+
+    function getUser($user, $pass) {
+        $languageExp = $this->session->userdata('ulanguage');
+        $this->db->join('User', 'SuperUser.ID_SU = User.ID_USU', 'left');
+        $this->db->where('cfgExpansionLanguage', $languageExp);
+        $this->db->where('SUname', $user);
+        $this->db->where('pswd', md5($pass));
+        $query = $this->db->get('SuperUser');
+
+        if ($query->num_rows() > 0) {
+            $output = $query->result();
+        } else
+            $output = null;
+
+        return $output;
+    }
+
+
+
+
     
     // Escrivir en la tabla Usuario
     public function saveUser($SUname, $ID_ULanguage){
@@ -142,11 +166,11 @@ class Main_model extends CI_Model {
         $ID_SU = $this->db->get()->result_array();
 
         $id = array_column($ID_SU, 'ID_SU');
-
+       
         $data = [
             "ID_USU" => $id[0],
             "ID_ULanguage" => $ID_ULanguage,
-            "cfgExpansionLanguage" => $ID_ULanguage,
+            "cfgExpansionLanguage" => $ID_ULanguage,   
         ];
 
         $saved = $this->db->insert('User', $data);
@@ -157,7 +181,10 @@ class Main_model extends CI_Model {
         $ID_User = $this->db->get()->result_array();
 
         $idU = array_column($ID_User, 'ID_User');
-
+        
+        //Insertamos la fecha
+        $this->db->query("UPDATE Superuser SET insertDate = CURRENT_DATE WHERE ID_SU = ?", $ID_SU);
+        
         //Retornamos el ID_SUser y el ID_User
         $dataSaved = [
             "ID_SU" => $id[0],
@@ -166,6 +193,8 @@ class Main_model extends CI_Model {
         ];
 
         return $dataSaved;
+
+
     }
     
     // Validar usuario al registrarse

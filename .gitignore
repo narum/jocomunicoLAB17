@@ -23,3 +23,5 @@ viewBootService.vbs
 favicon.ico
 bootServices.bat
 bitnami.css
+sonar-project.properties
+/Temp/

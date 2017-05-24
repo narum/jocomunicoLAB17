@@ -47,6 +47,25 @@ html * {
     cursor: pointer;
     margin-bottom: 1vh;
 }
+.addGroups{
+    background-image:url('../img/srcWeb/patterns/pattern6.png');
+    width: 100%;
+    height: 7vh;
+    border-radius: 5px;
+    padding-top: 2.3vh;
+    font-size: 4vh;
+    font-weight: 90;
+    text-align: center;
+    color: white;
+    cursor: pointer;
+    margin-bottom: 1vh;
+}
+.filebtn{
+  opacity: 0;
+}
+.addGroups:hover{
+    background-image:url('../img/srcWeb/patterns/pattern9.png');
+}
 .buttonAddFolder:hover{
     background-color:rgba(0, 0, 0, 0.3);
 }
@@ -148,7 +167,7 @@ html * {
     white-space: nowrap;
 }
 .editaPanel{
-    height: 25%; 
+    height: 25%;
     border-top-right-radius: 10px;
     background: #81c1c6;
     text-align: center;
@@ -158,7 +177,7 @@ html * {
     cursor: pointer;
 }
 .noPrimaryPanel{
-    height: 25%; 
+    height: 25%;
     background: #c0f5f9;
     text-align: center;
     font-size: 2vh;
@@ -167,7 +186,7 @@ html * {
     cursor: pointer;
 }
 .primaryPanel{
-    height: 25%; 
+    height: 25%;
     background: #f9d05a;
     text-align: center;
     font-size: 2vh;
@@ -176,7 +195,7 @@ html * {
     /*cursor: pointer;*/
 }
 .nouPanel{
-    height: 25%; 
+    height: 25%;
     background: #81c1c6;
     text-align: center;
     font-size: 2vh;
@@ -184,9 +203,17 @@ html * {
     padding-top: 0.1vh;
     cursor: pointer;
 }
+.addGroup{
+  height: 20%;
+  background: #81c1c6;
+  text-align: center;
+  font-size: 2vh;
+  color: white;
+  padding-top: 0.1vh;
+  cursor: pointer;
+}
 .copyPanel{
-    border-bottom-right-radius: 10px;
-    height: 25%; 
+    height: 25%;
     background: #92dbe1;
     text-align: center;
     font-size: 2vh;
@@ -224,10 +251,10 @@ html * {
     cursor: default;
     text-transform: uppercase
 }
-.contentEditWordPadding{ 
+.contentEditWordPadding{
     padding: 0px;
 }
-.content1EditWord{ 
+.content1EditWord{
     padding: 0px;
 }
 .searchBoxEditWord{
@@ -262,7 +289,7 @@ html * {
     display: flex;
     justify-content: center;
     align-content: center;
-    flex-direction: column; 
+    flex-direction: column;
     cursor: pointer;
     max-height: 35px;
     width: 90%;
