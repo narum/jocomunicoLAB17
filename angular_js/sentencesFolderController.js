@@ -360,43 +360,54 @@ angular.module('controllers')
         */
         $scope.WordIsGenerated = false;
         $scope.WordDocumentPath;
+
         //Send info about current tematic folder
         $scope.downloadWord = function(){
 
           $scope.sentencesToWord = {
             preRecSentences: [],
             NOTpreRecSentences: [],
-            folderTitle: $scope.folderSelected.folderName
+            folderTitle: $scope.folderSelected.folderName || $scope.content.historialTitle
           };
+
           // SAVE preRecSentences
           if($scope.sentences !== null){
               $scope.sentencesToWord.preRecSentences = $scope.sentences.reduce((previous, i) => {
-                if(i.isPreRec === '1')
-                (previous[i.ID_SSentence] = previous[i.ID_SSentence] || [])
+                if(i.isPreRec === '1'){
+                    (previous[i.ID_SSentence] = previous[i.ID_SSentence] || [])
                     .push({
-                    sentence: i.generatorString,
-                    image1:   i.sPreRecImg1,
-                    image2:   i.sPreRecImg2,
-                    image3:   i.sPreRecImg3
+                        sentence: i.generatorString,
+                        image1:   i.sPreRecImg1,
+                        image2:   i.sPreRecImg2,
+                        image3:   i.sPreRecImg3
                     });
-                    console.log(previous);
+                }
+                
                 return previous;
             }, []).filter((element) => element !== undefined);
 
             // SAVE NOTpreRecSentences
             $scope.sentencesToWord.NOTpreRecSentences = $scope.sentences.reduce((previous, i) => {
-                if(i.isPreRec === '0')
-                (previous[i.ID_SSentence] = previous[i.ID_SSentence] || [])
+                if(i.isPreRec === '0'){
+                    (previous[i.ID_SSentence] = previous[i.ID_SSentence] || [])
                     .push({
-                    sentence: i.generatorString,
-                    imgPicto: i.imgPicto,
-                    isFem:    i.isfem,
-                    isPlural: i.isplural
+                        sentence: i.generatorString,
+                        imgPicto: i.imgPicto,
+                        isFem:    i.isfem,
+                        isPlural: i.isplural
                     });
+                } else {
+                    (previous[i.ID_RSHPSentence] = previous[i.ID_RSHPSentence] || [])
+                    .push({
+                        sentence: i.generatorString,
+                        imgPicto: i.imgPicto,
+                        isFem:    i.isfem,
+                        isPlural: i.isplural
+                    });
+                }
+                
                 return previous;
             }, []).filter((element) => element !== undefined);
-
-            console.log($scope.sentencesToWord);
 
             //GET WordDocument
             $http.post('WordDocument', {'sentences' : $scope.sentencesToWord})
@@ -404,7 +415,7 @@ angular.module('controllers')
                 $scope.WordDocumentPath = $scope.baseurl + response.documentPath;
                 //console.log(response);
                 $scope.WordIsGenerated = true;
-                $scope.toggleDownloadModal('Descarga', 'Su documento');
+                $scope.toggleDownloadModal('', '');
                 });
             };
           }
