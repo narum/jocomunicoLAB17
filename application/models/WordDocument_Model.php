@@ -78,7 +78,7 @@ class WordDocument_Model extends CI_Model {
 
       for ($pos=0; $pos < count($i); $pos++) {
 
-        if($count++ % 5 == 0) $table->addRow();
+        if($count++ % 4 == 0) $table->addRow();
 
         //ADD IMAGE
         $table->addCell(150)->addImage(

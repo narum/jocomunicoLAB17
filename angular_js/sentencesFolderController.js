@@ -405,7 +405,7 @@ angular.module('controllers')
                         isPlural: i.isplural
                     });
                 }
-                
+                console.log('hola');
                 return previous;
             }, []).filter((element) => element !== undefined);
 
