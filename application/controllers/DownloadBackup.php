@@ -19,7 +19,7 @@ $this->unzip->extract('uploads/my_archive.zip');
 $this->unzip->extract('uploads/my_archive.zip', '/path/to/directory/');
   }
   function backup($name){
-    $Fname="./backups/".urldecode($name);
+    $Fname="/xampp/htdocs/backups/".urldecode($name);
     $ID_Language=$this->session->uinterfacelangauge;
     switch($ID_Language){
       case 1:
@@ -113,6 +113,6 @@ $this->unzip->extract('uploads/my_archive.zip', '/path/to/directory/');
     $this->zip->archive('/path/to/directory/my_backup.zip');
 
   // Download the file to your desktop. Name it "my_backup.zip"
-  $this->zip->download($Fname.'.zip');
+  $this->zip->download($name.'.zip');
   }
 }

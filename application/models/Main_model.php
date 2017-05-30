@@ -1,14 +1,14 @@
-<?php 
+<?php
 
 class Main_model extends CI_Model {
-    
+
     public function __construct()
     {
         parent::__construct();
         $this->load->database();
         $this->load->library("session");
     }
-    
+
     // Petición del contenido para mostrar en las vistas (textos)
     public function getContent($section, $idLanguage)
     {
@@ -21,7 +21,7 @@ class Main_model extends CI_Model {
 
         return $query->result_array();// retornem l'array query amb els resultats
     }
-    
+
     // Idiomas disponibles en la tabla Languages.
     public function getLanguagesAvailable(){
         //Peticion a base de datos
@@ -31,7 +31,7 @@ class Main_model extends CI_Model {
 
             return $query->result_array();// retornamos el array
     }
-    
+
     // Comprobación de un campo de una columna de una tabla
     public function checkData($table, $column, $data){
 
@@ -70,13 +70,13 @@ class Main_model extends CI_Model {
             ];
         return $response;
     }
-    
+
     // Get first data from table $table where content in column $column are like $data
     public function getFirstData($table, $column, $data){
         $this->db->from($table);// Seleccionem la taula
         $this->db->where($column, $data);// filtrem per columnes
         $data = $this->db->get()->result_array();
-        
+
         return $data[0];
     }
     // Get single data from table $table where content in column $column are like $data
@@ -85,7 +85,7 @@ class Main_model extends CI_Model {
         $this->db->where($column, $data);// filtrem per columnes
         $this->db->where($column2, $data2);// filtrem per columnes
         $data = $this->db->get()->result_array();
-        
+
         return $data;
     }
     // Delete data from table $table where content in column $column are like $data
@@ -101,16 +101,16 @@ class Main_model extends CI_Model {
         $query = $this->db->delete($table);
         return $query;
     }
-    
+
     // Get data from table $table where content in column $column are like $data
     public function getData($table, $column, $data){
         $this->db->from($table);// Seleccionem la taula
         $this->db->where($column, $data);// filtrem per columnes
         $data = $this->db->get()->result_array();
-        
+
         return $data;
     }
-    
+
     // Guardar contenido en una tabla.
     public function saveData($table, $data){
 
@@ -122,7 +122,7 @@ class Main_model extends CI_Model {
     public function saveArrayData($table, $data){
 
         $saved = $this->db->insert_batch($table, $data);
-        
+
         return $saved;
     }
     // Cambiar contenido de una tabla.
@@ -130,7 +130,7 @@ class Main_model extends CI_Model {
 
         $this->db->where($column, $id);
         $saved = $this->db->update($table, $data);
-            
+
         return $saved;
     }
 
@@ -156,7 +156,7 @@ class Main_model extends CI_Model {
 
 
 
-    
+
     // Escrivir en la tabla Usuario
     public function saveUser($SUname, $ID_ULanguage){
 
@@ -166,25 +166,25 @@ class Main_model extends CI_Model {
         $ID_SU = $this->db->get()->result_array();
 
         $id = array_column($ID_SU, 'ID_SU');
-       
+
         $data = [
             "ID_USU" => $id[0],
             "ID_ULanguage" => $ID_ULanguage,
-            "cfgExpansionLanguage" => $ID_ULanguage,   
+            "cfgExpansionLanguage" => $ID_ULanguage,
         ];
 
         $saved = $this->db->insert('User', $data);
-        
+
         $this->db->select('ID_User'); // Seleccionar les columnes
         $this->db->from('User');// Seleccionem la taula
         $this->db->where('ID_USU', $id[0]);// filtrem per columnes
         $ID_User = $this->db->get()->result_array();
 
         $idU = array_column($ID_User, 'ID_User');
-        
+
         //Insertamos la fecha
         $this->db->query("UPDATE Superuser SET insertDate = CURRENT_DATE WHERE ID_SU = ?", $ID_SU);
-        
+
         //Retornamos el ID_SUser y el ID_User
         $dataSaved = [
             "ID_SU" => $id[0],
@@ -196,7 +196,7 @@ class Main_model extends CI_Model {
 
 
     }
-    
+
     // Validar usuario al registrarse
     public function userValidation($emailKey, $ID_SU){
 
@@ -252,14 +252,14 @@ class Main_model extends CI_Model {
         $this->db->order_by('Languages.ID_Language', 'asc');
         $query3 = $this->db->get()->result_array();
 
-        
+
         // Guardamos los datos como objeto
         $Array = [
             'userConfig' => $userConfig,
             'users' => $query2,
             'languages' => $query3,
         ];
-        
+
         // Save user config data in the COOKIES
         $this->session->set_userdata('idusu', $userConfig["ID_User"]);
         $this->session->set_userdata('uname', $userConfig["SUname"]);
@@ -339,7 +339,7 @@ class Main_model extends CI_Model {
         $this->db->join('Pictograms', 'R_S_SentencePictograms.pictoid = Pictograms.pictoid');
         $this->db->order_by('R_S_SentencePictograms.ID_RSSPSentencePicto', 'asc');
         $query = $this->db->get();
-        
+
         if ($query->num_rows() > 0) {
             $output = $query->result();
         } else
@@ -363,7 +363,7 @@ class Main_model extends CI_Model {
         $this->db->where('ID_SFUser', $idusu);// filtrem per columnes
         $this->db->order_by('folderOrder', 'desc');
         $data = $this->db->get()->result_array();
-        
+
         return $data;
     }
     // Change historic folder data.
@@ -382,7 +382,7 @@ class Main_model extends CI_Model {
         $this->db->where('ID_SSUser', $idusu);
         $this->db->order_by('posInFolder', 'asc');
         $query = $this->db->get();
-        
+
         if ($query->num_rows() > 0) {
             $output = $query->result();
         } else
@@ -390,13 +390,13 @@ class Main_model extends CI_Model {
 
         return $output;
     }
-    
+
     function restartErrorVoices($idusu) {
-        
+
         $data = array(
             'errorTemp' => '0',
         );
-        
+
         $this->db->where('ID_User', $idusu);
         $this->db->update('User', $data);
     }

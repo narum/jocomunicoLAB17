@@ -34,8 +34,8 @@ class ImgUploader extends REST_Controller {
       $error = false;
       for ($i = 0; $i < count($_FILES); $i++) {
           $md5Name = $this->Rename_Img(basename($_FILES['file' . $i]['name']));
-          if (!($_FILES['file' . $i]['type'] == "application/zip")) {
-              $errorProv = ["errorImg1", $_FILES['file' . $i]['name']];
+          if (!($_FILES['file' . $i]['type'] == "application/octet-stream")) {
+              $errorProv = ["errorImg1", $_FILES['file' . $i]['type']];
               array_push($errorText, $errorProv);
               $error = true;
               continue;
@@ -62,9 +62,9 @@ class ImgUploader extends REST_Controller {
               continue;
           }
           $dir12=substr(substr($_FILES['file' . $i]['name'],0,-4),9)."-".$ID_User;
-              mkdir("./Temp/$dir12");
-             $this->unzip->extract('./Temp/'.basename($_FILES['file' . $i]['name']),
-              "./Temp/$dir12");
+              mkdir("/xampp/htdocs/backups/Temp/$dir12");
+             $this->unzip->extract('/xampp/htdocs/backups/'.basename($_FILES['file' . $i]['name']),
+              "/xampp/htdocs/backups/$dir12");
       }
       $response = [
           'url' => $dir12,

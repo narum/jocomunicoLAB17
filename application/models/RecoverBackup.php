@@ -106,7 +106,7 @@ class RecoverBackup extends CI_Model {
     private function getLastGlobalBackup(){
       $ID_User=$this->session->idusu;
       $dates=array();
-      $dirs = array_filter(glob("Temp/*" ,GLOB_ONLYDIR), 'is_dir');
+      $dirs = array_filter(glob("/xampp/htdocs/Temp/*" ,GLOB_ONLYDIR), 'is_dir');
       for($i=0;$i<count($dirs);$i++){
          if($ID_User==substr($dirs[$i],25)&&substr($dirs[$i],29)=="")
           array_push($dates,$dirs[$i]);

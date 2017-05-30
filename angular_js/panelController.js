@@ -1,5 +1,5 @@
 angular.module('controllers')
-        .controller('panelCtrl', function ($scope, $rootScope, $cookies, txtContent, $location, $http, ngDialog, dropdownMenuBarInit, AuthService, Resources, $timeout) {
+        .controller('panelCtrl', function ($scope,$route, $rootScope, $cookies, txtContent, $location, $http, ngDialog, dropdownMenuBarInit, AuthService, Resources, $timeout) {
             // Comprobación del login   IMPORTANTE!!! PONER EN TODOS LOS CONTROLADORES
             if (!$rootScope.isLogged) {
                 $location.path('/home');
@@ -581,12 +581,14 @@ angular.module('controllers')
                   $scope.backup=results.data.data;
                   $scope.backupinfo="Vas ha descargar una copia de seguridad de todo el contenido que tengas en tu perfil ¿Quieres seguir adelante?";
                   $('#DownloadBackup').modal('toggle');
+                  console.log(results.data)
                 });
 
               }
               $scope.DownloadBackup=function(backup){
                 setTimeout(function(){
                   window.location.href="DownloadBackup/backup/"+backup;
+                  console.log(backup);
                   $('#DownloadBackup').modal('toggle');
                 }, 2000);
               }
