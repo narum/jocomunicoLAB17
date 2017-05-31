@@ -1745,8 +1745,22 @@ angular.module('controllers', [])
                             }
                             break;
                         case "deleteall":
-                            $scope.isScanning = "nowait";
-                            $scope.InitScan();
+                            $scope.isScanning = "copyclipboard";
+                            if ($scope.cfgMenuCopyClipboard  == 0) {
+                                $scope.nextBlockScan();
+                            }
+                            break;
+                        //#Jorge
+                        case "copyclipboard":
+                            $scope.isScanning = "copytxtimgclipboard";
+                            if ($scope.cfgMenuCopyTxtImgClipboard == 0) {
+                                $scope.nextBlockScan();
+                            }
+                            break;
+                        case "copytxtimgclipboard":
+                          $scope.isScanning = "nowait";
+                          $scope.InitScan();
+                          break;
                     }
 
                 }
