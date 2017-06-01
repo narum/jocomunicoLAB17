@@ -11,6 +11,7 @@ class Historic extends REST_Controller {
     public function __construct() {
         parent::__construct();
         $this->load->model('HistoricInterface');
+        $this->load->model('Main_model');
     }
 
     public function index_get() {
@@ -86,7 +87,7 @@ class Historic extends REST_Controller {
     function changeHistorialState_post() {
 
         $this->HistoricInterface->changeHistorialState($this->post('newState'));
-
+        $this->HistoricInterface->deleteHistoric();
         $this->response(null, REST_Controller::HTTP_OK);
     }
     

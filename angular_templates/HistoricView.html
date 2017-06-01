@@ -2,6 +2,7 @@
      includes others view like sentece, edit (board/cell) panel, etc etc
 -->
 <link rel="stylesheet" href="css/historic.css"/>
+
 <audio id="utterance" src="{{sound}}" type="audio/mp3"></audio>
 <style>html, body, .container-table{height: 100%;height: 100vh;background: url('{{img.fons}}') no-repeat center center fixed;
     -webkit-background-size: cover;-moz-background-size: cover;-o-background-size: cover;background-size: cover;}
@@ -58,7 +59,13 @@
                     <img class="imgResponsive icon " ng-src="{{baseurl}}img/srcWeb/Menu/inici_icon.png"/>
                 </div>
             </div>
-            <div class="col-xs-10 holderButtons" style="background-image: url('/img/srcWeb/patterns/pattern{{cfgBgColorMenu}}.png')">
+            <div class="col-xs-1 fullheight">
+                <div ng-if="isScanning == 'historial' && !isScanningCancel" class="scaneo" ng-style="{'border':'7px solid #{{cfgScanColor}}'}"></div>
+                <div class="backgroundReturn" ng-click="!inScan ? showModalHistorial() : null">
+                    <img class="imgResponsive icon " ng-src="{{baseurl}}img/pictos/estrella2.png"/>
+                </div>
+            </div>
+            <div class="col-xs-9 holderButtons" style="background-image: url('/img/srcWeb/patterns/pattern{{cfgBgColorMenu}}.png')">
                 <div class="col-xs-4 buttonPadding" ng-click="!inScan ? getTodayHistoric() : null">
                     <div ng-if="isScanning == 'today' && !isScanningCancel" class="scaneoButton" ng-style="{'border':'7px solid #{{cfgScanColor}}'}"></div>
                     <div ng-class="timeHis == 'today' ? 'timeButtonAcitve' : 'timeButton'">
@@ -145,6 +152,21 @@
                 <img class="returnScanIcon" ng-src="/img/srcWeb/falta_picto.png"/>
             </div>
         </div>
+            <!-- MODAL DISABLE/ENABLE Historal -->
+            <div ng-show="showDeleteHistoricmodal" class="scoreContainer row">
+                <div class="col-xs-6 fullheight">
+                    <div ng-if="isScanning == 'goodphrase' && !isScanningCancel" class="scaneo" ng-style="{'border':'7px solid #{{cfgScanColor}}'}"></div>
+                    <div class="backgroundReturn" ng-click="!inScan ? enable_disableHistorial(1) : null">
+                        <img class="imgResponsive icon " ng-mouseenter="cfgTimeOverOnOff?TimeoutOverClick(3,'Bad'):null" ng-mouseleave="cfgTimeOverOnOff?CancelTimeoutOverClick():null" ng-src="/img/srcWeb/feliz_1.png"/>
+                    </div>
+                </div>
+                <div class="col-xs-6 fullheight">
+                    <div ng-if="isScanning == 'badphrase' && !isScanningCancel" class="scaneo" ng-style="{'border':'7px solid #{{cfgScanColor}}'}"></div>
+                    <div class="backgroundReturn" ng-click="!inScan ? enable_disableHistorial(0) : null">
+                        <img class="imgResponsive icon " ng-mouseenter="cfgTimeOverOnOff?TimeoutOverClick(3,'Bad'):null" ng-mouseleave="cfgTimeOverOnOff?CancelTimeoutOverClick():null" ng-src="/img/srcWeb/triste_1.png"/>
+                    </div>
+                </div>
+            </div>
         <!--MODIF: otro nombre -->
         <div class="col-xs-12 historicContainer" style="background-image: url('/img/srcWeb/patterns/pattern{{cfgBgColorPanel}}.png')">
             <div class="col-xs-12 scrollHistoric" ng-scrollbar rebuild-on-resize rebuild-on="rebuild:me" is-bar-shown="isScroll">

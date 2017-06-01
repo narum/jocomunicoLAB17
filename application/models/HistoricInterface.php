@@ -130,4 +130,13 @@ class HistoricInterface extends CI_Model {
                         );
     }
 
+    function deleteHistoric(){
+        //Delete Historial
+        $this->db->query('DELETE 
+                          FROM S_Historic 
+                          WHERE ID_SHUser = ?',
+                          array($this->session->userdata('idsu'))
+                          );
+    }
+
 }

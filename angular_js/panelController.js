@@ -668,8 +668,4 @@ angular.module('controllers')
             }
           };
 
-          /*$scope.showEnableHistorialModal = function() {
-            
-          };*/
-
         });

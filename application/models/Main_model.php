@@ -282,7 +282,7 @@ class Main_model extends CI_Model {
 
         $this->db->from('S_Historic');
         $this->db->where_in('Pictograms.ID_PUser', array('1', $this->session->userdata('idusu')));
-        $this->db->where('sentenceDate >', $date);
+        $this->db->where('sentenceDate >=', $date);
         $this->db->where('ID_SHUser', $idusu);
         $this->db->join('R_S_HistoricPictograms', 'S_Historic.ID_SHistoric = R_S_HistoricPictograms.ID_RSHPSentence');
         $this->db->join('Pictograms', 'R_S_HistoricPictograms.pictoid = Pictograms.pictoid');
