@@ -11,7 +11,7 @@ class RecoverBackup extends CI_Model {
     }
     //lanza una recuperacion total de los datos, llama a todas las recuperaciones parciales
     public function LaunchTotalRecover(){
-      $folder=$this->getLastGlobalBackup();
+      $folder="/xampp/htdocs/Temp/".$this->getLastGlobalBackup();
       $this->UpdateSuperUser($folder);
       $this->UpdateUser($folder);
       $this->InsertPictograms($folder);
@@ -26,8 +26,8 @@ class RecoverBackup extends CI_Model {
       $this->InsertSSentence($folder);
       $this->InsertRSSentencePictograms($folder);
       $this->InsertRSHistoricPictograms($folder);
-      $a=$this->InsertCells($folder);
-      return $a;
+      $this->InsertCells($folder);
+      return $folder;
     }
     //Comprueba si existe una carpeta con un backup total
     function checkiftotalexists(){
@@ -105,13 +105,18 @@ class RecoverBackup extends CI_Model {
     //devuelve el nombre de la capeta del ultimo backup global
     private function getLastGlobalBackup(){
       $ID_User=$this->session->idusu;
-      $dates=array();
-      $dirs = array_filter(glob("/xampp/htdocs/Temp/*" ,GLOB_ONLYDIR), 'is_dir');
-      for($i=0;$i<count($dirs);$i++){
-         if($ID_User==substr($dirs[$i],25)&&substr($dirs[$i],29)=="")
-          array_push($dates,$dirs[$i]);
+       $dates=array();
+       if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+        $folder="/xampp/htdocs/Temp/*";
+      } else {
+        $folder="Temp/*";
       }
-     return $this->getLastDate($dates);
+       $dirs = array_filter(glob($folder ,GLOB_ONLYDIR), 'is_dir');
+       for($i=0;$i<count($dirs);$i++){
+          if($ID_User==substr($dirs[$i],39))
+           array_push($dates,substr($dirs[$i],19));
+       }
+      return $this->getLastDate($dates);
     }
   //devuelve el nombre de la capeta del ultimo backup parcial por tematica
 public function getLastParcialBackup($key){
@@ -298,7 +303,6 @@ private function InsertCells($Folder){
        }else{
          $ant1=$cells->ID_CPicto[$i];
        }
-
        if(!(is_null($cells->ID_CSentence[$i]))){
          $c=count($IDCsentence);
          if($c>1){
@@ -390,7 +394,6 @@ private function InsertGroupBoards($Folder,$mainGboard){
    ));
  }
 }
-
 return $count;
 }
 //Inserta en la base de datos los registros correspondientes a images
@@ -849,7 +852,11 @@ private function getHistorickey(){
 //mueve las imagenes del backup al servidor para que la aplicacion pueda usarlas
 private function moveImages($imgPath,$imgName){
   if(strlen($imgName)==36&&(substr($imgName,34)=='png'||substr($imgName,34)=='jpg')){
-    copy('./Temp/'.$Fname.'/'.'images/'.$imgName , $imgPath);
+    if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+      copy('/xampp/htdocs/Temp/'.$Fname.'/'.'images/'.$imgName , $imgPath);
+    } else {
+      copy('./Temp/'.$Fname.'/'.'images/'.$imgName , $imgPath);
+    }
   }
 }
 }

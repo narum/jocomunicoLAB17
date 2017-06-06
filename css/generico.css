@@ -22,7 +22,7 @@ button:first-child,
 input:focus{
     outline: none;
 }
-.row{ 
+.row{
     margin-left: 0px;
     margin-right: 0px;
 }
@@ -111,7 +111,7 @@ input:focus{
     font-weight: bold;
 }
 .paddingTextRight{
-    padding-right: 10px; 
+    padding-right: 10px;
 }
 .topBar{
 
@@ -176,7 +176,7 @@ input:focus{
 }
 .dialogContent{
     padding: 2vh;
-    height: 93%;    
+    height: 93%;
 }
 .textConfirm{
     height: 10%;
@@ -192,7 +192,7 @@ input:focus{
 .dropdown-arrow:disabled {
     background-color: #dddddd;
     z-index: -12;
-} 
+}
 
 .dropdown-arrow{
     -webkit-appearance: none;
@@ -220,7 +220,7 @@ input:focus{
 .dropdown-arrow.color option:hover {
     box-shadow: 0 0 10px 100px #1882A8 inset;
 }
-.dropdown-arrow.color:focus > option:hover { 
+.dropdown-arrow.color:focus > option:hover {
     background: #000 !important;
 }
 .infoIconBox{
@@ -398,7 +398,7 @@ input.switch:checked ~ label:after
     display: flex;
     justify-content: center;
     align-content: center;
-    flex-direction: column; 
+    flex-direction: column;
     cursor: pointer;
     max-height: 40px;
 }
@@ -720,4 +720,15 @@ input.switch:checked ~ label:after
 
 .btn-red {
     background-color: #cc0000;
+}
+
+.btn-gray:disabled {
+    height: 5.2vh;
+    font-size: 2.5vh;
+    padding-left: 2vw;
+    padding-right: 2vw;
+    border-radius: 5px;
+    color: white;
+    background-color: #ffffff;
+    border: none;
 }
