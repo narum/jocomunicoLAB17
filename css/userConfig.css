@@ -11,7 +11,7 @@ html{
 #scrollBar::-webkit-scrollbar{
 width:15px;
 background-color:none;
-} 
+}
 #scrollBar::-webkit-scrollbar-thumb{
 /*background:-webkit-linear-gradient(0, #92dbe1Turquesa 40%, #78b3b8Turquesa Oscuro 100%);*/
 background-color: #92dbe1;/*Turquesa*/
@@ -67,7 +67,7 @@ border-radius:10px;
     color: white;
     background-color: #333333;
     border-color: #333333;
-    
+
     height: 5vh;
     padding-left: 1vw;
     padding-right: 1vw;
@@ -378,6 +378,31 @@ input.imageRadio[type=radio]:empty + label:hover{
     box-shadow: 0 0 10px #404040;
 }
 
+/* #JORGE: Añadir código CSS para boton Solo Texto de userConfig */
+
+.img-configSwitch2{
+    height: 4.8vw;
+    width: auto;
+    cursor: pointer;
+}
+
+input.imageSwitch2[type=checkbox]:empty + label{
+    cursor: pointer;
+    opacity: 0.5;
+    box-shadow: 0 0 10px #404040;
+}
+input.imageSwitch2[type=checkbox]:checked + label{
+    opacity: 1;
+    box-shadow: 0 1vh 1vh rgba(0, 0, 0, 0.7);
+}
+input.imageSwitch2[type=checkbox]:empty + label:hover{
+    box-shadow: 0 0 10px #404040;
+}
+
+
+
+/* Fin de código*/
+
 #colorSelect{
     color:white;
 }
@@ -526,6 +551,17 @@ input[type=number] {
 #scanOrder .img-configRadio{
     height: 8.1vw;
 }
+
+#interficie .img-configSwitch2{
+    height: 6vw;
+}
+#scanOrder .img-configSwitch2{
+    height: 8.1vw;
+}
+
+
+
+
 .titlePictosUserConfig *{
     font-size: 2.2vh;
     text-align: center;
