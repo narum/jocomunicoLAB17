@@ -77,11 +77,11 @@
                     <div class="col-xs-offset-1 col-xs-1 infoIconBox">
                         <input type="image" class="img-icon" ng-src="/img/icons/info-blanc.png" ng-click="toggleInfoModal(content.modalInfoTitle, content.historyInfo);">
                     </div>
-                    <div class="col-xs-8 headerTitle-panelgroup">
+                    <div class="col-xs-7 headerTitle-panelgroup">
                         {{content.historyTitle}}
                     </div>
                     <div class="col-xs-2">
-                        <input type="checkbox" id="switchHistory" class="switch" ng-model="HistoricState"/>
+                        <input type="checkbox" id="switchHistory" class="switch hidden" ng-model="HistoricState"/>
                         <label ng-click="enable_disableHistoric()">&nbsp;</label>
                     </div>
                 </div>
@@ -121,10 +121,10 @@
                     <div class="row backgroundUserConfigBox">
                         <div class="row fonsAlert-info text-info-modal" >
                             <div class="col-xs-12 text-left"><p>{{content.historialInfoDisable}}</p></div>
-                            <div class="col-xs-8"></div>
                             <div class="col-xs-2 verticalMarginTop">
                                 <button data-dismiss="modal" type="reset" class="btn-lightred">{{content.cancel}}</button>
                             </div>
+                            <div class="col-xs-8"></div>
                             <div class="col-xs-2 verticalMarginTop">
                                 <button type="reset" class="btn-lightgreen pull-right" ng-click="changeHistorialState()">{{content.confirm}}</button>
                             </div>
