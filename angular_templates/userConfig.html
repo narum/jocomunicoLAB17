@@ -63,7 +63,7 @@
                                 class="icon-pencil pull-right editButton"
                                 ng-disabled="loadingEdit"
                                 ng-class="{editButtonActive: canEdit}"
-                                ng-click="canEdit = !canEdit; deleteForm();"><i class="textButons">&nbsp; {{content.edit}}</i>
+                                ng-click="canEdit = !canEdit; deleteForm();"><i class="textButons"> {{content.edit}} </i>
                             </button>
                             <img class="loadingGifSmBar pull-right" ng-show="loadingEdit" ng-src={{img.whiteLoading}}/>
                         </div>
@@ -255,129 +255,59 @@
                 </form>
             </div>
         </div><br/>
+
+        <!-- @rjlopezdev -->
+        <!-- SECTION: Users associated to SU List -->
+        <div class="row" id="boxUserConfig" style="background-image: url({{img.Patterns1_12}})" ng-if="isSU">
+
+            <!-- Panel Title -->
+            <form name="userAdmin">
+                <div id="header" class="row">
+                    <div class="col-xs-9 headerTitle">{{content.userAdminBarTitle}}</div>
+                    <div class="col-xs-3">
+                        <button
+                            type="reset"
+                            class="icon-plus-sign pull-right editButton"
+                            ng-click="showNew_OR_ExistingModal()">
+                            <i class="textButons"> {{content.userAdminAddButton}} </i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+            <!-- Dropdown Users List -->
+            <div class="row menuBar" ng-click="showUserList = !showUserList">
+                <div class="row ">
+                    <div class="col-xs-6">
+                        <div class="col-xs-2"> </div>
+                        <div class="col-xs-10 buttonBar" > {{content.userList}} </div>
+                    </div>
+                    <div class="col-xs-5 buttonBar">
+                        <img class="arrowMenuBar pull-right" src={{img.orangeArrow}}/>
+                    </div>
+                </div>
+            </div>
+            <div ng-repeat="user in userList" ng-show="showUserList" class="backgroundUserDataBox">
+                <div class="row">
+                    <!-- User Item -->
+                    <div class="col-xs-8">
+                        <h2>&nbsp;{{user.SUname}} </h2>
+                    </div>
+                    <div class="col-xs-4">
+                        <button
+                            class="icon-remove-sign pull-right editButton removeButton"
+                            ng-click="confirmRemoveUserModal({{user}})">
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <br>
         <div class="row" id="boxUserConfig" style="background-image: url({{img.Patterns1_08}})">
             <div class="col-xs-12">
                 <div id="header" class="row"><div class="col-xs-10 headerTitle">{{content.titleBar2}}</div></div>
                 <div class="marginBoxCentral">
-                    <!--InterfaceLanguage-->                    
-                    <!--    <div class="row menuBar">
-                            <div class="row headerBar" ng-class="{disabledBar: !interfaceLanguageBarEnable}">
-                                <div class="col-xs-6">
-                                    <div class="col-xs-2 infoIconBox">
-                                        <input type="image" class="img-icon" ng-src={{img.info}} popover-placement="top-left" popover-trigger="focus"
-                                               uib-popover="{{content.popInterfaceInfo}}">
-                                    </div>
-                                    <div class="col-xs-10 buttonBar" ng-click="contentBar1=!contentBar1">{{content.interfaceLanguage}}</div>
-                                </div>
-                                <div class="col-xs-2 FonsTaronja" ng-click="contentBar1=!contentBar1" ng-class="{disabledText: !interfaceLanguageBarEnable}">{{interfaceLanguage}}</div>
-                                <div class="col-xs-4 buttonBar" ng-click="contentBar1=!contentBar1">&nbsp;
-                                    <img class="loadingGifSm pull-right" ng-show="!interfaceLanguageBarEnable" src={{img.Loading_icon}}/>
-                                    <img class="arrowMenuBar pull-right" ng-show="interfaceLanguageBarEnable" src={{img.orangeArrow}}/>
-                                </div>
-                            </div>
-                            <div class="row">
-                            <div class="col-xs-12" uib-collapse="!contentBar1">
-                            <div class="row contentBar">
-                                <div class="col-xs-4 paddingLeft">{{content.selectLanguage}}</div>
-                                <div class="col-xs-4">
-                                    <div class="btn-group pull-right" role="group" >
-                                        <button type="button" class="btn btn-group-turquoise" ng-repeat="language in interfaceLanguages"
-                                                ng-click="changeLanguage(language.user);" >{{language.name}}</button>
-                                    </div>
-                                </div>
-                                <div class="col-xs-4">
-                                    <button
-                                        type="button"
-                                        class="btn-gray pull-right"
-                                        data-toggle="modal"
-                                        data-target="#LanguageModal"
-                                        ng-click="addLanguageTo='interface';">{{content.addLanguage}}
-                                    </button>
-                                </div>
-                            </div>
-                            </div>
-                            </div>
-                        </div> -->
-                    <!--LanguagesModal-->                       
-                    <!--       <div class="modal fade" id="LanguageModal" role="dialog">
-                               <div class="modal-dialog modal-lg">
-                                    <div class="row marginModalTopOwl"><img class="img-owl pull-right" src={{img.lowHolaFlecha}}/></div>
-                                   <div class="row" id="boxUserConfig" style="background-image: url({{img.Patterns1_08}})">
-                                       <div id="header" class="row">
-                                           <div class="col-xs-10 headerTitle">{{content.addLanguage2}}</div>
-                                       </div>
-                                       <div class="row backgroundUserConfigBox">
-                                           <div class="row fonsAlert">
-                                               <div class="col-xs-1 text-center"><img class="img-Alert" src={{img.Icon_Alert}}/></div>
-                                               <div class="col-xs-11">{{content.addLanguageAlert1}}</div>
-                                           </div>
-                                           <div class="row dadesUsuariCentre">
-                                               {{content.addLanguageAlert2}}
-                                           </div>
-                                           <div class='row dadesUsuariCentre'>
-                                               <div class="col-xs-2">
-                                                   <button type="reset" class="btn-gray" data-dismiss="modal" ng-click="languageEnable=false">{{content.cancel}}</button>
-                                               </div>
-                                               <div class="col-xs-8">
-                                                   <div class="btn-group center" role="group" >
-                                                       <button type="button" class="btn btn-group-turquoise" ng-repeat="language in languages"
-                                                               ng-click="addLanguage(language.ID_Language);">{{language.languageName}}</button>
-                                                   </div>
-                                               </div>
-                                               <div class="col-xs-2">
-                                                   <button type="submit" class="btn-gray pull-right" data-dismiss="modal" ng-disabled="!languageEnable" ng-click="addLanguage('submit');">{{content.save}}</button>
-                                               </div>
-                                           </div>
-                                       </div>
-                                   <div class="row verticalMarginTop"></div>
-                                   </div>
-                               </div>
-                           </div> -->
-                    <!--ExpansionLanguage-->                    
-                    <!--  <div class="row menuBar">
-                          <div class="row headerBar" ng-class="{disabledBar: !expansionLanguageEnable||!userData.cfgExpansionOnOff}">
-                              <div class="col-xs-6">
-                                  <div class="col-xs-2 infoIconBox">
-                                      <input type="image" class="img-icon" ng-src={{img.info}} popover-placement="top-left" popover-trigger="focus"
-                                             uib-popover="{{content.popExpansionInfo}}">
-                                  </div>
-                                  <div class="col-xs-10 buttonBar" ng-click="contentBar2=!contentBar2">{{content.expansionLanguage}}</div>
-                              </div>
-                              <div class="col-xs-2 FonsTaronja" ng-click="contentBar2=!contentBar2" ng-class="{disabledText: !expansionLanguageEnable||!userData.cfgExpansionOnOff}">{{expansionLanguage}}</div>
-                              <div class="col-xs-2 buttonBar" ng-click="contentBar2=!contentBar2">&nbsp;</div>
-                              <div class="col-xs-1">
-                                  <input type="checkbox" id="switch1" class="switch" ng-model="userData.cfgExpansionOnOff" ng-click="changeOnOff(userData.cfgExpansionOnOff, 'ExpansionOnOff')" ng-show="false"/>
-                                  <label for="switch1">&nbsp;</label>
-                              </div>
-                              <div class="col-xs-1 buttonBar" ng-click="contentBar2=!contentBar2">&nbsp;
-                                  <img class="loadingGifSm pull-right" ng-show="!expansionLanguageEnable&&userData.cfgExpansionOnOff" src={{img.Loading_icon}}/>
-                                  <img class="arrowMenuBar pull-right" ng-show="!(!expansionLanguageEnable&&userData.cfgExpansionOnOff)" src={{img.orangeArrow}}/>
-  
-                              </div>
-                          </div>
-                          <div class="row">
-                          <div class="col-xs-12" uib-collapse="!contentBar2 || !userData.cfgExpansionOnOff">
-                          <div class="row contentBar">
-                              <div class="col-xs-4 paddingLeft">{{content.selectLanguage}}</div>
-                              <div class="col-xs-4">
-                                  <div class="btn-group pull-right" role="group" >
-                                      <button type="button" class="btn btn-group-turquoise" ng-repeat="language in expansionLanguages" ng-if="language.idInterfaceLanguage==userData.ID_ULanguage"
-                                              ng-click="changeLanguage(language.user);" >{{language.name}}</button>
-                                  </div>
-                              </div>
-                              <div class="col-xs-4">
-                                  <button
-                                      type="button"
-                                      class="btn-gray pull-right"
-                                      data-toggle="modal"
-                                      data-target="#LanguageModal"
-                                      ng-click="addLanguageTo='expansion'">{{content.addLanguage}}
-                                  </button>
-                              </div>
-                          </div>
-                          </div>
-                          </div>
-                      </div> -->
+
                     <!--Your Voice-->                           
                     <div class="row menuBar">
                         <div class="row headerBar">
@@ -997,25 +927,7 @@
                         </div>
                     </div>
                     <!--Historial-->                            
-                    <!--<div class="row menuBar">
-                        <div class="row headerBar" ng-class="{disabledBar:!userData.cfgHistOnOff}">
-                            <div class="col-xs-6">
-                                <div class="col-xs-2 infoIconBox">
-                                    <input type="image" class="img-icon" ng-src={{img.info}} popover-placement="top-left" popover-trigger="focus"
-                                           uib-popover="{{content.popHist}}">
-                                </div>
-                                <div class="col-xs-10">{{content.histTitleBar}}</div>
-                            </div>
-                            <div class="col-xs-4"></div>
-                            <div class="col-xs-1">
-                                <input type="checkbox" id="switch10" class="switch" ng-model="userData.cfgHistOnOff" ng-click="changeOnOff(userData.cfgHistOnOff, 'HistOnOff')" ng-show="false"/>
-                                <label for="switch10">&nbsp;</label>
-                            </div>
-                            <div class="col-xs-1">&nbsp;
-                                <img class="loadingGifSm pull-right" ng-show="!expansionLanguageEnable&&userData.cfgExpansionOnOff" src={{img.Loading_icon}}/>
-                            </div>
-                        </div>
-                    </div> -->
+
                     <!--Buttons-->
                     <div class="row verticalMarginTop">
                         <div class="col-xs-12">
@@ -1026,5 +938,61 @@
                 </div>
             </div>
         </div><br/><br/>
+    </div>
+</div>
+
+<!--Choose New or Existing User Modal-->
+<div class="modal fade" id="chooseNew_OR_ExistingModal" role="dialog">
+    <div class="modal-dialog">
+        <div class="row marginModalTopOwl"><img class="img-owl pull-right" src={{img.lowSorpresaFlecha}}/></div>
+        <div class="row" id="boxUserConfig" style="background-image: url({{img.Patterns1_08}})">
+            <div id="header" class="row">
+                <div class="col-xs-10 headerTitle"> {{content.addUserTitle}} </div>
+            </div>
+            <div class="row backgroundUserConfigBox">
+                <div class="row fonsAlert">
+                    <div class="col-xs-12 textCenter"> {{content.addUserBody}} </div>
+                </div>
+                <div class="row dadesUsuariCentre">
+                    <div class="col-xs-6">
+                        <button type="reset" class="btn-gray pull-left" data-dismiss="modal" ng-click="addUser_New_OR_Existing('existing')"> {{content.addUserNew}} </button>
+                    </div>
+                    <div class="col-xs-6">
+                        <button type="reset" class="btn-gray pull-right" data-dismiss="modal" ng-click="addUser_New_OR_Existing('new')"> {{content.addUserExisting}} </button>
+                    </div>
+                </div>
+            </div>
+        <div class="row verticalMarginTop"></div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="ConfirmRemove" role="dialog" style="z-index: 1000000;}">
+    <div class="modal-dialog modal-lg">
+        <div class="row marginModalTopOwl"><img class="img-owl pull-right" src="img/srcWeb/Mus/lowSabiFlecha.png"/></div>
+        <div class="row" id="boxUserConfig" style="background-image: url({{img.Patterns1_08}})">
+            <div id="header" class="row">
+                <div class="col-xs-12 headerTitle-infomodal" style="{{style_changes_title}}">{{content.modalInfoTitle}}</div>
+            </div>
+            <div class="row backgroundUserConfigBox">
+                <div class="row fonsAlert-info text-info-modal" >
+                    <div class="col-xs-12 text-left">
+                        <p>
+                            <h1 style="color: red;">{{content.userName}}: {{userToRemove.SUname}}</h1>
+                            {{content.removeConfirmTextBody}}
+                        </p>
+                    </div>
+                    <div class="col-xs-6"></div>
+                    <div class="col-xs-3 verticalMarginTop">
+                        <button data-dismiss="modal" type="reset" class="btn-lightred">{{content.cancel}}</button>
+                    </div>
+                    <div class="col-xs-3 verticalMarginTop">
+                        <button data-dismiss="modal" type="reset" class="btn-lightgreen pull-right" ng-click="removeUser()">{{content.confirm}}</button>
+                    </div>
+                </div>
+            </div>
+            
+        <div class="row verticalMarginTop"></div>
+        </div>
     </div>
 </div>

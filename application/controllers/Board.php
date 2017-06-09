@@ -19,6 +19,7 @@ class Board extends REST_Controller {
         $this->load->library('Myprediction');
         $this->load->library('Myaudio');
         $this->load->library('session');
+        $this->load->model('HistoricInterface');
     }
 
     public function index_get() {
@@ -376,7 +377,9 @@ class Board extends REST_Controller {
         $tipusfrase = $request->tipusfrase;
         $negativa = $request->negativa;
         $idusu = $this->session->userdata('idusu');
-        $this->Lexicon->insertarFrase($idusu, $tipusfrase, $tense, $negativa);
+        if($this->HistoricInterface->getHistorialState() == '1'){
+            $this->Lexicon->insertarFrase($idusu, $tipusfrase, $tense, $negativa);
+        }
 
 
         $this->BoardInterface->commitTrans();

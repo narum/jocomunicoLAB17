@@ -1266,7 +1266,70 @@ angular.module('controllers', [])
                     }else{
                         $scope.runningLocal=true;   
                     }
-                    });
+                });
+            
+            /* SuperUser Administration
+             * @rjlopezdev
+             */
+            
+            //Dropdown User list
+            $scope.showUserList = false;
+            //Show Admin Panel IF isSU
+            $scope.isSU = false;
+            //User list
+            $scope.userList;
+            //User to remove
+            $scope.userToRemove;
+
+            // GET Users List belonging Super User
+            $scope.getUserList = function(){
+                $http.get($scope.baseurl + 'SuperUserAdmin/getBelongingUsers')
+                     .success(function(response){
+                        $scope.userList = response.belongingUsers;
+                        $scope.isSU = true;
+                        console.log(response.belongingUsers);
+                        
+                })
+            };
+            $scope.getUserList();
+
+            //Show choosing modal
+            $scope.showNew_OR_ExistingModal = function(){
+                $('#chooseNew_OR_ExistingModal').modal('toggle');
+            }
+
+            //Adding existing or new User 
+            $scope.addUser_New_OR_Existing = function(new_OR_Existing){
+                //Show choose Modal [existing or new User]
+                
+                //Adding existing User
+                if(new_OR_Existing=== 'existing'){
+                    //Show Input [User, Password] Modal
+                    console.log(new_OR_Existing);
+                //Adding new User
+                }else if(new_OR_Existing === 'new'){
+                    /* Redirect to UserRegister
+                     * params: emailSU
+                     */
+                    console.log(new_OR_Existing);
+                }
+            }
+
+            //Remove User from SuperUser Scope
+            $scope.removeUser = function(){
+
+                $http.post($scope.baseurl + 'SuperUserAdmin/removeBelongingUser',
+                            {user_to_remove: $scope.userToRemove.ID_SU})
+                     .success(function(response){
+                         $scope.getUserList();
+                         $scope.toggleInfoModal($scope.content.successDeleteTitle, $scope.content.successDeleteBody);
+                     })
+            }
+
+            $scope.confirmRemoveUserModal = function(user){
+                $scope.userToRemove = user;
+                $('#ConfirmRemove').modal('toggle');
+            }
     
         })
         .controller('myCtrl', function (Resources, $location, $scope, $http, ngDialog, txtContent, $rootScope, $interval, $timeout, dropdownMenuBarInit, AuthService) {
@@ -3715,11 +3778,12 @@ angular.module('controllers', [])
                             break;
                         case "historial":
                             $scope.isScanning = "today";
+                            break;
                         case "goodphrase":
                             $scope.isScanning = "badphrase"
                             break;
                         case "badphrase":
-                            $scope.isScanning = "today"
+                            $scope.isScanning = "today";
                             $scope.showDeleteHistoricmodal = false;
                             break;
                     }
@@ -3908,7 +3972,6 @@ angular.module('controllers', [])
                 .success(function (response) {
                     $scope.showDeleteHistoricmodal = false;
                     location.reload(true);
-                    console.log('hola')
                 });
             }
 

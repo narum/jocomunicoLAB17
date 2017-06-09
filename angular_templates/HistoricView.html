@@ -62,7 +62,7 @@
             <div class="col-xs-1 fullheight">
                 <div ng-if="isScanning == 'historial' && !isScanningCancel" class="scaneo" ng-style="{'border':'7px solid #{{cfgScanColor}}'}"></div>
                 <div class="backgroundReturn" ng-click="!inScan ? showModalHistorial() : null">
-                    <img class="imgResponsive icon " ng-src="{{baseurl}}img/pictos/estrella2.png"/>
+                    <img class="imgResponsive icon " ng-src="{{baseurl}}img/srcWeb/home/historial.png"/>
                 </div>
             </div>
             <div class="col-xs-9 holderButtons" style="background-image: url('/img/srcWeb/patterns/pattern{{cfgBgColorMenu}}.png')">
@@ -152,21 +152,7 @@
                 <img class="returnScanIcon" ng-src="/img/srcWeb/falta_picto.png"/>
             </div>
         </div>
-            <!-- MODAL DISABLE/ENABLE Historal -->
-            <div ng-show="showDeleteHistoricmodal" class="scoreContainer row">
-                <div class="col-xs-6 fullheight">
-                    <div ng-if="isScanning == 'goodphrase' && !isScanningCancel" class="scaneo" ng-style="{'border':'7px solid #{{cfgScanColor}}'}"></div>
-                    <div class="backgroundReturn" ng-click="!inScan ? enable_disableHistorial(1) : null">
-                        <img class="imgResponsive icon " ng-mouseenter="cfgTimeOverOnOff?TimeoutOverClick(3,'Bad'):null" ng-mouseleave="cfgTimeOverOnOff?CancelTimeoutOverClick():null" ng-src="/img/srcWeb/feliz_1.png"/>
-                    </div>
-                </div>
-                <div class="col-xs-6 fullheight">
-                    <div ng-if="isScanning == 'badphrase' && !isScanningCancel" class="scaneo" ng-style="{'border':'7px solid #{{cfgScanColor}}'}"></div>
-                    <div class="backgroundReturn" ng-click="!inScan ? enable_disableHistorial(0) : null">
-                        <img class="imgResponsive icon " ng-mouseenter="cfgTimeOverOnOff?TimeoutOverClick(3,'Bad'):null" ng-mouseleave="cfgTimeOverOnOff?CancelTimeoutOverClick():null" ng-src="/img/srcWeb/triste_1.png"/>
-                    </div>
-                </div>
-            </div>
+
         <!--MODIF: otro nombre -->
         <div class="col-xs-12 historicContainer" style="background-image: url('/img/srcWeb/patterns/pattern{{cfgBgColorPanel}}.png')">
             <div class="col-xs-12 scrollHistoric" ng-scrollbar rebuild-on-resize rebuild-on="rebuild:me" is-bar-shown="isScroll">
@@ -215,3 +201,12 @@
     </div>
 </div>  
 
+<!-- MODAL DISABLE/ENABLE Historal -->
+<div ng-if="showDeleteHistoricmodal" class="scoreContainer">
+    <div class="scoreContainerLeft">
+        <img src="/img/srcWeb/feliz_1.png" class="goodPhrase imgResponsive" ng-click="!inScan ? enable_disableHistorial(1) : null" ng-mouseenter="cfgTimeOverOnOff?TimeoutOverClick(3,'Good'):null" ng-mouseleave="cfgTimeOverOnOff?CancelTimeoutOverClick():null" ng-class="{'scaneo': isScanning == 'goodphrase'}"/>
+    </div>
+    <div class="scoreContainerRight">
+        <img src="/img/srcWeb/triste_1.png" class="goodPhrase imgResponsive" ng-click="!inScan ? enable_disableHistorial(0) : null" ng-mouseenter="cfgTimeOverOnOff?TimeoutOverClick(3,'Good'):null" ng-mouseleave="cfgTimeOverOnOff?CancelTimeoutOverClick():null" ng-class="{'scaneo': isScanning == 'badphrase'}"/>
+    </div>           
+</div>

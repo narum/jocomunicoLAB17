@@ -592,3 +592,12 @@ input[type=number] {
     background-color: #ffffff;
     padding: 3vh;
 }
+
+/* @rjlopezdev*/
+.removeButton{
+    background-color: #F44336;
+
+}
+.removeButton:hover{
+    background-color: #E53935;
+}
