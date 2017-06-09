@@ -208,11 +208,7 @@ angular.module('controllers', [])
             //Idiomas disponibles para el desplegable de idiomas a seleccionar.
             Resources.register.get({'funct': "languagesAvailable"}).$promise
                     .then(function (results) {
-                        /* @rjlopezdev
-                         * Remove English from Languages
-                         */
                         $scope.availableLanguageOptions = results.languages;
-                        $scope.availableLanguageOptions.splice(2, 1);
                     });
             //Borrar el formulario
             $scope.resetForm = function () {
