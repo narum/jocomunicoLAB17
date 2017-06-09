@@ -1261,6 +1261,26 @@ angular.module('controllers', [])
                 $('#infoModal').modal('toggle');
             };
 
+            //JORGE: Create a function to enable and disable the radio buttons of one section in the user configuration screen.
+
+            $scope.toggleRadioButtonTxtInCell = function(){
+
+              var checkedOnlyText = document.getElementById("radioTextInCell3").checked;
+
+              if(checkedOnlyText){
+                document.getElementById("radioTextInCell1").checked = false;
+                document.getElementById("radioTextInCell2").checked = false;
+                document.getElementById("radioTextInCell1").disabled = true;
+                document.getElementById("radioTextInCell2").disabled = true;
+
+              }
+
+              else if(!checkedOnlyText) {
+                document.getElementById("radioTextInCell1").disabled = false;
+                document.getElementById("radioTextInCell2").disabled = false;
+              }
+            };
+
             $scope.viewActived = false; // para activar el gif del loading
 
              $scope.deleteUser = function () {
@@ -1280,7 +1300,7 @@ angular.module('controllers', [])
                     });
 
         })
-        .controller('myCtrl', function (Resources, $location, $scope, $http, ngDialog, txtContent, $rootScope, $interval, $timeout, dropdownMenuBarInit, AuthService, md5) {
+        .controller('myCtrl', function (Resources, $location, $scope, $http, ngDialog, txtContent, $rootScope, $interval, $timeout, dropdownMenuBarInit, AuthService, md5, $window) {
 
             $scope.viewActived = false;
             $timeout(function () {
@@ -1395,7 +1415,7 @@ angular.module('controllers', [])
 
               $scope.isLoged = '';
               /* Código para quitar popup pulsando desde fuera de este*/
-              $('#confirmPassword').modal('toggle');
+              $('#confirmPassword').modal('show');
 
               $http.post(url,postdata).success(function(response){
                 $scope.state2 = '';
@@ -1409,7 +1429,7 @@ angular.module('controllers', [])
                     $timeout(function(){
                       $('#confirmPassword').modal('hide');
                       $scope.passwordCopyPanel = null;
-                    },1000);
+                    },0);
                     console.log('Contraseña correcta');
                   }
 
@@ -1420,7 +1440,7 @@ angular.module('controllers', [])
                       angular.element('#clkOutside').triggerHandler('click');
                       $('#confirmPassword').modal('hide');
                       $scope.passwordCopyPanel = null;
-                    }, 1000);
+                    }, 0);
                     console.log('Contraseña incorrecta');
 
                   }
@@ -1445,15 +1465,24 @@ angular.module('controllers', [])
                       console.log('Reinicio timeout');
                     });
                   }
+
+                  /*$('#confirmPassword').on('hidden.bs.modal', function (e) {
+
+
+                    console.log("Cerrado modal");
+                  });*/
+
+
                 });
             }
 
             $scope.cancelForm = function(){
                 $timeout.cancel($scope.timerPassword);
                 $timeout(function(){
+                  $scope.passwordCopyPanel = null;
                   angular.element('#clkOutside').triggerHandler('click');
                   $('#confirmPassword').modal("hide");
-                }, 1000);
+                }, 0);
             }
 
             $scope.setTimer = function () {
@@ -1936,11 +1965,11 @@ angular.module('controllers', [])
                             break;
                         //#Jorge
                         case "copyclipboard":
-                            ngClipboard.toAllBrowsersClipboard();
+                            $scope.toAllBrowsersClipboard();
                             $scope.InitScan();
                             break;
                         case "copytxtimgclipboard":
-                            ngClipboard.toAllBrowsersTxtImgClipboard();
+                            $scope.toAllBrowsersTxtImgClipboard();
                             $scope.InitScan();
                             break;
                     }
@@ -2742,6 +2771,95 @@ angular.module('controllers', [])
                     $scope.info = "";
                     $scope.getPred();
                 });
+            };
+
+
+            /*
+            * Copy text and Copy text and images in the clipboard
+            *
+            */
+
+            $scope.toAllBrowsersClipboard = function(){
+
+                var ngClipboardElement = angular.element($window.document.getElementById('frase'));
+                $window.document.getElementById('frase').contentEditable = true;
+                ngClipboardElement.focus();
+                var range = $window.document.createRange();
+                range.extractContents();
+                range.collapse();
+                range.selectNode(ngClipboardElement[0]);
+                $window.getSelection().removeAllRanges();
+                $window.getSelection().addRange(range);
+
+                // Create a element textarea in HTML to copy the text in the clipboard and later we delete this element
+
+                var input = $window.document.createElement('textarea');
+                input.style.position = 'absolute';
+                input.style.zIndex = '-100';
+                $window.document.body.appendChild(input);
+                input.value = ngClipboardElement[0].innerHTML.trim();
+                input.focus();
+                input.select();
+                $window.document.execCommand('copy');
+                $window.document.getElementById('frase').contentEditable = false;
+                input.remove();
+
+                // Execute the command copy to get the text in the clipboard
+
+                var successful = $window.document.execCommand('copy');
+                var msg = successful ? 'successful' : 'unsuccessful';
+                console.log('Copying text command was ' + msg);
+                $window.getSelection().removeAllRanges();
+            };
+
+            $scope.toAllBrowsersTxtImgClipboard = function(){
+
+              var img = document.getElementById('txtImgContainer');
+              var elements = img.getElementsByTagName('img');
+              console.log(elements.length);
+              document.getElementById('txtImgContainer').contentEditable = true;
+
+
+              var div = document.createElement('div');
+              div.id = 'prueba'
+
+              // Add image elements to the div.
+              for(index = 0; index < elements.length; index++){
+                var img2 = document.createElement('img');
+                img2.id = 'img' + index.toString();
+                img2.width = 70;
+                img2.height = 70;
+                console.log(elements[index].src)
+                img2.src= elements[index].src;
+                div.appendChild(img2);
+              }
+
+              // Add phrase to the div
+              var frase = document.getElementById('frase');
+              var input = document.createElement('div');
+              document.body.appendChild(input);
+              input.append(frase.innerHTML);
+              div.appendChild(input);
+
+              // We select the div to copy in the clipboard
+              console.log(div);
+              document.body.appendChild(div);
+              getSelection().removeAllRanges();
+              var r = document.createRange();
+              r.setStartBefore(div);
+              r.setEndAfter(div);
+              r.selectNode(div);
+              getSelection().addRange(r);
+
+
+              // Execute the command copy to get the text and the images in the clipboard
+
+              var successful = document.execCommand('copy');
+              div.remove();
+              document.getElementById('txtImgContainer').contentEditable = false;
+              var msg = successful ? 'successful' : 'unsuccessful';
+              console.log('Copying text and images command was ' + msg);
+              getSelection().removeAllRanges();
             };
 
             $scope.goPrimaryBoard = function () {
@@ -3983,8 +4101,7 @@ angular.module('controllers', [])
 
         })
 
-//#Jorge
-.factory('ngClipboard', function($compile,$rootScope,$window) {
+      /*.factory('Clipboard', function($compile,$rootScope,$window) {
           return {
               'toAllBrowsersClipboard': function(){
 
@@ -3996,11 +4113,11 @@ angular.module('controllers', [])
                   range.collapse();
                   range.selectNode(ngClipboardElement[0]);
                   $window.getSelection().removeAllRanges();
-                  $window.getSelection().addRange(range);
+                  $window.getSelection().addRange(range);*/
 
-                  /* Create a element textarea in HTML to copy the text in the clipboard and later we delete this element*/
+                  // Create a element textarea in HTML to copy the text in the clipboard and later we delete this element
 
-                  var input = $window.document.createElement('textarea');
+                  /*var input = $window.document.createElement('textarea');
                   input.style.position = 'absolute';
                   input.style.zIndex = '-100';
                   $window.document.body.appendChild(input);
@@ -4009,11 +4126,11 @@ angular.module('controllers', [])
                   input.select();
                   $window.document.execCommand('copy');
                   $window.document.getElementById('frase').contentEditable = false;
-                  input.remove();
+                  input.remove();*/
 
-                  /* Execute the command copy to get the text in the clipboard */
+                  // Execute the command copy to get the text in the clipboard
 
-                  var successful = $window.document.execCommand('copy');
+                  /*var successful = $window.document.execCommand('copy');
                   var msg = successful ? 'successful' : 'unsuccessful';
                   console.log('Copying text command was ' + msg);
                   $window.getSelection().removeAllRanges();
@@ -4059,7 +4176,7 @@ angular.module('controllers', [])
                 getSelection().addRange(r);
 
 
-                /* Execute the command copy to get the text and the images in the clipboard */
+                // Execute the command copy to get the text and the images in the clipboard
 
                 var successful = document.execCommand('copy');
                 div.remove();
@@ -4067,10 +4184,9 @@ angular.module('controllers', [])
                 var msg = successful ? 'successful' : 'unsuccessful';
                 console.log('Copying text and images command was ' + msg);
                 getSelection().removeAllRanges();
-              },
-
+              }
             }
-          })
+          })*/
 
 
           /*
@@ -4183,13 +4299,8 @@ angular.module('controllers', [])
           }
         }])
 
-
-
         /*New code*/
-
-
-
-//Add a directive in order to recognize the right click
+        //Add a directive in order to recognize the right click
         .directive('ngRightClick', function ($parse) {
             return function (scope, element, attrs) {
                 var fn = $parse(attrs.ngRightClick);

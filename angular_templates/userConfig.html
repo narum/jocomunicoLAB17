@@ -584,31 +584,33 @@
                                 <div class="row contentBar" id="interficie">
                                   <!-- Cambio Configuración Interface -->
                                     <div class="col-xs-6">
-                                        <div class="row titlePictosUserConfig">
-                                            <div class="col-xs-4">{{content.withoutText}}</div>
-                                            <div class="col-xs-4">{{content.withText}}</div>
-                                            <div class="col-xs-4">{{content.textOnly}}</div>
+                                        <div class="row">
+                                            <div class="col-xs-4 titlePictosUserConfig">{{content.withoutText}}</div>
+                                            <div class="col-xs-4 titlePictosUserConfig">{{content.withText}}</div>
+                                            <div class="col-xs-4 titlePictosUserConfig">{{content.textOnly}}</div>
                                         </div>
+
                                         <div class="row">
                                             <div class="col-xs-4">
-                                                <input type="radio" id="radioTextInCell1" class="imageRadio" ng-model="userData.cfgTextInCell" value="0" ng-click="changeRadioState(userData.cfgTextInCell, 'TextInCell')" ng-show="false">
+                                                <input type="radio" id="radioTextInCell1" class="imageRadio" ng-model="userData.cfgTextInCell" value="0" ng-click="changeRadioState(userData.cfgTextInCell, 'TextInCell')" ng-show="false" ng-disabled="toggleRadioButtonTxtInCell()">
                                                 <label for="radioTextInCell1"><img class="img-configRadio" ng-src={{img.textInCellOff}}/></label>
                                             </div>
                                             <div class="col-xs-4">
-                                                <input type="radio" id="radioTextInCell2" class="imageRadio" ng-model="userData.cfgTextInCell" value="1" ng-click="changeRadioState(userData.cfgTextInCell, 'TextInCell')" ng-show="false">
+                                                <input type="radio" id="radioTextInCell2" class="imageRadio" ng-model="userData.cfgTextInCell" value="1" ng-click="changeRadioState(userData.cfgTextInCell, 'TextInCell')" ng-show="false" ng-disabled="toggleRadioButtonTxtInCell()">
                                                 <label for="radioTextInCell2"><img class="img-configRadio" ng-src={{img.textInCellOn}}/></label>
                                             </div>
                                             <div class="col-xs-4">
-                                                <input type="checkbox" id="radioTextInCell3" class="imageSwitch2" ng-model="userData.cfgTextOnly" ng-click="changeOnOff(userData.cfgTextOnly, 'TextOnly')" ng-show="false">
+                                                <input type="checkbox" id="radioTextInCell3" class="imageSwitch2" ng-model="userData.cfgTextOnly" ng-click="changeOnOff(userData.cfgTextOnly, 'TextOnly'); toggleRadioButtonTxtInCell();" ng-show="false">
                                                 <label for="radioTextInCell3"><img class="img-configSwitch2" ng-src={{img.textOnly}}/></label>
                                             </div>
                                         </div>
-                                        <div class="row titlePictosUserConfig">
+
+                                        <!--<div class="row titlePictosUserConfig">
                                             <div class="col-xs-4 col-xs-offset-2">{{content.cellWithBorder}}</div>
                                             <div class="col-xs-4">{{content.cellWithoutBorder}}</div>
 
                                         </div>
-                                        <!--<div class="row">
+                                        <div class="row">
                                             <div class="col-xs-4 col-xs-offset-2">
                                                 <input type="radio" id="radioTextInCell4" class="imageRadio" ng-model="userData.cfgCellWithBorder" value="1" ng-click="changeRadioState(userData.cfgCellWithBorder, 'CellWithBorder')" ng-show="false">
                                                 <label for="radioTextInCell4"><img class="img-configRadio" ng-src={{img.CellWithBorder}}/></label>
