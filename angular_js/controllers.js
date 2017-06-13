@@ -1403,10 +1403,12 @@ angular.module('controllers', [])
               var postdata = {user: $scope.usernameCopyPanel, pass: $scope.passwordCopyPanel};
 
 
+
               if($scope.isLoged === "true"){
                 $('#confirmPassword').modal("hide");
                 return;
               }
+
 
               $scope.passwordCopyPanel = null;
               var userConf = JSON.parse(window.localStorage.getItem('userData'));
@@ -1437,8 +1439,10 @@ angular.module('controllers', [])
                   else if(md5.createHash(String(password)) !== userConf.pswd && response.userPass !== null){
                     $scope.isLoged = 'false';
                     $timeout(function(){
-                      angular.element('#clkOutside').triggerHandler('click');
-                      $('#confirmPassword').modal('hide');
+                      //angular.element('#clkOutside').triggerHandler('click');
+                      //$('#confirmPassword').modal('hide');
+                      $scope.state2 = 'has-error';
+                      $scope.isLoged = '';
                       $scope.passwordCopyPanel = null;
                     }, 0);
                     console.log('Contraseña incorrecta');
@@ -1448,6 +1452,7 @@ angular.module('controllers', [])
                   /* Código de inicio del timeout. Actualización de timeout al añadir un elemento al input text*/
                   else if(response.userID === null && response.userPass === null){
                     $scope.isLoged = '';
+                    $scope.state2 = '';
                     //console.log("Introduce la contraseña");
                     $scope.timerPassword = $timeout(function(){
                       angular.element('#clkOutside').triggerHandler('click');
@@ -1465,13 +1470,6 @@ angular.module('controllers', [])
                       console.log('Reinicio timeout');
                     });
                   }
-
-                  /*$('#confirmPassword').on('hidden.bs.modal', function (e) {
-
-
-                    console.log("Cerrado modal");
-                  });*/
-
 
                 });
             }
