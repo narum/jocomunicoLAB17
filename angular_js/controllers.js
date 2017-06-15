@@ -127,7 +127,7 @@ angular.module('controllers', [])
             $scope.viewActivated = false; // para activar el gif de loading...
         })
 
-//Controlador del registro de usuario
+        //Controlador del registro de usuario
         .controller('RegisterCtrl', function ($scope, $rootScope, $captcha, Resources, md5, $q, $location, dropdownMenuBarInit) {
 
             //Inicializamos el formulario y las variables necesarias
@@ -775,10 +775,15 @@ angular.module('controllers', [])
             $scope.img.menuButton5 = '/img/srcWeb/UserConfig/menuButton5.jpg';
             $scope.img.textInCellOff = '/img/srcWeb/UserConfig/textInCellOff.png';
             $scope.img.textInCellOn = '/img/srcWeb/UserConfig/textInCellOn.png';
-            //#Jorge y #Hector Nuevo codigo
+            //#Jorge (Tarea 4) y #Hector Nuevo codigo
             $scope.img.textOnly = '/img/srcWeb/UserConfig/textOnly.png';
             $scope.img.CellWithBorder = '/img/srcWeb/UserConfig/CellWithBorder.png'
             $scope.img.CellWithoutBorder = '/img/srcWeb/UserConfig/textInCellOff.png'
+            //#Jorge (Tarea 5)
+            $scope.img.textInRdngBarOn = '/img/srcWeb/UserConfig/txtInRdngBarOn.png'
+            $scope.img.textInRdngBarOff = '/img/srcWeb/UserConfig/txtInRdngBarOff.png'
+            $scope.img.textOnlyInRdngBar = '/img/srcWeb/UserConfig/txtOnlyInRdngBar.png'
+
 
             $scope.img.cfgUsageMouse = '/img/srcWeb/UserConfig/cfgUsageMouse.png';
             $scope.img.cfgUsageOneC = '/img/srcWeb/UserConfig/cfgUsageOneC.png';
@@ -849,6 +854,9 @@ angular.module('controllers', [])
                             $scope.userData.cfgTextOnly = ($scope.userData.cfgTextOnly === "1");
                             $scope.userData.cfgCellWithBorder = ($scope.userData.cfgCellWithBorder === "1");
 
+                            /* Jorge: Tarea 5*/
+                            $scope.userData.cfgTextInRdngBarOnOff = ($scope.userData.cfgTextInRdngBarOnOff === "1");
+                            $scope.userData.cfgTextOnlyInRdngBar = ($scope.userData.cfgTextOnlyInRdngBar === "1");
 
 
 
@@ -1281,6 +1289,26 @@ angular.module('controllers', [])
               }
             };
 
+
+
+            $scope.toggleRadioButtonRdngBarTxtInCell = function(){
+
+              var checkedRdngBarOnlyText = document.getElementById("radioTextInRdngCell3").checked;
+
+              if(checkedRdngBarOnlyText){
+                document.getElementById("radioTextInRdngCell1").checked = false;
+                document.getElementById("radioTextInRdngCell2").checked = false;
+                document.getElementById("radioTextInRdngCell1").disabled = true;
+                document.getElementById("radioTextInRdngCell2").disabled = true;
+
+              }
+
+              else if(!checkedRdngBarOnlyText) {
+                document.getElementById("radioTextInRdngCell1").disabled = false;
+                document.getElementById("radioTextInRdngCell2").disabled = false;
+              }
+            };
+
             $scope.viewActived = false; // para activar el gif del loading
 
              $scope.deleteUser = function () {
@@ -1402,19 +1430,15 @@ angular.module('controllers', [])
               var url = $scope.baseurl +  "Main/confirmPassword";
               var postdata = {user: $scope.usernameCopyPanel, pass: $scope.passwordCopyPanel};
 
-
-
               if($scope.isLoged === "true"){
                 $('#confirmPassword').modal("hide");
                 return;
               }
 
-
               $scope.passwordCopyPanel = null;
               var userConf = JSON.parse(window.localStorage.getItem('userData'));
               $scope.idUser = userConf.ID_User;
               $scope.usernameCopyPanel = userConf.SUname;
-
               $scope.isLoged = '';
               /* Código para quitar popup pulsando desde fuera de este*/
               $('#confirmPassword').modal('show');
@@ -1438,11 +1462,19 @@ angular.module('controllers', [])
                   /* Código cuando introducimos la password y no es correcta */
                   else if(md5.createHash(String(password)) !== userConf.pswd && response.userPass !== null){
                     $scope.isLoged = 'false';
+                    $scope.state2 = 'has-error';
+
+                    $scope.timerPassword = $timeout(function(){
+                      angular.element('#clkOutside').triggerHandler('click');
+                        $('#confirmPassword').modal('hide');
+                        $scope.passwordCopyPanel = null;
+                      }, 10000);
+
+                    $scope.isLoged = '';
                     $timeout(function(){
                       //angular.element('#clkOutside').triggerHandler('click');
                       //$('#confirmPassword').modal('hide');
-                      $scope.state2 = 'has-error';
-                      $scope.isLoged = '';
+
                       $scope.passwordCopyPanel = null;
                     }, 0);
                     console.log('Contraseña incorrecta');
@@ -2088,6 +2120,11 @@ angular.module('controllers', [])
                 /*Añadir configuración aquí. Hector y Jorge*/
                 $scope.cfgTextOnly = userConfig.cfgTextOnly == 1 ? true : false;
                 $scope.cfgCellWithBorder = userConfig.cfgCellWithBorder == 1 ? true : false;
+
+                /* Jorge: Tarea 5*/
+                $scope.cfgTextInRdngBarOnOff = userConfig.cfgTextInRdngBarOnOff == 1 ? true : false;
+                $scope.cfgTextOnlyInRdngBar = userConfig.cfgTextOnlyInRdngBar == 1 ? true : false;
+
 
                 $scope.cfgUserExpansionFeedback = userConfig.cfgUserExpansionFeedback == 1 ? true : false;
                 $scope.cfgScanOrderPred = userConfig.cfgScanOrderPred;
