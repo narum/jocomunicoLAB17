@@ -31,7 +31,7 @@
                     <label class="radio-inline">
                         <input type="radio" ng-model="SearchType" ng-click="search(pictoEditSearch, SearchType);" value="Tots"/>
                         {{content.all}}
-                    </label>    
+                    </label>
                 </div>
                 <div class="col-xs-4 text-left">
                     <label class="radio-inline"><input type="radio" ng-model="SearchType" ng-click="search(pictoEditSearch, SearchType);" value="Noms"/>
@@ -69,8 +69,10 @@
 
                 <div bind-html-compile="dataword" class='col-xs-4' ng-repeat="picto in dataWord| limitTo: 6" style="height: 50%; margin-left: 0 !important">
                     <div class="cellSearch imgRounded"  ng-if="true" ng-drag="!fv.painting" ng-drag-data="{idpicto:'{{picto.id}}'}" data-allow-transform="true">
-                        <div ng-if="cfgTextInCell && picto.text !== null" class="textCell">{{picto.text}}</div>
-                        <div ng-style="cfgTextInCell ? {'height': '70%'} : {'height': '100%'}">
+
+                        <!--<div ng-if="cfgTextInCell && picto.text !== null" class="textCell">{{picto.text}}</div>-->
+                        <div ng-if="cfgTextInCell !== 0 && picto.text !== null" class="textCell">{{picto.text}}</div>
+                        <div ng-style="cfgTextInCell !== 0 ? {'height': '70%'} : {'height': '100%'}">
                             <img class="imgRounded imgResponsive" ng-src="{{baseurl}}img/pictos/{{picto.imgPicto}}"/>
                         </div>
                     </div>
@@ -94,7 +96,7 @@
                     <label class="radio-inline">
                         <input type="radio" ng-model="typeImgEditSearch" ng-click="searchImg(imgEditSearch, typeImgEditSearch);" value="Arasaac"/>
                         {{content.Arasaac}}
-                    </label>    
+                    </label>
                 </div>
                 <div class="col-xs-12 text-left">
                     <label class="radio-inline">
@@ -114,7 +116,7 @@
                 </div>
             </div>
         </div>
-        
+
     </div>
     <div ng-show="typeSearh == 'img' && uploading" class="searchPadding">
         <img class="searchPadding" src="/img/srcWeb/Login/loading.gif" width="100%" height="100%"/>

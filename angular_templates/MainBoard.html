@@ -102,21 +102,45 @@
 
                         <div ng-if="isScanned(picto);" class="scaneo" ng-style="{'border':'7px solid #{{cfgScanColor}}'}"></div>
 
+                        <div ng-if="cfgTextInCell == 0">
 
-                        <div ng-if="!cfgTextOnly">
-
-                          <div ng-if="isPictoActive(picto) && cfgTextInCell && picto.textInCell !== null" class="textCell">{{picto.textInCell}}</div>
-                          <div ng-if="isPictoActive(picto) && cfgTextInCell && picto.textInCell === null && picto.pictotext !== null" class="textCell">{{picto.pictotext}}</div>
-                          <div ng-if="isPictoActive(picto) && cfgTextInCell && picto.textInCell === null && picto.pictotext === null && picto.folderName !== null" class="textCell">{{picto.folderName}}</div>
-                          <div ng-if="isPictoActive(picto) && cfgTextInCell && picto.textInCell === null && picto.pictotext === null && picto.folderName === null && picto.sPreRecText !== null" class="textCell">{{picto.sPreRecText}}</div>
-                          <div ng-if="isPictoActive(picto) && cfgTextInCell && picto.textInCell === null && picto.pictotext === null && picto.folderName === null && picto.Bname !== null && picto.textFunction !== null && picto.functType === 'link'" class="textCell">{{picto.textFunction}}</div>
-                          <div ng-if="isPictoActive(picto) && cfgTextInCell && picto.textInCell === null && picto.pictotext === null && picto.folderName === null && picto.Bname !== null && picto.functType !== 'link'" class="textCell">{{picto.Bname}}</div>
-                          <div ng-if="isPictoActive(picto) && cfgTextInCell && picto.textInCell === null && picto.pictotext === null && picto.folderName === null && picto.Bname === null && picto.textFunction !== null" class="textCell">{{picto.textFunction}}</div>
+                          <div ng-if="isPictoActive(picto) && cfgTextInCell == 1 && picto.textInCell !== null" class="textCell">{{picto.textInCell}}</div>
+                          <div ng-if="isPictoActive(picto) && cfgTextInCell == 1 && picto.textInCell === null && picto.pictotext !== null" class="textCell">{{picto.pictotext}}</div>
+                          <div ng-if="isPictoActive(picto) && cfgTextInCell == 1 && picto.textInCell === null && picto.pictotext === null && picto.folderName !== null" class="textCell">{{picto.folderName}}</div>
+                          <div ng-if="isPictoActive(picto) && cfgTextInCell == 1 && picto.textInCell === null && picto.pictotext === null && picto.folderName === null && picto.sPreRecText !== null" class="textCell">{{picto.sPreRecText}}</div>
+                          <div ng-if="isPictoActive(picto) && cfgTextInCell == 1 && picto.textInCell === null && picto.pictotext === null && picto.folderName === null && picto.Bname !== null && picto.textFunction !== null && picto.functType === 'link'" class="textCell">{{picto.textFunction}}</div>
+                          <div ng-if="isPictoActive(picto) && cfgTextInCell == 1 && picto.textInCell === null && picto.pictotext === null && picto.folderName === null && picto.Bname !== null && picto.functType !== 'link'" class="textCell">{{picto.Bname}}</div>
+                          <div ng-if="isPictoActive(picto) && cfgTextInCell == 1 && picto.textInCell === null && picto.pictotext === null && picto.folderName === null && picto.Bname === null && picto.textFunction !== null" class="textCell">{{picto.textFunction}}</div>
 
                           <img ng-if="isPictoActive(picto) && picto.ID_CFunction !== null" ng-src="{{baseurl}}img/srcWeb/Mainboard/functions.png" class="function"/>
 
                           <div ng-if="isPictoActive(picto)" class="contentCell">
-                              <div ng-style="cfgTextInCell ? {'height':'78%'}:{'height':'100%'}">
+                            <!--  <div ng-style="cfgTextInCell == 1 ? {'height':'78%'}:{'height':'100%'}">-->
+                                  <img ng-if="picto.imgCell" class="imgResponsive" ng-src="{{baseurl}}{{picto.imgCell}}"/>
+                                  <img ng-if="picto.imgPicto && !picto.imgCell" ng-src="{{baseurl}}img/pictos/{{picto.imgPicto}}" class="imgResponsive"/>
+                                  <img ng-if="picto.imgSFolder && !picto.imgPicto && !picto.imgCell && !picto.imgFunct" ng-src="{{baseurl}}{{picto.imgSFolder}}" class="imgResponsive"/>
+                                  <img ng-if="picto.sPreRecImg1 && !picto.imgSFolder && !picto.imgPicto && !picto.imgCell && !picto.imgFunct" ng-src="{{baseurl}}{{picto.sPreRecImg1}}" class="imgResponsive"/>
+                                  <img ng-if="picto.imgFunct && !picto.imgPicto && !picto.imgCell" ng-src="{{baseurl}}img{{picto.imgFunct}}" class="imgResponsive"/>
+                          <!--    </div>-->
+                          </div>
+
+                        </div>
+
+
+                        <div ng-if="cfgTextInCell == 1">
+
+                          <div ng-if="isPictoActive(picto) && picto.textInCell !== null" class="textCell">{{picto.textInCell}}</div>
+                          <div ng-if="isPictoActive(picto) && picto.textInCell === null && picto.pictotext !== null" class="textCell">{{picto.pictotext}}</div>
+                          <div ng-if="isPictoActive(picto) && picto.textInCell === null && picto.pictotext === null && picto.folderName !== null" class="textCell">{{picto.folderName}}</div>
+                          <div ng-if="isPictoActive(picto) && picto.textInCell === null && picto.pictotext === null && picto.folderName === null && picto.sPreRecText !== null" class="textCell">{{picto.sPreRecText}}</div>
+                          <div ng-if="isPictoActive(picto) && picto.textInCell === null && picto.pictotext === null && picto.folderName === null && picto.Bname !== null && picto.textFunction !== null && picto.functType === 'link'" class="textCell">{{picto.textFunction}}</div>
+                          <div ng-if="isPictoActive(picto) && picto.textInCell === null && picto.pictotext === null && picto.folderName === null && picto.Bname !== null && picto.functType !== 'link'" class="textCell">{{picto.Bname}}</div>
+                          <div ng-if="isPictoActive(picto) && picto.textInCell === null && picto.pictotext === null && picto.folderName === null && picto.Bname === null && picto.textFunction !== null" class="textCell">{{picto.textFunction}}</div>
+
+                          <img ng-if="isPictoActive(picto) && picto.ID_CFunction !== null" ng-src="{{baseurl}}img/srcWeb/Mainboard/functions.png" class="function"/>
+
+                          <div ng-if="isPictoActive(picto)" class="contentCell">
+                              <div ng-style="cfgTextInCell == 1 ? {'height':'78%'}:{'height':'100%'}">
                                   <img ng-if="picto.imgCell" class="imgResponsive" ng-src="{{baseurl}}{{picto.imgCell}}"/>
                                   <img ng-if="picto.imgPicto && !picto.imgCell" ng-src="{{baseurl}}img/pictos/{{picto.imgPicto}}" class="imgResponsive"/>
                                   <img ng-if="picto.imgSFolder && !picto.imgPicto && !picto.imgCell && !picto.imgFunct" ng-src="{{baseurl}}{{picto.imgSFolder}}" class="imgResponsive"/>
@@ -127,8 +151,7 @@
 
                       </div>
 
-                      <div ng-if="cfgTextOnly">
-
+                      <div ng-if="cfgTextInCell == 2">
                         <div ng-if="isPictoActive(picto) && picto.textInCell !== null" class="textCell2">{{picto.textInCell}}</div>
                         <div ng-if="isPictoActive(picto) && picto.textInCell === null && picto.pictotext !== null" class="textCell2">{{picto.pictotext}}</div>
                         <div ng-if="isPictoActive(picto) && picto.textInCell === null && picto.pictotext === null && picto.folderName !== null" class="textCell2">{{picto.folderName}}</div>

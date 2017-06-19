@@ -2115,10 +2115,11 @@ angular.module('controllers', [])
                 $scope.cfgScanningOnOff = userConfig.cfgScanningOnOff;
                 $scope.cfgScanStartClick = userConfig.cfgScanStartClick == 1 ? true : false;
                 $scope.cfgCancelScanOnOff = userConfig.cfgCancelScanOnOff == 1 ? true : false;
-                $scope.cfgTextInCell = userConfig.cfgTextInCell == 1 ? true : false;
+                //$scope.cfgTextInCell = userConfig.cfgTextInCell == 1 ? true : false;
+                $scope.cfgTextInCell = userConfig.cfgTextInCell;
 
                 /*Añadir configuración aquí. Hector y Jorge*/
-                $scope.cfgTextOnly = userConfig.cfgTextOnly == 1 ? true : false;
+                //$scope.cfgTextOnly = userConfig.cfgTextOnly == 1 ? true : false;
                 $scope.cfgCellWithBorder = userConfig.cfgCellWithBorder == 1 ? true : false;
 
                 /* Jorge: Tarea 5*/

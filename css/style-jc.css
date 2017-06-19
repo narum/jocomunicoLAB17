@@ -361,32 +361,26 @@ html *
     position: relative;
     padding-left: 4px;
     cursor: default;
-    text-transform: uppercase
+    text-transform: uppercase;
 }
 
 .textCell2{
-    /*top: 5px;*/
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
-    text-align: center;
-    vertical-align: middle;
-    font-size: 170%;
-    line-height: 110px;
-    z-index: 2;
-    position: relative;
-    padding-left: 4px;
-    cursor: default;
-    text-transform: uppercase
+  z-index: 2;
+  cursor: default;
+  text-transform: uppercase;
+  position: absolute;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: center;
+  top: 50%;
+  left: 50%;
+  margin-right: -50%;
+  transform: translate(-50%, -50%);
+  width: 85%;
+  font-size:1.5em;
+  line-height: 1.5em;
 }
-
-
-
-
-
-
-
-
 
 
 .removePicto{
