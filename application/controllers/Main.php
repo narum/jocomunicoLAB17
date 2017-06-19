@@ -10,7 +10,12 @@ class Main extends REST_Controller {
         $this->load->model('main_model');
         $this->load->library('Myaudio');
     }
-        
+
+    public function getOS_get()
+    {
+        $audio = new Myaudio();
+        return $audio->getOS();
+    }
     public function content_get()
     {
         //parametros que nos llegan del get

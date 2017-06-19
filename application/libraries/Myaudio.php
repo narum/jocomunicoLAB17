@@ -29,7 +29,7 @@ class Myaudio {
      */
     public function AppLocalOrServer()
     {
-        if (preg_match('/localhost/i', base_url())) return "local";
+        if (preg_match('/localhost/i', base_url())) return "server";
         else return "server";
     }
     

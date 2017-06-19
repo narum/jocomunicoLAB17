@@ -85,10 +85,8 @@ class Login_model extends CI_Model {
 
             if ($canExpand == '1'){
                 $this->session->set_userdata('ulangabbr', $userConfig["languageabbr"]);
-                $this->session->set_userdata('explangcannotexpand', '0');
             }else{
                 $this->session->set_userdata('ulangabbr', 'ES');
-                $this->session->set_userdata('explangcannotexpand', '1');
             }
         }
 

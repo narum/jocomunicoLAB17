@@ -1,4 +1,4 @@
-<!-- This view is the main board where the picto will be shown. In addition it 
+<!-- This view is the main board where the picto will be shown. In addition it
      includes others view like sentece, edit (board/cell) panel, etc etc
 -->
 <link rel="stylesheet" type="text/css" href="css/editCell.css">
@@ -9,41 +9,46 @@
 </style>
 
 <script>
-    
+
     var myVar;
     var exit = 0;
-    
+
     //Timer that will refresh the page after 10min if the user dont click anything.
-    var Timer = window.setTimeout(refreshPage, 600000); 
-    
+    var Timer = window.setTimeout(refreshPage, 600000);
+
     function audiohallelujah() {
         console.log("audio");
-
         var aux = document.getElementById('utterance');
         aux.src="mp3/empty.m4a";
         var audiotoplayinitial = aux.src;
-        
+
         var myVar = setInterval(function(){ waitloop(audiotoplayinitial, myVar) }, 500);
-        
+
         //Reset the timer and postpone the refresh in the next 10min.
         clearTimeout(Timer);
-        Timer = window.setTimeout(refreshPage, 600000); 
+        Timer = window.setTimeout(refreshPage, 600000);
     }
     function refreshPage() {
-            location.reload(true);
+        location.reload(true);
     }
+
+    // Delete the Timer when the view change.
+    window.onhashchange = function () {
+        window.clearTimeout(Timer);
+    }
+
     function waitloop(audiotoplayinitial, myVar) {
         var aux = document.getElementById('utterance');
         var audiotoplayfinal = aux.src;
-        
+
         if (audiotoplayinitial !== audiotoplayfinal) {
             exit = 0;
             aux.play();
             clearInterval(myVar);
         }
-        
+
         exit = exit+1;
-        
+
         if (exit > 8) {
             exit = 0;
             clearInterval(myVar);
@@ -92,7 +97,8 @@
                         <img ng-if="inEdit" class="removePicto" ng-src="{{baseurl}}img/srcWeb/Edit/cross.png" ng-click="removePicto(picto)"/>
                         <img ng-if="inEdit" class="editPicto" ng-src="{{baseurl}}img/srcWeb/Edit/edit.png" ng-click="openEditCellMenu({{picto.posInBoard}});"/>
                         
-                        <div class="backgroundCell" ng-style="{'background-color':'#{{picto.color}}'}"></div>
+                        <div ng-if="!cfgCellWithBorder" class="backgroundCell" ng-style="{'background-color':'#{{picto.color}}'}"></div>
+                        <div ng-if="cfgCellWithBorder" class="backgroundCell" ng-style="{'background-color':'#FFFFFF', 'border':'2.5px solid transparent', 'box-shadow': 'inset 0px 0px 0px 4.25px #{{picto.color}}'}"></div>
                         <!-- put the scan color over the image.mousedown
                              Only if we are in Scan mode
                         MODIF: Añadir variable if inScan-->
@@ -104,7 +110,7 @@
                         <div ng-if="isPictoActive(picto) && cfgTextInCell && picto.textInCell === null && picto.pictotext === null && picto.folderName !== null" class="textCell">{{picto.folderName}}</div>
                         <div ng-if="isPictoActive(picto) && cfgTextInCell && picto.textInCell === null && picto.pictotext === null && picto.folderName === null && picto.sPreRecText !== null" class="textCell">{{picto.sPreRecText}}</div>
                         <div ng-if="isPictoActive(picto) && cfgTextInCell && picto.textInCell === null && picto.pictotext === null && picto.folderName === null && picto.Bname !== null && picto.textFunction !== null && picto.functType === 'link'" class="textCell">{{picto.textFunction}}</div>
-                        <div ng-if="isPictoActive(picto) && cfgTextInCell && picto.textInCell === null && picto.pictotext === null && picto.folderName === null && picto.Bname !== null && picto.functType !== 'link'" class="textCell">{{picto.Bname}}</div>
+                        <div ng-if="isPictoActive(picto) && cfgTextInCell && picto.textInCell === null && picto.pictotext === null && picto.folderName === null && picto.Bname !== null && picto.functType !== 'link' && picto.pictotext !== null" class="textCell">{{picto.Bname}}</div>
                         <div ng-if="isPictoActive(picto) && cfgTextInCell && picto.textInCell === null && picto.pictotext === null && picto.folderName === null && picto.Bname === null && picto.textFunction !== null" class="textCell">{{picto.textFunction}}</div>
 
 
@@ -112,7 +118,7 @@
 
                         <div ng-if="isPictoActive(picto)" class="contentCell">
                             <div ng-style="cfgTextInCell ? {'height':'78%'}:{'height':'100%'}">
-                                <img ng-if="picto.imgCell" class="imgResponsive" ng-src="{{baseurl}}{{picto.imgCell}}"/>   
+                                <img ng-if="picto.imgCell" class="imgResponsive" ng-src="{{baseurl}}{{picto.imgCell}}"/>
                                 <img ng-if="picto.imgPicto && !picto.imgCell" ng-src="{{baseurl}}img/pictos/{{picto.imgPicto}}" class="imgResponsive"/>
                                 <img ng-if="picto.imgSFolder && !picto.imgPicto && !picto.imgCell && !picto.imgFunct" ng-src="{{baseurl}}{{picto.imgSFolder}}" class="imgResponsive"/>
                                 <img ng-if="picto.sPreRecImg1 && !picto.imgSFolder && !picto.imgPicto && !picto.imgCell && !picto.imgFunct" ng-src="{{baseurl}}{{picto.sPreRecImg1}}" class="imgResponsive"/>

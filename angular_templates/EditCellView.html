@@ -1,8 +1,8 @@
 <div class="topBar">
     <div class="editTitle">
         <div class="col-xs-1">
-                <input type="image" class="img-icon" ng-src="img/icons/info-blanc.png" ng-click="toggleInfoModal(content.modalInfoTitle, content.editCellInfo);">
-            </div>
+            <input type="image" class="img-icon" ng-src="img/icons/info-blanc.png" ng-click="toggleInfoModal(content.modalInfoTitle, content.editCellInfo);">
+        </div>
         <span class="col-xs-11 ellipsis" style="font-size: 2.5vh;"> {{content.editCellTitle}} </span>
     </div>
     <div class="cruz" ng-click="closeDialog()">X</div>
@@ -10,14 +10,14 @@
 <div class="row fullheight dialogContent">
     <div class="col-xs-6 fullheight">
         <div class="row">
-            <div class="col-xs-12 title2"> 
+            <div class="col-xs-12 title2">
                 <div class="col-xs-1 infoIconBox-editcell">
                     <input type="image" class="img-icon" ng-src="/img/icons/info.png" ng-click="toggleInfoModal(content.modalInfoTitle, content.typeEditCellInfo);">
                 </div>
-                <div class="col-xs-10 titleTextTypus"> 
+                <div class="col-xs-10 titleTextTypus">
                     {{content.type}}
                 </div>
-                <div class="col-xs-12 ">  
+                <div class="col-xs-12 ">
                     <form name="cellType">
                         <div class="col-xs-offset-2 col-xs-5 text-left">
                             <input type="radio" ng-model="cellType" ng-click="changeCellType()" value="picto"/>
@@ -112,7 +112,7 @@
                 <div class="col-xs-6 titleText">
                     {{content.link}}
                 </div>
-                <div ng-hide="cellType == 'sentence' || cellType == 'sfolder'" class="col-xs-offset-2 col-xs-1 buttonTitle">
+                <div ng-hide="cellType == 'sfolder'" class="col-xs-offset-2 col-xs-1 buttonTitle">
                     <input id="switch6" class="switch" type="checkbox"
                            ng-model="checkboxBoardsGroup"ng-show="false"/>
                     <label for="switch6">&nbsp;</label>
@@ -123,7 +123,7 @@
                         ng-disabled="!checkboxBoardsGroup"
                         ng-model="boardsGroup"
                         ng-options="b.Bname for b in boards track by b.ID_Board"
-                        ng-value="b.ID_Boardb">
+                        ng-value="b.ID_Board">
                 </select>
             </div>
             <div class="col-xs-12 marginTop"></div>
@@ -138,8 +138,8 @@
                     <input ng-if="cellType != 'picto'"
                            id="switch3" class="switch" type="checkbox"
                            ng-model="checkboxTextInCell" ng-show="false"
-         
-                           />
+
+                    />
                     <label for="switch3">&nbsp;</label>
                 </div>
             </div>
@@ -193,7 +193,7 @@
         <div class="col-xs-12 content1-5">
             <div class="col-xs-offset-1 col-xs-11 scanText">
                 {{content.systemScanLevel1}}
-            </div>  
+            </div>
             <div class="col-xs-offset-1 col-xs-2 scanCentered">
                 <input id="switch7" class="switch" type="checkbox"
                        ng-model="checkboxScanBlockText1"ng-show="false"/>
@@ -204,12 +204,12 @@
                         ng-disabled="!checkboxScanBlockText1"
                         ng-model="numScanBlockText1"
                         ng-options="n for n in range(8)"
-                        >
+                >
                 </select>
             </div>
-<!--            <div class="col-xs-6 scanCentered">
-                <input class="boxEdit" type="text" ng-model="textInScanBlockText1" ng-disabled="!checkboxScanBlockText1" placeholder="{{content.systemScanLevel1Placeh}}"/>
-            </div>-->
+            <!--            <div class="col-xs-6 scanCentered">
+                            <input class="boxEdit" type="text" ng-model="textInScanBlockText1" ng-disabled="!checkboxScanBlockText1" placeholder="{{content.systemScanLevel1Placeh}}"/>
+                        </div>-->
         </div>
         <div class="col-xs-12 content1-5">
             <div class="col-xs-offset-1 col-xs-11 scanText2">
@@ -225,12 +225,12 @@
                         ng-disabled="!checkboxScanBlockText2"
                         ng-model="numScanBlockText2"
                         ng-options="n for n in range(5)"
-                        >
+                >
                 </select>
             </div>
-<!--            <div class="col-xs-6 scanCentered">
-                <input class="boxEdit" type="text" ng-model="textInScanBlockText2" ng-disabled="!checkboxScanBlockText2" placeholder="{{content.systemScanLevel2Placeh}}"/>
-            </div>-->
+            <!--            <div class="col-xs-6 scanCentered">
+                            <input class="boxEdit" type="text" ng-model="textInScanBlockText2" ng-disabled="!checkboxScanBlockText2" placeholder="{{content.systemScanLevel2Placeh}}"/>
+                        </div>-->
         </div>
         <div class="col-xs-12 marginTop"></div>
         <div class="col-xs-12 content4" >
@@ -239,7 +239,7 @@
                 <div class="borderImgEdit"></div>
                 <img ng-if="uploadedFile !== null" class="imgRounded imgEdit" width="100%" height="100%" ng-src="{{baseurl}}{{uploadedFile}}"/>
                 <img ng-if="uploadedFile == null && imgPictoEdit !== null" class="imgRounded imgEdit" width="100%" height="100%" ng-src="{{baseurl}}img/pictos/{{imgPictoEdit}}"/>
-                <img ng-if="uploadedFile === null && imgPictoEdit === null && imgFunct !== null" class="imgRounded imgEdit" width="100%" height="100%" ng-src="{{baseurl}}img{{imgFunct}}"/> 
+                <img ng-if="uploadedFile === null && imgPictoEdit === null && imgFunct !== null" class="imgRounded imgEdit" width="100%" height="100%" ng-src="{{baseurl}}img{{imgFunct}}"/>
                 <img class="imgRounded buttonRemovePhoto" width="100%" height="100%" ng-src="{{baseurl}}img/icons/remove_photo.png" ng-click="removeFile()"/>
                 <img class="imgRounded buttonInfoPhoto" width="100%" height="100%" ng-src="/img/icons/info-bg-white.png" ng-click="toggleInfoModal(content.modalInfoTitle, content.eraseImageEditCellInfo);"/>
 
@@ -249,8 +249,8 @@
                     <img src="img/srcWeb/save_as_gris.png" class="img-save" />
                     <span class="text-save">{{content.save}}</span>
                 </div>
+            </div>
         </div>
     </div>
-</div>
 </div>
 
