@@ -851,12 +851,12 @@ angular.module('controllers', [])
                             $scope.userData.cfgMenuCopyClipboard = ($scope.userData.cfgMenuCopyClipboard === "1");
                             $scope.userData.cfgMenuCopyTxtImgClipboard = ($scope.userData.cfgMenuCopyTxtImgClipboard === "1");
                             /*#Jorge y Hector.*/
-                            $scope.userData.cfgTextOnly = ($scope.userData.cfgTextOnly === "1");
+                            //$scope.userData.cfgTextOnly = ($scope.userData.cfgTextOnly === "1");
                             $scope.userData.cfgCellWithBorder = ($scope.userData.cfgCellWithBorder === "1");
 
                             /* Jorge: Tarea 5*/
-                            $scope.userData.cfgTextInRdngBarOnOff = ($scope.userData.cfgTextInRdngBarOnOff === "1");
-                            $scope.userData.cfgTextOnlyInRdngBar = ($scope.userData.cfgTextOnlyInRdngBar === "1");
+                            //$scope.userData.cfgTextInRdngBarOnOff = ($scope.userData.cfgTextInRdngBarOnOff === "1");
+                            //$scope.userData.cfgTextOnlyInRdngBar = ($scope.userData.cfgTextOnlyInRdngBar === "1");
 
 
 
@@ -1269,45 +1269,6 @@ angular.module('controllers', [])
                 $('#infoModal').modal('toggle');
             };
 
-            //JORGE: Create a function to enable and disable the radio buttons of one section in the user configuration screen.
-
-            $scope.toggleRadioButtonTxtInCell = function(){
-
-              var checkedOnlyText = document.getElementById("radioTextInCell3").checked;
-
-              if(checkedOnlyText){
-                document.getElementById("radioTextInCell1").checked = false;
-                document.getElementById("radioTextInCell2").checked = false;
-                document.getElementById("radioTextInCell1").disabled = true;
-                document.getElementById("radioTextInCell2").disabled = true;
-
-              }
-
-              else if(!checkedOnlyText) {
-                document.getElementById("radioTextInCell1").disabled = false;
-                document.getElementById("radioTextInCell2").disabled = false;
-              }
-            };
-
-
-
-            $scope.toggleRadioButtonRdngBarTxtInCell = function(){
-
-              var checkedRdngBarOnlyText = document.getElementById("radioTextInRdngCell3").checked;
-
-              if(checkedRdngBarOnlyText){
-                document.getElementById("radioTextInRdngCell1").checked = false;
-                document.getElementById("radioTextInRdngCell2").checked = false;
-                document.getElementById("radioTextInRdngCell1").disabled = true;
-                document.getElementById("radioTextInRdngCell2").disabled = true;
-
-              }
-
-              else if(!checkedRdngBarOnlyText) {
-                document.getElementById("radioTextInRdngCell1").disabled = false;
-                document.getElementById("radioTextInRdngCell2").disabled = false;
-              }
-            };
 
             $scope.viewActived = false; // para activar el gif del loading
 
@@ -2123,8 +2084,9 @@ angular.module('controllers', [])
                 $scope.cfgCellWithBorder = userConfig.cfgCellWithBorder == 1 ? true : false;
 
                 /* Jorge: Tarea 5*/
-                $scope.cfgTextInRdngBarOnOff = userConfig.cfgTextInRdngBarOnOff == 1 ? true : false;
-                $scope.cfgTextOnlyInRdngBar = userConfig.cfgTextOnlyInRdngBar == 1 ? true : false;
+                $scope.cfgTextInRdngBarOnOff = userConfig.cfgTextInRdngBarOnOff;
+                //$scope.cfgTextInRdngBarOnOff = userConfig.cfgTextInRdngBarOnOff == 1 ? true : false;
+                //$scope.cfgTextOnlyInRdngBar = userConfig.cfgTextOnlyInRdngBar == 1 ? true : false;
 
 
                 $scope.cfgUserExpansionFeedback = userConfig.cfgUserExpansionFeedback == 1 ? true : false;

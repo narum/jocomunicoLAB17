@@ -544,18 +544,18 @@
                                             <div class="row">
                                                 <div class="col-xs-4">
                                                     <div class="row titlePictosUserConfig"><div class="col-xs-8 col-xs-offset-1 text-center">{{content.withoutText}}</div></div>
-                                                    <input type="radio" id="radioTextInRdngCell1" class="imageRadio" ng-model="userData.cfgTextInRdngBarOnOff" value="0" ng-click="changeRadioState(userData.cfgTextInRdngBarOnOff, 'RdngBarTextInCell')" ng-show="false" ng-disabled="toggleRadioButtonRdngBarTxtInCell()">
+                                                    <input type="radio" id="radioTextInRdngCell1" class="imageRadio" ng-model="userData.cfgTextInRdngBarOnOff" value="0" ng-click="changeRadioState(userData.cfgTextInRdngBarOnOff, 'RdngBarTextInCell')" ng-show="false">
                                                     <label for="radioTextInRdngCell1"><img class="img-configRadio" ng-src={{img.textInRdngBarOff}}/></label>
                                                 </div>
                                                 <div class="col-xs-4">
                                                     <div class="row titlePictosUserConfig"><div class="col-xs-8 col-xs-offset-1 text-center">{{content.withText}}</div></div>
-                                                    <input type="radio" id="radioTextInRdngCell2" class="imageRadio" ng-model="userData.cfgTextInRdngBarOnOff" value="1" ng-click="changeRadioState(userData.cfgTextInRdngBarOnOff, 'RdngBarTextInCell')" ng-show="false" ng-disabled="toggleRadioButtonRdngBarTxtInCell()">
+                                                    <input type="radio" id="radioTextInRdngCell2" class="imageRadio" ng-model="userData.cfgTextInRdngBarOnOff" value="1" ng-click="changeRadioState(userData.cfgTextInRdngBarOnOff, 'RdngBarTextInCell')" ng-show="false">
                                                     <label for="radioTextInRdngCell2"><img class="img-configRadio" ng-src={{img.textInRdngBarOn}}/></label>
                                                 </div>
                                                 <div class="col-xs-4">
                                                     <div class="row titlePictosUserConfig"><div class="col-xs-8 col-xs-offset-1 text-center">{{content.textOnly}}</div></div>
-                                                    <input type="checkbox" id="radioTextInRdngCell3" class="imageSwitch2" ng-model="userData.cfgTextOnlyInRdngBar" ng-click="changeOnOff(userData.cfgTextOnlyInRdngBar, 'RdngBarTextOnly'); toggleRadioButtonRdngBarTxtInCell();" ng-show="false">
-                                                    <label for="radioTextInRdngCell3"><img class="img-configSwitch2" ng-src={{img.textOnlyInRdngBar}}/></label>
+                                                    <input type="radio" id="radioTextInRdngCell3" class="imageRadio" ng-model="userData.cfgTextInRdngBarOnOff" value="2" ng-click="changeRadioState(userData.cfgTextInRdngBarOnOff, 'RdngBarTextInCell')" ng-show="false">
+                                                    <label for="radioTextInRdngCell3"><img class="img-configRadio" ng-src={{img.textOnlyInRdngBar}}/></label>
                                                 </div>
 
                                           </div>
