@@ -851,12 +851,7 @@ angular.module('controllers', [])
                             $scope.userData.cfgMenuCopyClipboard = ($scope.userData.cfgMenuCopyClipboard === "1");
                             $scope.userData.cfgMenuCopyTxtImgClipboard = ($scope.userData.cfgMenuCopyTxtImgClipboard === "1");
                             /*#Jorge y Hector.*/
-                            //$scope.userData.cfgTextOnly = ($scope.userData.cfgTextOnly === "1");
                             $scope.userData.cfgCellWithBorder = ($scope.userData.cfgCellWithBorder === "1");
-
-                            /* Jorge: Tarea 5*/
-                            //$scope.userData.cfgTextInRdngBarOnOff = ($scope.userData.cfgTextInRdngBarOnOff === "1");
-                            //$scope.userData.cfgTextOnlyInRdngBar = ($scope.userData.cfgTextOnlyInRdngBar === "1");
 
 
 
@@ -2076,17 +2071,10 @@ angular.module('controllers', [])
                 $scope.cfgScanningOnOff = userConfig.cfgScanningOnOff;
                 $scope.cfgScanStartClick = userConfig.cfgScanStartClick == 1 ? true : false;
                 $scope.cfgCancelScanOnOff = userConfig.cfgCancelScanOnOff == 1 ? true : false;
-                //$scope.cfgTextInCell = userConfig.cfgTextInCell == 1 ? true : false;
-                $scope.cfgTextInCell = userConfig.cfgTextInCell;
-
                 /*Añadir configuración aquí. Hector y Jorge*/
-                //$scope.cfgTextOnly = userConfig.cfgTextOnly == 1 ? true : false;
                 $scope.cfgCellWithBorder = userConfig.cfgCellWithBorder == 1 ? true : false;
-
-                /* Jorge: Tarea 5*/
-                $scope.cfgTextInRdngBarOnOff = userConfig.cfgTextInRdngBarOnOff;
-                //$scope.cfgTextInRdngBarOnOff = userConfig.cfgTextInRdngBarOnOff == 1 ? true : false;
-                //$scope.cfgTextOnlyInRdngBar = userConfig.cfgTextOnlyInRdngBar == 1 ? true : false;
+                $scope.cfgTextInCell = userConfig.cfgTextInCell;
+                $scope.cfgTxtRdngBarOnOff = userConfig.cfgTxtRdngBarOnOff;
 
 
                 $scope.cfgUserExpansionFeedback = userConfig.cfgUserExpansionFeedback == 1 ? true : false;
