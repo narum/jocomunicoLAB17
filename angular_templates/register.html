@@ -10,17 +10,17 @@
 <div class="container container-table" ng-show="viewActived">
     <div class="row vertical-center-row">
         <form class="form form-horizontal" name="registerForm">
-            <div class="col-xs-8 col-xs-offset-2 boxRegistreUsuari" style="background-image: url({{img.Patterns1_08}})">
+            <div class="col-xs-8 col-xs-offset-2 boxRegistreUsuari register" style="background-image: url({{img.Patterns1_08}})">
                 <div class="row barraSuperiorRegistre">
-                    <div class="col-xs-6"><p class="nomBarraSuperiorRegistre">{{ content.title }}</p></div>
-                    <div class="col-xs-6">
+                    <div class="col-xs-6 register"><p class="nomBarraSuperiorRegistre">{{ content.title }}</p></div>
+                    <div class="col-xs-6 register">
                          <a class="icon-remove-sign pull-right butoSortirBarraSuperiorRegistre" ng-href="#/login" ng-click="resetForm()"></a>
                     </div>
                 </div>
                 <div class="row boxFormulariRegistreUsuari">
-                    <div class="col-xs-10 col-xs-offset-1">
+                    <div class="col-xs-10 col-xs-offset-1 register">
                         <div class="row">
-                            <div class="col-xs-12">
+                            <div class="col-xs-12 register">
                                 <div class="form-group {{state.user}} has-feedback">
                                     <div class="input-group input-group-auto">
                                         <span class="input-group-addon"><i class="icon-user"></i></span>
@@ -51,7 +51,7 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-xs-12">
+                            <div class="col-xs-12 register">
                                 <div class="form-group {{state.password}} has-feedback">
                                     <div class="input-group input-group-auto">
                                         <span class="input-group-addon"><i class="icon-unlock-alt"></i></span>
@@ -78,7 +78,7 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-xs-12">
+                            <div class="col-xs-12 register">
                                 <div class="form-group {{state.confirmPassword}} has-feedback">
                                     <div class="input-group input-group-auto">
                                         <span class="input-group-addon"><i class="icon-lock"></i></span>
@@ -106,7 +106,7 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-xs-6">
+                            <div class="col-xs-6 register">
                                 <div class="form-group {{state.name}} has-feedback">
                                     <div class="input-group input-group-auto inputMarginRigth">
                                         <span class="input-group-addon"><i class="icon-tags"></i></span>
@@ -128,7 +128,7 @@
                                           ng-show="registerForm.name.$touched && registerForm.name.$pristine || (state.name=='has-error')">{{ content.required }}</span>
                                 </div>
                             </div>
-                            <div class="col-xs-6">
+                            <div class="col-xs-6 register">
                                 <div class="form-group {{state.lastname}} has-feedback">
                                     <div class="input-group input-group-auto inputMarginLeft">
                                         <span class="input-group-addon"><i class="icon-tags"></i></span>
@@ -152,7 +152,7 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-xs-12">
+                            <div class="col-xs-12 register">
                                 <div class="form-group {{state.email}} has-feedback">
                                     <div class="input-group input-group-auto">
                                         <span class="input-group-addon"><i class="icon-envelope"></i></span>
@@ -183,7 +183,7 @@
                           @rjlopezdev
                         -->
                         <div class="row">
-                            <div class="col-xs-12">
+                            <div class="col-xs-12 register">
                                 <div class="form-group {{state.confirmEmail}} has-feedback">
                                     <div class="input-group input-group-auto">
                                         <span class="input-group-addon"><i class="icon-envelope"></i></span>
@@ -211,7 +211,7 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-xs-6">
+                            <div class="col-xs-6 register">
                                 <div class="form-group {{state.female}} has-feedback">
                                     <div class="input-group input-group-auto inputMarginRigth">
                                         <span class="input-group-addon"><image class="img img-inputIcon" alt="Responsive image" ng-src={{img.yo_3}}></span>
@@ -220,7 +220,7 @@
                                     <span class="errorcoment" ng-show="state.female =='has-error'">{{ content.required }}</span>
                                 </div>
                             </div>
-                            <div class="col-xs-6">
+                            <div class="col-xs-6 register">
                                 <div class="form-group {{state.male}} has-feedback">
                                     <div class="input-group input-group-auto inputMarginLeft">
                                         <span class="input-group-addon"><image class="img img-inputIcon" alt="Responsive image" ng-src={{img.yo_1}}></span>
@@ -231,7 +231,7 @@
                             </div>
                         </div>
                         <div class="row" ng-init="singleLanguageSelected=false;">
-                            <div class="col-xs-6">
+                            <div class="col-xs-6 register">
                                 <div class="form-group {{state.languageSelected}} has-feedback">
                                     <div class="input-group input-group-auto inputMarginRigth">
                                         <span class="input-group-addon"><i class="icon-comments"></i></span>
@@ -253,7 +253,7 @@
                                           ng-show="registerForm.languageSelected.$touched && registerForm.languageSelected.$pristine && state.languageSelected ==''">{{ content.required }}</span>
                                 </div>
                             </div>
-                            <div class="col-xs-6 llistaIdiomesFormulariRegistre">
+                            <div class="col-xs-6 llistaIdiomesFormulariRegistre register">
                                 <div class="inputMarginLeft">
                                     <table class="table table-condensed taula">
                                             <tr ng-repeat="item in languageList">
@@ -265,7 +265,7 @@
                             </div>
                         </div>
                         <div class="row marginTopInput" id="captcha">
-                            <div class="col-xs-6">
+                            <div class="col-xs-6 register">
                                 <div class="form-group has-feedback noMargin backgroundSolveText">{{content.solve}}
 <!--                                    <div class="input-group input-group-auto inputMarginRigth">
                                         <span class="input-group-addon"><i class="icon-question-sign"></i></span>
@@ -274,23 +274,23 @@
                                 </div>
                             </div>
 
-                            <div class="col-xs-3 FonsEquacio">
+                            <div class="col-xs-3 FonsEquacio register">
                                 <button type="button" ng-disabled="false" ng-click="checkCaptcha()" class="icon-refresh buttonCaptcha pull-right"/>
                                     <captcha field1="{{field1}}" operator="{{operator}}" field2="{{field2}}"></captcha>
                             </div>
-                            <div class="col-xs-2 noPaddingNoMargin">
+                            <div class="col-xs-2 noPaddingNoMargin register">
                                     <input class="inputCaptcha" ng-model="resultado" ng-change="captchaState=''" ng-class="{errorCaptcha: captchaState=='has-error', successCaptcha: captchaState=='has-success'}"/>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-xs-2 boxButo">
+            <div class="col-xs-2 boxButo register">
                 <div class="buto">
-                    <div class="col-xs-2 triangle">
+                    <div class="col-xs-2 triangle register">
                         <image class="imgTriangle" alt="Responsive image" ng-src={{img.fletxaLogin2}}/>
                     </div>
-                    <div class="col-xs-10">
+                    <div class="col-xs-10 register">
                         <div id="divID" ng-init="imgsrc=img.BotoCrea" ng-mouseover="imgsrc=img.BotoCrea2" ng-mouseout="imgsrc=img.BotoCrea">
                             <input type="image" class="img img-rounded" alt="Responsive image" ng-src="{{imgsrc}}" ng-click="submitForm(formData)">
                             <br/><div class="newUser" ng-class="{newUserHover: imgsrc==img.BotoCrea2}">{{content.registerButton}}</div>
@@ -299,6 +299,6 @@
                 </div>
             </div>
         </form>
-        <div class="row"><div class="col-xs-8 col-xs-offset-2 policyText" ng-show="viewActived">{{content.privacyPolicyInfo}}</div></div>
+        <div class="row"><div class="col-xs-8 col-xs-offset-2 policyText register" ng-show="viewActived">{{content.privacyPolicyInfo}}</div></div>
     </div>
 </div>

@@ -48,6 +48,8 @@
     <div ng-include="'/angular_templates/logoutModal.html'"></div>
     <div ng-include="'/angular_templates/errorVoicesModal.html'"></div>
     <div ng-include="'/angular_templates/infoModal.html'"></div>
+    <div ng-include="'/angular_templates/newUserModal.html'"></div>
+    <div ng-include="'/angular_templates/existingUserModal.html'"></div>
 
     <div class="loadingGif" ng-show="!viewActived"><img class="img-loadingGif" ng-src={{img.loading}}/></div>
 <div class="row scroll" id="scrollBar" ng-show="viewActived">
@@ -254,7 +256,9 @@
                     </div>
                 </form>
             </div>
-        </div><br/>
+        </div>
+        
+        <br ng-if="isSU">
 
         <!-- @rjlopezdev -->
         <!-- SECTION: Users associated to SU List -->
@@ -302,7 +306,9 @@
             </div>
 
         </div>
+
         <br>
+
         <div class="row" id="boxUserConfig" style="background-image: url({{img.Patterns1_08}})">
             <div class="col-xs-12">
                 <div id="header" class="row"><div class="col-xs-10 headerTitle">{{content.titleBar2}}</div></div>
@@ -955,10 +961,10 @@
                 </div>
                 <div class="row dadesUsuariCentre">
                     <div class="col-xs-6">
-                        <button type="reset" class="btn-gray pull-left" data-dismiss="modal" ng-click="addUser_New_OR_Existing('existing')"> {{content.addUserNew}} </button>
+                        <button type="reset" class="btn-gray pull-left" data-dismiss="modal" ng-click="addUser_New_OR_Existing('new')"> {{content.addUserNew}} </button>
                     </div>
                     <div class="col-xs-6">
-                        <button type="reset" class="btn-gray pull-right" data-dismiss="modal" ng-click="addUser_New_OR_Existing('new')"> {{content.addUserExisting}} </button>
+                        <button type="reset" class="btn-gray pull-right" data-dismiss="modal" ng-click="addUser_New_OR_Existing('existing')"> {{content.addUserExisting}} </button>
                     </div>
                 </div>
             </div>

@@ -401,7 +401,7 @@ angular.module('controllers', [])
                 }
             }
 
-            $scope.submitForm = function (formData) {
+            $scope.submitForm = function (formData, fromUser) {
                 // Llamamos las funciones para printar el error en el formulario si nunca se han llamado
 
                 if (!$scope.checkCaptcha()) {
@@ -420,7 +420,9 @@ angular.module('controllers', [])
                 }
                 // Comprobamos todos los campos del formulario accediendo a las funciones o mirando las variables de estado
                 if ($scope.checkCaptcha() && userOk && $scope.checkPassword(formData) && $scope.checkName(formData) && $scope.checkLastname(formData) && emailOk && languageOk && $scope.gender(formData)) {
-                    $location.path('/registerComplete');
+                    //@rjlopezdev: diference between login from superuser or new user
+                    if(fromUser != 'from_su')
+                        $location.path('/registerComplete');
                     $rootScope.dropdownMenuBarValue = ''; //Dropdown bar button selected on this view
                     $rootScope.viewActived2 = false; // para activar el gif de loading...
                     $rootScope.localServer = true;
@@ -692,7 +694,7 @@ angular.module('controllers', [])
         })
 
 //Controlador de la configuración de usuario
-        .controller('UserConfCtrl', function ($http, $scope, $rootScope, Resources, AuthService, txtContent, $location, $timeout, dropdownMenuBarInit) {
+        .controller('UserConfCtrl', function ($http, $scope, $rootScope, Resources, AuthService, txtContent, $location, $timeout, dropdownMenuBarInit, md5) {
             // Comprobación del login   IMPORTANTE!!! PONER EN TODOS LOS CONTROLADORES
             if (!$rootScope.isLogged) {
                 $rootScope.dropdownMenuBarValue = '/home'; //Dropdown bar button selected on this view
@@ -1280,6 +1282,31 @@ angular.module('controllers', [])
             $scope.userList;
             //User to remove
             $scope.userToRemove;
+            //Existing User data
+            $scope.existingUserData = {
+                name: '',
+                password: '',
+                id: ''
+            };
+            //Check if user exists
+            $scope.userExistsState = true;
+
+            console.log($rootScope)
+
+            /* CHECK if User is SuperUser
+             * and Show Admin Panel if TRUE
+             */
+            $scope.isSU = function(){
+                $http.get($scope.baseurl + 'SuperUserAdmin/isSU')
+                    .success(function(response){
+                        $scope.isSU = response.isSU;
+                        console.log(response)
+                        if($scope.isSU){
+                            $scope.getUserList();
+                        }
+                    })
+            }
+            $scope.isSU();
 
             // GET Users List belonging Super User
             $scope.getUserList = function(){
@@ -1291,28 +1318,72 @@ angular.module('controllers', [])
                         
                 })
             };
-            $scope.getUserList();
 
             //Show choosing modal
             $scope.showNew_OR_ExistingModal = function(){
                 $('#chooseNew_OR_ExistingModal').modal('toggle');
             }
 
-            //Adding existing or new User 
+            //Adding existing or new User modal
             $scope.addUser_New_OR_Existing = function(new_OR_Existing){
                 //Show choose Modal [existing or new User]
                 
                 //Adding existing User
-                if(new_OR_Existing=== 'existing'){
+                if(new_OR_Existing === 'existing'){
                     //Show Input [User, Password] Modal
+                    $('#chooseNew_OR_ExistingModal').on('hidden.bs.modal', function(){
+                        $('#existingUserModal').modal('toggle');
+                        $('#chooseNew_OR_ExistingModal').unbind();
+                    });
                     console.log(new_OR_Existing);
                 //Adding new User
                 }else if(new_OR_Existing === 'new'){
-                    /* Redirect to UserRegister
+                    /* Show UserRegister Modal
                      * params: emailSU
                      */
-                    console.log(new_OR_Existing);
+                    $('#chooseNew_OR_ExistingModal').on('hidden.bs.modal', function(){
+                        $('#newUserModal').modal('toggle');
+                        $('#chooseNew_OR_ExistingModal').unbind();
+                    });
                 }
+            }
+
+            //Check if user exists
+            $scope.userExists = function(){
+                console.log($scope.existingUserData);
+                $http.post($scope.baseurl + 'SuperUserAdmin/userExists',
+                    {
+                        user: $scope.existingUserData.name,
+                        password: md5.createHash($scope.existingUserData.password)
+                    })
+                    .success(function(response) {
+                        //If exists -> add User
+                        if(response.userExists != null)
+                        {
+                            $scope.userExistsState = true;
+                            $scope.existingUserData.id = response.userExists;
+                            $scope.addExistingUser();
+                        }
+                        else
+                            $scope.userExistsState = false;
+                        console.log(response);
+                    })
+            }
+
+            //Add belonging user
+            $scope.addExistingUser = function() {
+                $http.post($scope.baseurl + 'SuperUserAdmin/addBelongingUser', 
+                            {
+                                idUser: $scope.existingUserData.id
+                            })
+                    .success(function(response) {
+                        if(!response.statusCode)
+                            $scope.userExistsState = false;
+                        else{
+                            $('#newUserModal').modal('hide');
+                        }
+                        console.log(response);
+                    })
             }
 
             //Remove User from SuperUser Scope
@@ -1326,6 +1397,7 @@ angular.module('controllers', [])
                      })
             }
 
+            //Show confirmation Modal about to delete selected user
             $scope.confirmRemoveUserModal = function(user){
                 $scope.userToRemove = user;
                 $('#ConfirmRemove').modal('toggle');
