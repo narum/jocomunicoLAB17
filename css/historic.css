@@ -10,7 +10,7 @@
 
 }
 .historicView{
-    padding: 3px; 
+    padding: 3px;
     height: 100vh;
 
 }
@@ -23,7 +23,7 @@
 }
 .backgroundHome{
     width: 94%;
-    height: 100%;    
+    height: 100%;
     position: absolute;
     background: url('/img/srcWeb/Menu/borrar_ultim_fons.png');
     background-size: 100% 100%;
@@ -31,7 +31,7 @@
 }
 .backgroundReturn{
     width: 94%;
-    height: 100%;    
+    height: 100%;
     position: absolute;
     background: url('/img/srcWeb/Menu/llegir_fons.png');
     background-size: 100% 100%;
@@ -39,7 +39,7 @@
 }
 .backgroundBack{
     width: 100%;
-    height: 100%;    
+    height: 100%;
     position: absolute;
     background-color: #faab68;
     background-size: 100% 100%;
@@ -48,7 +48,7 @@
 }
 .disabledBackgroundBack{
     width: 100%;
-    height: 100%;    
+    height: 100%;
     position: absolute;
     background-color: #bbbbbb;
     background-size: 100% 100%;
@@ -57,7 +57,7 @@
 }
 .backgroundNext{
     width: 100%;
-    height: 100%;    
+    height: 100%;
     position: absolute;
     background-color: #faab68;
     background-size: 100% 100%;
@@ -66,7 +66,7 @@
 }
 .disabledBackgroundNext{
     width: 100%;
-    height: 100%;    
+    height: 100%;
     position: absolute;
     background-color: #bbbbbb;
     background-size: 100% 100%;
@@ -75,7 +75,7 @@
 }
 .backgroundHistoricBack{
     width: 100%;
-    height: 100%;    
+    height: 100%;
     position: absolute;
     background-color: #f8c659;
     background-size: 100% 100%;
@@ -83,7 +83,7 @@
 }
 .disabledBackgroundHistoricBack{
     width: 100%;
-    height: 100%;    
+    height: 100%;
     position: absolute;
     background-color: #bbbbbb;
     background-size: 100% 100%;
@@ -91,7 +91,7 @@
 }
 .backgroundHistoricNext{
     width: 94%;
-    height: 100%;    
+    height: 100%;
     position: absolute;
     background-color: #efa741;
     background-size: 100% 100%;
@@ -99,7 +99,7 @@
 }
 .disabledBackgroundHistoricNext{
     width: 94%;
-    height: 100%;    
+    height: 100%;
     position: absolute;
     background-color: #bbbbbb;
     background-size: 100% 100%;
@@ -129,7 +129,7 @@
     text-align: center;
     justify-content: center;
     align-content: center;
-    flex-direction: column; 
+    flex-direction: column;
     cursor: pointer;
 }
 .timeButton:active{
@@ -147,7 +147,7 @@
     text-align: center;
     justify-content: center;
     align-content: center;
-    flex-direction: column; 
+    flex-direction: column;
     cursor: pointer;
 }
 .folderHistoricButton{
@@ -161,7 +161,7 @@
     text-align: center;
     justify-content: center;
     align-content: center;
-    flex-direction: column; 
+    flex-direction: column;
     cursor: pointer;
 }
 .folderHistoricButton:active{
@@ -179,12 +179,12 @@
     text-align: center;
     justify-content: center;
     align-content: center;
-    flex-direction: column; 
+    flex-direction: column;
     cursor: pointer;
 }
 .holderButtons{
     padding: 2vh 1vh;
-    height:100%; 
+    height:100%;
 }
 .buttonPadding{
     padding: 0vh 1vh;
@@ -214,7 +214,7 @@
     height: 20%;
 }
 .sentenceBackground{
-    background-color:white; 
+    background-color:white;
     border-bottom-left-radius: 7px;
     border-top-left-radius: 7px;
     height: 100%;

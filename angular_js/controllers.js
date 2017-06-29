@@ -1371,7 +1371,6 @@ angular.module('controllers', [])
             // Get event Init call in the mune bar
             $scope.$on("IniciCallFromMenu", function () {
                 //MODIF: Se tiene que hacer con configuracion de usuario
-
                 $scope.config();
             });
             //MODIF: Solo para hacer pruebas
@@ -3469,16 +3468,10 @@ angular.module('controllers', [])
             };
         })
 
-        .controller('historicCtrl', function ($scope, $rootScope, txtContent, $location, $http, dropdownMenuBarInit, AuthService, Resources, $timeout, $interval) {
-            // Comprobación del login   IMPORTANTE!!! PONER EN TODOS LOS CONTROLADORES
-            if (!$rootScope.isLogged) {
-                $rootScope.dropdownMenuBarValue = '/home'; //Dropdown bar button selected on this view
-                $location.path('/home');
-            }
-            // Pedimos los textos para cargar la pagina
-            txtContent("historicview").then(function (results) {
-                $scope.content = results.data;
-            });
+        .controller('historicCtrl', function ($scope, $rootScope, txtContent, $location, $http, dropdownMenuBarInit, ngDialog, AuthService, Resources, $timeout, $interval, md5, $window) {
+
+            /* #Jorge: Add variables values */
+            $scope.timerPassword = null;
 
             //Dropdown Menu Bar
             $rootScope.dropdownMenuBar = null;
@@ -3490,27 +3483,30 @@ angular.module('controllers', [])
                 console.log('hover');
                 $scope.dropdownMenuOpen = true;
             });
-            //Choose the buttons to show on bar
+
             dropdownMenuBarInit($rootScope.interfaceLanguageId)
                     .then(function () {
                         //Choose the buttons to show on bar
                         angular.forEach($rootScope.dropdownMenuBar, function (value) {
-                            if (value.href == '/' || value.href == 'editPanel' || value.href == '/panelGroups' || value.href == '/userConfig' || value.href == '/faq' || value.href == '/tips' || value.href == '/privacy' || value.href == 'logout') {
+                            //if (value.href == '/' || value.href == 'editPanel' || value.href == '/panelGroups' || value.href == '/userConfig' || value.href == '/faq' || value.href == '/tips' || value.href == '/privacy' || value.href == 'logout') {
+                            if (value.href == '/' || value.href == '/panelGroups' || value.href == '/userConfig' || value.href == '/faq' || value.href == '/tips' || value.href == '/privacy' || value.href == 'logout') {
                                 value.show = true;
                             } else {
                                 value.show = false;
                             }
                         });
                     });
+
             //function to change html view
             $scope.go = function (path) {
                 if (path == '/') {
-                    $scope.config();
-                } else if (path == 'logout') {
+                    $scope.back();
+                }
+                else if (path == 'logout') {
                     $('#logoutModal').modal('toggle');
-                } else if (path == 'editPanel') {
-                    $scope.edit();
-                } else {
+                }
+
+                else {
                     $location.path(path);
                     $rootScope.dropdownMenuBarValue = path; //Button selected on this view
                 }
@@ -3520,16 +3516,146 @@ angular.module('controllers', [])
             $scope.img = [];
             $scope.img.lowSorpresaFlecha = '/img/srcWeb/Mus/lowSorpresaFlecha.png';
             $scope.img.Patterns1_08 = '/img/srcWeb/patterns/pattern3.png';
+            $scope.img.loading = '/img/srcWeb/Login/loading.gif';
             Resources.main.get({'section': 'logoutModal', 'idLanguage': $rootScope.interfaceLanguageId}, {'funct': "content"}).$promise
                     .then(function (results) {
                         $scope.logoutContent = results.data;
                     });
+
+
             $scope.logout = function () {
                 $scope.viewActived = false;
                 $timeout(function () {
                     AuthService.logout();
                 }, 1000);
             };
+
+            /*if (!$rootScope.isLogged) {
+              $rootScope.dropdownMenuBarValue = '/home'; //Dropdown bar button selected on this view
+              $location.path('/home');
+            } else {
+                Resources.main.get({'IdSu': $rootScope.sUserId},{'funct': "getConfig"}).$promise.then(function (results) {
+                if (results.userConfig.UserValidated == '1') {
+                    //redirecciona a configuración de usuario para el primer acceso a la aplicación
+                    $location.path('/userConfig');
+                }
+              });
+            }*/
+
+          // Pedimos los textos para cargar la pagina
+          txtContent("historicview").then(function (results) {
+              $scope.content = results.data;
+          });
+
+          // Get event Edit call in the menu bar
+          /*$scope.$on("EditCallFromMenu", function () {
+              $scope.edit();
+          });
+
+          // Get event Init call in the menu bar
+          $scope.$on("IniciCallFromMenu", function () {
+              //MODIF: Se tiene que hacer con configuracion de usuario
+              $scope.config();
+          });
+
+          //MODIF: Solo para hacer pruebas
+            $scope.$on("ScanCallFromMenu", function () {
+                $scope.InitScan();
+            });*/
+
+
+            // JORGE: Esta función sirve para comprobar si el usuario y la contraseña que usamos para acceder al menu es correcta.
+            $scope.confirmPassword = function (){
+
+              var url = $scope.baseurl +  "Main/confirmPassword";
+              var postdata = {user: $scope.usernameCopyPanel, pass: $scope.passwordCopyPanel};
+
+              if($scope.isLoged === "true"){
+                $('#confirmPassword').modal("hide");
+                return;
+              }
+
+              $scope.passwordCopyPanel = null;
+              var userConf = JSON.parse(window.localStorage.getItem('userData'));
+              $scope.idUser = userConf.ID_User;
+              $scope.usernameCopyPanel = userConf.SUname;
+              $scope.isLoged = '';
+              /* Código para quitar popup pulsando desde fuera de este*/
+              $('#confirmPassword').modal('show');
+
+              $http.post(url,postdata).success(function(response){
+                $scope.state2 = '';
+                var password = response.userPass;
+                $timeout.cancel($scope.timerPassword);
+
+                /* Código cuando introducimos la password y es correcta. */
+                if(md5.createHash(String(password)) === userConf.pswd){
+                    $scope.isLoged = 'true';
+                    $scope.state2 = 'has-success';
+                    $timeout(function(){
+                      $('#confirmPassword').modal('hide');
+                      $scope.passwordCopyPanel = null;
+                    },0);
+                    console.log('Contraseña correcta');
+                  }
+
+                  /* Código cuando introducimos la password y no es correcta */
+                  else if(md5.createHash(String(password)) !== userConf.pswd && response.userPass !== null){
+                    $scope.isLoged = 'false';
+                    $scope.state2 = 'has-error';
+
+                    $scope.timerPassword = $timeout(function(){
+                      angular.element('#clkOutside').triggerHandler('click');
+                        $('#confirmPassword').modal('hide');
+                        $scope.passwordCopyPanel = null;
+                      }, 10000);
+
+                    $scope.isLoged = '';
+                    $timeout(function(){
+                      //angular.element('#clkOutside').triggerHandler('click');
+                      //$('#confirmPassword').modal('hide');
+
+                      $scope.passwordCopyPanel = null;
+                    }, 0);
+                    console.log('Contraseña incorrecta');
+
+                  }
+
+                  /* Código de inicio del timeout. Actualización de timeout al añadir un elemento al input text*/
+                  else if(response.userID === null && response.userPass === null){
+                    $scope.isLoged = '';
+                    $scope.state2 = '';
+                    //console.log("Introduce la contraseña");
+                    $scope.timerPassword = $timeout(function(){
+                      angular.element('#clkOutside').triggerHandler('click');
+                        $('#confirmPassword').modal('hide');
+                        $scope.passwordCopyPanel = null;
+                      }, 10000);
+
+                    $('#input_id').on('input',function(e){
+                      $timeout.cancel($scope.timerPassword);
+                      $scope.timerPassword = $timeout(function(){
+                        angular.element('#clkOutside').triggerHandler('click');
+                        $('#confirmPassword').modal('hide');
+                        $scope.passwordCopyPanel = null;
+                      }, 10000);
+                      console.log('Reinicio timeout');
+                    });
+                  }
+
+                });
+            };
+
+            $scope.cancelForm = function(){
+                $timeout.cancel($scope.timerPassword);
+                $timeout(function(){
+                  $scope.passwordCopyPanel = null;
+                  angular.element('#clkOutside').triggerHandler('click');
+                  $('#confirmPassword').modal("hide");
+                }, 0);
+            };
+
+
 
             $scope.back = function () {
                 $rootScope.boardToShow = $scope.backBoard;
@@ -4023,6 +4149,8 @@ angular.module('controllers', [])
                     }
                 }
             };
+
+
             var userConfig = JSON.parse(localStorage.getItem('userData'));
             $scope.cfgScanColor = userConfig.cfgScanColor;
             $scope.longclick = userConfig.cfgScanningAutoOnOff == 0 ? true : false;
@@ -4058,6 +4186,7 @@ angular.module('controllers', [])
             if ($scope.cfgScanningOnOff == 1) {
                 $scope.InitScan();
             }
+
             //Init the pag
 
             $scope.pagNextFolderEnabled = true;
@@ -4085,95 +4214,8 @@ angular.module('controllers', [])
                 $scope.getHistoric();
             }
 
-        })
 
-      /*.factory('Clipboard', function($compile,$rootScope,$window) {
-          return {
-              'toAllBrowsersClipboard': function(){
-
-                  var ngClipboardElement = angular.element($window.document.getElementById('frase'));
-                  $window.document.getElementById('frase').contentEditable = true;
-                  ngClipboardElement.focus();
-                  var range = $window.document.createRange();
-                  range.extractContents();
-                  range.collapse();
-                  range.selectNode(ngClipboardElement[0]);
-                  $window.getSelection().removeAllRanges();
-                  $window.getSelection().addRange(range);*/
-
-                  // Create a element textarea in HTML to copy the text in the clipboard and later we delete this element
-
-                  /*var input = $window.document.createElement('textarea');
-                  input.style.position = 'absolute';
-                  input.style.zIndex = '-100';
-                  $window.document.body.appendChild(input);
-                  input.value = ngClipboardElement[0].innerHTML.trim();
-                  input.focus();
-                  input.select();
-                  $window.document.execCommand('copy');
-                  $window.document.getElementById('frase').contentEditable = false;
-                  input.remove();*/
-
-                  // Execute the command copy to get the text in the clipboard
-
-                  /*var successful = $window.document.execCommand('copy');
-                  var msg = successful ? 'successful' : 'unsuccessful';
-                  console.log('Copying text command was ' + msg);
-                  $window.getSelection().removeAllRanges();
-              },
-
-              'toAllBrowsersTxtImgClipboard': function(){
-
-                var img = document.getElementById('txtImgContainer');
-                var elements = img.getElementsByTagName('img');
-                console.log(elements.length);
-                document.getElementById('txtImgContainer').contentEditable = true;
-
-
-                var div = document.createElement('div');
-                div.id = 'prueba'
-
-                // Add image elements to the div.
-                for(index = 0; index < elements.length; index++){
-                  var img2 = document.createElement('img');
-                  img2.id = 'img' + index.toString();
-                  img2.width = 70;
-                  img2.height = 70;
-                  console.log(elements[index].src)
-                  img2.src= elements[index].src;
-                  div.appendChild(img2);
-                }
-
-                // Add phrase to the div
-                var frase = document.getElementById('frase');
-                var input = document.createElement('div');
-                document.body.appendChild(input);
-                input.append(frase.innerHTML);
-                div.appendChild(input);
-
-                // We select the div to copy in the clipboard
-                console.log(div);
-                document.body.appendChild(div);
-                getSelection().removeAllRanges();
-                var r = document.createRange();
-                r.setStartBefore(div);
-                r.setEndAfter(div);
-                r.selectNode(div);
-                getSelection().addRange(r);
-
-
-                // Execute the command copy to get the text and the images in the clipboard
-
-                var successful = document.execCommand('copy');
-                div.remove();
-                document.getElementById('txtImgContainer').contentEditable = false;
-                var msg = successful ? 'successful' : 'unsuccessful';
-                console.log('Copying text and images command was ' + msg);
-                getSelection().removeAllRanges();
-              }
-            }
-          })*/
-
+          })
 
           /*
           * New directive function: Copy the text in the clipboard and copy text and images in the clipboard.
