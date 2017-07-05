@@ -619,6 +619,24 @@
                             </div>
                         </div>
                     </div>
+                    <!-- SuperUser configuration -->
+                    <div class="row menuBar" >
+                        <div id="suConfig" class="row headerBar" ng-class="{disabledBar: !isSU}">
+                            <div class="col-xs-6">
+                                <div class="col-xs-2 infoIconBox">
+                                    <input type="image" class="img-icon" ng-src={{img.info}} ng-click="toggleInfoModal(content.modalInfoTitle, content.suInfoModal);">
+                                </div>
+                                
+                                <div class="col-xs-10" ng-show="validCandidate || isSU">{{content.superUserTitle}}</div>
+                                <div class="col-xs-10" ng-show="!(validCandidate || isSU)">{{content.userAdminBy}}</div>
+
+                            </div>
+                            <div class="col-xs-1 col-xs-offset-4" ng-show="validCandidate || isSU">
+                                <input type="checkbox" id="switchSU" class="switch hidden" ng-model="isSU"/>
+                                <label ng-click="enable_disable_SU(!isSU)">&nbsp;</label>
+                            </div>
+                        </div>
+                    </div>
 <!--Sistema Predicción-->                   
                     <div class="row menuBar">
                         <div id="predSistem" class="row headerBar" ng-class="{disabledBar:!userData.cfgPredOnOff}">

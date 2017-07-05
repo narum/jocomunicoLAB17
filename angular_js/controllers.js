@@ -128,7 +128,7 @@ angular.module('controllers', [])
         })
 
 //Controlador del registro de usuario
-        .controller('RegisterCtrl', function ($scope, $rootScope, $captcha, Resources, md5, $q, $location, dropdownMenuBarInit) {
+        .controller('RegisterCtrl', function ($scope, $rootScope, $captcha, Resources, md5, $q, $location, dropdownMenuBarInit, $http) {
 
             //Inicializamos el formulario y las variables necesarias
             $scope.formData = {};  //Datos del formulario
@@ -454,7 +454,7 @@ angular.module('controllers', [])
                                                 deferred.resolve(response);//PROMESAS
                                                 $id_su = response.ID_SU;
                                                 $id_usu = response.ID_U;
-                                                
+
                                                 //Cargamos la board inicial (Oscar)
                                                 Resources.register.save({'idsu': $id_su, 'idusu' :$id_usu}, {'funct': "copyDefaultGroupBoard"}).$promise
                                                 .then(function (results) {
@@ -477,6 +477,27 @@ angular.module('controllers', [])
                                                     $rootScope.localServer = false;
                                                     $rootScope.viewActived2 = true; // para activar la vista
                                                 }
+                                                /* @rjlopezdev
+                                                * Adding user to SU and back to userConfig View
+                                                */
+                                                if(fromUser == 'from_su'){
+                                                    $http.post($scope.baseurl + 'SuperUserAdmin/resetUserAfterRegister',
+                                                        {
+                                                            idusu: $scope.userData.ID_USU,
+                                                            idsu:  $scope.userData.ID_SU
+                                                        })
+                                                        .success(function() {
+                                                            $http.post($scope.baseurl + 'SuperUserAdmin/addBelongingUser', 
+                                                                {
+                                                                    idUser: $id_su
+                                                                })
+                                                                .success(function(){
+                                                                    location.reload();
+                                                                });
+                                                        })
+                                                    
+                                                }
+                                                
                                             });
                                 });
                             });
@@ -1273,11 +1294,13 @@ angular.module('controllers', [])
             /* SuperUser Administration
              * @rjlopezdev
              */
-            
+            console.log($scope)
             //Dropdown User list
             $scope.showUserList = false;
             //Show Admin Panel IF isSU
             $scope.isSU = false;
+            //If user could be a Superuser
+            $scope.validCandidate;
             //User list
             $scope.userList;
             //User to remove
@@ -1288,10 +1311,10 @@ angular.module('controllers', [])
                 password: '',
                 id: ''
             };
+            //SuperUser name (if exists)
+            $scope.superUserName;
             //Check if user exists
             $scope.userExistsState = true;
-
-            console.log($rootScope)
 
             /* CHECK if User is SuperUser
              * and Show Admin Panel if TRUE
@@ -1300,7 +1323,6 @@ angular.module('controllers', [])
                 $http.get($scope.baseurl + 'SuperUserAdmin/isSU')
                     .success(function(response){
                         $scope.isSU = response.isSU;
-                        console.log(response)
                         if($scope.isSU){
                             $scope.getUserList();
                         }
@@ -1308,14 +1330,31 @@ angular.module('controllers', [])
             }
             $scope.isSU();
 
+            $scope.showSUSwitch = function(){
+                            $http.get($scope.baseurl + 'SuperUserAdmin/hasSuperUser')
+                .success(function (response) {
+                    $scope.validCandidate = response.isValid;
+                    console.log(response)
+                });
+            };
+            $scope.showSUSwitch();
+
+            $scope.enable_disable_SU = function(newState){
+                $http.post($scope.baseurl + 'SuperUserAdmin/changeIsSUState',
+                            {
+                                newState: newState
+                            })
+                        .success(function(response){
+                            $scope.isSU = response.newState;
+                            $scope.getUserList();
+                        })
+            }
+
             // GET Users List belonging Super User
             $scope.getUserList = function(){
                 $http.get($scope.baseurl + 'SuperUserAdmin/getBelongingUsers')
                      .success(function(response){
                         $scope.userList = response.belongingUsers;
-                        $scope.isSU = true;
-                        console.log(response.belongingUsers);
-                        
                 })
             };
 
@@ -1335,7 +1374,6 @@ angular.module('controllers', [])
                         $('#existingUserModal').modal('toggle');
                         $('#chooseNew_OR_ExistingModal').unbind();
                     });
-                    console.log(new_OR_Existing);
                 //Adding new User
                 }else if(new_OR_Existing === 'new'){
                     /* Show UserRegister Modal
@@ -1366,7 +1404,6 @@ angular.module('controllers', [])
                         }
                         else
                             $scope.userExistsState = false;
-                        console.log(response);
                     })
             }
 
@@ -1380,9 +1417,9 @@ angular.module('controllers', [])
                         if(!response.statusCode)
                             $scope.userExistsState = false;
                         else{
-                            $('#newUserModal').modal('hide');
+                            $scope.getUserList();
+                            $('#existingUserModal').modal('hide');
                         }
-                        console.log(response);
                     })
             }
 

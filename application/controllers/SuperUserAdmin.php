@@ -16,9 +16,10 @@ class SuperUserAdmin extends REST_Controller {
                     CONTROLLER MAP
                     --------------
     - isSU: __GET
-    - getbelongingUsers: __GET
+    - changeIsSUState : __POST
+    - getBelongingUsers: __GET
     - removeBelongingUser: __POST
-    - userExist: __POST
+    - userExists: __POST
 
    ************************************************/
 
@@ -30,6 +31,47 @@ class SuperUserAdmin extends REST_Controller {
         ],
 
         REST_Controller::HTTP_OK);
+  }
+
+  public function hasSuperUser_get() {
+      $this->response(
+          [
+              'isValid' => $this->SuperUserAdminModel
+                           ->hasSuperUser($this->session->userdata('idsu'))
+          ],
+          REST_Controller::HTTP_OK
+      );
+  }
+
+  public function resetUserAfterRegister_post() {
+      $this->session->set_userdata('idusu', $this->post('idusu'));
+      $this->session->set_userdata('idsu',  $this->post('idsu'));
+
+      $this->response([], REST_Controller::HTTP_OK);
+  }
+
+  /*
+   * Change SuperUser State and return new value
+   * @param newState: update isSU value
+   *                  - if (true) => enable isSU
+   *                  - if (false) => disable isSU
+   */
+  public function changeIsSUState_post(){
+      //Seting new cookie value
+      $this->session->set_userdata('isSU',
+                                    ($this->post('newState')) ? '1' : '0');
+      $this->SuperUserAdminModel->updateIsSUState(
+                                    $this->post('newState'),
+                                    $this->session->userdata('idsu')
+                                );
+
+      $this->response(
+          [
+              'newState' => $this->post('newState')
+          ],
+
+          REST_Controller::HTTP_OK
+      );
   }
 
   //Response belonging Users
@@ -49,9 +91,9 @@ class SuperUserAdmin extends REST_Controller {
           [
               'successMessage' => $this->SuperUserAdminModel
                                   ->removeBelongingUser(
-                                                        $this->post('user_to_remove'),
-                                                        $this->session->userdata('idsu')
-                                                       )
+                                        $this->post('user_to_remove'),
+                                        $this->session->userdata('idsu')
+                                    )
           ],
           REST_Controller::HTTP_OK);
   }

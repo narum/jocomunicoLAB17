@@ -34,7 +34,7 @@
                         <!-- Notifier if user is valid -->
                         <div class="row" ng-show="!userExistsState">
                             <div class="col-xs-12">
-                                <span class="warningcoment">Hola</span>
+                                <span class="warningcoment"> {{content.notPossibleAddUser}} </span>
                             </div>
                         </div>
                         <br>
@@ -42,11 +42,11 @@
                         <div class="row">
                             <!-- Confirm User -->
                             <div class="col-xs-2">
-                                <button ng-click="userExists()" id="btnAccept" type="button" class="btn-gray center-block" ng-click="confirmPassword();">{{logoutContent.confirm}}</button>
+                                <button ng-click="userExists()" id="btnAccept" type="button" class="btn-gray center-block">{{logoutContent.confirm}}</button>
                             </div>
                             <!-- Cancel -->
                             <div class="col-xs-2 col-xs-offset-7">
-                                <button id="btnCancel" type="button" class="btn-gray center-block" style="display:right;" ng-click="cancelForm();">{{logoutContent.cancel}}</button>
+                                <button id="btnCancel" data-dismiss="modal" type="button" class="btn-gray center-block" style="display:right;">{{logoutContent.cancel}}</button>
                             </div>
                         </div>
                     </div>
