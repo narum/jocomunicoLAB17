@@ -171,10 +171,10 @@
                                 <img ng-if="h[0].sPreRecImg3 != null && h[0].sPreRecImg3 != ''" ng-src="{{baseurl}}{{h[0].sPreRecImg3}}" class="imgResponsiveHistoricPreRec"/>
                             </div>
                             <!--Display the phrase-->
-                            <div ng-if="h != null && h[0].isPreRec != 1" class="col-xs-12 phraseText text-uppercase">
+                            <div ng-if="h != null && h[0].isPreRec != 1" class="col-xs-12 phraseText text-uppercase truncate-text">
                                 {{h[0].generatorString}}
                             </div>
-                            <div ng-if="h != null && h[0].isPreRec == 1"class="col-xs-12 phraseText text-uppercase">
+                            <div ng-if="h != null && h[0].isPreRec == 1"class="col-xs-12 phraseText text-uppercase truncate-text">
                                 {{h[0].sPreRecText}}
                             </div>
                         </div>
