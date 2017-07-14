@@ -283,6 +283,24 @@ class BoardInterface extends CI_Model {
             $output = null;
         return $output[0];
     }
+
+    /*
+    * Return the word chosen of the sentence.
+    */
+
+    function getWordSelected($idusu, $pos){
+      $output = array();
+      $this-> db-> where('ID_RSTPUser', $idusu);
+      $query = $this->db->get('R_S_TempPictograms');
+      if ($query->num_rows() > 0) {
+          $output = $query->result();
+      } else{
+          $output = null;
+      }
+      return $output[$pos];
+    }
+
+
     /*
      * Remove the sentence from the tabla temp
      */

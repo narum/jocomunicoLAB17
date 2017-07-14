@@ -770,20 +770,25 @@ angular.module('controllers', [])
             $scope.img.menuButton1 = '/img/srcWeb/UserConfig/menuButton1.jpg';
             $scope.img.menuButton2 = '/img/srcWeb/UserConfig/menuButton2.jpg';
             $scope.img.menuButton3 = '/img/srcWeb/UserConfig/menuButton3.jpg';
-            //#Jorge Nuevo codigo
+
+            //#Jorge (Tarea 2)
             $scope.img.menuButton4 = '/img/srcWeb/UserConfig/menuButton4.jpg';
             $scope.img.menuButton5 = '/img/srcWeb/UserConfig/menuButton5.jpg';
+            $scope.img.menuButton6 = '/img/srcWeb/UserConfig/menuButton6.jpg';
+
+
             $scope.img.textInCellOff = '/img/srcWeb/UserConfig/textInCellOff.png';
             $scope.img.textInCellOn = '/img/srcWeb/UserConfig/textInCellOn.png';
+
             //#Jorge (Tarea 4) y #Hector Nuevo codigo
             $scope.img.textOnly = '/img/srcWeb/UserConfig/textOnly.png';
             $scope.img.CellWithBorder = '/img/srcWeb/UserConfig/CellWithBorder.png'
             $scope.img.CellWithoutBorder = '/img/srcWeb/UserConfig/textInCellOff.png'
+
             //#Jorge (Tarea 5)
             $scope.img.textInRdngBarOn = '/img/srcWeb/UserConfig/txtInRdngBarOn.png'
             $scope.img.textInRdngBarOff = '/img/srcWeb/UserConfig/txtInRdngBarOff.png'
             $scope.img.textOnlyInRdngBar = '/img/srcWeb/UserConfig/txtOnlyInRdngBar.png'
-
 
             $scope.img.cfgUsageMouse = '/img/srcWeb/UserConfig/cfgUsageMouse.png';
             $scope.img.cfgUsageOneC = '/img/srcWeb/UserConfig/cfgUsageOneC.png';
@@ -847,13 +852,13 @@ angular.module('controllers', [])
                             $scope.userData.cfgUserExpansionFeedback = ($scope.userData.cfgUserExpansionFeedback === "1");
                             $scope.userData.cfgInterfaceVoiceMascFem = ($scope.userData.cfgInterfaceVoiceMascFem === "masc");
                             $scope.scanOrder = $scope.userData.cfgScanOrderPred + $scope.userData.cfgScanOrderMenu + $scope.userData.cfgScanOrderPanel;
-                            /*#Jorge Nuevo codigo menu copiar en el portapapeles.*/
+                            /*Tarea 2: Nuevo codigo menu copiar en el portapapeles*/
                             $scope.userData.cfgMenuCopyClipboard = ($scope.userData.cfgMenuCopyClipboard === "1");
                             $scope.userData.cfgMenuCopyTxtImgClipboard = ($scope.userData.cfgMenuCopyTxtImgClipboard === "1");
                             /*#Jorge y Hector.*/
                             $scope.userData.cfgCellWithBorder = ($scope.userData.cfgCellWithBorder === "1");
-
-
+                            /*Tarea 6: Nuevo código menu opción borrar un pictograma concreto */
+                            $scope.userData.cfgMenuDeleteSelectedPicto = ($scope.userData.cfgMenuDeleteSelectedPicto === "1");
 
                             var count = results.users[0].ID_ULanguage;
                             angular.forEach(results.users, function (value) {
@@ -1291,8 +1296,14 @@ angular.module('controllers', [])
                 $scope.viewActived = true;
             }, 1000);
 
-            /* #Jorge: Add variables values */
+            /* #Jorge Tarea 3: Add variables values */
             $scope.timerPassword = null;
+
+
+            /* #Jorge Tarea 6: Create new variables*/
+            $scope.chooseElementDeleted = null;
+            $scope.deleteButtonActive = false;
+            $scope.chooseAngularChildElement = null;
 
             //Dropdown Menu Bar
             $rootScope.dropdownMenuBar = null;
@@ -2050,13 +2061,18 @@ angular.module('controllers', [])
                 $scope.cfgMenuReadActive = userConfig.cfgMenuReadActive;
                 $scope.cfgMenuDeleteLastActive = userConfig.cfgMenuDeleteLastActive;
                 $scope.cfgMenuDeleteAllActive = userConfig.cfgMenuDeleteAllActive;
-                //#Jorge Nuevo codigo.
+                //#Jorge Nuevo codigo (Tarea 2 y Tarea 6)
                 $scope.cfgMenuCopyClipboard = userConfig.cfgMenuCopyClipboard;
                 $scope.cfgMenuCopyTxtImgClipboard = userConfig.cfgMenuCopyTxtImgClipboard;
-                //Fin nuevo codigo
+                $scope.cfgMenuDeleteSelectedPicto = userConfig.cfgMenuDeleteSelectedPicto;
+
                 $scope.cfgSentenceBarUpDown = userConfig.cfgSentenceBarUpDown;
+                $scope.pictoBarWidth = 12 - $scope.cfgMenuHomeActive - $scope.cfgMenuReadActive - $scope.cfgMenuDeleteLastActive - $scope.cfgMenuCopyClipboard - $scope.cfgMenuCopyTxtImgClipboard - $scope.cfgMenuDeleteAllActive - $scope.cfgMenuDeleteSelectedPicto;
+
+                //$scope.sumMenuOptions =  parseInt($scope.cfgMenuDeleteLastActive) + parseInt($scope.cfgMenuCopyClipboard) + parseInt($scope.cfgMenuCopyTxtImgClipboard) + parseInt($scope.cfgMenuDeleteAllActive) + parseInt($scope.cfgMenuDeleteSelectedPicto);
+                //console.log($scope.sumMenuOptions);
+
                 //#Jorge nuevo codigo
-                $scope.pictoBarWidth = 12 - $scope.cfgMenuHomeActive - $scope.cfgMenuReadActive - $scope.cfgMenuDeleteLastActive - $scope.cfgMenuCopyClipboard - $scope.cfgMenuCopyTxtImgClipboard - $scope.cfgMenuDeleteAllActive;
                 $scope.cfgAutoEraseSentenceBar = userConfig.cfgAutoEraseSentenceBar;
                 $scope.cfgScanningCustomRowCol = userConfig.cfgScanningCustomRowCol;
                 $scope.longclick = userConfig.cfgScanningAutoOnOff == 0 ? true : false;
@@ -2726,9 +2742,11 @@ angular.module('controllers', [])
                     }
                 });
             };
+
             /*
              * Remove last word added to the sentence
              */
+
             $scope.deleteLast = function () {
 
                 var url = $scope.baseurl + "Board/deleteLastWord";
@@ -2739,6 +2757,7 @@ angular.module('controllers', [])
                     $scope.getPred();
                 });
             };
+
             /*
              * Remove the whole sentence
              */
@@ -2758,10 +2777,49 @@ angular.module('controllers', [])
                 });
             };
 
+          /*
+          * #Jorge. Tarea 6: Remove the word chosen of the sentence.
+          */
+
+          $scope.deleteSelectedPicto = function(){
+            var url = $scope.baseurl + "Board/deleteSelectedWord";
+            var postdata = {pos: $scope.chooseElementDeleted};
+
+
+            if($scope.deleteButtonActive == false){
+              $scope.deleteButtonActive = true;
+              //$scope.chooseAngularChildElement.removeClass('selectedDeletePicto');
+              $scope.chooseAngularChildElement.toggleClass('selectedDeletePicto', !$scope.deleteButtonActive);
+
+            }
+
+            $http.post(url, postdata).success(function (response){
+                $scope.dataTemp = response.data;
+            });
+
+
+          };
+
+          $scope.chooseElement = function(value){
+            $scope.chooseElementDeleted = value;
+            var ngDeleteSelectedPicto = angular.element($window.document.getElementById('txtImgContainer'));
+            var children = ngDeleteSelectedPicto.children();
+            var chooseChild = children[$scope.chooseElementDeleted];
+            $scope.chooseAngularChildElement = angular.element(chooseChild);
+
+            if($scope.chooseElementDeleted != null && $scope.deleteButtonActive == true){
+              $scope.chooseAngularChildElement.addClass('selectedDeletePicto');
+              $scope.deleteSelectedPicto();
+              $scope.deleteButtonActive = false;
+            }
+
+
+            $scope.chooseElementDeleted = null;
+
+          };
 
             /*
             * Copy text and Copy text and images in the clipboard
-            *
             */
 
             $scope.toAllBrowsersClipboard = function(){
@@ -4213,8 +4271,6 @@ angular.module('controllers', [])
                 $scope.timeHis = "today";
                 $scope.getHistoric();
             }
-
-
           })
 
           /*
@@ -4255,7 +4311,6 @@ angular.module('controllers', [])
               document.execCommand('copy');
               input.remove();
               document.getElementById('frase').contentEditable = false;
-
 
               //Execute the command copy to get the text in the clipboard
 

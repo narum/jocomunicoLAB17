@@ -426,6 +426,16 @@ input.imageSwitch2[type=checkbox]:empty + label:hover{
     cursor: default;
 }
 
+.img-config2{
+  height:4.2vw;
+  width:auto;
+  top:50%;
+  right:50%;
+  box-shadow: 0 1vh 1vh rgba(0, 0, 0, 0.7);
+  cursor: default;
+}
+
+
 .img-configSwitch{
     height: 4.2vw;
     width: auto;
