@@ -3392,6 +3392,13 @@ angular.module('controllers', [])
                         });
             };
 
+            $scope.allIsDisabled = function() {
+                return ($scope.pagBackHistoricEnabled == false
+                        && $scope.pagNextHistoricEnabled == false
+                        && $scope.pagBackFolderEnabled == false
+                        && $scope.pagNextFolderEnabled == false);
+            }
+
             $scope.previousPagHistoric = function () {
                 if ($scope.pagBackHistoricEnabled) {
                     $scope.pagHistoric -= 10;
@@ -3667,7 +3674,11 @@ angular.module('controllers', [])
                         case "waiting":
                             break;
                         case "1row":
-                            $scope.isScanning = "2row";
+                            if($scope.allIsDisabled()){
+                                $scope.isScanning = "1column";
+                            } else {
+                                $scope.isScanning = "2row";
+                            }
                             break;
                         case "2row":
                             $scope.isScanning = "1column";
