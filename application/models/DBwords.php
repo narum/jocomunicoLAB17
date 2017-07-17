@@ -11,7 +11,10 @@ class DBwords extends CI_Model {
         $this->load->library('Myword');
         $this->load->model('SuperUserAdminModel');
 
-        $this->usergroup = $this->SuperUserAdminModel->getUserGroup($this->session->userdata('idsu'));
+        $this->usergroup = $this->SuperUserAdminModel->getUserGroupOf(
+            'pictograms',
+            $this->session->userdata('idsu')
+        );
     }
 
     /*
@@ -24,7 +27,7 @@ class DBwords extends CI_Model {
         $languageExp = $this->session->userdata('ulangabbr');
         //Interface language
         $languageInt = $this->session->userdata('uinterfacelangauge');
-        $this->usergroup = $this->SuperUserAdminModel->getUserGroup($this->session->userdata('idsu'));
+
         $output = array();
         
         $this->db->limit(6);// limit up to 6

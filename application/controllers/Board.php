@@ -377,9 +377,7 @@ class Board extends REST_Controller {
         $tipusfrase = $request->tipusfrase;
         $negativa = $request->negativa;
         $idusu = $this->session->userdata('idusu');
-        if($this->HistoricInterface->getHistorialState() == '1'){
-            $this->Lexicon->insertarFrase($idusu, $tipusfrase, $tense, $negativa);
-        }
+        $this->Lexicon->insertarFrase($idusu, $tipusfrase, $tense, $negativa);
 
 
         $this->BoardInterface->commitTrans();

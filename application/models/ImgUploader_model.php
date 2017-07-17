@@ -23,10 +23,10 @@ class ImgUploader_model extends CI_Model {
 
         //Users from SU
         $usergroup = $this->SuperUserAdminModel
-                    ->getUserGroup($idusu);
-
+                    ->getUserGroupOf('images', $idusu);
+                    
         $this->db->limit(6);
-        $this->db->where('ID_ISU', $usergroup);
+        $this->db->where_in('ID_ISU', $usergroup);
         $this->db->like('imgName', $name, 'after');
         $this->db->order_by('imgName', 'asc');
         $query = $this->db->get('Images');

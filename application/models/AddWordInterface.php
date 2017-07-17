@@ -8,8 +8,11 @@ class AddWordInterface extends CI_Model {
         // Call the Model constructor
         parent::__construct();
         $this->load->model('SuperUserAdminModel');
-        $this->usergroup = $this->SuperUserAdminModel->getUserGroup($this->session->userdata('idsu'));
-        array_push($usergroup, '1');
+        $this->usergroup = $this->SuperUserAdminModel->getUserGroupOf(
+            'pictograms', 
+            $this->session->userdata('idsu')
+        );
+
     }
 
     function getTypePicto($idPicto) {
@@ -146,7 +149,7 @@ class AddWordInterface extends CI_Model {
         $languageExp = $this->session->userdata('ulangabbr');
         //Interface language
         $languageInt = $this->session->userdata('uinterfacelangauge');
-
+        
         $output = array();
         $this->db->limit(6); // limit up to 6
 

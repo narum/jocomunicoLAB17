@@ -86,9 +86,9 @@ class SuperUserAdminModel extends CI_Model {
 
         //Updating SU reference on User
         $this->db->query(
-            'UPDATE SuperUser
+            'UPDATE User
             SET SU_is = ?
-            WHERE ID_SU = ?',
+            WHERE ID_USU = ?',
             array($userID_Parent, $userID_Child)
         );
 
@@ -161,9 +161,9 @@ class SuperUserAdminModel extends CI_Model {
 
             //Update SU_is
             $this->db->query(
-                'UPDATE SuperUser
+                'UPDATE User
                 SET SU_is = ?
-                WHERE ID_SU = ?',
+                WHERE ID_User = ?',
                 array($idUser, $idUser)
             );
         }
@@ -265,33 +265,60 @@ class SuperUserAdminModel extends CI_Model {
 
     /*
      * Return all users associated to Superuser
+     * @param groupType: getting usergroup for usage:
+            - 'images' -> getting images from all users of group
+            - 'pictograms' -> getting all pictograms from all users of group
      * @param idUser: User ID
      */
-    function getUserGroup($idUser) {
-
+    function getUserGroupOf($groupType, $idUser) {
+        
+        $usergroup = array();
         //Getting SuperUser from User (SU_is)
         $superUser = $this->db->query(
             'SELECT SU_is
-            FROM Superuser
-            WHERE ID_SU = ?',
+            FROM User
+            WHERE ID_USU = ?',
             array($idUser)
         )->first_row()->SU_is;
-        return $superUser;
-        //Getting all users from group
-        $usergroup = array();
-        $query = $this->db->query(
-                       'SELECT Child
-                        FROM SUSU s
-                        WHERE s.Parent = ?',
-                        array($superUser)
-        );
+        
+        switch($groupType){
+            case 'images':
+                // -> id's for IMAGES
+                //Getting all users from group (by ID_SU)
+                $query = $this->db->query(
+                    'SELECT Child
+                    FROM SUSU s
+                    WHERE s.Parent = ?',
+                    array($superUser)
+                );
 
-        foreach($query->result() as $row)
-            array_push($usergroup, $row->Child);
+                foreach($query->result() as $row)
+                    array_push($usergroup, $row->Child);
+            break;
+
+            case'pictograms':
+                // -> id's for PICTOGRAMS
+                //Getting all users from group (by ID_USU)
+                $query = $this->db->query(
+                    'SELECT ID_USU
+                    FROM User
+                    WHERE SU_is = ?',
+                    array($superUser)
+                );
+                
+                foreach ($query->result() as $row)
+                    array_push($usergroup, $row->ID_USU);
+                    
+            break;
+            
+            default:
+                break;
+
+        }
         
         //Adding default user & own
-        array_push($this->usergroup, '1');
-        array_push($this->usergroup, $idUser);
+        array_push($usergroup, '1');
+        array_push($usergroup, $idUser);
         
         return $usergroup;
     }
