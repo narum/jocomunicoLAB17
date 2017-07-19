@@ -749,3 +749,10 @@ input.switch:checked ~ label:after
     padding-right: 1vw;
     border-radius: 8px;
 }
+
+.truncate-text {
+  width: 90%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}  
