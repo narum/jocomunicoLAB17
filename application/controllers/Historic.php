@@ -90,5 +90,9 @@ class Historic extends REST_Controller {
         $this->HistoricInterface->deleteHistoric();
         $this->response(null, REST_Controller::HTTP_OK);
     }
+
+    function deleteHistoric_post(){
+        $this->HistoricInterface->deleteHistoric();
+    }
     
 }

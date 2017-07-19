@@ -3435,6 +3435,21 @@ angular.module('controllers', [])
                 $scope.content = results.data;
             });
 
+            //Delete Historic if HistorialState = Off
+            $rootScope.$on('$viewContentLoading', function(event, viewConfig)
+            {
+                $http.get($scope.baseurl + 'Historic/getHistorialState')
+                .success(function(response){
+                    console.log(response);
+                    if(response.state == '0'){
+                        $http.post($scope.baseurl + 'Historic/deleteHistoric')
+                            .success(function(response){
+                                $scope.getHistoric();
+                        })
+                    }
+                });
+            });
+
             //Dropdown Menu Bar
             $rootScope.dropdownMenuBar = null;
             $rootScope.dropdownMenuBarValue = '/'; //Button selected on this view
