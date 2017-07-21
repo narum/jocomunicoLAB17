@@ -52,7 +52,7 @@ class SuperUserAdminModel extends CI_Model {
         
         //Update SU_is from removed User
         $this->db->query(
-            'UPDATE SuperUser
+            'UPDATE User
             SET SU_is = 0
             WHERE ID_SU = ?',
             array($user_to_remove)
@@ -163,7 +163,7 @@ class SuperUserAdminModel extends CI_Model {
             $this->db->query(
                 'UPDATE User
                 SET SU_is = ?
-                WHERE ID_User = ?',
+                WHERE ID_USU = ?',
                 array($idUser, $idUser)
             );
         }
@@ -179,7 +179,7 @@ class SuperUserAdminModel extends CI_Model {
 
             //Set SU_is to 0
             $this->db->query(
-                'UPDATE SuperUser
+                'UPDATE User
                 SET SU_is = 0
                 WHERE SU_is = ?',
                 array($idUser)
@@ -275,11 +275,11 @@ class SuperUserAdminModel extends CI_Model {
         $usergroup = array();
         //Getting SuperUser from User (SU_is)
         $superUser = $this->db->query(
-            'SELECT SU_is
-            FROM User
-            WHERE ID_USU = ?',
+            'SELECT Parent
+            FROM SUSU
+            WHERE Child = ?',
             array($idUser)
-        )->first_row()->SU_is;
+        )->first_row()->Parent;
         
         switch($groupType){
             case 'images':
@@ -292,6 +292,7 @@ class SuperUserAdminModel extends CI_Model {
                     array($superUser)
                 );
 
+                array_push($usergroup, $superUser);
                 foreach($query->result() as $row)
                     array_push($usergroup, $row->Child);
             break;
@@ -300,15 +301,15 @@ class SuperUserAdminModel extends CI_Model {
                 // -> id's for PICTOGRAMS
                 //Getting all users from group (by ID_USU)
                 $query = $this->db->query(
-                    'SELECT ID_USU
+                    'SELECT ID_User
                     FROM User
                     WHERE SU_is = ?',
                     array($superUser)
                 );
-                
+
+                array_push($usergroup, $idUser);
                 foreach ($query->result() as $row)
-                    array_push($usergroup, $row->ID_USU);
-                    
+                    array_push($usergroup, $row->ID_User);
             break;
             
             default:
@@ -318,7 +319,6 @@ class SuperUserAdminModel extends CI_Model {
         
         //Adding default user & own
         array_push($usergroup, '1');
-        array_push($usergroup, $idUser);
         
         return $usergroup;
     }
