@@ -47,13 +47,13 @@
                     <!--Historic Sentences-->
                     <div class="row scrollBox" ng-if="historicFolder">
                         <div class="row scrollOverflow" ng-scrollbar rebuild-on-resize rebuild-on="rebuild:meS">
-                            <div class="row insideScroll" ng-repeat="sentence in sentences | unique:'ID_SHistoric'" on-Finish-Loop="scrollbarSentences">
+                            <div class="row insideScroll" ng-repeat="sentence in sentences | unique:'ID_SHistoric' | orderBy:'ID_SHistoric':true" on-Finish-Loop="scrollbarSentences">
                                 <div class="col-xs-12 sentenceBox">
                                     <div class="row">
                                         <div class="col-xs-8" style="padding-top: 3px;">
                                             <div class="row">
                                                 <div class="col-xs-1"></div>
-                                                <div class="col-xs-1" ng-repeat="pictos in sentences | filter:{ID_SHistoric: sentence.ID_SHistoric}">
+                                                <div class="col-xs-1" ng-repeat="pictos in sentences | filter:{ID_SHistoric: sentence.ID_SHistoric} | orderBy:'ID_RSHPSentencePicto'">
                                                     <div class="col-xs-8 sentencePicto"><img class="pictoImg" ng-src="{{baseurl}}img/pictos/{{pictos.imgPicto}}"/></div>
                                                     <div class="col-xs-4">
                                                         <div class="row pictoType"><img class="pictoTypeImg" ng-src="{{baseurl}}img/pictos/plural.png" ng-show="pictos.isplural == '1'"/></div>
