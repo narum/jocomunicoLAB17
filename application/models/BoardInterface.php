@@ -91,12 +91,13 @@ class BoardInterface extends CI_Model {
         $this->db->join('Pictograms', 'Cell.ID_CPicto = Pictograms.pictoid', 'left');
         $this->db->join('PictogramsLanguage', 'Pictograms.pictoid = PictogramsLanguage.pictoid AND PictogramsLanguage.languageid = "' . $idlang . '"', 'left');
         $this->db->join('Function', 'Cell.ID_CFunction = Function.ID_Function', 'left');
-        $this->db->group_by('Pictograms.pictoid');
+        // $this->db->group_by('Pictograms.pictoid');
         $query = $this->db->get('R_BoardCell');
         if ($query->num_rows() > 0) {
             $output = $query->result();
-        } else
-            $output = null;
+        } else {
+            $output = null;   
+        }
         return $output;
     }
     /*
