@@ -102,7 +102,7 @@ angular.module('controllers')
             Resources.main.save({'ID_Folder': $routeParams.folderId},{'funct': "getSentencesOrHistoricFolder"}).$promise
             .then(function (results) {
                 $scope.sentences = results.sentences;
-                if($scope.sentences!=null){
+                if($scope.sentences!=null && !$scope.historicFolder){
                     $scope.sentences.sort(function(a, b){return a.posInFolder-b.posInFolder});
                 }
                 $scope.viewActived = true;
