@@ -37,6 +37,14 @@
     background-size: 100% 100%;
     border-radius: 7px;
 }
+.backgroundDisabled{
+    width: 94%;
+    height: 100%;    
+    position: absolute;
+    background: url('/img/srcWeb/Menu/hist_fons_des.jpg');
+    background-size: 100% 100%;
+    border-radius: 7px;
+}
 .backgroundBack{
     width: 100%;
     height: 100%;    
@@ -321,4 +329,50 @@
     max-height: 80%;
     width: auto;
     height: auto;
+}
+.scoreContainer{
+    max-height: 200px;
+    position: absolute;
+    max-width: 350px;
+    height: 30vh;
+    position: absolute;
+    width: 35vw;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    background: url("/img/srcWeb/Patterns1-08.png");
+    z-index: 4;
+    border-radius: 15px;
+    padding: 2vh;
+}
+.scoreContainerLeft{
+    height: 100%;
+    width: 48%;
+    margin-right: 2%;
+    background: white;
+    border-radius: 15px;
+    background-clip: content-box;
+    float: left;
+}
+.scoreContainerRight{
+    height: 100%;
+    width: 48%;
+    margin-left: 2%;
+    background: white;
+    border-radius: 15px;
+    background-clip: content-box;
+    float: left;
+}
+.goodPhrase{
+    border-radius: 15px;
+    display: block;
+    max-width: 100%;
+    height: auto;
+    max-height: 100%;
+    width: auto;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    position: relative;
+    z-index: 2;
 }

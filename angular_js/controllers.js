@@ -1846,6 +1846,7 @@ angular.module('controllers', [])
                             ngClipboard.toAllBrowsersTxtImgClipboard();
                             $scope.InitScan();
                             break;
+                        
                     }
                 }
             };
@@ -3694,7 +3695,7 @@ angular.module('controllers', [])
                             $scope.isScanning = "home";
                             break;
                         case "home":
-                            $scope.isScanning = "today";
+                            $scope.isScanning = "historial";
                             break;
                         case "today":
                             $scope.isScanning = "lastWeek";
@@ -3734,6 +3735,16 @@ angular.module('controllers', [])
                             break;
                         case "odd":
                             $scope.nextSenteceToScan();
+                            break;
+                        case "historial":
+                            $scope.isScanning = "today";
+                            break;
+                        case "goodphrase":
+                            $scope.isScanning = "badphrase"
+                            break;
+                        case "badphrase":
+                            $scope.isScanning = "today";
+                            $scope.showDeleteHistoricmodal = false;
                             break;
                     }
 
@@ -3825,6 +3836,20 @@ angular.module('controllers', [])
                         case "odd":
                             $scope.getSenteceToScan();
                             break;
+                        case "historial":
+                            $scope.showModalHistorial();
+                            $scope.isScanning = "goodphrase"
+                            break;
+                        case "goodphrase":
+                            $scope.isScanning = "today";
+                            $scope.showDeleteHistoricmodal = false;
+                            $scope.enable_disableHistorial(1);
+                            break;
+                        case "badphrase":
+                            $scope.isScanning = "today";
+                            $scope.showDeleteHistoricmodal = false;
+                            $scope.enable_disableHistorial(0);
+                            break;
                     }
                 }
             };
@@ -3889,6 +3914,31 @@ angular.module('controllers', [])
                 $scope.timeHis = "today";
                 $scope.getHistoric();
             }
+
+            /* Enable or disable Historial
+             * @rjlopezdev
+             */
+            $scope.showDeleteHistoricmodal = false;
+            $scope.showModalHistorial = function(){
+                $scope.showDeleteHistoricmodal = true;
+            };
+
+            $scope.isActivated = false;
+            $http.get('Historic/getHistorialState')
+            .success(function(response){
+                $scope.isActivated = (response.state == '1') ? true : false;
+            })
+
+            $scope.enable_disableHistorial = function(newValue){
+                $http.post('Historic/changeHistorialState',
+                          { 
+                            newState : newValue
+                          } )
+                .success(function (response) {
+                    $scope.showDeleteHistoricmodal = false;
+                    location.reload(true);
+                });
+            };
 
         })
 

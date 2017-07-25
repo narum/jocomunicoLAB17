@@ -495,17 +495,49 @@ angular.module('controllers')
               $cookies.put('browserAdvice', 'true');
             };
 
-            /* Enable or disable Historial
-            * @rjlopezdev
-            */
-            $scope.historialState = $http.get('Historic/getState');
-            $scope.enableHistorial = function () {
-              //Enable or disable Historial
-              $http.post('Historic/enableDisable_Historic')
-              .success(function (response) {
+            /* Enable/Disable Historic
+             * @rjlopezdev
+             */
+            $scope.HistoricState;
 
-              });
+
+            $scope.getHistorialState = function () {
+                $http.get('Historic/getHistorialState').success(function (response) {
+                    $scope.HistoricState = (response.state === '1') ? true : false;
+                    console.log(response.state);
+                });
             };
+
+            $scope.getHistorialState();
+            //Change current Historic State [cfgHIstorialState]
+            $scope.changeHistorialState = function () {
+                //!$scope.HistoricState;
+                /* Call to 'Historic/changeHistorialState' & params.
+                 * - newState : new Historic State (enable or disable)
+                 */
+                $('#HistoricModal').modal('hide');
+                $http.post('Historic/changeHistorialState'
+                    , {
+                        newState: ($scope.HistoricState) ? 0 : 1
+                    })
+                    .success(function (response) {
+                        $scope.getHistorialState();
+                        console.log('hola');
+                    });
+            };
+
+            $scope.enable_disableHistoric = function () {
+                //Show YES/NO Modal (disable Historial?)
+                if ($scope.HistoricState === true) {
+                    $('#HistoricModal').modal('toggle');
+                    //Show Modal (enable Historial)
+                } else if ($scope.HistoricState === false) {
+                    //console.log($scope.HistoricState);
+                    $scope.toggleInfoModal($scope.content.modalInfoTitle, $scope.content.historialInfoEnable);
+                    $scope.changeHistorialState();
+                }
+            };
+
             //muestra el modal de recuperacion de backup
               $scope.showRecoverBackupModal=function(){
                 $scope.content.title="Recuperar Copia de seguridad";

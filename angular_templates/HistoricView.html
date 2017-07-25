@@ -40,6 +40,17 @@
         }
     }
 </script>
+
+<div ng-if="showDeleteHistoricmodal" class="scoreContainer">
+        <div class="scoreContainerLeft">
+            <img src="/img/srcWeb/feliz_1.png" class="goodPhrase" ng-click="!inScan ? enable_disableHistorial(1) : null" ng-mouseenter="cfgTimeOverOnOff?TimeoutOverClick(3,'Good'):null" ng-mouseleave="cfgTimeOverOnOff?CancelTimeoutOverClick():null" ng-class="{'scaneo': isScanning == 'goodphrase'}" ng-style="isScanning == 'goodPhrase' && {'border':'7px solid #{{cfgScanColor}}'}"/>
+        </div>
+
+        <div class="scoreContainerRight">
+            <img src="/img/srcWeb/triste_1.png" class="goodPhrase" ng-click="!inScan ? enable_disableHistorial(0) : null" ng-mouseenter="cfgTimeOverOnOff?TimeoutOverClick(3,'Bad'):null" ng-mouseleave="cfgTimeOverOnOff?CancelTimeoutOverClick():null" ng-class="{'scaneo': isScanning == 'badphrase'}" ng-style=" isScanning == 'badPhrase' && {'border':'7px solid #{{cfgScanColor}}'}"/>
+        </div>
+</div>
+
 <div ng-include="'/angular_templates/dropdownMenuBar.html'"></div>
     <!--menu superior dropdown-->
     <div id="main" style="background-image: url('/img/srcWeb/patterns/fons.png');background-size:100% 100%" ng-click="scanLeftClick()" ng-right-click="scanRightClick()" onmousedown="audiohallelujah()">
@@ -58,7 +69,13 @@
                     <img class="imgResponsive icon " ng-src="{{baseurl}}img/srcWeb/Menu/inici_icon.png"/>
                 </div>
             </div>
-            <div class="col-xs-10 holderButtons" style="background-image: url('/img/srcWeb/patterns/pattern{{cfgBgColorMenu}}.png')">
+            <div class="col-xs-1 fullheight">
+                <div ng-if="isScanning == 'historial' && !isScanningCancel" class="scaneo" ng-style="{'border':'7px solid #{{cfgScanColor}}'}"></div>
+                <div ng-class="isActivated ? 'backgroundReturn' : 'backgroundDisabled'" ng-click="!inScan ? showModalHistorial() : null">
+                    <img class="imgResponsive icon " ng-src="{{baseurl}}img/srcWeb/home/historial.png"/>
+                </div>
+            </div>
+            <div class="col-xs-9 holderButtons" style="background-image: url('/img/srcWeb/patterns/pattern{{cfgBgColorMenu}}.png')">
                 <div class="col-xs-4 buttonPadding" ng-click="!inScan ? getTodayHistoric() : null">
                     <div ng-if="isScanning == 'today' && !isScanningCancel" class="scaneoButton" ng-style="{'border':'7px solid #{{cfgScanColor}}'}"></div>
                     <div ng-class="timeHis == 'today' ? 'timeButtonAcitve' : 'timeButton'">
