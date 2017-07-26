@@ -5,11 +5,27 @@ angular.module('controllers')
             $location.path('/home');
             $rootScope.dropdownMenuBarValue = '/home'; //Dropdown bar button selected on this view
         }
+        $scope.folderName = "";
         // Pedimos los textos para cargar la pagina
         txtContent("historySentencesFold").then(function (results) {
             $scope.content = results.data;
             $scope.editHistoricFolderContent = results.data;
             $scope.createFolderContentTitle = false; //Change the modal title to create folder or edit folder
+            if ($routeParams.folderId<0) {
+                switch($routeParams.folderId) {
+                    case '-1': 
+                        $scope.folderName = results.data.Today;
+                        break;
+                    case '-7': 
+                        $scope.folderName = results.data.LastWeek;
+                        break;
+                    case '-30': 
+                        $scope.folderName = results.data.LastMonth;
+                        break;
+                    default:
+                        break;
+                }
+            }
         });
 
         //Dropdown Menu Bar
@@ -90,11 +106,11 @@ angular.module('controllers')
         if($routeParams.folderId<0){
             $scope.historicFolder = true;
             if($routeParams.folderId=='-1'){
-                $scope.folderSelected = {'ID_Folder':'-1', 'ID_SFUser':$rootScope.userId, 'folderDescr':'', 'folderName':$scope.content.historyTodayFolder, 'imgSFolder':'img/pictos/hoy.png', 'folderColor':'dfdfdf', 'folderOrder':'0'};
+                $scope.folderSelected = {'ID_Folder':'-1', 'ID_SFUser':$rootScope.userId, 'folderDescr':'', 'imgSFolder':'img/pictos/hoy.png', 'folderColor':'dfdfdf', 'folderOrder':'0'};
             }else if($routeParams.folderId=='-7'){
-                $scope.folderSelected = {'ID_Folder':'-7', 'ID_SFUser':$rootScope.userId, 'folderDescr':'', 'folderName':$scope.content.historyLastWeekFolder, 'imgSFolder':'img/pictos/semana.png', 'folderColor':'dfdfdf', 'folderOrder':'0'};
+                $scope.folderSelected = {'ID_Folder':'-7', 'ID_SFUser':$rootScope.userId, 'folderDescr':'', 'imgSFolder':'img/pictos/semana.png', 'folderColor':'dfdfdf', 'folderOrder':'0'};
             }else if($routeParams.folderId=='-30'){
-                $scope.folderSelected = {'ID_Folder':'-30', 'ID_SFUser':$rootScope.userId, 'folderDescr':'', 'folderName':$scope.content.historyLastMonthFolder, 'imgSFolder':'img/pictos/mes.png', 'folderColor':'dfdfdf', 'folderOrder':'0'};
+                $scope.folderSelected = {'ID_Folder':'-30', 'ID_SFUser':$rootScope.userId, 'folderDescr':'', 'imgSFolder':'img/pictos/mes.png', 'folderColor':'dfdfdf', 'folderOrder':'0'};
             }
         }
         //Get sentences folder or Historic folder
