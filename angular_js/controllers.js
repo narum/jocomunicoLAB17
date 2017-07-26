@@ -775,6 +775,11 @@ angular.module('controllers', [])
             $scope.img.menuButton5 = '/img/srcWeb/UserConfig/menuButton5.jpg';
             $scope.img.textInCellOff = '/img/srcWeb/UserConfig/textInCellOff.png';
             $scope.img.textInCellOn = '/img/srcWeb/UserConfig/textInCellOn.png';
+            //#Jorge y #Hector Nuevo codigo
+            $scope.img.textOnly = '/img/srcWeb/UserConfig/textOnly.png';
+            $scope.img.CellWithBorder = '/img/srcWeb/UserConfig/CellWithBorder.png';
+            $scope.img.CellWithoutBorder = '/img/srcWeb/UserConfig/CellWithoutBorder.png';
+
             $scope.img.cfgUsageMouse = '/img/srcWeb/UserConfig/cfgUsageMouse.png';
             $scope.img.cfgUsageOneC = '/img/srcWeb/UserConfig/cfgUsageOneC.png';
             $scope.img.cfgUsageTwoC = '/img/srcWeb/UserConfig/cfgUsageTwoC.png';
@@ -840,6 +845,11 @@ angular.module('controllers', [])
                             /*#Jorge Nuevo codigo menu copiar en el portapapeles.*/
                             $scope.userData.cfgMenuCopyClipboard = ($scope.userData.cfgMenuCopyClipboard === "1");
                             $scope.userData.cfgMenuCopyTxtImgClipboard = ($scope.userData.cfgMenuCopyTxtImgClipboard === "1");
+                            /*#Jorge y Hector.*/
+                            $scope.userData.cfgTextOnly = ($scope.userData.cfgTextOnly === "1");
+                            $scope.userData.cfgCellWithBorder = ($scope.userData.cfgCellWithBorder === "1");
+
+
 
                             var count = results.users[0].ID_ULanguage;
                             angular.forEach(results.users, function (value) {
@@ -1891,6 +1901,11 @@ angular.module('controllers', [])
             $scope.isClickEnable = function () {
                 return(!($scope.inScan || $scope.cfgTimeOverOnOff));
             };
+
+            $scope.OS = function() {
+               return $http.get('Main/getOS');
+            };
+            
             // Get the user config and show the board
             $scope.config = function ()
             {
@@ -1961,6 +1976,9 @@ angular.module('controllers', [])
                 $scope.cfgScanStartClick = userConfig.cfgScanStartClick == 1 ? true : false;
                 $scope.cfgCancelScanOnOff = userConfig.cfgCancelScanOnOff == 1 ? true : false;
                 $scope.cfgTextInCell = userConfig.cfgTextInCell == 1 ? true : false;
+                /*Añadir configuración aquí. Hector y Jorge*/
+                $scope.cfgTextOnly = userConfig.cfgTextOnly == 1 ? true : false;
+                $scope.cfgCellWithBorder = userConfig.cfgCellWithBorder == 1 ? true : false;
                 $scope.cfgUserExpansionFeedback = userConfig.cfgUserExpansionFeedback == 1 ? true : false;
                 $scope.cfgScanOrderPred = userConfig.cfgScanOrderPred;
                 $scope.cfgScanOrderMenu = userConfig.cfgScanOrderMenu;
@@ -2327,15 +2345,28 @@ angular.module('controllers', [])
                         $location.path('/historic');
                         return false;
                     }
-                    if (cell.ID_CSentence) {
-                        $scope.readText(cell.sPreRecText, false);
-                        return false;
-                    }
                     var text = "";
                     // Just read once, and, if the autoread is activated in this board we don't have to read (the text will be mixed up)
                     var readed = false;
                     if ($scope.autoRead) {
                         readed = true;
+                    }
+                    if (cell.ID_CSentence) {
+                        if (cell.boardLink !== null) {
+                            if (readed === true) {
+                                text = "";
+                            } else {
+                                text = cell.textInCell;
+                            }
+
+                            $scope.showBoard(cell.boardLink);
+                            console.log("HOLAA");
+                            $scope.readText(cell.sPreRecText, false);
+                            readed = true;
+                        } else{
+                            $scope.readText(cell.sPreRecText, false);
+                        }
+                        return false;
                     }
                     if (cell.ID_CPicto !== null) {
                         if (cell.textInCell !== null) {
@@ -3392,13 +3423,13 @@ angular.module('controllers', [])
                             }
                         });
             };
-
-            $scope.allIsDisabled = function() {
-                return ($scope.pagBackHistoricEnabled == false
-                        && $scope.pagNextHistoricEnabled == false
-                        && $scope.pagBackFolderEnabled == false
-                        && $scope.pagNextFolderEnabled == false);
-            }
+            
+           $scope.allIsDisabled = function() {
+                          return ($scope.pagBackHistoricEnabled == false
+                                  && $scope.pagNextHistoricEnabled == false
+                                  && $scope.pagBackFolderEnabled == false
+                                  && $scope.pagNextFolderEnabled == false);
+                      }
 
             $scope.previousPagHistoric = function () {
                 if ($scope.pagBackHistoricEnabled) {

@@ -430,6 +430,6 @@ angular.module('controllers')
         };
 
         $('#download').click(function(){
-            $('.modal').modal('hide');
+            $('#downloadModal').modal('hide');
         });
     });

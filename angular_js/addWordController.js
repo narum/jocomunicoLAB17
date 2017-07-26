@@ -209,7 +209,7 @@ angular.module('controllers')
                             $scope.commit = 0;
                             $scope.errAdd.erradd1 = true;
                         }
-                        if($scope.NClassList.length < 1){
+                        if($scope.NClassList.length < 1 && $scope.objAdd.supExp){
                             $scope.commit = 0;
                             $scope.errAdd.erradd2 = true;
                         }
@@ -265,7 +265,7 @@ angular.module('controllers')
                             $scope.commit = 0;
                             $scope.errAdd.erradd1 = true;
                         }
-                        if($scope.AdjClassList.length < 1){
+                        if($scope.AdjClassList.length < 1 && $scope.objAdd.supExp){
                             $scope.commit = 0;
                             $scope.errAdd.erradd2 = true;
                         }

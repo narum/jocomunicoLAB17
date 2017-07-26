@@ -66,6 +66,7 @@ angular.module('controllers')
         $scope.contentBar35 = false;
         $scope.contentBar36 = false;
         $scope.contentBar37 = false;
+        $scope.contentBar38 = false;
         $scope.contentBar41 = false;
 
         //Imagenes
