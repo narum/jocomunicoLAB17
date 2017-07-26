@@ -283,7 +283,7 @@
                         ng-model="formNounClass"
                         ng-change="addNClass(formNounClass.valueOf())"
                         >
-                        <option ng-repeat="x in $parent.classNoun | orderBy:'classType'" value="{{x.classType}}">{{x.nameType}}</option>
+                        <option ng-repeat="x in $parent.classNoun | orderBy:'nameType'" value="{{x.nameType}}">{{x.nameType}}</option>
                     </select>
                 </div>
             </div>
