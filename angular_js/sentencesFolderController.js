@@ -428,4 +428,8 @@ angular.module('controllers')
             $scope.style_changes_title = 'padding-top: 2vh;';
             $('#downloadModal').modal('toggle');
         };
+
+        $('#download').click(function(){
+            $('.modal').modal('hide');
+        });
     });

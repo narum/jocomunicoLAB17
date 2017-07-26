@@ -266,17 +266,18 @@
                 <div class="col-xs-12 headerTitle-infomodal" style="{{style_changes_title}}">{{content.downloadWordTitle}}</div>
             </div>
             <div class="row backgroundUserConfigBox">
-                <div class="row fonsAlert">
-                    <div class="col-xs-12 textCenter">{{content.downloadWordBody}}</div>
+                <div class="row fonsAlert" >
+                    <div class="col-xs-12 textCenter">{{content.confirmEraseSentenceText}}</div>
                 </div>
                 <div class="row dadesUsuariCentre">
                     <div class="col-xs-6">
-                        <button type="reset" class="btn-gray pull-left" data-dismiss="modal" ng-click="confirmDeleteSentence();">{{logoutContent.confirm}}</button>
+                        <a id="download" style="text-decoration: none; color: white;" href="{{WordDocumentPath}}" download type="reset" class="btn-gray pull-left">{{logoutContent.confirm}}</a>
                     </div>
                     <div class="col-xs-6">
                         <button type="reset" class="btn-gray pull-right" data-dismiss="modal">{{logoutContent.cancel}}</button>
                     </div>
                 </div>
+            
             </div>
             
         <div class="row verticalMarginTop"></div>
