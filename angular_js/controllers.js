@@ -134,10 +134,11 @@ angular.module('controllers', [])
             $scope.formData = {};  //Datos del formulario
             $scope.languageList = []; //lista de idiomas seleccionados por el usuario
             //#Raul
-            $scope.state = {user: "", password: "", email : ""}; // estado de cada campo del formulario
+            $scope.state = {user: "", password: ""};// estado de cada campo del formulario
             var userOk = false; // variables de validación
             var emailOk = false; // variables de validación
             var languageOk = false; // variables de validación
+
 
             //Imagenes
             $scope.img = [];
@@ -1277,6 +1278,7 @@ angular.module('controllers', [])
                         $scope.runningLocal=true;   
                     }
                     });
+
     
         })
         .controller('myCtrl', function (Resources, $location, $scope, $http, ngDialog, txtContent, $rootScope, $interval, $timeout, dropdownMenuBarInit, AuthService) {
@@ -1308,6 +1310,24 @@ angular.module('controllers', [])
                             }
                         });
                     });
+            $scope.getArasaacPictos=function(pictoaras,bw){
+                      var postdata = {picto: pictoaras,ByN:bw};
+                      $http.post("PanelGroup/getArasaacPictos",postdata).success(function (results) {
+                        var pics=results.data;
+                        console.log(pics);
+                        var picasarashow=[];
+                            for(var i=0;i<results.data.length;i++){
+                              if(pics[i]!=null){
+                                picasarashow.push(true);
+                              }else{
+                                picasarashow.push(false);
+                              }
+                            }
+                            $scope.imgData=picasarashow;
+                            $scope.picsara=pics;
+                            console.log(pics);
+                          });
+                    }        
             //function to change html view
             $scope.go = function (path) {
                 if (path == '/') {
@@ -2833,22 +2853,27 @@ angular.module('controllers', [])
             /*
              * Return uploaded images from database. There are two types, the users images an the arasaac (not user images)
              */
-            $scope.searchImg = function (name, typeImgEditSearch) {
+            $scope.searchImg = function (name, typeImgEditSearch,bw) {
                 var URL = "";
                 switch (typeImgEditSearch)
                 {
                     case "Arasaac":
-                        URL = $scope.baseurl + "ImgUploader/getImagesArasaac";
+                        if(name!=''){
+                        $scope.getArasaacPictos(name,bw);
+                        }
+                        $scope.BW=true;
                         break;
                     case "Uploads":
                         URL = $scope.baseurl + "ImgUploader/getImagesUploads";
+                        $scope.BW=false;
                         break;
                 }
                 var postdata = {name: name};
+
                 $http.post(URL, postdata).
-                        success(function (response)
-                        {
-                            $scope.imgData = response.data;
+                        success(function (response){
+                          console.log(response.data)
+                          $scope.picsara=response.data;
                         });
             }
 
@@ -2889,7 +2914,30 @@ angular.module('controllers', [])
                             }
                         });
             };
+            $scope.uploadBackup = function () {
+                $scope.myFile = document.getElementById('file-input').files;
+                $scope.uploading = true;
+                var i;
+                var uploadUrl = $scope.baseurl + "ImgUploader/uploadBackup";
 
+                var fd = new FormData();
+                fd.append('vocabulary', angular.toJson(false));
+                for (i = 0; i < $scope.myFile.length; i++) {
+                    fd.append('file' + i, $scope.myFile[i]);
+                }
+                $http.post(uploadUrl, fd, {
+                    headers: {'Content-Type': undefined}
+                })
+                        .success(function (response) {
+                            $scope.uploading = false;
+                            if (response.error) {
+                                //open modal
+                                console.log(response.errorText);
+                                $scope.errorText = response.errorText;
+                                $('#errorImgModal').modal({backdrop: 'static'});
+                            }
+                        });
+            };
 
             /*
              * PosInBoard is the element over we drop the "draggable data". Data contains the info we drag 

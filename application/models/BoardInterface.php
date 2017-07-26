@@ -631,7 +631,13 @@ class BoardInterface extends CI_Model {
       $this->db->query($sql,$ID_User);
     }
     private function InsertBoards($gbkey){
-     $file = file_get_contents("./boards/Boards.json");
+      $ID_Language=$this->session->uinterfacelangauge;
+      if($ID_Language==1){
+        $filename='./boards/BoardsC.json';
+      }else{
+        $filename='./boards/Boards.json';
+      }
+     $file = file_get_contents($filename);
      $boards=json_decode($file);
      $count=count($boards->ID_Board);
      for($i=0;$i<$count;$i++){
@@ -639,7 +645,7 @@ class BoardInterface extends CI_Model {
        VALUES (?,?,?,?,?,?,?)";
       $this->db->query($sql,array(
         $gbkey,
-        0,
+        $boards->primaryboard[$i],
         $boards->Bname[$i],
         $boards->width[$i],
         $boards->height[$i],
@@ -663,12 +669,25 @@ class BoardInterface extends CI_Model {
     }
     private function InsertCells(){
      $ID_Cell=array();
-     $a=array();
      $boardkey=$this->getBoardkey();
-     $file = file_get_contents("./boards/Cell.json");
+     $ID_Language=$this->session->uinterfacelangauge;
+     if($ID_Language==1){
+       $file = file_get_contents("./boards/CellC.json");
+       $fileb=file_get_contents("./boards/BoardsC.json");
+     }else{
+       $file = file_get_contents("./boards/Cell.json");
+       $fileb=file_get_contents("./boards/Boards.json");
+     }
+
+     $boards=json_decode($fileb);
      $cells=json_decode($file);
      $count=count($cells->ID_Cell);
      for($i=0;$i<$count;$i++){
+       if(!(is_null($cells->boardLink[$i]))){
+           $posc=array_search($cells->boardLink[$i],$boards->ID_Board);
+       }else{
+           $posc=null;
+       }
         $sql="INSERT INTO Cell(isFixedInGroupBoards,imgCell,ID_CPicto,ID_CSentence,sentenceFolder,boardLink,color,
         ID_CFunction,textInCell,textInCellTextOnOff,cellType,activeCell)VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
         $this->db->query($sql,array(
@@ -677,7 +696,7 @@ class BoardInterface extends CI_Model {
         $cells->ID_CPicto[$i],
         $cells->ID_CSentence[$i],
         $cells->sentenceFolder[$i],
-        null,
+        $boardkey[$posc],
         $cells->color[$i],
         $cells->ID_CFunction[$i],
         $cells->textInCell[$i],
@@ -694,7 +713,13 @@ class BoardInterface extends CI_Model {
     }
     private function InsertRBoardCell($ID_Cell){
        $boardkey=$this->getBoardkey();
-       $file = file_get_contents("./boards/R_BoardCell.json");
+       $ID_Language=$this->session->uinterfacelangauge;
+       if($ID_Language==1){
+         $file = file_get_contents("./boards/R_BoardCellC.json");
+       }else{
+         $file = file_get_contents("./boards/R_BoardCell.json");
+       }
+
        $rbcell=json_decode($file);
        $count=count($rbcell->ID_RBoard);
        sort($rbcell->ID_RBoard);

@@ -6,6 +6,7 @@ angular.module('controllers')
             });
             //Dropdown Menu Bar
             $rootScope.dropdownMenuBar = null;
+            $scope.shwimg=true;
             $rootScope.dropdownMenuBarButtonHide = false;
             $rootScope.dropdownMenuBarValue = '/panelGroups'; //Button selected on this view
             $rootScope.dropdownMenuBarChangeLanguage = false;//Languages button available
@@ -48,7 +49,7 @@ angular.module('controllers')
             switch ($scope.addWordType)
                 {
                     case "name":
-                        $scope.objAdd = {type: "name", nomtext: null, mf: false, singpl: false, contabincontab: null, determinat: "1", ispropernoun: false, defaultverb: null, plural: null, femeni: null, fempl: null, imgPicto: 'arrow question.png', supExp: true};
+                        $scope.objAdd = {type: "name", nomtext: null, mf: false, singpl: false, contabincontab: null, determinat: "1", ispropernoun: false, defaultverb: null, plural: null, femeni: null, fempl: null, imgPicto: $scope.baseurl+'/img/pictos/arrow question.png', supExp: true};
                         $scope.switchName = {s1: false, s2: false, s3: false, s4: false, s5: false, s6: false};
                         $scope.NClassList = [];
                         $scope.errAdd = {erradd1: false, erradd2: false,erradd3: false};
@@ -141,7 +142,8 @@ angular.module('controllers')
                         success(function (response)
                         {
                             $scope.addWordEditData = response.data[0];
-                            console.log($scope.addWordEditData);
+                            $scope.addWordEditData.imgPicto="/img/pictos/"+response.data[0].imgPicto;
+                            console.log($scope.addWordEditData.imgPicto);
                             
                             var postdata = {id: $scope.idEditWord, type: $scope.addWordType};
                             URL = $scope.baseurl + "AddWord/EditWordGetClass";
@@ -209,11 +211,11 @@ angular.module('controllers')
                             $scope.commit = 0;
                             $scope.errAdd.erradd1 = true;
                         }
-                        if($scope.NClassList.length < 1 && $scope.objAdd.supExp){
+                        if($scope.NClassList.length < 1){
                             $scope.commit = 0;
                             $scope.errAdd.erradd2 = true;
                         }
-                        if($scope.objAdd.imgPicto == 'arrow question.png' || $scope.objAdd.imgPicto == null){
+                        if($scope.objAdd.imgPicto == $scope.baseurl+'/img/picto/arrow question.png' || $scope.objAdd.imgPicto == null){
                             $scope.commit = 0;
                             $scope.errAdd.erradd3 = true;
                         }
@@ -265,7 +267,7 @@ angular.module('controllers')
                             $scope.commit = 0;
                             $scope.errAdd.erradd1 = true;
                         }
-                        if($scope.AdjClassList.length < 1 && $scope.objAdd.supExp){
+                        if($scope.AdjClassList.length < 1){
                             $scope.commit = 0;
                             $scope.errAdd.erradd2 = true;
                         }
@@ -312,8 +314,7 @@ angular.module('controllers')
                         .success(function (response) {
                             $scope.uploading = false;
                             $scope.objAdd.imgPicto = response.url;
-                            $scope.objAdd.imgPicto = $scope.objAdd.imgPicto.split('/');
-                            $scope.objAdd.imgPicto = $scope.objAdd.imgPicto[2];
+                            $scope.shwimg=true;
                             if (response.error) {
                                 console.log(response.errorText);
                                 $scope.errorText = response.errorText;
@@ -359,6 +360,24 @@ angular.module('controllers')
                 $scope.style_changes_title = 'padding-top: 2vh;';
                 $('#infoModal').modal('toggle');
             };
+            $scope.getArasaacPictos=function(pictoaras,bw){
+              var postdata = {picto: pictoaras,ByN:bw};
+              $http.post("PanelGroup/getArasaacPictos",postdata).success(function (results) {
+                var pics=results.data;
+                console.log(pics);
+                var picasarashow=[];
+                    for(var i=0;i<4;i++){
+                      if(pics[i]!=null){
+                        picasarashow.push(true);
+                      }else{
+                        picasarashow.push(false);
+                      }
+                    }
+                    $scope.imgData=picasarashow;
+                    $scope.picsara=pics;
+                    console.log(pics);
+                  });
+            }
 
         });
         

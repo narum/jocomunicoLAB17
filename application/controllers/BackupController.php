@@ -12,50 +12,32 @@ class BackupController extends REST_Controller {
         $this->load->model("RecoverBackup");
         $this->load->model("Main_model");
         $this->load->model("BackupClean");
+        $this->load->model("BackupInsertsWin");
+        $this->load->model("RecoverBackupWin");
         $this->load->model('BoardInterface');
         $this->load->library('session');
     }
     //crea la carpeta para los backups
 public function index_get(){
-  $data=$this->BackupInserts->createBackupFolder();
+  if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+    $data=$this->BackupInsertsWin->createBackupFolder();
+  } else {
+    $data=$this->BackupInserts->createBackupFolder();
+  }
   $response = [
       'data' => $data
   ];
   $this->response($response, REST_Controller::HTTP_OK);
-}
-//llama al backup parcial de imagenes
-public function images_get(){
-  $this->BackupInserts->createParcialBackupFolder_images();
-}
-
-//llama al backup parcial del vocabulario
-public function vocabulary_get(){
-  $this->BackupInserts->createParcialBackupFolder_vocabulary();
-}
-
-//llama al backup parcial de la carpeta
-public function folder_get(){
-  $data=$this->BackupInserts->createParcialBackupFolder_Folder();
-  $response = [
-      'data' => $data
-  ];
-  $this->response($response, REST_Controller::HTTP_OK);
-}
-
-//llama al backup parcial de la configuracion
-public function cfg_get(){
-  $this->BackupInserts->createParcialBackupFolder_cfg();
-}
-
-//llama al backup parcial de los paneles
-public function panels_get(){
-  $this->BackupInserts->createParcialBackupFolder_Panels();
 }
 //recupera las imagenes y las inserta en la nueva base de datos
 public function recimages_post(){
   $overwrite=$this->post('overwrite');
   if($overwrite) $this->BackupClean->LaunchParcialClean_images();
-  $data=$this->RecoverBackup->LaunchParcialRecover_images();
+  if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+    $data=$this->RecoverBackupWin->LaunchParcialRecover_images();
+  } else {
+    $data=$this->RecoverBackup->LaunchParcialRecover_images();
+  }
   $response = [
       'data' => $data
   ];
@@ -66,14 +48,22 @@ public function recimages_post(){
 public function recvocabulary_post(){
   $overwrite=$this->post('overwrite');
   if($overwrite) $this->BackupClean->LaunchParcialClean_vocabulary();
-  $this->RecoverBackup->LaunchParcialRecover_vocabulary();
+  if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+    $this->RecoverBackupWin->LaunchParcialRecover_vocabulary();
+  } else {
+    $this->RecoverBackup->LaunchParcialRecover_vocabulary();
+  }
 }
 
 //recupera las folder y las inserta en la nueva base de datos
 public function recfolder_post(){
   $overwrite=$this->post('overwrite');
   if($overwrite) $this->BackupClean->LaunchParcialClean_Folder();
-  $data=$this->RecoverBackup->LaunchParcialRecover_Folder();
+  if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+    $this->RecoverBackupWin->LaunchParcialRecover_Folder();
+  } else {
+    $this->RecoverBackup->LaunchParcialRecover_Folder();
+  }
   $response = [
       'data' => $overwrite
   ];
@@ -83,7 +73,12 @@ public function recfolder_post(){
 //recupera las cfg y las inserta en la nueva base de datos
 public function reccfg_post(){
   $overwrite=$this->post('overwrite');
-  $this->RecoverBackup->LaunchParcialRecover_cfg();
+
+  if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+    $this->RecoverBackupWin->LaunchParcialRecover_cfg();
+  } else {
+    $this->RecoverBackup->LaunchParcialRecover_cfg();
+  }
 
 }
 //recupera las panels y las inserta en la nueva base de datos
@@ -95,7 +90,11 @@ public function recpanels_post(){
   }else{
     $mainGboard=false;
   }
-  $data=$this->RecoverBackup->LaunchParcialRecover_panels($mainGboard);
+  if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+    $data=$this->RecoverBackupWin->LaunchParcialRecover_panels($mainGboard);
+  } else {
+    $data=$this->RecoverBackup->LaunchParcialRecover_panels($mainGboard);
+  }
   $response = [
       'data' => $data
   ];
@@ -117,14 +116,11 @@ public function checkiftotalexists_get(){
 }
 public function recbackup_get(){
   $this->BackupClean->LaunchClean();
-  $data=$this->RecoverBackup->LaunchTotalRecover();
-  $response = [
-      'data' => $data
-  ];
-  $this->response($response, REST_Controller::HTTP_OK);
-}
-public function probando_get(){
-  $data=$this->RecoverBackup->LaunchTotalRecover();
+  if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+      $data=$this->RecoverBackupWin->LaunchTotalRecover();
+  } else {
+      $data=$this->RecoverBackup->LaunchTotalRecover();
+  }
   $response = [
       'data' => $data
   ];

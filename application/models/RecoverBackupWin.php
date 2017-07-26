@@ -3,7 +3,7 @@
 tambien varias funciones auxiliares al final del fichero las cuales cogen las claves recien insertadas para
 evitar colisiones entre claves, en la funcion LaunchTotalRecover es muy importante el orden en el que se ejecutan las
 funciones*/
-class RecoverBackup extends CI_Model {
+class RecoverBackupWin extends CI_Model {
     public function __construct(){
         parent::__construct();
         $this->load->library('session');
@@ -11,7 +11,7 @@ class RecoverBackup extends CI_Model {
     }
     //lanza una recuperacion total de los datos, llama a todas las recuperaciones parciales
     public function LaunchTotalRecover(){
-      $folder=$this->getLastGlobalBackup();
+      $folder="/xampp/htdocs/Temp/".$this->getLastGlobalBackup();
       $this->UpdateSuperUser($folder);
       $this->UpdateUser($folder);
       $this->InsertPictograms($folder);
@@ -27,7 +27,7 @@ class RecoverBackup extends CI_Model {
       $this->InsertRSSentencePictograms($folder);
       $this->InsertRSHistoricPictograms($folder);
       $this->InsertCells($folder);
-      return ":D";
+      return $folder;
     }
     //Comprueba si existe una carpeta con un backup total
     function checkiftotalexists(){
@@ -105,18 +105,14 @@ class RecoverBackup extends CI_Model {
     //devuelve el nombre de la capeta del ultimo backup global
     private function getLastGlobalBackup(){
       $ID_User=$this->session->idusu;
-      $dates=array();
-      if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+       $dates=array();
         $folder="/xampp/htdocs/Temp/*";
-      } else {
-        $folder="Temp/*";
-      }
-      $dirs = array_filter(glob($folder ,GLOB_ONLYDIR), 'is_dir');
-      for($i=0;$i<count($dirs);$i++){
-         if($ID_User==substr($dirs[$i],25)&&substr($dirs[$i],29)=="")
-          array_push($dates,$dirs[$i]);
-      }
-     return $this->getLastDate($dates);
+       $dirs = array_filter(glob($folder ,GLOB_ONLYDIR), 'is_dir');
+       for($i=0;$i<count($dirs);$i++){
+          if($ID_User==substr($dirs[$i],39))
+           array_push($dates,substr($dirs[$i],19));
+       }
+      return $this->getLastDate($dates);
     }
   //devuelve el nombre de la capeta del ultimo backup parcial por tematica
 public function getLastParcialBackup($key){
@@ -267,85 +263,100 @@ private function InsertSHistoric($Folder){
 }
 //Inserta en la base de datos los registros correspondientes a cells
 private function InsertCells($Folder){
- $ID_Cell=array();
- $sentencekey=$this->getSentencekey();
- $folderkey=$this->getfolderkey();
- $boardkey=$this->getBoardkey();
- $pictokey=$this->getPictokeys();
- $file = file_get_contents($Folder."/Cell.json");
- $files = file_get_contents($Folder."/Boards.json");
- $filesent = file_get_contents($Folder."/S_sentence.json");
- $filefol= file_get_contents($Folder."/S_Folder.json");
- $picto=file_get_contents($Folder."/Pictograms.json");
- $cells=json_decode($file);
- $boards=json_decode($files);
- $sentences=json_decode($filesent);
- $pic=json_decode($picto);
- $sfolder=json_decode($filefol);
- $count=count($cells->ID_Cell);
- for($i=0;$i<$count;$i++){
-   if(!(is_null($cells->boardLink[$i]))){
-       $posc=array_search($cells->boardLink[$i],$boards->ID_Board);
-   }else{
-       $posc=null;
-   }
-   if(!(is_null($cells->ID_CSentence[$i]))){
-       $poscs=array_search($cells->ID_CSentence[$i],$sentences->ID_SSentence);
+  $ID_Cell=array();
+  $sentencekey=$this->getSentencekey();
+  $folderkey=$this->getfolderkey();
+  $boardkey=$this->getBoardkey();
+  $pictokey=$this->getPictokeys();
+  $file = file_get_contents($Folder."/Cell.json");
+  $files = file_get_contents($Folder."/Boards.json");
+  $filesent = file_get_contents($Folder."/S_sentence.json");
+  $filefol= file_get_contents($Folder."/S_Folder.json");
+  $picto=file_get_contents($Folder."/Pictograms.json");
+  $cells=json_decode($file);
+  $boards=json_decode($files);
+  $sentences=json_decode($filesent);
+  $pic=json_decode($picto);
+  $sfolder=json_decode($filefol);
+  $count=count($cells->ID_Cell);
+  for($i=0;$i<$count;$i++){
+    if(!(is_null($cells->boardLink[$i]))){
+        $posc=array_search($cells->boardLink[$i],$boards->ID_Board);
     }else{
-       $poscs=null;
+        $posc=null;
     }
-   if(!(is_null($cells->sentenceFolder[$i]))){
-       $posf=array_search($cells->sentenceFolder[$i],$sfolder->ID_Folder);
-   }else{
-       $posf=null;
-   }
-   if($cells->ID_CPicto[$i]>2020){
-          $posp=array_search($cells->ID_CPicto[$i],$pic->pictoid);
-          $picto=$pictokey[$posp];
-   }else{
-     $picto=$cells->ID_CPicto[$i];
-   }
-    $sql="INSERT INTO Cell(isFixedInGroupBoards,imgCell,ID_CPicto,ID_CSentence,sentenceFolder,boardLink,color,
-    ID_CFunction,textInCell,textInCellTextOnOff,cellType,activeCell)VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
-    $this->db->query($sql,array(
-    $cells->isFixedInGroupBoards[$i],
-    $cells->imgCell[$i],
-    $picto,
-    $sentencekey[$poscs],
-    $folderkey[$posf],
-    $boardkey[$posc],
-    $cells->color[$i],
-    $cells->ID_CFunction[$i],
-    $cells->textInCell[$i],
-    $cells->textInCellTextOnOff[$i],
-    $cells->cellType[$i],
-    $cells->activeCell[$i]
-  ));
-    $query=$this->db->query("SELECT LAST_INSERT_ID() as s2");
-    $res=$query->result();
-    array_push($ID_Cell,$res[0]->s2);
-}
- $this->InsertRBoardCell($Folder,$ID_Cell);
+    if(!(is_null($cells->ID_CSentence[$i]))){
+        $poscs=array_search($cells->ID_CSentence[$i],$sentences->ID_SSentence);
+     }else{
+        $poscs=null;
+     }
+    if(!(is_null($cells->sentenceFolder[$i]))){
+        $posf=array_search($cells->sentenceFolder[$i],$sfolder->ID_Folder);
+    }else{
+        $posf=null;
+    }
+    if($cells->ID_CPicto[$i]>2020){
+           $posp=array_search($cells->ID_CPicto[$i],$pic->pictoid);
+           $picto=$pictokey[$posp];
+    }else{
+      $picto=$cells->ID_CPicto[$i];
+    }
+     $sql="INSERT INTO Cell(isFixedInGroupBoards,imgCell,ID_CPicto,ID_CSentence,sentenceFolder,boardLink,color,
+     ID_CFunction,textInCell,textInCellTextOnOff,cellType,activeCell)VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
+     $this->db->query($sql,array(
+     $cells->isFixedInGroupBoards[$i],
+     $cells->imgCell[$i],
+     $picto,
+     $sentencekey[$poscs],
+     $folderkey[$posf],
+     $boardkey[$posc],
+     $cells->color[$i],
+     $cells->ID_CFunction[$i],
+     $cells->textInCell[$i],
+     $cells->textInCellTextOnOff[$i],
+     $cells->cellType[$i],
+     $cells->activeCell[$i]
+   ));
+     $query=$this->db->query("SELECT LAST_INSERT_ID() as s2");
+     $res=$query->result();
+     array_push($ID_Cell,$res[0]->s2);
+ }
+  $this->InsertRBoardCell($Folder,$ID_Cell);
 }
 //Inserta en la base de datos los registros correspondientes a groupboards
-private function InsertGroupBoards($Folder){
+private function InsertGroupBoards($Folder,$mainGboard){
  $ID_User=$this->session->idusu;
  $file = file_get_contents($Folder."/GroupBoards.json");
  $gboards=json_decode($file);
  $count=count($gboards->ID_GBUser);
+ if(!$mainGboard){
    for($i=0;$i<$count;$i++){
-     if($i==0) $mainGboard="1"; else $mainGboard="0";
     $sql="INSERT INTO GroupBoards(ID_GBUser,GBname,primaryGroupBoard,defWidth,defHeight,imgGB)VALUES (?,?,?,?,?,?)";
     $this->db->query($sql,
      array(
       $ID_User,
       $gboards->GBname[$i],
-      $mainGboard,
+      0,
       $gboards->defWidth[$i],
       $gboards->defHeight[$i],
       $gboards->imgGB[$i]
     ));
   }
+}else{
+  for($i=0;$i<$count;$i++){
+   $sql="INSERT INTO GroupBoards(ID_GBUser,GBname,primaryGroupBoard,defWidth,defHeight,imgGB)VALUES (?,?,?,?,?,?)";
+   $this->db->query($sql,
+    array(
+     $ID_User,
+     $gboards->GBname[$i],
+     $gboards->primaryGroupBoard[$i],
+     $gboards->defWidth[$i],
+     $gboards->defHeight[$i],
+     $gboards->imgGB[$i]
+   ));
+ }
+}
+return $count;
 }
 //Inserta en la base de datos los registros correspondientes a images
 private function InsertImages($Folder){
@@ -482,6 +493,7 @@ private function InsertRBoardCell($Folder,$ID_Cell){
    }
     $sql="INSERT INTO R_BoardCell(ID_RBoard,ID_RCell,posInBoard,isMenu,posInMenu,customScanBlock1,customScanBlockText1,customScanBlock2,
       customScanBlockText2)VALUES (?,?,?,?,?,?,?,?,?)";
+      array_push($a,$rbcell->posInBoard[$i]);
     $this->db->query($sql,array(
       $boardkey[$posc],
       $ID_Cell[$i],
@@ -807,7 +819,6 @@ private function moveImages($imgPath,$imgName){
     } else {
       copy('./Temp/'.$Fname.'/'.'images/'.$imgName , $imgPath);
     }
-
   }
 }
 }

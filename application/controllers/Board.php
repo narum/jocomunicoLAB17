@@ -12,6 +12,7 @@ class Board extends REST_Controller {
 
         $this->load->model('BoardInterface');
         $this->load->model('Lexicon');
+        $this->load->model("Main_model");
         $this->load->library('Myword');
         $this->load->library('Myslot');
         $this->load->library('Mypattern');
@@ -34,7 +35,13 @@ class Board extends REST_Controller {
             }
         }
     }
-
+    public function AddBoards_get(){
+      $data=$this->BoardInterface->AddBoards();
+      $response = [
+          'data' => $data
+      ];
+      $this->response($response, REST_Controller::HTTP_OK);
+    }
     public function loadCFG_post() {
         $postdata = file_get_contents("php://input");
         $request = json_decode($postdata);
@@ -672,7 +679,7 @@ class Board extends REST_Controller {
         $request = json_decode($postdata);
         $id = $request->idboard;
         $posInBoard = $request->pos;
-        $imgCell = $request->imgCell;
+        $imgCell = $this->Main_model->downloadImageArasaac($request->imgCell);
         $idusu = $this->session->userdata('idusu');
 
         $cell = $this->BoardInterface->getIDCell($posInBoard, $id);

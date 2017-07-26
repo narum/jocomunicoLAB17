@@ -301,25 +301,56 @@ angular.module('controllers')
         /*
          * Return uploaded images from database. There are two types, the users images an the arasaac (not user images)
          */
-        $scope.searchImg = function (name, typeImgEditSearch) {
+        $scope.searchImg = function (name, typeImgEditSearch,bw) {
             var URL = "";
             switch (typeImgEditSearch)
             {
                 case "Arasaac":
-                    URL = $scope.baseurl + "ImgUploader/getImagesArasaac";
+                    if(name!=''){
+                      $scope.getArasaacPictos(name,bw)
+                    }
+                    $scope.BW=true;
                     break;
                 case "Uploads":
                     URL = $scope.baseurl + "ImgUploader/getImagesUploads";
+                    $scope.BW=false;
                     break;
             }
             var postdata = {name: name};
             $http.post(URL, postdata).
-                success(function (response)
-                {
-                    $scope.imgData = response.data;
+                success(function (response){
+                  picsara=[];
+                  picasarashow=[false,false,false,false]
+                  if(response.data.length>4){
+                    itsize=4
+                  }else{
+                    itsize=response.data.length;
+                  }
+                  for(var i=0;i<itsize;i++){
+                    picsara.push(response.data[i].imgPath);
+                    picasarashow[i]=true;
+                  }
+                  $scope.picsara=picsara;
+                  $scope.imgData=picasarashow;
                 });
         }
-
+        $scope.getArasaacPictos=function(pictoaras,bw){
+          var postdata = {picto: pictoaras,ByN:bw};
+          $http.post("PanelGroup/getArasaacPictos",postdata).success(function (results) {
+            var pics=results.data;
+            var picasarashow=[];
+                for(var i=0;i<4;i++){
+                  if(pics[i]!=null){
+                    picasarashow.push(true);
+                  }else{
+                    picasarashow.push(false);
+                  }
+                }
+                $scope.imgData=picasarashow;
+                $scope.picsara=pics;
+                console.log(pics);
+              });
+        }
         //get all the photos attached to the pictos
         $scope.searchFoto = function (name)
         {

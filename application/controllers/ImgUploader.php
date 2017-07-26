@@ -9,8 +9,9 @@ class ImgUploader extends REST_Controller {
 
     public function __construct() {
         parent::__construct();
-
         $this->load->model('ImgUploader_model');
+        $this->load->library('unzip');
+
     }
 
     //MODIF: mirar que hacer aqui...
@@ -27,16 +28,17 @@ class ImgUploader extends REST_Controller {
             }
         }
     }
-    public function uploadBackup_post() {
+    public function uploadBackupWin_post(){
       $errorText = array();
       $ID_User=$this->session->idusu;
-      $target_dir="./Temp/";
+      $target_dir="/xampp/htdocs/Temp/";
       $error = false;
       for ($i = 0; $i < count($_FILES); $i++) {
           $md5Name = $this->Rename_Img(basename($_FILES['file' . $i]['name']));
-          if (!($_FILES['file' . $i]['type'] == "application/zip")) {
+          if (!($_FILES['file' . $i]['type'] == 'application/octet-stream') ||
+          !($_FILES['file' . $i]['type'] == 'application/zip')) {
               $errorProv = ["errorImg1", $_FILES['file' . $i]['name']];
-              array_push($errorText, $errorProv);
+              array_push($errorText,$_FILES['file' . $i]['type']);
               $error = true;
               continue;
           }
@@ -49,11 +51,8 @@ class ImgUploader extends REST_Controller {
               $error = true;
               continue;
           }
-          //MODIF: poner tamaño a 100 kb y tamaño 150 minimo
-      //    if ($_FILES['file' . $i]['size'] > 10000) {
-              $success = move_uploaded_file($_FILES['file' . $i]['tmp_name'],
-              $target_dir . basename($_FILES['file' . $i]['name']));
-        //  }
+
+              $success = move_uploaded_file($_FILES['file' . $i]['tmp_name'],$target_dir . basename($_FILES['file' . $i]['name']));
           if (!$success) {
               $errorProv = ["errorImadsvg2", $_FILES['file' . $i]['name']];
               $max_upload = ini_get('memory_limit');
@@ -61,19 +60,67 @@ class ImgUploader extends REST_Controller {
               $error = true;
               continue;
           }
-          $dir12=substr(substr($_FILES['file' . $i]['name'],0,-4),9)."-".$ID_User;
-              mkdir("./Temp/$dir12");
-             $this->unzip->extract('./Temp/'.basename($_FILES['file' . $i]['name']),
-              "./Temp/$dir12");
+          $dir12=substr(substr($_FILES['file' . $i]['name'],0,-4),0)."-".$ID_User;
+              mkdir("/xampp/htdocs/Temp/$dir12");
+            $this->unzip->extract('/xampp/htdocs/Temp/'.basename($_FILES['file' . $i]['name']),"/xampp/htdocs/Temp/$dir12");
       }
       $response = [
           'url' => $dir12,
           'errorText' => $errorText,
           'error' => $error
       ];
-
       $this->response($response, REST_Controller::HTTP_OK);
-  }
+    }
+
+    public function uploadBackup_post() {
+        $errorText = array();
+        $ID_User=$this->session->idusu;
+        $target_dir="./Temp/";
+        $error = false;
+        for ($i = 0; $i < count($_FILES); $i++) {
+            $md5Name = $this->Rename_Img(basename($_FILES['file' . $i]['name']));
+            if (!($_FILES['file' . $i]['type'] == "application/zip"
+            || $_FILES['file' . $i]['type'] == "application/octet-stream")) {
+                $errorProv = ["errorImg1", $_FILES['file' . $i]['name']];
+                array_push($errorText, $errorProv);
+                $error = true;
+                continue;
+            }
+            $handle = fopen($target_dir . $md5Name, "r");
+            if (is_resource($handle)) {
+                fclose($handle);
+                //MODIF: lanzar error
+                $errorProv = ["errorImg2", $_FILES['file' . $i]['name']];
+                array_push($errorText, $errorProv);
+                $error = true;
+                continue;
+            }
+            //MODIF: poner tamaño a 100 kb y tamaño 150 minimo
+        //    if ($_FILES['file' . $i]['size'] > 10000) {
+                $success = move_uploaded_file($_FILES['file' . $i]['tmp_name'],
+                $target_dir . basename($_FILES['file' . $i]['name']));
+          //  }
+            if (!$success) {
+                $errorProv = ["errorImadsvg2", $_FILES['file' . $i]['name']];
+                $max_upload = ini_get('memory_limit');
+                array_push($errorText, $max_upload);
+                $error = true;
+                continue;
+            }
+            $dir12=substr(substr($_FILES['file' . $i]['name'],0,-4),9)."-".$ID_User;
+                mkdir("./Temp/$dir12");
+               $this->unzip->extract('./Temp/'.basename($_FILES['file' . $i]['name']),
+                "./Temp/$dir12");
+        }
+        $response = [
+            'url' => $dir12,
+            'errorText' => $errorText,
+            'error' => $error
+        ];
+
+        $this->response($response, REST_Controller::HTTP_OK);
+    }
+
     public function upload_post() {
         //"vocabulary" is a string.....
         if (filter_input(INPUT_POST, 'vocabulary') == "true") {
@@ -241,25 +288,6 @@ class ImgUploader extends REST_Controller {
 
         $idusu = $this->session->userdata('idsu');
         $data = $this->ImgUploader_model->getImages($idusu, $name);
-
-        $response = [
-            'data' => $data
-        ];
-
-        $this->response($response, REST_Controller::HTTP_OK);
-    }
-
-    function getImagesArasaac_post() {
-        $postdata = file_get_contents("php://input");
-        $request = json_decode($postdata);
-        $name = $request->name;
-
-        $idusu = $this->session->userdata('idusu');
-        $languageInt = $this->session->userdata('uinterfacelangauge');
-        $data = $this->ImgUploader_model->getImagesArasaac($idusu, $name, $languageInt);
-        for ($i = 0; $i < count($data); $i++) {
-            $data[$i]["imgPath"] = "img/pictos/" . $data[$i]["imgPath"];
-        }
 
         $response = [
             'data' => $data

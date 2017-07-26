@@ -312,48 +312,80 @@
                         <div class="col-xs-3"><div ng-class="{imgCell: newSentenceImage[2], imgMas: !newSentenceImage[2], Selected:(position==2 && btnSelected)}" ng-click="addImg=true; position=2; btnSelected=true;"><img class="img-rounded imgAdapted" ng-src="{{baseurl}}{{newSentenceImage[2]}}" ng-show="newSentenceImage[2]"/><div class="masGris" ng-show="!newSentenceImage[2]">+</div></div></div>
                         <div class="col-xs-1 iconTrash" ng-click="deleteImage(position);btnSelected=false;" ng-show="(addImg&&newSentenceImage[0]&&position==0)||(addImg&&newSentenceImage[1]&&position==1)||(addImg&&newSentenceImage[2]&&position==2)"><div class="icon-trash"></div></div>
                     </div>
-                    <div class="row" uib-collapse="!addImg"><br/><hr/>
-                        <div class="col-xs-12" ng-init="searchImg('', 'Arasaac')">
+                     <div class="row" uib-collapse="!addImg"><br/><hr/>
+
+                          <div class="col-xs-7" ng-init="searchImg('', 'Arasaac')">
+                              <div class="row"><div class="col-xs-12">{{editHistoricFolderContent.historyCreateFolderImage}}</div></div>
+                              <div class="row">
+                                  <div class="col-xs-9">
+                                      <input type="text" class="historicInputText" ng-model="imgEditSearch" placeholder="{{editHistoricFolderContent.historyCreateFolderImagePh1}}"/><br>
+                                  </div>
+                                  <div class="col-xs-1">
+
+                                      <img ng-click="searchImg(imgEditSearch,typeImgEditSearch,BWSearch)" class="lupa" src='img/icons/lupa.png'></img>
+                                  </div>
+                                  <div class="col-xs-2">
+                                      <div class="buttonsSearchView">
+                                          <label for="file-input" class="fullwidth">
+                                              <div ng-init="imgsrc=img.addPhoto" ng-mouseover="imgsrc=img.addPhotoSelected" ng-mouseout="imgsrc=img.addPhoto">
+                                                  <img class="buttonAddImg pull-right" ng-src="{{imgsrc}}"/>
+                                              </div>
+                                          </label>
+                                          <input type="file" multiple id="file-input" onchange="angular.element(this).scope().uploadFile()" ng-show="false"/>
+                                      </div>
+                                  </div>
+
+                              </div>
+                              <div class="row radioText">
+                                  <form role="form" class="text-center col-xs-12" name="SearchImgForm" ng-init="typeImgEditSearch='Arasaac'">
+                                      <div class="col-xs-6 text-left">
+                                          <label class="radio-inline">
+                                              <input type="radio" ng-model="typeImgEditSearch" ng-click="searchImg(imgEditSearch, typeImgEditSearch);" value="Arasaac"/>
+                                              {{editHistoricFolderContent.historyCreateFolderArasaacImages}}
+                                          </label>
+                                      </div>
+                                      <div class="col-xs-6 text-left">
+                                          <label class="radio-inline">
+                                              <input type="radio" ng-model="typeImgEditSearch" ng-click="searchImg(imgEditSearch, typeImgEditSearch);" value="Uploads"/>
+                                              {{editHistoricFolderContent.historyCreateFolderMyImages}}
+                                          </label>
+                                      </div>
+                                  </form>
+                              </div>
+                              <div class="row radioText">
+                                  <form role="form" class="text-center col-xs-12" name="SearchImgForm" ng-init="typeImgEditSearch='Arasaac'">
+                                      <div class="col-xs-12 text-left">
+                                          <label class="radio-inline" ng-show="BW">
+                                              <input type="checkbox" ng-model="BWSearch" value="1" ng-show="BW"/>
+                                              Blanco y negro
+                                          </label>
+                                      </div>
+                              </div>
+
+
+                          </div>
+                          <div class="col-xs-8 col-xs-offset-2">
                             <div class="row">
-                                <div class="col-xs-6">
-                                    <input type="text" class="historicInputText" ng-model="imgEditSearch" ng-keyup="searchImg(imgEditSearch, typeImgEditSearch);" placeholder="{{content.editSentenceHistoryPh3}}"/><br>
+                                <div class="col-xs-3"><div class="imgCell" ng-click="addImage(picsara[0], position);btnSelected=false;position=null;">
+                                  <img class="img-rounded imgAdapted" ng-src="{{picsara[0]}}"/>
                                 </div>
-                                <div class="col-xs-2">
-                                    <div class="buttonsSearchView">
-                                        <label for="file-input" class="fullwidth">
-                                            <div ng-init="imgsrc=img.addPhoto" ng-mouseover="imgsrc=img.addPhotoSelected" ng-mouseout="imgsrc=img.addPhoto">
-                                                <img class="buttonAddImg pull-right" ng-src="{{imgsrc}}"/>
-                                            </div>
-                                        </label>
-                                        <input type="file" multiple id="file-input" onchange="angular.element(this).scope().uploadFile()" ng-show="false"/>
-                                    </div>
+                              </div>
+                                <div class="col-xs-3"><div class="imgCell" ng-click="addImage(picsara[1], position);btnSelected=false;position=null;">
+                                  <img class="img-rounded imgAdapted" ng-src="{{picsara[1]}}"/>
                                 </div>
+                              </div>
+                                <div class="col-xs-3"><div class="imgCell" ng-click="addImage(picsara[0], position);btnSelected=false;position=null;">
+                                  <img class="img-rounded imgAdapted" ng-src="{{picsara[2]}}"/>
+                                </div>
+                              </div>
+                                <div class="col-xs-3"><div class="imgCell" ng-click="addImage(picsara[0], position);btnSelected=false;position=null;">
+                                  <img class="img-rounded imgAdapted" ng-src="{{picsara[3]}}"/>
+                                </div>
+                              </div>
                             </div>
-                            <div class="row radioText">
-                                <form role="form" class="text-center col-xs-12" name="SearchImgForm" ng-init="typeImgEditSearch='Arasaac'">
-                                    <div class="col-xs-4 text-left">
-                                        <label class="radio-inline">
-                                            <input type="radio" ng-model="typeImgEditSearch" ng-click="searchImg(imgEditSearch, typeImgEditSearch);" value="Arasaac"/>
-                                            {{content.editSentenceHistoryArasaacImages}}
-                                        </label>
-                                    </div>
-                                    <div class="col-xs-4 text-left">
-                                        <label class="radio-inline">
-                                            <input type="radio" ng-model="typeImgEditSearch" ng-click="searchImg(imgEditSearch, typeImgEditSearch);" value="Uploads"/>
-                                            {{content.editSentenceHistoryMyImages}}
-                                        </label>
-                                    </div>
-                                </form>
-                            </div>
+                          </div>
                         </div>
-                        <div class="col-xs-8 col-xs-offset-2">
-                            <div class="row">
-                                <div class="col-xs-3"><div class="imgCell" ng-click="addImage(imgData[0].imgPath, position);btnSelected=false;position=null;"><img class="img-rounded imgAdapted" ng-src="{{baseurl}}{{imgData[0].imgPath}}" ng-show="imgData[0].imgPath"/></div></div>
-                                <div class="col-xs-3"><div class="imgCell" ng-click="addImage(imgData[1].imgPath, position);btnSelected=false;position=null;"><img class="img-rounded imgAdapted" ng-src="{{baseurl}}{{imgData[1].imgPath}}" ng-show="imgData[1].imgPath"/></div></div>
-                                <div class="col-xs-3"><div class="imgCell" ng-click="addImage(imgData[2].imgPath, position);btnSelected=false;position=null;"><img class="img-rounded imgAdapted" ng-src="{{baseurl}}{{imgData[2].imgPath}}" ng-show="imgData[2].imgPath"/></div></div>
-                                <div class="col-xs-3"><div class="imgCell" ng-click="addImage(imgData[3].imgPath, position);btnSelected=false;position=null;"><img class="img-rounded imgAdapted" ng-src="{{baseurl}}{{imgData[3].imgPath}}" ng-show="imgData[3].imgPath"/></div></div>
-                            </div>
-                        </div>
+
                     </div>
                 </div>
                 <div class="row dadesUsuariCentre">
