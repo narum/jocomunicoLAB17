@@ -1,371 +1,453 @@
-<link rel="stylesheet" type="text/css" href="{{baseurl}}css/generico.css">
-<link rel="stylesheet" type="text/css" href="{{baseurl}}css/responsiveForm.css">
-<link rel="stylesheet" type="text/css" href="{{baseurl}}css/sentencesFolder.css">
-<link rel="stylesheet" type="text/css" href="{{baseurl}}css/editHistorialFolder.css">
-<link rel="stylesheet" type="text/css" href="{{baseurl}}/libraries/scrollbarPanel.css">
-
-<style>html, body, .container-table{height: 100%;height: 100vh;background: url('{{img.fons}}') no-repeat center center fixed;-webkit-background-size: cover;-moz-background-size: cover;-o-background-size: cover;background-size: cover;}
-</style>
-<!--menu superior dropdown-->
-<div ng-include="'/angular_templates/dropdownMenuBar.html'" ng-show="viewActived"></div>
-<div ng-include="'/angular_templates/logoutModal.html'"></div>
-<div ng-include="'/angular_templates/editHistoricFolder.html'"></div>
-
-<div class="loadingGif" ng-show="!viewActived"><img class="img-loadingGif" ng-src={{img.loading}}/></div>
-<div class="row folderContainer" ng-show="viewActived">
-    <div class="row">
-        <!--Folder box-->
-        <div class="col-xs-10 col-xs-offset-1">
-            <div class="boxSentencesFolder" id="boxUserConfig" style="background-image: url({{img.Patterns4}})">
-                <div id="header" class="row">
-                    <div ng-if="historicFolder" class="col-xs-10 headerTitle">{{content.sentencesFolderTitle}} {{folderName}}</div>
-                    <div ng-if="!historicFolder" class="col-xs-10 headerTitle">{{content.sentencesFolderTitle}} {{folderSelected.folderName}}</div>
-                </div>
-                <div class="row folder">
-                    <!--Folder & buttons-->
-                    <div class="row titleFolderBox">
-                        <div class="col-xs-6">
-                            <div class="row positionIndex1"><div class="row"><div class="col-xs-2 tabFolderShadow"></div></div>
-                               <div class="row"><div class="col-xs-12 contentFolderShadow"></div></div>
-                            </div>
-                            <div class="row positionIndex2"><div class="row"><div class="col-xs-2 tabFolder" style="background-color: #{{folderSelected.folderColor}}"></div></div>
-                               <div class="row"><div class="col-xs-12 contentFolder" style="background-color: #{{folderSelected.folderColor}}">
-                                       <div class="row">
-                                           <div class="col-xs-2"><img class="img-rounded imgFolder" ng-src="{{folderSelected.imgSFolder}}"/></div>
-                                           <div ng-if="historicFolder" class="col-xs-8 col-xs-offset-1 folderTitle">{{folderName}}</div>
-                                           <div ng-if="!historicFolder" class="col-xs-8 col-xs-offset-1 folderTitle">{{folderSelected.folderName}}</div>
-                                       </div>
-                                   </div>
-                               </div>
-                            </div>
-                        </div>
-                        <div class="col-xs-6">
-                            <button ng-show="!historicFolder" ng-click="editHistoricFolder()" class="turquoiseButton">{{content.editHistoryEditFolderButton1}} <div class="icon-pencil"></div><br/>{{content.editHistoryEditFolderButton2}}</button>
-                            <button class="turquoiseButton" ng-click="downloadWord()"><div class="icon-download"></div><br/>{{content.downloadWordButton}} </button>
-                            <button ng-show="!historicFolder" class="turquoiseButton" ng-click="deleteFolderModal()">{{content.editHistoryEraseSentence}} <div class="icon-trash"></div><br/>{{content.editHistoryEditFolderButton2}}</button>
-                            <button ng-click="go('/panelGroups')" class="grayButton">{{content.editHistoryBackButton}} <div class="icon-reply"></div><br/>{{content.editHistoryBackButton2}}</button>
-                        </div>
-                    </div>
-                    <!--Historic Sentences-->
-                    <div class="row scrollBox" ng-if="historicFolder">
-                        <div class="row scrollOverflow" ng-scrollbar rebuild-on-resize rebuild-on="rebuild:meS">
-                            <div class="row insideScroll" ng-repeat="sentence in sentences | unique:'ID_SHistoric' | orderBy:'ID_SHistoric':true" on-Finish-Loop="scrollbarSentences">
-                                <div class="col-xs-12 sentenceBox">
-                                    <div class="row">
-                                        <div class="col-xs-8" style="padding-top: 3px;">
-                                            <div class="row">
-                                                <div class="col-xs-1"></div>
-                                                <div class="col-xs-1" ng-repeat="pictos in sentences | filter:{ID_SHistoric: sentence.ID_SHistoric} | orderBy:'ID_RSHPSentencePicto'">
-                                                    <div class="col-xs-8 sentencePicto"><img class="pictoImg" ng-src="{{baseurl}}img/pictos/{{pictos.imgPicto}}"/></div>
-                                                    <div class="col-xs-4">
-                                                        <div class="row pictoType"><img class="pictoTypeImg" ng-src="{{baseurl}}img/pictos/plural.png" ng-show="pictos.isplural == '1'"/></div>
-                                                        <div class="row pictoType"><img class="pictoTypeImg" ng-src="{{baseurl}}img/pictos/femenino.png" ng-show="pictos.isfem == '1'"/></div>
-                                                    </div>
-                                                </div>
-                                                
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-xs-9 col-xs-offset-1 sentenceText">
-                                                    {{sentence.generatorString}}
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-xs-1"></div>
-                                        <!--Sentence Type-->
-                                        <div class="col-xs-2">
-                                            <div class="col-xs-5 col-xs-offset-1">
-                                                <div class="row sentenceType"><img class="sentenceTypeImg" ng-src="{{baseurl}}img/indicadors/{{sentence.sentenceTense}}.png" ng-show="sentence.sentenceTense != 'defecte'"/></div>
-                                                <div class="row indicatorNegativeSentence" ng-show="sentence.isNegative=='1'"></div>
-                                                <div class="row indicatorNoNegativeSentence" ng-show="sentence.isNegative=='0'"></div>
-                                                <div class="row sentenceType"><img class="sentenceTypeImg" ng-src="{{baseurl}}img/indicadors/{{sentence.sentenceType}}.png" ng-show="sentence.sentenceType != 'defecte'"/></div>
-                                            </div>
-                                            <div class="col-xs-6">
-                                                <div class="row okIcon" ng-show="sentence.userScore=='1'"><div class=" icon-ok"></div></div>
-                                                <div class="row wrongIcon" ng-show="sentence.userScore=='0'"><div class="icon-remove"></div></div>
-                                            </div>
-                                        </div>
-                                        <div class="col-xs-1">
-                                            <div class="row copyButtonXLg" ng-click="copySentence(sentence.ID_SHistoric, sentence.ID_SSentence)">{{content.editHistoryCopySentence}} <div class="icon-copy"></div></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!--Folder Sentences-->
-                    <div class="row scrollBox" ng-if="!historicFolder">
-                        <div class="row scrollOverflow" ng-scrollbar rebuild-on-resize rebuild-on="rebuild:meS">
-                            <div class="row insideScroll"><div class="buttonAddFolder" ng-click="createSentence()">+</div></div>
-                            <div class="row insideScroll" ng-repeat="sentence in sentences | unique:'ID_SSentence'" on-Finish-Loop="scrollbarSentences">
-                                <div class="col-xs-12 sentenceBox">
-                                    <div class="row">
-                                        <div class="col-xs-9">
-                                            <div class="row">
-                                                <div class="col-xs-1 text-center"></div>
-                                                <div ng-if="sentence.isPreRec=='0'">
-                                                    <div class="col-xs-1" ng-repeat="pictos in sentences | filter:{ID_SSentence: sentence.ID_SSentence}">
-                                                        <div class="col-xs-8 sentencePicto"><img class="pictoImg" ng-src="{{baseurl}}img/pictos/{{pictos.imgPicto}}"/></div>
-                                                        <div class="col-xs-4">
-                                                            <div class="row pictoType"><img class="pictoTypeImg" ng-src="{{baseurl}}img/pictos/plural.png" ng-show="pictos.isplural == '1'"/></div>
-                                                            <div class="row pictoType"><img class="pictoTypeImg" ng-src="{{baseurl}}img/pictos/femenino.png" ng-show="pictos.isfem == '1'"/></div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div ng-if="sentence.isPreRec=='1'">
-                                                    <div class="col-xs-1 sentencePicto"><img class="pictoImg" ng-src="{{baseurl}}{{sentence.sPreRecImg1}}" ng-show="sentence.sPreRecImg1"/></div>
-                                                    <div class="col-xs-1 sentencePicto"><img class="pictoImg" ng-src="{{baseurl}}{{sentence.sPreRecImg2}}" ng-show="sentence.sPreRecImg2"/></div>
-                                                    <div class="col-xs-1 sentencePicto"><img class="pictoImg" ng-src="{{baseurl}}{{sentence.sPreRecImg3}}" ng-show="sentence.sPreRecImg3"/></div>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-xs-10 col-xs-offset-1 sentenceText truncate-text">
-                                                    {{sentence.generatorString}}
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!--Sentence Type-->
-                                        <div class="col-xs-1">
-                                            <div class="col-xs-9 col-xs-offset-3">
-                                                <div class="row sentenceType"><img class="sentenceTypeImg" ng-src="{{baseurl}}img/indicadors/{{sentence.sentenceTense}}.png" ng-show="sentence.sentenceTense != 'defecte'"/></div>
-                                                <div class="row indicatorNegativeSentence" ng-show="sentence.isNegative=='1'"></div>
-                                                <div class="row indicatorNoNegativeSentence" ng-show="sentence.isNegative=='0'"></div>
-                                                <div class="row sentenceType"><img class="sentenceTypeImg" ng-src="{{baseurl}}img/indicadors/{{sentence.sentenceType}}.png" ng-show="sentence.sentenceType != 'defecte'"/></div>
-                                            </div>
-                                        </div>
-                                        <div class="col-xs-1">
-                                            <!--ok or wrong icons-->
-                                            <div class="col-xs-8">
-                                                <div class="row okIcon" ng-show="sentence.userScore==1"><div class=" icon-ok"></div></div>
-                                                <div class="row wrongIcon" ng-show="sentence.userScore==0"><div class="icon-remove"></div></div>
-                                            </div>
-                                            <!--Up Down Buttons-->
-                                            <div class="col-xs-4">
-                                                <div class="row upButton" ng-class="{transparent: !showUpDownButtons}" ng-click="upSentenceOrder(sentence.ID_SSentence);"><div class="icon-circle-arrow-up"></div></div>
-                                                <div class="row downButton" ng-class="{transparent: !showUpDownButtons}" ng-click="downSentenceOrder(sentence.ID_SSentence);"><div class="icon-circle-arrow-down"></div></div>
-                                            </div>
-                                        </div>
-                                        <div class="col-xs-1" ng-if="sentence.isPreRec=='0'">
-                                            <img class="loadingGifTransparent" ng-show="!showUpDownButtons" ng-src={{img.Loading_icon}}/>
-                                            <div class="row copyButtonLg" ng-class="{transparent: !showUpDownButtons}" ng-click="copySentence(sentence.ID_SHistoric, sentence.ID_SSentence)">{{content.editHistoryCopySentence}} <div class="icon-copy"></div></div>
-                                            <div class="row deleteButtonLg" ng-class="{transparent: !showUpDownButtons}" ng-click="deleteSentence(sentence.ID_SSentence)">{{content.editHistoryEraseSentence}} <div class="icon-trash"></div></div>
-                                        </div>
-                                        <!--Copy edit delete buttons-->
-                                        <div class="col-xs-1" ng-if="sentence.isPreRec=='1'">
-                                            <img class="loadingGifTransparent" ng-show="!showUpDownButtons" ng-src={{img.Loading_icon}}/>
-                                            <div class="row copyButton" ng-class="{transparent: !showUpDownButtons}" ng-click="copySentence(sentence.ID_SHistoric, sentence.ID_SSentence)">{{content.editHistoryCopySentence}} <div class="icon-copy"></div></div>
-                                            <div class="row editButton" ng-class="{transparent: !showUpDownButtons}" ng-click="editManualSentence(sentence.generatorString, sentence.sPreRecImg1, sentence.sPreRecImg2, sentence.sPreRecImg3, sentence.ID_SSentence);">{{content.editHistoryEditSentence}} <div class="icon-pencil"></div></div>
-                                            <div class="row deleteButton" ng-class="{transparent: !showUpDownButtons}" ng-click="deleteSentence(sentence.ID_SSentence)">{{content.editHistoryEraseSentence}} <div class="icon-trash"></div></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-                                
-                                
-<!--Copy Sentnce Modal-->
-<div class="modal fade" id="copySentenceModal" role="dialog">
-    <div class="modal-dialog modal-lg">
-        <div class="row marginModalTopHist">
-        <div class="row" id="boxUserConfig" style="background-image: url({{img.Patterns4}})">
-            <div id="header" class="row">
-                <div class="col-xs-10 headerTitle">{{content.editHistoryCopySentenceTitle}}</div>
-            </div>
-            <div class="row backgroundUserConfigBox">
-                <div class="row fonsAlert">
-                    <div class="col-xs-12 textCenter">{{content.editHistoryCopySentenceText}}</div>
-                </div>
-                <div class="row dadesUsuariCentre">
-                    <div class="row scrollBoxModal">
-                        <div class="row scrollOverflow" ng-scrollbar rebuild-on-resize rebuild-on="rebuild:meS2">
-                            <div class="row histFolder" ng-repeat="folder in folders | orderBy:'folderOrder'" on-Finish-Loop="scrollbarSentences2">
-                                <div class="row"><div class="col-xs-2 histTabFolder" style="background-color: #{{folder.folderColor}}"></div></div>
-                                <div class="row" ng-click="copyOnFolder(folder.ID_Folder)">
-                                    <div class="col-xs-12 histContentFolder" style="background-color: #{{folder.folderColor}}">
-                                        <div class="row">
-                                            <div class="col-xs-2"><img class="img-rounded imgHistFolder" ng-src="{{folder.imgSFolder}}"/></div>
-                                            <div class="col-xs-10 folderHistTitle">{{folder.folderName}}</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        <div class="row verticalMarginTop"></div>
-        </div>
-        </div>
-    </div>
-</div>
-
-
-<!--Delete folder Modal-->
-<div class="modal fade" id="deleteFolderModal" role="dialog">
-    <div class="modal-dialog">
-        <div class="row marginModalTopOwl"><img class="img-owl pull-right" src={{img.lowSorpresaFlecha}}/></div>
-        <div class="row" id="boxUserConfig" style="background-image: url({{img.Patterns4}})">
-            <div id="header" class="row">
-                <div class="col-xs-10 headerTitle">{{content.eraseSentencesFolderTitle}}</div>
-            </div>
-            <div class="row backgroundUserConfigBox">
-                <div class="row fonsAlert">
-                    <div class="col-xs-12 textCenter">{{content.eraseSentencesFolderText1}}</div>
-                    <div class="col-xs-12 textCenter">{{content.eraseSentencesFolderText2}}</div>
-                </div>
-                <div class="row dadesUsuariCentre">
-                    <div class="col-xs-6">
-                        <button type="reset" class="btn-gray pull-left" data-dismiss="modal" ng-click="deleteFolder();">{{logoutContent.confirm}}</button>
-                    </div>
-                    <div class="col-xs-6">
-                        <button type="reset" class="btn-gray pull-right" data-dismiss="modal">{{logoutContent.cancel}}</button>
-                    </div>
-                </div>
-            </div>
-        <div class="row verticalMarginTop"></div>
-        </div>
-    </div>
-</div>
-
-<!--Delete Sentence Modal-->
-<div class="modal fade" id="deleteSentenceModal" role="dialog">
-    <div class="modal-dialog">
-        <div class="row marginModalTopOwl"><img class="img-owl pull-right" src={{img.lowSorpresaFlecha}}/></div>
-        <div class="row" id="boxUserConfig" style="background-image: url({{img.Patterns4}})">
-            <div id="header" class="row">
-                <div class="col-xs-10 headerTitle">{{content.confirmEraseSentenceTitle}}</div>
-            </div>
-            <div class="row backgroundUserConfigBox">
-                <div class="row fonsAlert">
-                    <div class="col-xs-12 textCenter">{{content.confirmEraseSentenceText}}</div>
-                </div>
-                <div class="row dadesUsuariCentre">
-                    <div class="col-xs-6">
-                        <button type="reset" class="btn-gray pull-left" data-dismiss="modal" ng-click="confirmDeleteSentence();">{{logoutContent.confirm}}</button>
-                    </div>
-                    <div class="col-xs-6">
-                        <button type="reset" class="btn-gray pull-right" data-dismiss="modal">{{logoutContent.cancel}}</button>
-                    </div>
-                </div>
-            </div>
-        <div class="row verticalMarginTop"></div>
-        </div>
-    </div>
-</div>
-
-  <!-- Download Modal -->
-<div class="modal fade" id="downloadModal" role="dialog" style="z-index: 1000000;}">
-    <div class="modal-dialog modal-lg">
+angular.module('controllers')
+    .controller('sentencesFolderCtrl', function ($scope, $rootScope, txtContent, $routeParams, $location, dropdownMenuBarInit, AuthService, Resources, $timeout, $http) {
+        // Comprobación del login   IMPORTANTE!!! PONER EN TODOS LOS CONTROLADORES
+        if (!$rootScope.isLogged) {
+            $location.path('/home');
+            $rootScope.dropdownMenuBarValue = '/home'; //Dropdown bar button selected on this view
+        }
         
-        <div class="row marginModalTopOwl"><img class="img-owl pull-right" src="img/srcWeb/Mus/lowSabiFlecha.png"/></div>
-        <div class="row" id="boxUserConfig" style="background-image: url({{img.Patterns1_08}})">
-            <div id="header" class="row">
-                <div class="col-xs-12 headerTitle-infomodal" style="{{style_changes_title}}">{{content.downloadWordTitle}}</div>
-            </div>
-            <div class="row backgroundUserConfigBox">
-                <div class="row fonsAlert" >
-                    <div class="col-xs-12 textCenter">{{content.confirmEraseSentenceText}}</div>
-                </div>
-                <div class="row dadesUsuariCentre">
-                    <div class="col-xs-6">
-                        <a id="download" style="text-decoration: none; color: white;" href="{{WordDocumentPath}}" class="btn-gray pull-left">{{logoutContent.confirm}}</a>
-                    </div>
-                    <div class="col-xs-6">
-                        <button type="reset" class="btn-gray pull-right" data-dismiss="modal">{{logoutContent.cancel}}</button>
-                    </div>
-                </div>
+        $scope.folderName = "";
+        
+        // Pedimos los textos para cargar la pagina
+        txtContent("historySentencesFold").then(function (results) {
+            $scope.content = results.data;
+            $scope.editHistoricFolderContent = results.data;
+            $scope.createFolderContentTitle = false; //Change the modal title to create folder or edit folder
+            if ($routeParams.folderId<0) {
+                switch($routeParams.folderId) {
+                    case '-1': 
+                        $scope.folderName = results.data.Today;
+                        break;
+                    case '-7': 
+                        $scope.folderName = results.data.LastWeek;
+                        break;
+                    case '-30': 
+                        $scope.folderName = results.data.LastMonth;
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
+
+        //Dropdown Menu Bar
+            $rootScope.dropdownMenuBar = null;
+            $rootScope.dropdownMenuBarButtonHide = false;
+            $rootScope.dropdownMenuBarValue = '/panelGroups'; //Button selected on this view
+            $rootScope.dropdownMenuBarChangeLanguage = false;//Languages button available
+
+            //Choose the buttons to show on bar
+            dropdownMenuBarInit($rootScope.interfaceLanguageId)
+                    .then(function () {
+                        //Choose the buttons to show on bar
+                        angular.forEach($rootScope.dropdownMenuBar, function (value) {
+                            if (value.href == '/' || value.href == '/panelGroups' || value.href == '/userConfig' || value.href == '/faq' || value.href == '/tips' || value.href == '/privacy' || value.href == 'logout') {
+                                value.show = true;
+                            } else {
+                                value.show = false;
+                            }
+                        });
+                    });
+            //function to change html view
+            $scope.go = function (path) {
+                if (path == 'logout') {
+                    $('#logoutModal').modal('toggle');
+                } else {
+                    $rootScope.dropdownMenuBarValue = path; //Button selected on this view
+                    $location.path(path);
+                }
+            };
+
+            //Log Out Modal
+            Resources.main.get({'section': 'logoutModal', 'idLanguage': $rootScope.interfaceLanguageId}, {'funct': "content"}).$promise
+                    .then(function (results) {
+                        $scope.logoutContent = results.data;
+                    });
+            $scope.logout = function () {
+                $timeout(function () {
+                    AuthService.logout();
+                }, 1000);
+            };
+        
+        //scrollbars
+        $scope.$on('scrollbarSentences', function () {
+            $scope.$broadcast('rebuild:meS');
+        });
+        $scope.$on('scrollbarSentences2', function () {
+            $scope.$broadcast('rebuild:meS2');
+        });
+        $scope.$on('scrollbarSentences3', function () {
+            $scope.$broadcast('rebuild:meS3');
+        });
+        $scope.$on('scrollbar.show', function () {
+//            console.log('Scrollbar show');
+        });
+        $scope.$on('scrollbar.hide', function () {
+//            console.log('Scrollbar hide');
+        });
+
+
+        //Content Images and backgrounds
+        $scope.img = [];
+        $scope.img.fons = '/img/srcWeb/patterns/fons.png';
+        $scope.img.lowSorpresaFlecha = '/img/srcWeb/Mus/lowSorpresaFlecha.png';
+        $scope.img.Patterns4 = '/img/srcWeb/patterns/pattern4.png';
+        $scope.img.Patterns1_08 = '/img/srcWeb/patterns/pattern3.png';
+        $scope.img.loading = '/img/srcWeb/Login/loading.gif';
+        $scope.img.addPhoto = '/img/icons/add_photo.png';
+        $scope.img.addPhotoSelected = '/img/icons/add_photo_selected.png';
+        $scope.img.info = '/img/icons/info.png';
+        $scope.img.Loading_icon = '/img/icons/Loading_icon.gif';
+        
+        //Variable declaration
+        $scope.viewActived = false;
+        $scope.historicFolder = false;
+        $scope.newSentenceImage=[];
+        
+        //Folder info
+        if($routeParams.folderId<0){
+            $scope.historicFolder = true;
+            if($routeParams.folderId=='-1'){
+                $scope.folderSelected = {'ID_Folder':'-1', 'ID_SFUser':$rootScope.userId, 'folderDescr':'', 'imgSFolder':'img/pictos/hoy.png', 'folderColor':'dfdfdf', 'folderOrder':'0'};
+            }else if($routeParams.folderId=='-7'){
+                $scope.folderSelected = {'ID_Folder':'-7', 'ID_SFUser':$rootScope.userId, 'folderDescr':'', 'imgSFolder':'img/pictos/semana.png', 'folderColor':'dfdfdf', 'folderOrder':'0'};
+            }else if($routeParams.folderId=='-30'){
+                $scope.folderSelected = {'ID_Folder':'-30', 'ID_SFUser':$rootScope.userId, 'folderDescr':'', 'imgSFolder':'img/pictos/mes.png', 'folderColor':'dfdfdf', 'folderOrder':'0'};
+            }
+        }
+        //Get sentences folder or Historic folder
+        var getSentences = function(){
+            Resources.main.save({'ID_Folder': $routeParams.folderId},{'funct': "getSentencesOrHistoricFolder"}).$promise
+            .then(function (results) {
+                $scope.sentences = results.sentences;
+                if($scope.sentences!=null && !$scope.historicFolder){
+                    $scope.sentences.sort(function(a, b){return a.posInFolder-b.posInFolder});
+                }
+                $scope.viewActived = true;
+                $scope.showUpDownButtons=true;
+                if($routeParams.folderId>0){
+                    $scope.folderSelected = results.folder;
+                    $scope.newFolder = JSON.parse(JSON.stringify(results.folder)); //copy JavaScript object to new variable NOT by reference
+                }
+                //find the $i in the string 'inputIds' to add the i pictogram to the word
+                var arrayPosition = 0;
+                var pictoNumber = 0;
+                angular.forEach($scope.sentences, function (value) {
+                    var cadenaAnalizar = value.inputIds;
+                    if(arrayPosition==pictoNumber){
+                        if(cadenaAnalizar!=null){
+                            for (var i = 0; i< cadenaAnalizar.length; i++) {
+                                if (cadenaAnalizar.charAt(i) == '{'){
+                                    pictoNumber++;
+//                                    console.log('corchete');
+                                }
+                                if(cadenaAnalizar.charAt(i)=="$" && cadenaAnalizar.charAt(i+1)=="i") {
+                                    var pictoI = JSON.parse(JSON.stringify(value)); //copy JavaScript object to new variable NOT by reference
+                                    pictoI.imgPicto = 'y.png';
+                                    pictoI.isNegative = '';
+                                    pictoI.isfem = '';
+                                    pictoI.isplural = '';
+                                    $scope.sentences.splice(pictoNumber,0,pictoI);
+//                                    console.log('guardado en',pictoNumber);
+                                    pictoNumber++;
+                                }
+                            }
+                        }else{
+                            pictoNumber++;
+                        }
+                    }
+                    arrayPosition++;
+//                    console.log('arrayPosition:',arrayPosition,' / pictoNumber:',pictoNumber);
+                });
+            });
+        };
+        getSentences();
+        
+        //Copy sentence on folder
+        $scope.copySentence = function(ID_SHistoric,ID_SSentence){
+            if($scope.historicFolder){
+                $scope.sentenceToCopy = ID_SHistoric;
+            }else{
+                $scope.sentenceToCopy = ID_SSentence;
+            }
+            Resources.main.get({'funct': "getSentenceFolders"}).$promise
+            .then(function (results) {
+                $scope.folders = results.folders;
+                $('#copySentenceModal').modal('toggle');//Show modal
+            });
+        };
+        $scope.copyOnFolder = function(ID_Folder){
+            $('#copySentenceModal').modal('hide');//Hide modal
+            Resources.main.save({'ID_Folder':ID_Folder, 'ID_Sentence':$scope.sentenceToCopy,'historicFolder':$scope.historicFolder},{'funct': "addSentenceOnFolder"}).$promise
+            .then(function (results) {
+                console.log(results);
+                getSentences();
+            });
+        };
+        var idSentenceToDelete = '';
+        $scope.deleteSentence = function(ID_SSentence){
+            $('#deleteSentenceModal').modal('toggle');//Hide modal
+            idSentenceToDelete = ID_SSentence;
+        };
+        $scope.confirmDeleteSentence = function(){
+            $('#deleteSentenceModal').modal('hide'); //Close modal
+            Resources.main.save({'ID_SSentence':idSentenceToDelete},{'funct': "deleteSentenceFromFolder"}).$promise
+            .then(function (results) {
+                console.log(results);
+                getSentences();
+            });
+        }
+        //edit folder
+        $scope.editHistoricFolder = function(){
+            $('#editHistoricFolderModal').modal('toggle');//Show modal
+        };
+        $scope.deleteFolderModal = function(){
+            $('#deleteFolderModal').modal('toggle');//Show modal
+        };
+        $scope.saveFolder = function(){
+            Resources.main.save({'folder':$scope.newFolder},{'funct': "editSentenceFolder"}).$promise
+            .then(function (results) {
+                $scope.folderSelected = JSON.parse(JSON.stringify($scope.newFolder)); //copy JavaScript object to new variable NOT by reference
+            });
+        };
+        $scope.deleteFolder = function(){
+            $scope.viewActived = false;
+            Resources.main.save({'folder':$scope.newFolder},{'funct': "deleteSentenceFolder"}).$promise
+            $timeout(function () {
+                $location.path('/panelGroups');
+            }, 500);
+        };
+        //New manual input Sentence
+        $scope.createSentence = function(){
+            $scope.editSentence = false;
+            $('#createSentenceModal').modal({backdrop:'static'});//Show static modal
+        }
+        $scope.addImage = function(image, position){
+            if(position!=null){
+                $scope.faltaImg=false;
+                $scope.newSentenceImage[position]=image;
+            }
+        }
+        $scope.deleteImage = function(position){
+            $scope.newSentenceImage.splice(position,1);
+        }
+        $scope.saveSentence = function(){
+            if($scope.newSentence==null||$scope.newSentence==''){
+                $scope.faltaText=true;
+            }else if($scope.newSentenceImage.length==0){
+                $scope.faltaImg=true;
+            }else if($scope.editSentence){
+                $('#createSentenceModal').modal('hide'); //Close modal
+                var pictograms = JSON.stringify($scope.newSentenceImage) //array to json format
+                Resources.main.save({'sentence':$scope.newSentence,'pictograms':pictograms,'ID_SSentence':$scope.editSentenceId},{'funct': "editManualSentence"}).$promise
+                .then(function (results) {
+                    console.log(results);
+                    $scope.newSentence=null;
+                    $scope.newSentenceImage.splice(0,3);
+                    $scope.editSentence = false;
+                    $scope.editSentenceId = null;
+                    $scope.faltaImg=false;
+                    $scope.faltaText=false;
+                    $scope.addImg=false;
+                    getSentences();
+                });
                 
-            </div>
-            
-        <div class="row verticalMarginTop"></div>
-        </div>
-    </div>
-</div>
-                  
-<!--Create Sentence Modal-->
-<div class="modal fade" id="createSentenceModal" role="dialog">
-    <div class="modal-dialog modal-lg">
-        <div class="row" id="boxUserConfig" style="background-image: url({{img.Patterns4}})">
-            <div id="header" class="row">
-                <div class="col-xs-10 headerTitle" ng-show="!editSentence">{{content.createSentenceHistoryTitle}}</div>
-                <div class="col-xs-10 headerTitle" ng-show="editSentence">{{content.editSentenceHistoryTitle}}</div>
-            </div>
-            <div class="row backgroundUserConfigBox">
-                <div class="row fonsCreateSentenceModal">
-                    <div class="row"><div class="col-xs-12">{{content.editSentenceHistoryText}}</div></div>
-                    <div class="row">
-                        <div class="col-xs-12">
-                            <input type="text" class="historicInputText" ng-class="{error: faltaText}" ng-change="faltaText=false;" ng-model="newSentence" placeholder="{{content.editSentenceHistoryPh1}}"/>
-                        </div>
-                    </div>
-                    <div class="row"><br/>{{content.editSentenceHistoryImage}}<br/>&nbsp;</div>
-                    <div class="row" ng-init="addImg=false;btnSelected=false">
-                        <div class="col-xs-1 col-xs-offset-2 marginInfo"><input type="image" class="img-icon" ng-src={{img.info}} popover-placement="top-left" popover-trigger="focus" uib-popover="{{content.editSentenceHistoryInfo}}"></div>
-                        <!--<div class="col-xs-1 col-xs-offset-2 marginInfo" ng-click="toggleInfoModal(content.modalInfoTitle, content.editSentenceHistoryInfo);"><input type="image" class="img-icon" ng-src={{img.info}}></div>-->
-                        <div class="col-xs-2"><div ng-class="{imgCell: newSentenceImage[0], imgMas: !newSentenceImage[0], Selected:(position==0 && btnSelected), error: faltaImg}" ng-click="addImg=true; position=0; btnSelected=true;"><img class="img-rounded imgAdapted" ng-src="{{baseurl}}{{newSentenceImage[0]}}" ng-show="newSentenceImage[0]"/><div class="masGris" ng-show="!newSentenceImage[0]">+</div></div></div>
-                        <div class="col-xs-2"><div ng-class="{imgCell: newSentenceImage[1], imgMas: !newSentenceImage[1], Selected:(position==1 && btnSelected)}" ng-click="addImg=true; position=1; btnSelected=true;"><img class="img-rounded imgAdapted" ng-src="{{baseurl}}{{newSentenceImage[1]}}" ng-show="newSentenceImage[1]"/><div class="masGris" ng-show="!newSentenceImage[1]">+</div></div></div>
-                        <div class="col-xs-3"><div ng-class="{imgCell: newSentenceImage[2], imgMas: !newSentenceImage[2], Selected:(position==2 && btnSelected)}" ng-click="addImg=true; position=2; btnSelected=true;"><img class="img-rounded imgAdapted" ng-src="{{baseurl}}{{newSentenceImage[2]}}" ng-show="newSentenceImage[2]"/><div class="masGris" ng-show="!newSentenceImage[2]">+</div></div></div>
-                        <div class="col-xs-1 iconTrash" ng-click="deleteImage(position);btnSelected=false;" ng-show="(addImg&&newSentenceImage[0]&&position==0)||(addImg&&newSentenceImage[1]&&position==1)||(addImg&&newSentenceImage[2]&&position==2)"><div class="icon-trash"></div></div>
-                    </div>
-                    <div class="row" uib-collapse="!addImg"><br/><hr/>
-                        <div class="col-xs-12" ng-init="searchImg('', 'Arasaac')">
-                            <div class="row">
-                                <div class="col-xs-6">
-                                    <input type="text" class="historicInputText" ng-model="imgEditSearch" ng-keyup="searchImg(imgEditSearch, typeImgEditSearch);" placeholder="{{content.editSentenceHistoryPh3}}"/><br>
-                                </div>
-                                <div class="col-xs-2">
-                                    <div class="buttonsSearchView">
-                                        <label for="file-input" class="fullwidth">
-                                            <div ng-init="imgsrc=img.addPhoto" ng-mouseover="imgsrc=img.addPhotoSelected" ng-mouseout="imgsrc=img.addPhoto">
-                                                <img class="buttonAddImg pull-right" ng-src="{{imgsrc}}"/>
-                                            </div>
-                                        </label>
-                                        <input type="file" multiple id="file-input" onchange="angular.element(this).scope().uploadFile()" ng-show="false"/>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row radioText">
-                                <form role="form" class="text-center col-xs-12" name="SearchImgForm" ng-init="typeImgEditSearch='Arasaac'">
-                                    <div class="col-xs-4 text-left">
-                                        <label class="radio-inline">
-                                            <input type="radio" ng-model="typeImgEditSearch" ng-click="searchImg(imgEditSearch, typeImgEditSearch);" value="Arasaac"/>
-                                            {{content.editSentenceHistoryArasaacImages}}
-                                        </label>
-                                    </div>
-                                    <div class="col-xs-4 text-left">
-                                        <label class="radio-inline">
-                                            <input type="radio" ng-model="typeImgEditSearch" ng-click="searchImg(imgEditSearch, typeImgEditSearch);" value="Uploads"/>
-                                            {{content.editSentenceHistoryMyImages}}
-                                        </label>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                        <div class="col-xs-8 col-xs-offset-2">
-                            <div class="row">
-                                <div class="col-xs-3"><div class="imgCell" ng-click="addImage(imgData[0].imgPath, position);btnSelected=false;position=null;"><img class="img-rounded imgAdapted" ng-src="{{baseurl}}{{imgData[0].imgPath}}" ng-show="imgData[0].imgPath"/></div></div>
-                                <div class="col-xs-3"><div class="imgCell" ng-click="addImage(imgData[1].imgPath, position);btnSelected=false;position=null;"><img class="img-rounded imgAdapted" ng-src="{{baseurl}}{{imgData[1].imgPath}}" ng-show="imgData[1].imgPath"/></div></div>
-                                <div class="col-xs-3"><div class="imgCell" ng-click="addImage(imgData[2].imgPath, position);btnSelected=false;position=null;"><img class="img-rounded imgAdapted" ng-src="{{baseurl}}{{imgData[2].imgPath}}" ng-show="imgData[2].imgPath"/></div></div>
-                                <div class="col-xs-3"><div class="imgCell" ng-click="addImage(imgData[3].imgPath, position);btnSelected=false;position=null;"><img class="img-rounded imgAdapted" ng-src="{{baseurl}}{{imgData[3].imgPath}}" ng-show="imgData[3].imgPath"/></div></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row dadesUsuariCentre">
-                    <div class="col-xs-6">
-                        <button class="btn-gray pull-left" ng-click="saveSentence();">{{logoutContent.confirm}}</button>
-                    </div>
-                    <div class="col-xs-6">
-                        <button type="reset" class="btn-gray pull-right" ng-click="cancelSentence();">{{logoutContent.cancel}}</button>
-                    </div>
-                </div>
-            </div>
-        <div class="row verticalMarginTop"></div>
-        </div>
-    </div>
-</div>
+            }else{
+                $('#createSentenceModal').modal('hide'); //Close modal
+                var pictograms = JSON.stringify($scope.newSentenceImage) //array to json format
+                Resources.main.save({'sentence':$scope.newSentence,'pictograms':pictograms,'ID_SFolder':$routeParams.folderId},{'funct': "addManualSentence"}).$promise
+                .then(function (results) {
+                    console.log(results);
+                    $scope.newSentence=null;
+                    $scope.newSentenceImage.splice(0,3);
+                    getSentences();
+                });
+            }
+        }
+        $scope.cancelSentence = function(){
+            $('#createSentenceModal').modal('hide');
+            $scope.newSentence=null;
+            $scope.newSentenceImage.splice(0,3);
+            $scope.editSentence = false;
+            $scope.editSentenceId = null;
+            $scope.faltaImg=false;
+            $scope.faltaText=false;
+            $scope.addImg=false;
+        }
+        //Edit manual imput sentence
+        $scope.editManualSentence = function(generatorString,sPreRecImg1,sPreRecImg2,sPreRecImg3,ID_SSentence){
+            $scope.newSentence=generatorString;
+            $scope.newSentenceImage.splice(0,0,sPreRecImg1,sPreRecImg2,sPreRecImg3);
+            $scope.editSentence = true;
+            $scope.editSentenceId = ID_SSentence;
+            $('#createSentenceModal').modal('toggle');//Show static modal
+            console.log(generatorString,sPreRecImg1,sPreRecImg2,sPreRecImg3,ID_SSentence);
+        }
+        
+        //Change sentence order in folder
+        $scope.upSentenceOrder = function(idSentence){
+            $scope.showUpDownButtons=false;
+            Resources.main.save({'ID_SSentence': idSentence,'ID_SFolder':$routeParams.folderId}, {'funct': "upSentenceOrderOnFolder"}).$promise
+                .then(function (results){
+                    getSentences();
+                });
+        }
+        $scope.downSentenceOrder = function(idSentence){
+            $scope.showUpDownButtons=false;
+            Resources.main.save({'ID_SSentence': idSentence,'ID_SFolder':$routeParams.folderId}, {'funct': "downSentenceOrderOnFolder"}).$promise
+                .then(function (results){
+                    getSentences();
+                });
+        }
+
+        /*
+         * Return uploaded images from database. There are two types, the users images an the arasaac (not user images)
+         */
+        $scope.searchImg = function (name, typeImgEditSearch) {
+            var URL = "";
+            switch (typeImgEditSearch)
+            {
+                case "Arasaac":
+                    URL = $scope.baseurl + "ImgUploader/getImagesArasaac";
+                    break;
+                case "Uploads":
+                    URL = $scope.baseurl + "ImgUploader/getImagesUploads";
+                    break;
+            }
+            var postdata = {name: name};
+            $http.post(URL, postdata).
+                success(function (response)
+                {
+                    $scope.imgData = response.data;
+                });
+        }
+
+        //get all the photos attached to the pictos
+        $scope.searchFoto = function (name)
+        {
+            var URL = $scope.baseurl + "SearchWord/getDBAll";
+            var postdata = {id: name};
+            //Request via post to controller search data from database
+            $http.post(URL, postdata).
+                success(function (response)
+                {
+                    $scope.allImg = response.data;
+                });
+        };
+        // Upload and resize the image
+        $scope.uploadFile = function () {
+            $scope.myFile = document.getElementById('file-input').files;
+            $scope.uploading = true;
+            var i;
+            var uploadUrl = $scope.baseurl + "ImgUploader/upload";
+            var fd = new FormData();
+            fd.append('vocabulary', angular.toJson(false));
+            for (i = 0; i < $scope.myFile.length; i++) {
+                fd.append('file' + i, $scope.myFile[i]);
+            }
+            $http.post(uploadUrl, fd, {
+                headers: {'Content-Type': undefined}
+            })
+                .success(function (response) {
+                    $scope.uploading = false;
+                    if (response.error) {
+                        //open modal
+                        console.log(response.errorText);
+                        $scope.errorText = response.errorText;
+                        $('#errorImgModal').modal({backdrop: 'static'});
+                    }
+                })
+                .error(function (response) {
+                    //alert(response.errorText);
+                });
+        };
+        
+        
+        $scope.style_changes_title = '';
+
+         // Activate information modals (popups)
+        $scope.toggleInfoModal = function (title, text) {
+            $scope.infoModalContent = text;
+            $scope.infoModalTitle = title;
+            $scope.style_changes_title = 'padding-top: 2vh;';
+            $('#infoModal').modal('toggle');
+        };
+   
+        /* Download WordDocument generated based on tematic folder
+         * @rjlopezdev
+        */
+        $scope.WordIsGenerated = false;
+        $scope.WordDocumentPath;
+
+        //Send info about current tematic folder
+        $scope.downloadWord = function(){
+
+          $scope.sentencesToWord = {
+            preRecSentences: [],
+            NOTpreRecSentences: [],
+            folderTitle: $scope.folderSelected.folderName || $scope.content.historialTitle
+          };
+
+          // SAVE preRecSentences
+          if($scope.sentences !== null){
+              $scope.sentencesToWord.preRecSentences = $scope.sentences.reduce((previous, i) => {
+                if(i.isPreRec === '1'){
+                    (previous[i.ID_SSentence] = previous[i.ID_SSentence] || [])
+                    .push({
+                        sentence: i.generatorString,
+                        image1:   i.sPreRecImg1,
+                        image2:   i.sPreRecImg2,
+                        image3:   i.sPreRecImg3
+                    });
+                }
+                
+                return previous;
+            }, []).filter((element) => element !== undefined);
+
+            // SAVE NOTpreRecSentences
+            $scope.sentencesToWord.NOTpreRecSentences = $scope.sentences.reduce((previous, i) => {
+                if(i.isPreRec === '0'){
+                    (previous[i.ID_SSentence] = previous[i.ID_SSentence] || [])
+                    .push({
+                        sentence: i.generatorString,
+                        imgPicto: i.imgPicto,
+                        isFem:    i.isfem,
+                        isPlural: i.isplural
+                    });
+                } else {
+                    (previous[i.ID_RSHPSentence] = previous[i.ID_RSHPSentence] || [])
+                    .push({
+                        sentence: i.generatorString,
+                        imgPicto: i.imgPicto,
+                        isFem:    i.isfem,
+                        isPlural: i.isplural
+                    });
+                }
+                console.log('hola');
+                return previous;
+            }, []).filter((element) => element !== undefined);
+
+            //GET WordDocument
+            $http.post('WordDocument', {'sentences' : $scope.sentencesToWord})
+                .success( function (response) {
+                $scope.WordDocumentPath = $scope.baseurl + response.documentPath;
+                //console.log(response);
+                $scope.WordIsGenerated = true;
+                $scope.toggleDownloadModal('', '');
+                });
+            };
+          }
+          
+
+        //SHOW Download Document Modal
+        $scope.toggleDownloadModal = function (title, text) {
+            $scope.infoModalContent = text;
+            $scope.infoModalTitle = title;
+            $scope.style_changes_title = 'padding-top: 2vh;';
+            $('#downloadModal').modal('toggle');
+        };
+        
+        $('#download').click(function(){
+            $('#downloadModal').modal('hide');
+        });
+    });
