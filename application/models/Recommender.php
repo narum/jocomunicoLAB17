@@ -1468,7 +1468,7 @@ class Recommender extends CI_Model {
     function getRecommenderX3() {   
         $pred = null;
         if ($this->session->userdata('cfgExpansionOnOff')) $pred = $this->getRecommenderX3Expan();
-        else $pred = $this->getRecommenderX3NonExpan();
+        else $pred = $this->getRecommenderX3Expan();
         return $pred;
     }
 
