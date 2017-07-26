@@ -124,7 +124,8 @@
 /*    margin-top: 1.5vw;
     font-size: 1.75vw;*/
     margin-top: 3vh;
-    font-size: 3.5vh;
+    font-size: 2.5vh;
+    padding-left: 1vw;
 }
 .scrollOverflow{
     height: 100%;
