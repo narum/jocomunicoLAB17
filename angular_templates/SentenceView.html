@@ -19,7 +19,10 @@
             <!--If there is no error or phrase to show, under picto will be displayed the picto text so we have to adapt the content height to keep the img with the same height-->
             <!-- Tarea 5: Cambios en la barra de lectura de la pantalla principal. Se muestra si en la barra de lectura hay solo pictogramas, solo texto o las ambas cosas -->
             <!--<div id="test1" class="col-xs-1 sentenceCell" ng-repeat="picto in dataTemp track by $index| limitTo:9" ng-style="(!info.error && !info.frasefinal) || cfgTxtRdngBarOnOff == 0 ? {'height': '100%'} : {'height': '80%'}">-->
-            <div class="col-xs-1 sentenceCell" ng-repeat="picto in dataTemp track by $index| limitTo:9" ng-style="(!info.error && !info.frasefinal) || cfgTxtRdngBarOnOff == 0 ? {'height': '100%'} : {'height': '80%'}" ng-click="deleteButtonActive? chooseElement($index): null">
+            <div class="col-xs-1 sentenceCell" ng-repeat="picto in dataTemp | limitTo:9 track by $index" ng-style="(!info.error && !info.frasefinal) || cfgTxtRdngBarOnOff == 0 ? {'height': '100%'} : {'height': '80%'}" ng-click="deleteButtonActive? chooseElement($index): null">
+
+              <!--#Jorge: New code-->
+              <div ng-if="inScan && isScanning == 'sentencebar' && isScanningCancel" class="scaneo2" ng-style="{'border':'7px solid #{{cfgScanColor}}'}"></div>
               <div ng-if="cfgTxtRdngBarOnOff == 0">
                 <!--<div class="col-xs-12 fullheight" ng-class="{'col-xs-9' : picto.plural || picto.fem}">-->
                   <div class="col-xs-12 fullheight" ng-class="{'col-xs-9' : picto.plural || picto.fem}" ng-style="!info.error && !info.frasefinal ? {'height': '80%'} : {'height': '100%'}">
@@ -68,22 +71,22 @@
             <div>
 
               <div ng-if="cfgTxtRdngBarOnOff == 0">
-                <div id="frase" ng-if="!info.error || info.errorcode == 7 || info.errorcode == 6" class="col-xs-12 phraseText text-uppercase">
+                <div id="frase" ng-if="!info.error || info.errorcode == 7 || info.errorcode == 6" class="col-xs-12 phraseText text-uppercase truncate-text">
                     {{info.frasefinal}}
                 </div>
                 <!--Display the error text-->
-                <div ng-if="info.error && info.errorcode != 7 && info.errorcode != 6" class="col-xs-12 phraseText">
+                <div ng-if="info.error && info.errorcode != 7 && info.errorcode != 6" class="col-xs-12 phraseText truncate-text">
                     {{info.errormessage}}
                 </div>
               </div>
 
 
               <div ng-if="cfgTxtRdngBarOnOff == 1">
-                <div id="frase" ng-if="!info.error || info.errorcode == 7 || info.errorcode == 6" class="col-xs-12 phraseText text-uppercase">
+                <div id="frase" ng-if="!info.error || info.errorcode == 7 || info.errorcode == 6" class="col-xs-12 phraseText text-uppercase truncate-text">
                     {{info.frasefinal}}
                 </div>
                 <!--Display the error text-->
-                <div ng-if="info.error && info.errorcode != 7 && info.errorcode != 6" class="col-xs-12 phraseText">
+                <div ng-if="info.error && info.errorcode != 7 && info.errorcode != 6" class="col-xs-12 phraseText truncate-text">
                     {{info.errormessage}}
                 </div>
               </div>
@@ -118,6 +121,16 @@
     </div>
 </div>
 
+
+<!-- #Jorge. Tarea 6: Boton de borrado mediante elección de pictograma -->
+<div id="deleteSltPicto" ng-if="cfgMenuDeleteSelectedPicto == 1" class="col-xs-1 fullheight" ng-mousedown="isClickEnable() ? deleteSelectedPicto() : null" ng-mouseenter="cfgTimeOverOnOff ?TimeoutOverClick(2,'deleteSelectedPicto'):null" ng-mouseleave="cfgTimeOverOnOff ? CancelTimeoutOverClick() : null" >
+  <div ng-if='inScan && isScanning == "deleteselectedpicto" && isScanningCancel === false' class="scaneo" style="margin: 0px;" ng-style="{'border':'7px solid #{{cfgScanColor}}'}"></div>
+  <div class="backgroundDelete">
+      <img class="imgResponsive icon" ng-src="{{baseurl}}img/srcWeb/Menu/borrar_picto_eleg_icon.png"/>
+  </div>
+</div>
+<!-- Fin de código-->
+
 <div ng-if="cfgMenuDeleteAllActive == 1" class="col-xs-1 fullheight" ng-mousedown="isClickEnable() ? deleteAll() : null" ng-mouseenter="cfgTimeOverOnOff?TimeoutOverClick(2,'deleteAll'):null" ng-mouseleave="cfgTimeOverOnOff ? CancelTimeoutOverClick() : null">
     <div ng-if='inScan && isScanning == "deleteall" && isScanningCancel === false' class="scaneo" style="margin: 0px;" ng-style="{'border':'7px solid #{{cfgScanColor}}'}"></div>
     <div class="backgroundDeleteAll">
@@ -140,9 +153,4 @@
     </div>
 </div>
 
-<div id="deleteSltPicto" ng-if="cfgMenuDeleteSelectedPicto == 1" class="col-xs-1 fullheight" ng-mousedown="isClickEnable() ? deleteSelectedPicto() : null" ng-mouseenter="cfgTimeOverOnOff?TimeoutOverClick(2,'deleteSelectedPicto'):null" ng-mouseleave="cfgTimeOverOnOff ? CancelTimeoutOverClick() : null" >
-  <div ng-if='inScan && isScanning == "deleteselectedpicto" && isScanningCancel === false' class="scaneo" style="margin: 0px;" ng-style="{'border':'7px solid #{{cfgScanColor}}'}"></div>
-  <div class="backgroundDelete">
-      <img class="imgResponsive icon" ng-src="{{baseurl}}img/srcWeb/Menu/borrar_picto_eleg_icon.png"/>
-  </div>
-</div>
+<!-- Fin de código -->

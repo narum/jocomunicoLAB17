@@ -61,7 +61,7 @@
 <div ng-include="'/angular_templates/errorImgModal.html'"></div>
 <div ng-include="'/angular_templates/errorNoPrimaryBoard.html'"></div>
 
-<div ng-include="'/angular_templates/confirmPassword.html'"></div>
+<div ng-show="cfgMenuBlock" ng-include="'/angular_templates/confirmPassword.html'"></div>
 
 <div id="main" style="background-image: url('/img/srcWeb/patterns/fons.png');background-size:100% 100%">
 <div class="loadingGif" ng-show="!viewActived"><img class="img-loadingGif" ng-src={{img.loading}}/></div>

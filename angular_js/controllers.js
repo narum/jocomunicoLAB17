@@ -860,6 +860,9 @@ angular.module('controllers', [])
                             /*Tarea 6: Nuevo código menu opción borrar un pictograma concreto */
                             $scope.userData.cfgMenuDeleteSelectedPicto = ($scope.userData.cfgMenuDeleteSelectedPicto === "1");
 
+                            /*Arreglo Tarea 3: #Jorge */
+                            $scope.userData.cfgMenuBlock = ($scope.userData.cfgMenuBlock === "1")
+
                             var count = results.users[0].ID_ULanguage;
                             angular.forEach(results.users, function (value) {
                                 if (value.ID_ULanguage == count) {
@@ -1299,11 +1302,12 @@ angular.module('controllers', [])
             /* #Jorge Tarea 3: Add variables values */
             $scope.timerPassword = null;
 
-
             /* #Jorge Tarea 6: Create new variables*/
             $scope.chooseElementDeleted = null;
             $scope.deleteButtonActive = false;
             $scope.chooseAngularChildElement = null;
+            $scope.choosePreviousAngularChildElement = null;
+
 
             //Dropdown Menu Bar
             $rootScope.dropdownMenuBar = null;
@@ -1390,7 +1394,7 @@ angular.module('controllers', [])
             });
 
 
-            // JORGE: Esta función sirve para comprobar si el usuario y la contraseña que usamos para acceder al menu es correcta.
+            // JORGE: #Tarea 3. Esta función sirve para comprobar si el usuario y la contraseña que usamos para acceder al menu es correcta.
             $scope.confirmPassword = function (){
 
               var url = $scope.baseurl +  "Main/confirmPassword";
@@ -1714,6 +1718,8 @@ angular.module('controllers', [])
                     });
                 }
             };
+
+
             //This method check if the actual scan block (second level in the custom scan) it's correct
             $scope.getCustomScanCell = function () {
                 if ($scope.indexScannedCells > $scope.maxCustomScanBlock) {
@@ -1768,7 +1774,7 @@ angular.module('controllers', [])
                         return false;
                     }
                     if (!$scope.haveToBeScanned($scope.arrayScannedCells[$scope.indexScannedCells])) {
-                        $scope.nextBlockScan();
+                        $scope.nextBlockScan();$s
                     }
                 }
             };
@@ -1776,7 +1782,7 @@ angular.module('controllers', [])
             $scope.haveToBeScanned = function (picto) {
                 return (picto.activeCell == 1 && (picto.ID_CFunction != null || picto.ID_CPicto != null || picto.ID_CSentence != null || picto.ID_Fuction != null || picto.boardLink != null || picto.sentenceFolder));
             };
-            //OrderScan contains the order that the user establish so, whenever we pass to another scan (only first level) we have to determine the next by this array. Be carefulthe array start with 0 and the user order is 1, 2 and 3, so we don't have to increment the index, we use the current block orde to resolve what the next is
+            //OrderScan contains the order that the user establish so, whenever we pass to another scan (only first level) we have to determine the next by this array. Be careful the array start with 0 and the user order is 1, 2 and 3, so we don't have to increment the index, we use the current block orde to resolve what the next is
             $scope.nextBlockToScan = function (current) {
                 switch ($scope.orderScan[current]) {
                     case "prediction":
@@ -1797,6 +1803,7 @@ angular.module('controllers', [])
                         $scope.indexScannedBlock = 0; //Column or row inside the whole board
                         $scope.arrayScannedCells = $scope.getScanArray();
                         break;
+
                     default:
                         $scope.isScanning = "nowait";
                         $scope.InitScan();
@@ -1852,25 +1859,79 @@ angular.module('controllers', [])
                                 $scope.nextBlockScan();
                             }
                             break;
+
                         case "read":
                             $scope.isScanning = "deletelast";
                             if ($scope.cfgMenuDeleteLastActive == 0) {
                                 $scope.nextBlockScan();
                             }
                             break;
+
+
                         case "deletelast":
-                            $scope.isScanning = "deleteall";
-                            if ($scope.cfgMenuDeleteAllActive == 0) {
+                            $scope.isScanning = "deleteselectedpicto";
+                            if ($scope.cfgMenuDeleteSelectedPicto == 0) {
                                 $scope.nextBlockScan();
                             }
                             break;
+
+                        //#Jorge: Escaneo elemento eliminar pictograma seleccionado.
+                        case "deleteselectedpicto":
+                            //$scope.isScanning = "sentencebar";
+                            $scope.isScanning = "deleteall";
+                            if ($scope.cfgMenuDeleteAllActive == 0) {
+                              $scope.nextBlockScan();
+                            }
+                            break;
+
+                        case "sentencebar":
+                          var ngDeleteSelectedPicto = angular.element($window.document.getElementById('txtImgContainer'));
+                          var children = ngDeleteSelectedPicto.children();
+                          var s = children.length - 1;
+                          var x = $scope.chooseElementDeleted - 1;
+
+                          var chooseChild = children[$scope.chooseElementDeleted];
+                          var choosePreviousChild = children[x];
+
+                          if($scope.chooseElementDeleted < s){
+
+                            if($scope.chooseElementDeleted > 0){
+                              $scope.choosePreviousAngularChildElement = angular.element(choosePreviousChild);
+                              $scope.choosePreviousAngularChildElement.toggleClass('scaneo2');
+                              $scope.chooseAngularChildElement.toggleClass('selectedDeletePicto');
+                            }
+
+                            $scope.chooseAngularChildElement = angular.element(chooseChild);
+                            $scope.chooseAngularChildElement.toggleClass('scaneo2');
+                            $scope.chooseAngularChildElement.toggleClass('selectedDeletePicto');
+                            $scope.isScanning = "sentencebar";
+                            $scope.chooseElementDeleted ++;
+                            //$scope.nextBlockScan();
+
+                          }
+
+                          else{
+                            $scope.choosePreviousAngularChildElement = angular.element(choosePreviousChild);
+                            $scope.choosePreviousAngularChildElement.toggleClass('scaneo2');
+                            $scope.chooseAngularChildElement.toggleClass('selectedDeletePicto');
+                            $scope.InitScan();
+                            $scope.chooseElementDeleted = 0;
+                          }
+
+                          break;
+
+
+                        //# Fin de código.
+
                         case "deleteall":
                             $scope.isScanning = "copyclipboard";
                             if ($scope.cfgMenuCopyClipboard  == 0) {
                                 $scope.nextBlockScan();
                             }
                             break;
-                        //#Jorge
+
+                        //#Jorge: Escaneo elementos copiar texto y copiar texto e imagenes en el portapapeles.
+
                         case "copyclipboard":
                             $scope.isScanning = "copytxtimgclipboard";
                             if ($scope.cfgMenuCopyTxtImgClipboard == 0) {
@@ -1881,6 +1942,8 @@ angular.module('controllers', [])
                           $scope.isScanning = "nowait";
                           $scope.InitScan();
                           break;
+
+                          //# Fin de código.
 
 
                     }
@@ -1955,11 +2018,73 @@ angular.module('controllers', [])
                             $scope.deleteLast();
                             $scope.InitScan();
                             break;
+
+                        //#Jorge: Escaneo borrar pictograma elegido.
+                        case "deleteselectedpicto":
+                            if($scope.chooseElementDeleted == null){
+                              $scope.chooseElementDeleted = 0;
+                            }
+                            var ngDeleteSelectedPicto = angular.element($window.document.getElementById('txtImgContainer'));
+                            var children = ngDeleteSelectedPicto.children();
+                            var s = children.length - 1;
+
+                            var chooseChild = children[$scope.chooseElementDeleted];
+
+                            $scope.chooseAngularChildElement = angular.element(chooseChild);
+                            $scope.chooseAngularChildElement.toggleClass('scaneo2');
+                            $scope.chooseAngularChildElement.toggleClass('selectedDeletePicto');
+
+                            $scope.chooseElementDeleted ++;
+
+                            $scope.isScanning = "sentencebar";
+
+                            $scope.deleteButtonActive = true;
+
+                            //$scope.InitScan();
+                            break;
+
+                        case "sentencebar":
+                            console.log($scope.chooseElementDeleted);
+
+                            var posicion = $scope.chooseElementDeleted - 1;
+
+                            //var children = ngDeleteSelectedPicto.children();
+                            //var chooseChild = children[$scope.chooseElementDeleted];
+                            //$scope.chooseAngularChildElement = angular.element(chooseChild);
+                            $scope.deleteButtonActive = true;
+                            if($scope.chooseElementDeleted != null && $scope.deleteButtonActive == true){
+
+
+                              var url = $scope.baseurl + "Board/deleteSelectedWord";
+                              var postdata = {pos: posicion};
+                              $http.post(url, postdata).success(function (response){
+                                  $scope.dataTemp = response.data;
+                              });
+
+                              $scope.deleteButtonActive = false;
+
+                            }
+
+                            var ngDeleteSelectedPicto = angular.element($window.document.getElementById('txtImgContainer'));
+                            var children = ngDeleteSelectedPicto.children();
+                            var chooseChild = children[posicion];
+                            $scope.chooseAngularChildElement = angular.element(chooseChild);
+                            $scope.chooseAngularChildElement.toggleClass('scaneo2');
+                            $scope.chooseAngularChildElement.toggleClass('selectedDeletePicto');
+
+                            $scope.chooseElementDeleted = null;
+
+                            $scope.InitScan();
+
+                            break;
+
+                        //#Fin de codigo.
                         case "deleteall":
                             $scope.deleteAll();
                             $scope.InitScan();
                             break;
-                        //#Jorge
+
+                        //#Jorge: Escaneo elementos copiar texto y copiar texto e imagenes en el portapapeles.
                         case "copyclipboard":
                             $scope.toAllBrowsersClipboard();
                             $scope.InitScan();
@@ -1968,6 +2093,8 @@ angular.module('controllers', [])
                             $scope.toAllBrowsersTxtImgClipboard();
                             $scope.InitScan();
                             break;
+
+                        //#Fin de codigo.
                     }
                 }
             };
@@ -2068,11 +2195,8 @@ angular.module('controllers', [])
 
                 $scope.cfgSentenceBarUpDown = userConfig.cfgSentenceBarUpDown;
                 $scope.pictoBarWidth = 12 - $scope.cfgMenuHomeActive - $scope.cfgMenuReadActive - $scope.cfgMenuDeleteLastActive - $scope.cfgMenuCopyClipboard - $scope.cfgMenuCopyTxtImgClipboard - $scope.cfgMenuDeleteAllActive - $scope.cfgMenuDeleteSelectedPicto;
-
-                //$scope.sumMenuOptions =  parseInt($scope.cfgMenuDeleteLastActive) + parseInt($scope.cfgMenuCopyClipboard) + parseInt($scope.cfgMenuCopyTxtImgClipboard) + parseInt($scope.cfgMenuDeleteAllActive) + parseInt($scope.cfgMenuDeleteSelectedPicto);
-                //console.log($scope.sumMenuOptions);
-
                 //#Jorge nuevo codigo
+
                 $scope.cfgAutoEraseSentenceBar = userConfig.cfgAutoEraseSentenceBar;
                 $scope.cfgScanningCustomRowCol = userConfig.cfgScanningCustomRowCol;
                 $scope.longclick = userConfig.cfgScanningAutoOnOff == 0 ? true : false;
@@ -2090,6 +2214,9 @@ angular.module('controllers', [])
                 $scope.cfgCellWithBorder = userConfig.cfgCellWithBorder == 1 ? true : false;
                 $scope.cfgTextInCell = userConfig.cfgTextInCell;
                 $scope.cfgTxtRdngBarOnOff = userConfig.cfgTxtRdngBarOnOff;
+
+                /*Arreglo Tarea 3: Nuevo código*/
+                $scope.cfgMenuBlock = userConfig.cfgMenuBlock == 1 ? true : false;
 
 
                 $scope.cfgUserExpansionFeedback = userConfig.cfgUserExpansionFeedback == 1 ? true : false;
@@ -2597,6 +2724,12 @@ angular.module('controllers', [])
                       }, $scope.cfgTimeOver);
                     }
 
+                    else if(object === 'deleteSelectedPicto'){
+                      $scope.OverAutoClick = $timeout(function () {
+                        $scope.deleteSelectedPicto();
+                      }, $scope.cfgTimeOver);
+                    }
+
                 } else if (type === 3)
                 {
                     if (object === 'Good')
@@ -2751,8 +2884,7 @@ angular.module('controllers', [])
 
                 var url = $scope.baseurl + "Board/deleteLastWord";
 
-                $http.post(url).success(function (response)
-                {
+                $http.post(url).success(function (response){
                     $scope.dataTemp = response.data;
                     $scope.getPred();
                 });
@@ -2785,37 +2917,41 @@ angular.module('controllers', [])
             var url = $scope.baseurl + "Board/deleteSelectedWord";
             var postdata = {pos: $scope.chooseElementDeleted};
 
+            var ngDeleteSelectedPicto = angular.element($window.document.getElementById('txtImgContainer'));
+            var children = ngDeleteSelectedPicto.children();
+            var s = children.length;
+            for(i = 0; i < s; i++){
+              var chooseChild = children[i];
+              $scope.chooseAngularChildElement = angular.element(chooseChild);
+              $scope.chooseAngularChildElement.toggleClass('selectedDeletePicto');
+            }
 
             if($scope.deleteButtonActive == false){
               $scope.deleteButtonActive = true;
-              //$scope.chooseAngularChildElement.removeClass('selectedDeletePicto');
-              $scope.chooseAngularChildElement.toggleClass('selectedDeletePicto', !$scope.deleteButtonActive);
-
             }
+            else{
+              $scope.deleteButtonActive = false;
+              $scope.chooseAngularChildElement.toggleClass('selectedDeletePicto', !$scope.deleteButtonActive);
+            }
+
 
             $http.post(url, postdata).success(function (response){
                 $scope.dataTemp = response.data;
             });
-
-
           };
 
           $scope.chooseElement = function(value){
             $scope.chooseElementDeleted = value;
             var ngDeleteSelectedPicto = angular.element($window.document.getElementById('txtImgContainer'));
             var children = ngDeleteSelectedPicto.children();
+
             var chooseChild = children[$scope.chooseElementDeleted];
             $scope.chooseAngularChildElement = angular.element(chooseChild);
-
             if($scope.chooseElementDeleted != null && $scope.deleteButtonActive == true){
-              $scope.chooseAngularChildElement.addClass('selectedDeletePicto');
               $scope.deleteSelectedPicto();
               $scope.deleteButtonActive = false;
             }
-
-
             $scope.chooseElementDeleted = null;
-
           };
 
             /*

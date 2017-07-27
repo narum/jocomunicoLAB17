@@ -309,6 +309,17 @@ html *
     z-index: 24;
     position: absolute;
 }
+
+.scaneo2{
+  width: 10%;
+  height: 100%;
+  border: 7px solid #ff0000;
+  border-radius: 7px;
+  margin-right: 2px;
+  z-index: 24;
+}
+
+
 .backgroundCell{
     padding: 2px;
     width: 100%;
@@ -590,6 +601,5 @@ html *
 }
 
 .selectedDeletePicto{
-  border: 3px solid yellow;
   background-color: #98AFC7;
 }
