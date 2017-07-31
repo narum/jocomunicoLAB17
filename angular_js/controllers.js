@@ -1906,7 +1906,6 @@ angular.module('controllers', [])
                             $scope.chooseAngularChildElement.toggleClass('selectedDeletePicto');
                             $scope.isScanning = "sentencebar";
                             $scope.chooseElementDeleted ++;
-                            //$scope.nextBlockScan();
 
                           }
 
@@ -2040,7 +2039,6 @@ angular.module('controllers', [])
 
                             $scope.deleteButtonActive = true;
 
-                            //$scope.InitScan();
                             break;
 
                         case "sentencebar":
@@ -2048,9 +2046,6 @@ angular.module('controllers', [])
 
                             var posicion = $scope.chooseElementDeleted - 1;
 
-                            //var children = ngDeleteSelectedPicto.children();
-                            //var chooseChild = children[$scope.chooseElementDeleted];
-                            //$scope.chooseAngularChildElement = angular.element(chooseChild);
                             $scope.deleteButtonActive = true;
                             if($scope.chooseElementDeleted != null && $scope.deleteButtonActive == true){
 
@@ -2830,10 +2825,11 @@ angular.module('controllers', [])
                     $scope.tense = response.tense;
                     $scope.tipusfrase = response.tipusfrase;
                     $scope.negativa = response.negativa;
+                    $scope.pos = response.pos;
                     if ((control !== "") && (control !== "home") && (control !== "historic") && (control !== "stopAudio")) {
                         var url = $scope.baseurl + "Board/" + control;
+                        //var postdata = {tense: $scope.tense, tipusfrase: $scope.tipusfrase, negativa: $scope.negativa};
                         var postdata = {tense: $scope.tense, tipusfrase: $scope.tipusfrase, negativa: $scope.negativa};
-
                         $http.post(url, postdata).success(function (response)
                         {
                             $scope.info = response.info;
@@ -2847,6 +2843,7 @@ angular.module('controllers', [])
                                 } else if (control === "deleteLastWord") {
                                     $scope.getPred();
                                 }
+
                                 if (!readed) {
                                     $scope.readText(text, true);
                                 }
@@ -2868,6 +2865,30 @@ angular.module('controllers', [])
                         aux.pause();
                         aux.currentTime = 0;
                     }
+
+                    /*else if(control === "deleteSelectedWord"){
+                      $scope.chooseElement($scope.pos)
+                      var ngDeleteSelectedPicto = angular.element($window.document.getElementById('txtImgContainer'));
+                      var children = ngDeleteSelectedPicto.children();
+                      var s = children.length;
+                      for(i = 0; i < s; i++){
+                        var chooseChild = children[i];
+                        $scope.chooseAngularChildElement = angular.element(chooseChild);
+                        $scope.chooseAngularChildElement.toggleClass('selectedDeletePicto');
+                      }
+
+                      if($scope.deleteButtonActive == false){
+                        $scope.deleteButtonActive = true;
+                      }
+                      else{
+                        $scope.deleteButtonActive = false;
+                        $scope.chooseAngularChildElement.toggleClass('selectedDeletePicto', !$scope.deleteButtonActive);
+                      }
+
+                      $scope.getPred();
+                    }*/
+
+
                     else {
                         if (!readed) {
                             $scope.readText(text, true);
@@ -2937,6 +2958,8 @@ angular.module('controllers', [])
 
             $http.post(url, postdata).success(function (response){
                 $scope.dataTemp = response.data;
+                console.log($scope.chooseElementDeleted);
+                $scope.getPred();
             });
           };
 
