@@ -35,8 +35,8 @@ class ImgUploader extends REST_Controller {
       $error = false;
       for ($i = 0; $i < count($_FILES); $i++) {
           $md5Name = $this->Rename_Img(basename($_FILES['file' . $i]['name']));
-          if (!($_FILES['file' . $i]['type'] == 'application/octet-stream') ||
-          !($_FILES['file' . $i]['type'] == 'application/zip')) {
+          if (/*!($_FILES['file' . $i]['type'] == 'application/octet-stream') ||
+          !($_FILES['file' . $i]['type'] == 'application/zip')*/false) {
               $errorProv = ["errorImg1", $_FILES['file' . $i]['name']];
               array_push($errorText,$_FILES['file' . $i]['type']);
               $error = true;
