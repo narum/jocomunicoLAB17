@@ -1,4 +1,4 @@
-<!-- This view is the main board where the picto will be shown. In addition it 
+<!-- This view is the main board where the picto will be shown. In addition it
      includes others view like sentece, edit (board/cell) panel, etc etc
 -->
 <link rel="stylesheet" href="css/historic.css"/>
@@ -8,32 +8,32 @@
 </style>
 
 <script>
-    
+
     var myVar;
     var exit = 0;
-    
+
     function audiohallelujah() {
         console.log("audio");
 
         var aux = document.getElementById('utterance');
         aux.src="mp3/empty.m4a";
         var audiotoplayinitial = aux.src;
-        
+
         var myVar = setInterval(function(){ waitloop(audiotoplayinitial, myVar) }, 500);
     }
-    
+
     function waitloop(audiotoplayinitial, myVar) {
         var aux = document.getElementById('utterance');
         var audiotoplayfinal = aux.src;
-        
+
         if (audiotoplayinitial !== audiotoplayfinal) {
             exit = 0;
             aux.play();
             clearInterval(myVar);
         }
-        
+
         exit = exit+1;
-        
+
         if (exit > 8) {
             exit = 0;
             clearInterval(myVar);
@@ -52,6 +52,10 @@
 </div>
 
 <div ng-include="'/angular_templates/dropdownMenuBar.html'"></div>
+<div ng-include="'/angular_templates/logoutModal.html'"></div>
+
+<div ng-show="cfgMenuBlock" ng-include="'/angular_templates/confirmPasswordHistoricView.html'"></div>
+
     <!--menu superior dropdown-->
     <div id="main" style="background-image: url('/img/srcWeb/patterns/fons.png');background-size:100% 100%" ng-click="scanLeftClick()" ng-right-click="scanRightClick()" onmousedown="audiohallelujah()">
     <div class="row historicView">
@@ -208,5 +212,4 @@
             </div>
         </div>
     </div>
-</div>  
-
+</div>

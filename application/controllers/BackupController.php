@@ -124,6 +124,6 @@ public function recbackup_get(){
   $response = [
       'data' => $data
   ];
-  $this->response($response, REST_Controller::HTTP_OK);
+  $this->response($data, REST_Controller::HTTP_OK);
 }
 }

@@ -11,7 +11,7 @@ html{
 #scrollBar::-webkit-scrollbar{
 width:15px;
 background-color:none;
-} 
+}
 #scrollBar::-webkit-scrollbar-thumb{
 /*background:-webkit-linear-gradient(0, #92dbe1Turquesa 40%, #78b3b8Turquesa Oscuro 100%);*/
 background-color: #92dbe1;/*Turquesa*/
@@ -67,7 +67,7 @@ border-radius:10px;
     color: white;
     background-color: #333333;
     border-color: #333333;
-    
+
     height: 5vh;
     padding-left: 1vw;
     padding-right: 1vw;
@@ -394,6 +394,15 @@ input.imageRadio[type=radio]:empty + label:hover{
     width: auto;
     box-shadow: 0 1vh 1vh rgba(0, 0, 0, 0.7);
     cursor: default;
+}
+
+.img-config2{
+  height:4.2vw;
+  width:auto;
+  top:50%;
+  right:50%;
+  box-shadow: 0 1vh 1vh rgba(0, 0, 0, 0.7);
+  cursor: default;
 }
 
 .img-configSwitch{

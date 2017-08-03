@@ -14,7 +14,7 @@
 
 }
 .mainBoard{
-    padding: 5vh; 
+    padding: 5vh;
     height: 100vh;
 }
 
@@ -132,7 +132,7 @@ html *
     border-radius: 10px;
     z-index: 0;
     background-clip: content-box;
-    background-color: white; 
+    background-color: white;
 }
 
 .emptyImg{
@@ -150,7 +150,7 @@ html *
 
 .sentencePadding{
     padding-top: 0.5vh;
-    padding-left: 5.5%; 
+    padding-left: 5.5%;
     width: 90%
 }
 
@@ -310,6 +310,18 @@ html *
     z-index: 24;
     position: absolute;
 }
+
+.scaneo2{
+  width: 10%;
+  height: 100%;
+  border: 7px solid #ff0000;
+  border-radius: 7px;
+  margin-right: 2px;
+  z-index: 24;
+}
+
+
+
 .backgroundCell{
     padding: 2px;
     width: 100%;
@@ -364,6 +376,25 @@ html *
     cursor: default;
     text-transform: uppercase
 }
+
+.textCell2{
+  z-index: 2;
+  cursor: default;
+  text-transform: uppercase;
+  position: absolute;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: center;
+  top: 50%;
+  left: 50%;
+  margin-right: -50%;
+  transform: translate(-50%, -50%);
+  width: 85%;
+  font-size:1.5em;
+  line-height: 1.5em;
+}
+
 .removePicto{
     right: 5px;
     top: 5px;
@@ -417,7 +448,7 @@ html *
 }
 .backgroundHome{
     width: 94%;
-    height: 100%;    
+    height: 100%;
     position: absolute;
     background: url('/img/srcWeb/Menu/borrar_ultim_fons.png');
     background-size: 100% 100%;
@@ -425,7 +456,7 @@ html *
 }
 .backgroundLlegir{
     width: 94%;
-    height: 100%;    
+    height: 100%;
     position: absolute;
     background: url('/img/srcWeb/Menu/llegir_fons.png');
     background-size: 100% 100%;
@@ -434,7 +465,7 @@ html *
 .backgroundDelete{
     width: 94%;
     left: 6%;
-    height: 100%;    
+    height: 100%;
     position: absolute;
     background: url('/img/srcWeb/Menu/borrar_ultim_fons.png');
     background-size: 100% 100%;
@@ -443,7 +474,7 @@ html *
 .backgroundDeleteAll{
     width: 94%;
     left: 6%;
-    height: 100%;    
+    height: 100%;
     position: absolute;
     background: url('/img/srcWeb/Menu/borrar_fons.png');
     background-size: 100% 100%;
@@ -525,7 +556,7 @@ html *
     float: left;
 }
 .phraseText{
-    bottom:0; 
+    bottom:0;
     position:absolute;
 }
 .searchBox{
@@ -536,4 +567,28 @@ html *
     margin-top: 2%;
     border: none;
     padding-left: 5px;
+}
+
+.txtButtonConfigPass{
+  clear: both;
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.txtOnlySentenceView{
+  height:50%;
+  font-size:1.25em;
+  line-height: 1.25em;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  width: 90%;
+  top: 40%;
+  white-space: nowrap;
+  text-align: center;
+  margin-right: -50%;
+}
+
+.selectedDeletePicto{
+  background-color: #98AFC7;
 }

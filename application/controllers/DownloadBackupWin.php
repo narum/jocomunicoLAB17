@@ -1,5 +1,5 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
-class DownloadBackup extends CI_Controller {
+class DownloadBackupWin extends CI_Controller {
   public function __construct(){
       parent::__construct();
       $this->load->library('zip');
@@ -114,7 +114,7 @@ $this->unzip->extract('uploads/my_archive.zip', '/path/to/directory/');
 
   }
 }
-public function uploadBackup_post() {
+function uploadBackup_post() {
   $errorText = array();
   $ID_User=$this->session->idusu;
   $target_dir="/xampp/htdocs/Temp/";
