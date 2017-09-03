@@ -350,6 +350,7 @@ class Main extends REST_Controller {
             $sentence['ID_SSUser'] = $idusu;
             unset($sentence['ID_SHistoric']);
             unset($sentence['ID_SHUser']);
+            unset($sentence['isDeleted']);
             $sentence['posInFolder'] = $posInFolder + 1;
 
             //Save sentence
