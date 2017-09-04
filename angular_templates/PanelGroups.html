@@ -22,12 +22,12 @@
 <div ng-include="'/angular_templates/dropdownMenuBar.html'" ng-show="viewActived"></div>
 <div ng-include="'/angular_templates/ConfirmCreateGroupBoard.html'"></div>
 
-<div ng-init="isNotChrome()"></div>
 
 <div class="loadingGif" ng-show="!viewActived"><img class="img-loadingGif" ng-src={{img.loading}}/></div>
 <div class="row folderContainer" ng-if="viewActived">
 
     <div class="row">
+        <div ng-init="isNotChrome()"></div>
         <!--Panel Groups box-->
         <div class="col-xs-6 rightPadding">
             <div class="panelGroupContainer" id="boxUserConfig" style="background-image: url({{img.Patterns1_08}})">
