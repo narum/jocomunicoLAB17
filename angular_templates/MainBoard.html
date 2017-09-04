@@ -126,11 +126,11 @@
 
                           <div ng-if="isPictoActive(picto)" class="contentCell">
                             <!--  <div ng-style="cfgTextInCell == 1 ? {'height':'78%'}:{'height':'100%'}">-->
-                                  <img ng-if="picto.imgCell" class="imgResponsive" ng-src="{{baseurl}}{{picto.imgCell}}"/>
-                                  <img ng-if="picto.imgPicto && !picto.imgCell" ng-src="{{baseurl}}img/pictos/{{picto.imgPicto}}" class="imgResponsive"/>
-                                  <img ng-if="picto.imgSFolder && !picto.imgPicto && !picto.imgCell && !picto.imgFunct" ng-src="{{baseurl}}{{picto.imgSFolder}}" class="imgResponsive"/>
-                                  <img ng-if="picto.sPreRecImg1 && !picto.imgSFolder && !picto.imgPicto && !picto.imgCell && !picto.imgFunct" ng-src="{{baseurl}}{{picto.sPreRecImg1}}" class="imgResponsive"/>
-                                  <img ng-if="picto.imgFunct && !picto.imgPicto && !picto.imgCell" ng-src="{{baseurl}}img{{picto.imgFunct}}" class="imgResponsive"/>
+                                  <img ng-if="picto.imgCell && picto.imgCell !== 'img/pictos/'" class="imgResponsive" ng-src="{{baseurl}}{{picto.imgCell}}"/>
+                                  <img ng-if="picto.imgPicto && (!picto.imgCell || picto.imgCell === 'img/pictos/')" ng-src="{{baseurl}}img/pictos/{{picto.imgPicto}}" class="imgResponsive"/>
+                                  <img ng-if="picto.imgSFolder && !picto.imgPicto && (!picto.imgCell || picto.imgCell === 'img/pictos/') && !picto.imgFunct" ng-src="{{baseurl}}{{picto.imgSFolder}}" class="imgResponsive"/>
+                                  <img ng-if="picto.sPreRecImg1 && !picto.imgSFolder && !picto.imgPicto && (!picto.imgCell || picto.imgCell === 'img/pictos/') && !picto.imgFunct" ng-src="{{baseurl}}{{picto.sPreRecImg1}}" class="imgResponsive"/>
+                                  <img ng-if="picto.imgFunct && !picto.imgPicto && (!picto.imgCell || picto.imgCell === 'img/pictos/')" ng-src="{{baseurl}}img{{picto.imgFunct}}" class="imgResponsive"/>
                           <!--    </div>-->
                           </div>
 
@@ -151,11 +151,11 @@
 
                           <div ng-if="isPictoActive(picto)" class="contentCell">
                               <div ng-style="cfgTextInCell == 1 ? {'height':'78%'}:{'height':'100%'}">
-                                  <img ng-if="picto.imgCell" class="imgResponsive" ng-src="{{baseurl}}{{picto.imgCell}}"/>
-                                  <img ng-if="picto.imgPicto && !picto.imgCell" ng-src="{{baseurl}}img/pictos/{{picto.imgPicto}}" class="imgResponsive"/>
-                                  <img ng-if="picto.imgSFolder && !picto.imgPicto && !picto.imgCell && !picto.imgFunct" ng-src="{{baseurl}}{{picto.imgSFolder}}" class="imgResponsive"/>
-                                  <img ng-if="picto.sPreRecImg1 && !picto.imgSFolder && !picto.imgPicto && !picto.imgCell && !picto.imgFunct" ng-src="{{baseurl}}{{picto.sPreRecImg1}}" class="imgResponsive"/>
-                                  <img ng-if="picto.imgFunct && !picto.imgPicto && !picto.imgCell" ng-src="{{baseurl}}img{{picto.imgFunct}}" class="imgResponsive"/>
+                                  <img ng-if="picto.imgCell && picto.imgCell !== 'img/pictos/'" class="imgResponsive" ng-src="{{baseurl}}{{picto.imgCell}}"/>
+                                  <img ng-if="picto.imgPicto && (!picto.imgCell || picto.imgCell === 'img/pictos/')" ng-src="{{baseurl}}img/pictos/{{picto.imgPicto}}" class="imgResponsive"/>
+                                  <img ng-if="picto.imgSFolder && !picto.imgPicto && (!picto.imgCell || picto.imgCell === 'img/pictos/') && !picto.imgFunct" ng-src="{{baseurl}}{{picto.imgSFolder}}" class="imgResponsive"/>
+                                  <img ng-if="picto.sPreRecImg1 && !picto.imgSFolder && !picto.imgPicto && (!picto.imgCell || picto.imgCell === 'img/pictos/') && !picto.imgFunct" ng-src="{{baseurl}}{{picto.sPreRecImg1}}" class="imgResponsive"/>
+                                  <img ng-if="picto.imgFunct && !picto.imgPicto && (!picto.imgCell || picto.imgCell === 'img/pictos/')" ng-src="{{baseurl}}img{{picto.imgFunct}}" class="imgResponsive"/>
                               </div>
                           </div>
 
