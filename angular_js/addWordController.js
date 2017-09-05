@@ -49,7 +49,7 @@ angular.module('controllers')
             switch ($scope.addWordType)
                 {
                     case "name":
-                        $scope.objAdd = {type: "name", nomtext: null, mf: false, singpl: false, contabincontab: null, determinat: "1", ispropernoun: false, defaultverb: null, plural: null, femeni: null, fempl: null, imgPicto: $scope.baseurl+'/img/pictos/arrow question.png', supExp: true};
+                        $scope.objAdd = {type: "name", nomtext: null, mf: false, singpl: false, contabincontab: null, determinat: "1", ispropernoun: false, defaultverb: null, plural: null, femeni: null, fempl: null, imgPicto: $scope.baseurl+'/img/srcWeb/imagenesvarias/arrow-question.png', supExp: true};
                         $scope.switchName = {s1: false, s2: false, s3: false, s4: false, s5: false, s6: false};
                         $scope.NClassList = [];
                         $scope.errAdd = {erradd1: false, erradd2: false,erradd3: false};
@@ -81,7 +81,7 @@ angular.module('controllers')
                         
                         break;
                     case "adj":
-                        $scope.objAdd = {type: "adj", masc: null, fem: null, mascpl: null, fempl: null,defaultverb: false, subjdef: false, imgPicto: 'arrow question.png', supExp: true};
+                        $scope.objAdd = {type: "adj", masc: null, fem: null, mascpl: null, fempl: null,defaultverb: false, subjdef: false, imgPicto: '/img/srcWeb/imagenesvarias/arrow-question.png', supExp: true};
                         $scope.switchAdj = {s1: false, s2: false, s3: false, s4: false, s5: false, s6: false};
                         $scope.AdjClassList = [];
                         $scope.errAdd = {erradd1: false, erradd2: false,erradd3: false};
@@ -215,7 +215,7 @@ angular.module('controllers')
                             $scope.commit = 0;
                             $scope.errAdd.erradd2 = true;
                         }
-                        if($scope.objAdd.imgPicto == $scope.baseurl+'/img/picto/arrow question.png' || $scope.objAdd.imgPicto == null){
+                        if($scope.objAdd.imgPicto == $scope.baseurl+'/img/srcWeb/imagenesvarias/arrow-question.png' || $scope.objAdd.imgPicto == null){
                             $scope.commit = 0;
                             $scope.errAdd.erradd3 = true;
                         }
@@ -271,7 +271,7 @@ angular.module('controllers')
                             $scope.commit = 0;
                             $scope.errAdd.erradd2 = true;
                         }
-                        if($scope.objAdd.imgPicto == 'arrow question.png' || $scope.objAdd.imgPicto == null){
+                        if($scope.objAdd.imgPicto == '/img/srcWeb/imagenesvarias/arrow-question.png' || $scope.objAdd.imgPicto == null){
                             $scope.commit = 0;
                             $scope.errAdd.erradd3 = true;
                         }
