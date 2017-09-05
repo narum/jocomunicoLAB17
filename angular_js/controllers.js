@@ -2645,7 +2645,8 @@ angular.module('controllers', [])
                         if (readed === true) {
                             text = "";
                         } else {
-                            text = cell.textInCell;
+                            if (cell.textInCell !== null) text = cell.textInCell;
+                            else text = cell.textFunction;
                         }
 
                         $scope.showBoard(cell.boardLink);
