@@ -2033,7 +2033,10 @@ angular.module('controllers', [])
                             break;
                         case "read":
                             $scope.generate();
-                            $scope.InitScan();
+                            // only initialize the scan if the FeedBack popup is not there
+                            if (!$scope.cfgUserExpansionFeedback) {
+                                $scope.InitScan();
+                            }
                             break;
                         case "deletelast":
                             $scope.deleteLast();
