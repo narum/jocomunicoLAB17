@@ -37,14 +37,14 @@ class Main_model extends CI_Model {
     }
 
     /* @rjlopezdev
-     * Languages that cannot Expand will be filtered in the Interface, if needs be, and will not be shown
+     * Remove English from Languages
      */
     // Idiomas disponibles en la tabla Languages.
     public function getLanguagesAvailable(){
         //Peticion a base de datos
-            $this->db->select('ID_Language, languageName, languageabbr, canExpand'); // Seleccionar les columnes
+            $this->db->select('ID_Language, languageName, languageabbr'); // Seleccionar les columnes
             $this->db->from('Languages');// Seleccionem la taula
-            // $this->db->where('canExpand !=', '0');
+            $this->db->where('canExpand !=', '0');
             $query = $this->db->get();
 
             return $query->result_array();// retornamos el array

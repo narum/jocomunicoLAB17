@@ -243,7 +243,7 @@
                                             ng-disabled="singleLanguageSelected"
                                             >
                                             <option selected="selected" disabled="disabled" value="">{{ content.language }}</option>
-                                            <option ng-repeat="option in availableLanguageOptions | filter:{canExpand: 1}" value="{{option.ID_Language}}">{{option.languageName}}</option>
+                                            <option ng-repeat="option in availableLanguageOptions" value="{{option.ID_Language}}">{{option.languageName}}</option>
                                         </select>
                                     </div>
                                     <span class="glyphicon glyphicon-remove form-control-feedback" ng-show=" state.languageSelected =='has-error'"></span>

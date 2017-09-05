@@ -49,13 +49,13 @@ class Historic extends REST_Controller {
         ];
         $this->response($response, REST_Controller::HTTP_OK);
     }
-
+    
     function getFolder_post(){
         $postdata = file_get_contents("php://input");
         $request = json_decode($postdata);
         $idfolder = $request->folder;
         $pagHistoric = $request->pagHistoric;
-
+        
         $sentenceArray = array();
         $idusu = $this->session->userdata('idusu');
         $sentenece = $this->HistoricInterface->getSentenceFolder($idusu, $idfolder);
@@ -75,7 +75,7 @@ class Historic extends REST_Controller {
     }
 
     function getHistorialState_get() {
-
+        
         $this->response(
             [
                 'state' => $this->HistoricInterface->getHistorialState()
@@ -88,8 +88,9 @@ class Historic extends REST_Controller {
         $this->HistoricInterface->deleteHistoric();
         $this->response(null, REST_Controller::HTTP_OK);
     }
-
+    
     function deleteHistoric_post(){
         $this->HistoricInterface->deleteHistoric();
     }
+    
 }

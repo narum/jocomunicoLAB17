@@ -44,12 +44,12 @@ angular.module('controllers')
                     AuthService.logout();
                 }, 1000);
             };
-
+            
             $scope.initAddWord = function () {
             switch ($scope.addWordType)
                 {
                     case "name":
-                        $scope.objAdd = {type: "name", nomtext: null, mf: false, singpl: false, contabincontab: null, determinat: "1", ispropernoun: false, defaultverb: null, plural: null, femeni: null, fempl: null, imgPicto: $scope.baseurl+'/img/srcWeb/imagenesvarias/arrow-question.png', supExp: true};
+                        $scope.objAdd = {type: "name", nomtext: null, mf: false, singpl: false, contabincontab: null, determinat: "1", ispropernoun: false, defaultverb: null, plural: null, femeni: null, fempl: null, imgPicto: $scope.baseurl+'/img/pictos/arrow question.png', supExp: true};
                         $scope.switchName = {s1: false, s2: false, s3: false, s4: false, s5: false, s6: false};
                         $scope.NClassList = [];
                         $scope.errAdd = {erradd1: false, erradd2: false,erradd3: false};
@@ -77,11 +77,11 @@ angular.module('controllers')
                             {classType: "tool", numType: 22, nameType: $scope.content.classname22},
                             {classType: "profession", numType: 23, nameType: $scope.content.classname23},
                             {classType: "material", numType: 24, nameType: $scope.content.classname24}];
-
-
+                        
+                        
                         break;
                     case "adj":
-                        $scope.objAdd = {type: "adj", masc: null, fem: null, mascpl: null, fempl: null,defaultverb: false, subjdef: false, imgPicto: '/img/srcWeb/imagenesvarias/arrow-question.png', supExp: true};
+                        $scope.objAdd = {type: "adj", masc: null, fem: null, mascpl: null, fempl: null,defaultverb: false, subjdef: false, imgPicto: 'arrow question.png', supExp: true};
                         $scope.switchAdj = {s1: false, s2: false, s3: false, s4: false, s5: false, s6: false};
                         $scope.AdjClassList = [];
                         $scope.errAdd = {erradd1: false, erradd2: false,erradd3: false};
@@ -101,7 +101,7 @@ angular.module('controllers')
                 }
             };
             $scope.initAddWordtest = function () {
-
+                
                 if ($rootScope.addWordparam != null) {
                     $scope.NewModif = $rootScope.addWordparam.newmod;
                     $scope.addWordType = $rootScope.addWordparam.type;
@@ -110,7 +110,7 @@ angular.module('controllers')
                 } else {
                     $location.path("/panelGroups");
                 }
-
+                
                 var URL = $scope.baseurl + "AddWord/getAllVerbs";
                 $http.post(URL).
                     success(function (response)
@@ -144,7 +144,7 @@ angular.module('controllers')
                             $scope.addWordEditData = response.data[0];
                             $scope.addWordEditData.imgPicto="/img/pictos/"+response.data[0].imgPicto;
                             console.log($scope.addWordEditData.imgPicto);
-
+                            
                             var postdata = {id: $scope.idEditWord, type: $scope.addWordType};
                             URL = $scope.baseurl + "AddWord/EditWordGetClass";
                             $http.post(URL, postdata).
@@ -197,7 +197,7 @@ angular.module('controllers')
                 $http.post(URL, postdata).
                         success(function (response)
                         {
-
+                            
                         });
                 $location.path("/panelGroups");
             };
@@ -211,35 +211,35 @@ angular.module('controllers')
                             $scope.commit = 0;
                             $scope.errAdd.erradd1 = true;
                         }
-                        if($scope.NClassList.length < 1 && $scope.objAdd.supExp){
+                        if($scope.NClassList.length < 1){
                             $scope.commit = 0;
                             $scope.errAdd.erradd2 = true;
                         }
-                        if($scope.objAdd.imgPicto == $scope.baseurl+'/img/srcWeb/imagenesvarias/arrow-question.png' || $scope.objAdd.imgPicto == null){
+                        if($scope.objAdd.imgPicto == $scope.baseurl+'/img/picto/arrow question.png' || $scope.objAdd.imgPicto == null){
                             $scope.commit = 0;
                             $scope.errAdd.erradd3 = true;
                         }
-
+                        
                         if($scope.commit == 1)
                         {
                             $scope.objAdd = {
-                                type: "name",
-                                nomtext: $scope.objAdd.nomtext,
+                                type: "name", 
+                                nomtext: $scope.objAdd.nomtext, 
                                 mf: $scope.objAdd.mf == false ? "masc" : "fem",
-                                singpl: $scope.objAdd.singpl == false ? "sing" : "pl",
+                                singpl: $scope.objAdd.singpl == false ? "sing" : "pl", 
                                 contabincontab: $scope.objAdd.contabincontab == true ? "incontable" : "contable",
-                                determinat: $scope.objAdd.determinat,
+                                determinat: $scope.objAdd.determinat, 
                                 ispropernoun: $scope.objAdd.ispropernoun == true ? "1" : "0",
-                                defaultverb: $scope.objAdd.defaultverb == null ? "0" : $scope.objAdd.defaultverb,
+                                defaultverb: $scope.objAdd.defaultverb == null ? "0" : $scope.objAdd.defaultverb, 
                                 plural: $scope.switchName.s3 == false ? $scope.objAdd.nomtext : $scope.objAdd.plural,
-                                femeni: $scope.switchName.s2 == false ? null : $scope.objAdd.femeni,
+                                femeni: $scope.switchName.s2 == false ? null : $scope.objAdd.femeni, 
                                 fempl: $scope.switchName.s4 == false ? null : $scope.objAdd.fempl,
-                                imgPicto: $scope.objAdd.imgPicto,
-                                pictoid: $scope.idEditWord != null ? $scope.idEditWord : false,
+                                imgPicto: $scope.objAdd.imgPicto, 
+                                pictoid: $scope.idEditWord != null ? $scope.idEditWord : false, 
                                 new: $scope.NewModif == 1 ? true : false,
-                                class: $scope.NClassList,
+                                class: $scope.NClassList, 
                                 supExp: $scope.objAdd.supExp == true ? "1" : "0"};
-
+                            
                             if ($scope.objAdd.singpl == "pl"){
                                 $scope.objAdd.plural = $scope.objAdd.nomtext;
                                 $scope.objAdd.femeni = null;
@@ -256,7 +256,7 @@ angular.module('controllers')
                         var postdata = {objAdd: $scope.objAdd};
                             $http.post(URL, postdata).success(function (response)
                             {
-
+                                
                             });
                             $location.path("/panelGroups");
                         }
@@ -267,15 +267,15 @@ angular.module('controllers')
                             $scope.commit = 0;
                             $scope.errAdd.erradd1 = true;
                         }
-                        if($scope.AdjClassList.length < 1 && $scope.objAdd.supExp){
+                        if($scope.AdjClassList.length < 1){
                             $scope.commit = 0;
                             $scope.errAdd.erradd2 = true;
                         }
-                        if($scope.objAdd.imgPicto == '/img/srcWeb/imagenesvarias/arrow-question.png' || $scope.objAdd.imgPicto == null){
+                        if($scope.objAdd.imgPicto == 'arrow question.png' || $scope.objAdd.imgPicto == null){
                             $scope.commit = 0;
                             $scope.errAdd.erradd3 = true;
                         }
-
+                        
                         if($scope.commit == 1)
                         {
                             $scope.objAdd = {type: "adj", masc: $scope.objAdd.masc, fem: $scope.objAdd.fem, mascpl: $scope.objAdd.mascpl,
@@ -294,9 +294,9 @@ angular.module('controllers')
                     default:
                         break;
                 }
+                
 
-
-
+                
             };
             $scope.uploadFileToWord = function () {
                 $scope.myFile = document.getElementById('file-input').files;
@@ -352,7 +352,7 @@ angular.module('controllers')
             $scope.img = [];
             $scope.img.Patterns1_08 = '/img/srcWeb/patterns/pattern3.png';
             $scope.style_changes_title = '';
-
+            
              // Activate information modals (popups)
             $scope.toggleInfoModal = function (title, text) {
                 $scope.infoModalContent = text;
@@ -380,3 +380,4 @@ angular.module('controllers')
             }
 
         });
+        

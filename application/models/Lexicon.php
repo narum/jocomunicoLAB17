@@ -873,7 +873,6 @@ class Lexicon extends CI_Model {
                     'isfem' => $row->isfem,
                     'coordinated' => $row->coordinated,
                     'imgtemp' => $row->imgtemp,
-		    'ID_RSHPUser' => $idusu,
                 );
                 $this->db->insert('R_S_HistoricPictograms', $data2);
             }
