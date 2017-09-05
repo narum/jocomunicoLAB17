@@ -2120,7 +2120,18 @@ angular.module('controllers', [])
             $scope.selectScannedCell = function ()
             {
                 $scope.clickOnCell($scope.arrayScannedCells[$scope.indexScannedCells]);
-                $scope.InitScan();
+                if ($scope.inScan) {
+                    // wait for clickoncell function to finish
+                    // if the cell is a function that moves the scan, InitScan should not be called
+                    $timeout(function () {
+                        if ($scope.isScanning !== "sentencebar") {
+                            $scope.InitScan();
+                        }
+                    }, 300);
+                }
+                else {
+                    $scope.InitScan();
+                }
             };
 
             // Select the current cell (the index point to the array with all the cells)
