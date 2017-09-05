@@ -1469,6 +1469,7 @@ angular.module('controllers', [])
                   $scope.timerPassword = $timeout(function(){
                     angular.element('#clkOutside').triggerHandler('click');
                       $('#confirmPassword').modal('hide');
+
                       $scope.passwordCopyPanel = null;
                     }, 10000);
 
@@ -2855,20 +2856,28 @@ angular.module('controllers', [])
              */
             $scope.clickOnFunction = function (id, text, readed) {
                 var url = $scope.baseurl + "Board/getFunction";
-                var postdata = {id: id, tense: $scope.tense, tipusfrase: $scope.tipusfrase, negativa: $scope.negativa};
-
+                /*var postdata = {id: id, tense: $scope.tense, tipusfrase: $scope.tipusfrase, negativa: $scope.negativa};*/
+                /*New code*/
+                var postdata = {id: id, tense: $scope.tense, tipusfrase: $scope.tipusfrase, negativa: $scope.negativa, pos: $scope.chooseElementDeleted};
+                /*New code*/
                 $http.post(url, postdata).success(function (response)
                 {
                     var control = response.control;
                     console.log(control);
+
                     $scope.dataTemp = response.data;
                     $scope.tense = response.tense;
                     $scope.tipusfrase = response.tipusfrase;
                     $scope.negativa = response.negativa;
+                    /*New code*/
+                    $scope.chooseElementDeleted = response.pos;
+                    /*New code*/
                     if ((control !== "") && (control !== "home") && (control !== "historic") && (control !== "stopAudio")) {
                         var url = $scope.baseurl + "Board/" + control;
-                        var postdata = {tense: $scope.tense, tipusfrase: $scope.tipusfrase, negativa: $scope.negativa};
-
+                        /*var postdata = {tense: $scope.tense, tipusfrase: $scope.tipusfrase, negativa: $scope.negativa};*/
+                        /*New code*/
+                        var postdata = {tense: $scope.tense, tipusfrase: $scope.tipusfrase, negativa: $scope.negativa, pos: $scope.chooseElementDeleted};
+                        /*New code*/
                         $http.post(url, postdata).success(function (response)
                         {
                             $scope.info = response.info;
@@ -2882,6 +2891,44 @@ angular.module('controllers', [])
                                 } else if (control === "deleteLastWord") {
                                     $scope.getPred();
                                 }
+
+                                /*New code*/
+                                else if(control === "deleteSelectedWord"){
+                                  console.log($scope.inScan);
+                                  /* Hay que hacer dos formas de activar la función. La primera es la activar la función sin escaneo y la segunda es activando la función con escaneo */
+                                  if(!$scope.inScan){
+                                    var ngDeleteSelectedPicto = angular.element($window.document.getElementById('txtImgContainer'));
+                                    var children = ngDeleteSelectedPicto.children();
+                                    var s = children.length;
+                                    for(i = 0; i < s; i++){
+                                      var chooseChild = children[i];
+                                      $scope.chooseAngularChildElement = angular.element(chooseChild);
+                                      $scope.chooseAngularChildElement.toggleClass('selectedDeletePicto');
+                                    }
+
+                                    if($scope.deleteButtonActive == false){
+                                      $scope.deleteButtonActive = true;
+                                    }
+                                    else{
+                                      $scope.deleteButtonActive = false;
+                                      $scope.chooseAngularChildElement.toggleClass('selectedDeletePicto', !$scope.deleteButtonActive);
+                                    }
+
+                                    $scope.getPred();
+                                  }
+
+                                  else{
+                                    $scope.isScanning = "deleteselectedpicto";
+                                    //$scope.isScanning = "deleteselectedpicto";
+                                    $scope.selectBlockScan();
+
+
+
+                                  }
+
+                                }
+
+
                                 if (!readed) {
                                     $scope.readText(text, true);
                                 }
@@ -3740,7 +3787,6 @@ angular.module('controllers', [])
 
             /* #Jorge: Add variables values */
             $scope.timerPassword = null;
-
 
             //Dropdown Menu Bar
             $rootScope.dropdownMenuBar = null;
