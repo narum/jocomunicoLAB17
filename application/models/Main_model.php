@@ -22,11 +22,29 @@ class Main_model extends CI_Model {
         return $query->result_array();// retornem l'array query amb els resultats
     }
 
+    public function downloadImageArasaac($url){
+      $imgname=substr($url,-9);
+      $imgSFolder=str_replace('/','',$imgname);
+      $location="img/pictos/".$imgSFolder;
+      $ch = curl_init($url);
+      $fp = fopen($location, 'wb');
+      curl_setopt($ch, CURLOPT_FILE, $fp);
+      curl_setopt($ch, CURLOPT_HEADER, 0);
+      curl_exec($ch);
+      curl_close($ch);
+      fclose($fp);
+      return $location;
+    }
+
+    /* @rjlopezdev
+     * Languages that cannot Expand will be filtered in the Interface, if needs be, and will not be shown
+     */
     // Idiomas disponibles en la tabla Languages.
     public function getLanguagesAvailable(){
         //Peticion a base de datos
-            $this->db->select('ID_Language, languageName, languageabbr'); // Seleccionar les columnes
+            $this->db->select('ID_Language, languageName, languageabbr, canExpand'); // Seleccionar les columnes
             $this->db->from('Languages');// Seleccionem la taula
+            // $this->db->where('canExpand !=', '0');
             $query = $this->db->get();
 
             return $query->result_array();// retornamos el array
@@ -134,7 +152,6 @@ class Main_model extends CI_Model {
         return $saved;
     }
 
-
     // JORGE: Codigo para conseguir el usuario de la base de datos.
 
     function getUser($user, $pass) {
@@ -152,7 +169,6 @@ class Main_model extends CI_Model {
 
         return $output;
     }
-
 
 
 
@@ -300,17 +316,18 @@ class Main_model extends CI_Model {
         $this->db->where_in('Pictograms.ID_PUser', array('1', $this->session->userdata('idusu')));
         $this->db->where('sentenceDate >', $date);
         $this->db->where('ID_SHUser', $idusu);
+        $this->db->where('isDeleted', '0');
         $this->db->join('R_S_HistoricPictograms', 'S_Historic.ID_SHistoric = R_S_HistoricPictograms.ID_RSHPSentence');
         $this->db->join('Pictograms', 'R_S_HistoricPictograms.pictoid = Pictograms.pictoid');
-        $this->db->order_by('sentenceDate', 'desc');
         $this->db->order_by('ID_SHistoric', 'desc');
+        $this->db->order_by('R_S_HistoricPictograms.ID_RSHPSentencePicto', 'asc');
         $query = $this->db->get();
 
         if ($query->num_rows() > 0) {
             $output = $query->result();
-        } else
+        } else {
             $output = null;
-
+        }
         return $output;
     }
     //delete all historic after last 30 days
@@ -326,6 +343,7 @@ class Main_model extends CI_Model {
     function getHistoricSentence($idusu, $ID_SHistoric){
         $this->db->where('ID_SHistoric', $ID_SHistoric);
         $this->db->where('ID_SHUser', $idusu);
+        $this->db->order_by('ID_SHistoric', 'desc');
         $query = $this->db->get('S_Historic');
         return $query->result_array()[0];
     }
@@ -337,6 +355,7 @@ class Main_model extends CI_Model {
         $this->db->where('ID_SSUser', $idusu);
         $this->db->join('R_S_SentencePictograms', 'S_Sentence.ID_SSentence = R_S_SentencePictograms.ID_RSSPSentence');
         $this->db->join('Pictograms', 'R_S_SentencePictograms.pictoid = Pictograms.pictoid');
+        $this->db->order_by('S_Sentence.ID_SSentence', 'desc');
         $this->db->order_by('R_S_SentencePictograms.ID_RSSPSentencePicto', 'asc');
         $query = $this->db->get();
 
@@ -381,6 +400,7 @@ class Main_model extends CI_Model {
         $this->db->where('ID_SFolder', $ID_SFolder);
         $this->db->where('ID_SSUser', $idusu);
         $this->db->order_by('posInFolder', 'asc');
+        $this->db->order_by('S_Sentence.ID_SSentence', 'desc');
         $query = $this->db->get();
 
         if ($query->num_rows() > 0) {

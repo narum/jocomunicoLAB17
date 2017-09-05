@@ -1,5 +1,5 @@
 angular.module('controllers')
-        .controller('panelCtrl', function ($scope,$route, $rootScope, $cookies, txtContent, $location, $http, ngDialog, dropdownMenuBarInit, AuthService, Resources, $timeout) {
+        .controller('panelCtrl', function ($scope, $rootScope, $cookies, txtContent, $location, $http, ngDialog, dropdownMenuBarInit, AuthService, Resources, $timeout,$route) {
             // Comprobación del login   IMPORTANTE!!! PONER EN TODOS LOS CONTROLADORES
             if (!$rootScope.isLogged) {
                 $location.path('/home');
@@ -133,6 +133,8 @@ angular.module('controllers')
 
         //CreateFolder
         $scope.createHistoricFolder = function(){
+          var online = navigator.onLine;
+          if(online) $scope.internetOn=true; else $scope.internetOn=false;
             $('#editHistoricFolderModal').modal('toggle');//Show modal
         };
         $scope.newFolder={};
@@ -179,22 +181,44 @@ angular.module('controllers')
         /*
          * Return uploaded images from database. There are two types, the users images an the arasaac (not user images)
          */
-        $scope.searchImg = function (name, typeImgEditSearch) {
+        $scope.searchImg = function (name, typeImgEditSearch,bw) {
             var URL = "";
             switch (typeImgEditSearch)
             {
                 case "Arasaac":
-                    URL = $scope.baseurl + "ImgUploader/getImagesArasaac";
+                    if(name!=''){
+                      $scope.getArasaacPictos(name,bw)
+                    }
+                    $scope.BW=true;
+                    $scope.search=true;
+                    picasarashow=[false,false,false,false];
                     break;
                 case "Uploads":
                     URL = $scope.baseurl + "ImgUploader/getImagesUploads";
+                    $scope.BW=false;
+                    $scope.search=false;
+                    picasarashow=[true,true,true,true];
                     break;
             }
             var postdata = {name: name};
             $http.post(URL, postdata).
                 success(function (response)
                 {
-                    $scope.imgData = response.data;
+                    picsara=[];
+                    picasarashow=[false,false,false,false]
+                    if(response.data.length>4){
+                      itsize=4
+                    }else{
+                      itsize=response.data.length;
+                    }
+                    for(var i=0;i<itsize;i++){
+                      picsara.push(response.data[i].imgPath);
+                      picasarashow[i]=true;
+                    }
+                    $scope.picsara=picsara;
+                    $scope.imgData=picasarashow;
+
+
                 });
         }
 
@@ -495,143 +519,200 @@ angular.module('controllers')
               $cookies.put('browserAdvice', 'true');
             };
 
-            /* Enable or disable Historial
-            * @rjlopezdev
-            */
-            $scope.historialState = $http.get('Historic/getState');
-            $scope.enableHistorial = function () {
-              //Enable or disable Historial
-              $http.post('Historic/enableDisable_Historic')
-              .success(function (response) {
+            /* Enable/Disable Historic
+             * @rjlopezdev
+             */
+            $scope.HistoricState;
 
-              });
+
+            $scope.getHistorialState = function () {
+                $http.get('Historic/getHistorialState').success(function (response) {
+                    $scope.HistoricState = (response.state === '1') ? true : false;
+                    console.log(response.state);
+                });
             };
+
+            $scope.getHistorialState();
+            //Change current Historic State [cfgHIstorialState]
+            $scope.changeHistorialState = function () {
+                //!$scope.HistoricState;
+                /* Call to 'Historic/changeHistorialState' & params.
+                 * - newState : new Historic State (enable or disable)
+                 */
+                $('#HistoricModal').modal('hide');
+                $http.post('Historic/changeHistorialState'
+                    , {
+                        newState: ($scope.HistoricState) ? 0 : 1
+                    })
+                    .success(function (response) {
+                        $scope.getHistorialState();
+                        console.log('hola');
+                    });
+            };
+
+            $scope.enable_disableHistoric = function () {
+                //Show YES/NO Modal (disable Historial?)
+                if ($scope.HistoricState === true) {
+                    $('#HistoricModal').modal('toggle');
+                    //Show Modal (enable Historial)
+                } else if ($scope.HistoricState === false) {
+                    //console.log($scope.HistoricState);
+                    $scope.toggleInfoModal($scope.content.modalInfoTitle, $scope.content.historialInfoEnable);
+                    $scope.changeHistorialState();
+                }
+            };
+
             //muestra el modal de recuperacion de backup
-              $scope.showRecoverBackupModal=function(){
-                $scope.content.title="Recuperar Copia de seguridad";
-                $scope.content.parcial="Recuperar"
-                $scope.content.imagenesbackup="imagenes"
-                $scope.content.vocabulariobackup="vocabulario"
-                $scope.content.carpetabackup="carpetas tematicas"
-                $scope.content.cfgbackup="configuracion usuario"
-                $scope.content.panelesbackup="paneles"
-                $('#RecoverBackupModal').modal('toggle');
+            $scope.showRecoverBackupModal=function(){
+              $('#RecoverBackupModal').modal('toggle');
+            }
 
-              }
-
-              $scope.recparcialBackupCall_OW=function(BackupRoute){
-                var postdata = {overwrite: true};
-                $http.post("BackupController/"+BackupRoute,postdata).success(function (results) {
-                  console.log(results.data);
-                });
-              }
-              $scope.recparcialBackupCall_NOW=function(BackupRoute){
-                var postdata = {overwrite: false};
-                $http.post("BackupController/"+BackupRoute,postdata).success(function (results) {
-                  console.log(results.data);
-                });
-              }
-              //funcion que se llama en el click del boton recuperar parcial
-              $scope.recparcialBackup_OW=function(image,voc,folder,cfg,panelb){
-                if((typeof image==='undefined'&& typeof voc==='undefined'&& typeof folder==='undefined'&&
-                 typeof cfg==='undefined'&& typeof panelb==='undefined')||(!image&&!voc&&!folder&&!cfg&&!panelb)){
-                  $scope.toggleInfoModal("information",
-                  "Tienes que marcar al menos una casilla para que la recuperacion pueda llevarse a cabo");
-                }else{
-                  if(image)$scope.recparcialBackupCall_OW('recimages');
-                  if(voc)$scope.recparcialBackupCall_OW('recvocabulary');
-                  if(folder)$scope.recparcialBackupCall_OW('recfolder');
-                  if(cfg)$scope.recparcialBackupCall_OW('reccfg');
-                  if(panelb)$scope.recparcialBackupCall_OW('recpanels');
-
-                  $scope.viewActived=false;
-                  setTimeout(function(){ $route.reload(); }, 3000);
+            $scope.recparcialBackupCall_OW=function(BackupRoute){
+              var postdata = {overwrite: true};
+              $http.post("BackupController/"+BackupRoute,postdata).success(function (results) {
+                console.log(results.data);
+              });
+            }
+            $scope.recparcialBackupCall_NOW=function(BackupRoute){
+              var postdata = {overwrite: false};
+              $http.post("BackupController/"+BackupRoute,postdata).success(function (results) {
+                console.log(results.data);
+              });
+            }
+            //funcion que se llama en el click del boton recuperar parcial
+            $scope.recparcialBackup_OW=function(image,voc,folder,cfg,panelb){
+              if((typeof image==='undefined'&& typeof voc==='undefined'&& typeof folder==='undefined'&&
+               typeof cfg==='undefined'&& typeof panelb==='undefined')||(!image&&!voc&&!folder&&!cfg&&!panelb)){
+                $scope.toggleInfoModal("information",
+                "Tienes que marcar al menos una casilla para que la recuperacion pueda llevarse a cabo");
+              }else{
+                if(panelb){
+                  image=true;
+                  voc=true;
+                  folder=true;
+                  $scope.recparcialBackupCall_OW('recpanels');
                 }
-              }
-              $scope.recparcialBackup_NOW=function(image,voc,folder,cfg,panelb){
-                if((typeof image==='undefined'&& typeof voc==='undefined'&& typeof folder==='undefined'&&
-                 typeof cfg==='undefined'&& typeof panelb==='undefined')||(!image&&!voc&&!folder&&!cfg&&!panelb)){
-                  $scope.toggleInfoModal("information",
-                  "Tienes que marcar al menos una casilla para que la recuperacion pueda llevarse a cabo");
-                }else{
-                  if(image)$scope.recparcialBackupCall_NOW('recimages');
-                  if(voc)$scope.recparcialBackupCall_NOW('recvocabulary');
-                  if(folder)$scope.recparcialBackupCall_NOW('recfolder');
-                  if(cfg)$scope.recparcialBackupCall_NOW('reccfg');
-                  if(panelb)$scope.recparcialBackupCall_NOW('recpanels');
+                if(image)$scope.recparcialBackupCall_OW('recimages');
+                if(voc)$scope.recparcialBackupCall_OW('recvocabulary');
+                if(folder)$scope.recparcialBackupCall_OW('recfolder');
+                if(cfg)$scope.recparcialBackupCall_OW('reccfg');
 
-                  $scope.viewActived=false;
-                  setTimeout(function(){ $route.reload(); }, 3000);
+                $scope.viewActived=false;
+                setTimeout(function(){ $route.reload(); }, 3000);
+              }
+            }
+            $scope.recparcialBackup_NOW=function(image,voc,folder,cfg,panelb){
+              if((typeof image==='undefined'&& typeof voc==='undefined'&& typeof folder==='undefined'&&
+               typeof cfg==='undefined'&& typeof panelb==='undefined')||(!image&&!voc&&!folder&&!cfg&&!panelb)){
+                $scope.toggleInfoModal("information",
+                "Tienes que marcar al menos una casilla para que la recuperacion pueda llevarse a cabo");
+              }else{
+                if(panelb){
+                  image=true;
+                  voc=true;
+                  folder=true;
+                  $scope.recparcialBackupCall_OW('recpanels');
                 }
-              }
-          //funcion que llama al backend para hacer una recuperacion total backup
-          $scope.rectotalBackup=function(){
-                $http.get("BackupController/recbackup").success(function (results) {
-                  console.log(results);
-                  $scope.viewActived=false;
-                  setTimeout(function(){
-                    $route.reload();
-                  }, 3000);
-                });
-          }
-              //funcion que llama al backend para hacer un backup total
-              $scope.totalBackup=function(){
-                var promise = $http.get('BackupController');
-                promise.then(function(results) {
-                  $scope.backup=results.data.data;
-                  $scope.backupinfo="Vas ha descargar una copia de seguridad de todo el contenido que tengas en tu perfil ¿Quieres seguir adelante?";
-                  $('#DownloadBackup').modal('toggle');
-                  console.log(results.data)
-                });
+                if(image)$scope.recparcialBackupCall_NOW('recimages');
+                if(voc)$scope.recparcialBackupCall_NOW('recvocabulary');
+                if(folder)$scope.recparcialBackupCall_NOW('recfolder');
+                if(cfg)$scope.recparcialBackupCall_NOW('reccfg');
 
+                $scope.viewActived=false;
+                setTimeout(function(){ $route.reload(); }, 3000);
               }
-              $scope.DownloadBackup=function(backup){
+            }
+        //funcion que llama al backend para hacer una recuperacion total backup
+        $scope.rectotalBackup=function(){
+              $http.get("BackupController/recbackup").success(function (results) {
+                console.log(results);
+                $scope.viewActived=false;
                 setTimeout(function(){
-                  window.location.href="DownloadBackup/backup/"+backup;
-                  console.log(backup);
-                  $('#DownloadBackup').modal('toggle');
-                }, 2000);
-              }
-              $scope.uploadBackup = function () {
-                  $scope.myFile = document.getElementById('file-backup').files;
-                  $scope.uploading = true;
-                  var i;
-                  var uploadUrl = $scope.baseurl + "ImgUploader/uploadBackup";
+                  $route.reload();
+                }, 3000);
+              });
+        }
+            //funcion que llama al backend para hacer un backup total
+            $scope.totalBackup=function(){
+              var promise = $http.get('BackupController');
+              promise.then(function(results) {
+                $scope.backup=results.data.data;
+                $('#DownloadBackup').modal('toggle');
+              });
 
-                  var fd = new FormData();
-                  fd.append('vocabulary', angular.toJson(false));
-                  for (i = 0; i < $scope.myFile.length; i++) {
-                      fd.append('file' + i, $scope.myFile[i]);
-                  }
-                  $http.post(uploadUrl, fd, {
-                      headers: {'Content-Type': undefined}
-                  })
-                          .success(function (response) {
-                              $scope.uploading = false;
-                              console.log(response);
-                              $scope.showRecoverBackupModal();
-                              if (response.error) {
-                                  console.log(response.errorText);
-                              }
-                          });
-              };
-              $scope.showparcialBackup=function(images,voc,folder,cfg,panelb){
-                if(images===true&&voc===true&&folder===true&&cfg===true&&panelb===true){
-                  $scope.rectotalBackup();
-                }else{
-                  $scope.content.title="Recuperar Copia de seguridad";
-                  $scope.content.all="Vas a recuperar datos de una copia de seguridad. ¿Quieres que se sobreescriban o que se combinen con los datos existentes?"
-                  $scope.content.overwrite="sobreescribir"
-                  $scope.content.write="no sobreescribir"
-                  $scope.imagesr=images
-                  $scope.voc=voc
-                  $scope.folder=folder
-                  $scope.cfg=cfg
-                  $scope.panelb=panelb
-                  $('#recmbackup').modal('toggle');
+            }
+            $scope.DownloadBackup=function(backup){
+              if (navigator.appVersion.indexOf("Win")!=-1)
+               DownloadUrl="DownloadBackupWin/backup/"+backup;
+               else {
+               DownloadUrl="DownloadBackup/backup/"+backup;
+               }
+              setTimeout(function(){
+                window.location.href=DownloadUrl;
+                $('#DownloadBackup').modal('toggle');
+              }, 2000);
+            }
+            $scope.uploadBackup = function () {
+                $scope.myFile = document.getElementById('file-backup').files;
+                $scope.uploading = true;
+                var i;var uploadUrl;
+                if (navigator.appVersion.indexOf("Win")!=-1){
+                uploadUrl=$scope.baseurl + "ImgUploader/uploadBackupWin";
+              }else {
+                   uploadUrl= $scope.baseurl + "ImgUploader/uploadBackup";
+
+                 }
+                 console.log(uploadUrl);
+                var fd = new FormData();
+                fd.append('vocabulary', angular.toJson(false));
+                for (i = 0; i < $scope.myFile.length; i++) {
+                    fd.append('file' + i, $scope.myFile[i]);
                 }
-
+                $http.post(uploadUrl, fd, {
+                    headers: {'Content-Type': undefined}
+                })
+                        .success(function (response) {
+                            $scope.uploading = false;
+                            console.log(response);
+                            $scope.showRecoverBackupModal();
+                            if (response.error) {
+                                console.log(response.errorText);
+                            }
+                        });
+            };
+            $scope.showparcialBackup=function(images,voc,folder,cfg,panelb){
+              if(images===true&&voc===true&&folder===true&&cfg===true&&panelb===true){
+                $scope.rectotalBackup();
+              }else{
+                $scope.imagesr=images
+                $scope.voc=voc
+                $scope.folder=folder
+                $scope.cfg=cfg
+                $scope.panelb=panelb
+                $('#recmbackup').modal('toggle');
               }
+
+            }
+            $scope.ShowAddGroupsInfo=function(){
+              $('#AddGroupsInfo').modal('toggle');
+            }
+            $scope.getArasaacPictos=function(pictoaras,bw){
+              var postdata = {picto: pictoaras,ByN:bw};
+              $http.post("PanelGroup/getArasaacPictos",postdata).success(function (results) {
+                var pics=results.data;
+                var picasarashow=[];
+                    for(var i=0;i<4;i++){
+                      if(pics[i]!=null){
+                        picasarashow.push(true);
+                      }else{
+                        picasarashow.push(false);
+                      }
+                    }
+                    $scope.imgData=picasarashow;
+                    $scope.picsara=pics;
+                    console.log(pics);
+                  });
+            }
               $scope.AddBoards=function(){
                 $http.get("Board/AddBoards").success(function (results) {
                         console.log(results.data);

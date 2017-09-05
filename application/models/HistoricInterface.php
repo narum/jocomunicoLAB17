@@ -5,6 +5,7 @@ class HistoricInterface extends CI_Model {
     function __construct() {
         // Call the Model constructor
         parent::__construct();
+        $this->load->model('');
     }
 
     function getSFolders($idusu) {
@@ -20,21 +21,28 @@ class HistoricInterface extends CI_Model {
         return $output;
     }
     function getHistoric($idusu, $day){
-        $date = date('Y-m-d', strtotime("-".$day." day"));
+
+        if($this->getHistorialState() == '0')
+            return null;
+        else{
+            $date = date('Y-m-d', strtotime("-".$day." day"));
         
-        $this->db->where('sentenceDate >', $date);
-        $this->db->where('ID_SHUser', $idusu);
-        $this->db->where('generatorString IS NOT NULL', null, false);
-        $this->db->order_by('sentenceDate', 'desc');
-        $this->db->order_by('ID_SHistoric', 'desc');
-        $query = $this->db->get('S_Historic');
+            $this->db->where('sentenceDate >', $date);
+            $this->db->where('isDeleted', 0);
+            $this->db->where('ID_SHUser', $idusu);
+            $this->db->where('generatorString IS NOT NULL', null, false);
+            $this->db->order_by('sentenceDate', 'desc');
+            $this->db->order_by('ID_SHistoric', 'desc');
+            $query = $this->db->get('S_Historic');
 
-        if ($query->num_rows() > 0) {
-            $output = $query->result();
-        } else
-            $output = null;
+            if ($query->num_rows() > 0) {
+                $output = $query->result();
+            } else
+                $output = null;
 
-        return $output;
+            return $output;
+        }
+
     }
     
     function getPictosHistoric($IDHistoric){
@@ -97,6 +105,45 @@ class HistoricInterface extends CI_Model {
             $output = null;
 
         return $output;
+    }
+
+    //Get if Historial is enable or disable
+    function getHistorialState(){
+        return $this->db->query('SELECT cfgHistorialState
+                                FROM User
+                                WHERE ID_User = ?',
+                                array($this->session->userdata('idusu'))
+                )->row()->cfgHistorialState;
+    }
+
+    //Execute update [cfgHistorialState] and new new latest date [cfgLatestHistrorialActivated]
+    function changeHistorialState($newState) {
+        //Change new date (system date)
+        $this->db->query('UPDATE User
+                          SET cfgLatestHistorialActivated = ?
+                          WHERE ID_User = ?',
+                          //Params
+                          array( date('Y-m-d H:i:s')
+                                ,$this->session->userdata('idusu'))
+                        );
+        //Change enable or disable
+        $this->db->query('UPDATE User
+                          SET cfgHistorialState = ?
+                          WHERE ID_User = ?',
+                          //Params
+                          array( intval($newState)
+                                ,$this->session->userdata('idusu'))
+                        );
+    }
+
+    function deleteHistoric(){
+        //Delete Historial
+        $this->db->query(
+            'UPDATE S_Historic
+            SET isDeleted = 1
+            WHERE ID_SHUser = ?',
+            array($this->session->userdata('idusu'))
+        );
     }
 
 }

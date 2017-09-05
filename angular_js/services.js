@@ -5,7 +5,7 @@ angular.module('services', [])
 	return {
 
 		// Rutas de las API para las peticiones a codeigniter
-		
+
 		"nom": $resource(baseUri + "names"),
 		"histo": $resource(baseUri + "histo"),
 		"login": $resource(baseUri + "login"),
@@ -17,7 +17,7 @@ angular.module('services', [])
 .factory('AuthService', function($rootScope, $http, $location){
 
 	// Funciones de comprobación del login
-	
+
 	return {
 		"init": function() {
                         //DropDown Menu Bar

@@ -9,6 +9,33 @@ class PanelInterface extends CI_Model {
         $this->load->library('Myword');
     }
 
+    function getArasaacPictos($picto,$bw){
+        $ID_Language=$this->session->uinterfacelangauge;
+        switch($ID_Language){
+            case 1:
+            $lan="CA";
+            break;
+            case 2:
+            $lan="ES";
+            break;
+        }
+        $pictos=array();
+        if($bw){
+        $service_url = 'http://www.arasaac.org/api/index.php?callback=json&language='.$lan.'&word='.$picto.'&catalog=bwpictos&nresults=6&tipo_palabra=2&thumbnails=150&TXTlocate=1&KEY=t6tVmVhM8jKCBECmiIV4';
+        }else{
+        $service_url = 'http://www.arasaac.org/api/index.php?callback=json&language='.$lan.'&word='.$picto.'&catalog=colorpictos&nresults=6&tipo_palabra=2&thumbnails=150&TXTlocate=1&KEY=t6tVmVhM8jKCBECmiIV4';
+        }
+        $curl = curl_init($service_url);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        $curl_response = curl_exec($curl);
+        curl_close($curl);
+        $decoded = json_decode($curl_response);
+        for($i=0;$i<count($decoded->symbols);$i++){
+        array_push($pictos,$decoded->symbols[$i]->imagePNGURL);
+        }
+        return $pictos;
+    }
+
     /*
      * Get all group panels owned by a user (idusu)
      */

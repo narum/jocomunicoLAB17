@@ -13,6 +13,7 @@
 <div ng-include="'/angular_templates/infoModal.html'"></div>
 <div ng-include="'/angular_templates/logoutModal.html'"></div>
 <div ng-include="'/angular_templates/DownloadBackup.html'"></div>
+<div ng-include="'/angular_templates/AddGroupsInfo.html'"></div>
 
 
 <style>.psize{font-size: 40px;} .colordiv{background-image: url('{{baseurl}}/img/srcWeb/Patterns1-12.png')}html, body, .container-table{height: 100%;height: 100vh;background: url('{{img.fons}}') no-repeat center center fixed;-webkit-background-size: cover;-moz-background-size: cover;-o-background-size: cover;background-size: cover;}
@@ -25,6 +26,7 @@
 <div class="row folderContainer" ng-if="viewActived">
 
     <div class="row">
+      <div ng-init="isNotChrome()"></div>
         <!--Panel Groups box-->
         <div class="col-xs-6 rightPadding">
             <div class="panelGroupContainer" id="boxUserConfig" style="background-image: url({{img.Patterns1_08}})">
@@ -38,8 +40,8 @@
                     <div ng-if="finished" class="col-xs-offset-1 scrollMenuPanels" ng-style="!isScroll ? {'width': '98%'} : {'width': '84%'}" ng-scrollbar rebuild-on-resize rebuild-on="rebuild:me" is-bar-shown="isScroll">
                         <div class="scrollWidth">
                             <div class="col-xs-12 buttonAddFolder" ng-click="newPanellGroup()">+</div>
-                            <div class="col-xs-12 addGroups" ng-click="AddBoards()">
-                            Añadir Grupos
+                            <div class="col-xs-12 addGroups" ng-click="ShowAddGroupsInfo()">
+                            {{content.addgroups}}
                             </div>
                             <div class="col-xs-12 panelContainer" ng-repeat="panel in panels" on-Finish-Loop="scrollbarPanel">
                                 <div class="col-xs-1"></div>
@@ -68,6 +70,7 @@
                 </div>
             </div>
         </div>
+
         <!--historical box-->
         <div class="col-xs-6 leftPadding">
             <div class="historicContainer" id="boxUserConfig" style="background-image: url({{img.Patterns4}})">
@@ -75,14 +78,20 @@
                     <div class="col-xs-offset-1 col-xs-1 infoIconBox">
                         <input type="image" class="img-icon" ng-src="/img/icons/info-blanc.png" ng-click="toggleInfoModal(content.modalInfoTitle, content.historyInfo);">
                     </div>
-                    <div class="col-xs-9 headerTitle-panelgroup">{{content.historyTitle}}</div>
+                    <div class="col-xs-7 headerTitle-panelgroup">
+                        {{content.historyTitle}}
+                    </div>
+                    <div class="col-xs-2">
+                        <input type="checkbox" id="switchHistory" class="switch hidden" ng-model="HistoricState"/>
+                        <label ng-click="enable_disableHistoric()">&nbsp;</label>
+                    </div>
                 </div>
                 <div class="row">
                     <div class="col-xs-offset-1 scrollMenuPanels" ng-style="!isScrollH ? {'width': '98%'} : {'width': '84%'}" ng-scrollbar rebuild-on-resize rebuild-on="rebuild:meH" is-bar-shown="isScrollH">
                         <div class="scrollWidth">
                             <div class="row buttonAddFolder" ng-click="createHistoricFolder()">+</div>
-                            <div class="row histFolder" ng-repeat="folder in historicFolders" on-Finish-Loop="scrollbarHistoric"><div class="row"><div class="col-xs-2 histTabFolder" style="background-color: #{{folder.folderColor}}"></div></div>
-                                <div class="row"><div class="col-xs-12 histContentFolder" style="background-color: #{{folder.folderColor}}">
+                            <div class="row histFolder" ng-repeat="folder in historicFolders" on-Finish-Loop="scrollbarHistoric"><div class="row" ng-if="folder.ID_Folder > 0 || HistoricState"><div class="col-xs-2 histTabFolder" style="background-color: #{{folder.folderColor}}"></div></div>
+                                <div class="row" ng-if="folder.ID_Folder > 0 || HistoricState"><div class="col-xs-12 histContentFolder" style="background-color: #{{folder.folderColor}}">
                                         <div class="row">
                                             <div class="col-xs-3"><img class="img-rounded imgHistFolder" ng-src="{{folder.imgSFolder}}"/></div>
                                             <div class="col-xs-6 folderTitle">{{folder.folderName}}</div>
@@ -99,6 +108,31 @@
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+        <!-- DISABLE HISTORIAL Modal -->
+        <div class="modal fade" id="HistoricModal" role="dialog" style="z-index: 1000000;}">
+            <div class="modal-dialog modal-lg">
+                <div class="row marginModalTopOwl"><img class="img-owl pull-right" src="img/srcWeb/Mus/lowSabiFlecha.png"/></div>
+                <div class="row" id="boxUserConfig" style="background-image: url({{img.Patterns1_08}})">
+                    <div id="header" class="row">
+                        <div class="col-xs-12 headerTitle-infomodal" style="{{style_changes_title}}">{{content.modalInfoTitle}}</div>
+                    </div>
+                    <div class="row backgroundUserConfigBox">
+                        <div class="row fonsAlert-info text-info-modal" >
+                            <div class="col-xs-12 text-left"><p>{{content.historialInfoDisable}}</p></div>
+                            <div class="col-xs-2 verticalMarginTop">
+                              <button type="reset" class="btn-gray" ng-click="changeHistorialState()">{{content.confirm}}</button>
+                            </div>
+                            <div class="col-xs-8"></div>
+                            <div class="col-xs-2 verticalMarginTop">
+                              <button data-dismiss="modal" type="reset" class="btn-gray">{{content.cancel}}</button>
+                            </div>
+                        </div>
+                    </div>
+
+                <div class="row verticalMarginTop"></div>
                 </div>
             </div>
         </div>
@@ -155,22 +189,22 @@
                     <div class="col-xs-offset-1 col-xs-1 infoIconBox">
                         <input type="image" class="img-icon" ng-src="/img/icons/info-blanc.png" ng-click="toggleInfoModal(content.modalInfoTitle, backupinfo);">
                     </div>
-                    <div class="col-xs-9 headerTitle-panelgroup">Copia de seguridad</div>
+                    <div class="col-xs-9 headerTitle-panelgroup">{{content.Mtitle}}</div>
                 </div>
             </div>
             <div class="row">
-                <div class="col-xs-offset-1 col-xs-5">
+                <div class="col-xs-6">
                     <div class="paddingButtonAddWord">
-                        <div class=" imgRounded FolderButtonAddWord" ng-click="totalBackup()">
-                            Hacer copia de seguridad
+                        <div class="imgRounded FolderButtonAddWord" ng-click="totalBackup()">
+                          {{content.Mtitle}}
                         </div>
                     </div>
                 </div>
-                <div class="col-xs-5">
+                <div class="col-xs-6">
                     <div class="paddingButtonAddWord">
                       <label for="file-backup" class="fullheight fullwidth">
                         <div class="imgRounded FolderButtonAddWord">
-                            Recuperar copia de seguridad
+                            {{content.Rtitle}}
                         </div>
                         <input class='filebtn' type="file" multiple id="file-backup" onchange="angular.element(this).scope().uploadBackup()"/>
                       </label>

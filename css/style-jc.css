@@ -5,6 +5,7 @@
     -ms-content-zooming: none;
     touch-action: none;
 }
+
 #main{
     height:100vh;
     -webkit-user-select: none;
@@ -320,6 +321,7 @@ html *
 }
 
 
+
 .backgroundCell{
     padding: 2px;
     width: 100%;
@@ -372,7 +374,7 @@ html *
     position: relative;
     padding-left: 4px;
     cursor: default;
-    text-transform: uppercase;
+    text-transform: uppercase
 }
 
 .textCell2{
@@ -479,7 +481,7 @@ html *
     border-radius: 7px;
 }
 
-/* Tarea 2: Nuevo código para cambiar el background del boton de copiar frase en el portapapeles*/
+/* Nuevo código para cambiar el background del boton de copiar frase en el portapapeles*/
 .backgroundCopyClipboard{
   width: 94%;
   left: 6%;
@@ -490,7 +492,7 @@ html *
   border-radius: 7px;
 }
 
-/*Tarea 2: Nuevo código para cambiar el background del boton de copiar frase y imágenes en el portapapeles */
+/*Nuevo código para cambiar el background del boton de copiar frase y imágenes en el portapapeles */
 
 .backgroundCopyTxtImgClipboard{
   width: 94%;
@@ -498,18 +500,6 @@ html *
   height: 100%;
   position: absolute;
   background: url('/img/srcWeb/Menu/copiar_port_fons.png');
-  background-size: 100% 100%;
-  border-radius: 7px;
-}
-
-/*Tarea 6: Nuevo código para cambiar el background del boton de eliminar pictograma seleccionado */
-
-.backgroundDeleteSelectedPicto{
-  width: 94%;
-  left:6%;
-  height: 100%;
-  position:absolute;
-  background: url('img/srcWeb/Menu/borrar_ultim_fons.png');
   background-size: 100% 100%;
   border-radius: 7px;
 }
@@ -578,7 +568,6 @@ html *
     border: none;
     padding-left: 5px;
 }
-
 
 .txtButtonConfigPass{
   clear: both;

@@ -546,5 +546,3 @@ class Unzip {
 		return FALSE;
 	}
 }
-/* End of file Unzip.php */
-/* Location: ./system/libraries/Unzip.php */

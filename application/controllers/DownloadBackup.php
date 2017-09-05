@@ -1,15 +1,20 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
 class DownloadBackup extends CI_Controller {
+
   public function __construct(){
       parent::__construct();
       $this->load->library('zip');
   }
   function unzipBackup(){
     $this->load->library('unzip');
+
   // Optional: Only take out these files, anything else is ignored
 $this->unzip->allow(array('css', 'js', 'png', 'gif', 'jpeg', 'jpg', 'tpl', 'html', 'swf'));
+
 // Give it one parameter and it will extract to the same folder
 $this->unzip->extract('uploads/my_archive.zip');
+
 // or specify a destination directory
 $this->unzip->extract('uploads/my_archive.zip', '/path/to/directory/');
   }
@@ -56,6 +61,7 @@ $this->unzip->extract('uploads/my_archive.zip', '/path/to/directory/');
     $S_Sentence = file_get_contents($Fname."/S_Sentence.json");
     $SuperUser = file_get_contents($Fname."/SuperUser.json");
     $User = file_get_contents($Fname."/User.json");
+
     $backup=array(
     $Adjtable,
     $Adjclass,
@@ -75,6 +81,7 @@ $this->unzip->extract('uploads/my_archive.zip', '/path/to/directory/');
     $S_Sentence,
     $SuperUser,
     $User);
+
     $Filenames=array(
     $Adj_name,
     $Adjclass_name,
@@ -94,68 +101,22 @@ $this->unzip->extract('uploads/my_archive.zip', '/path/to/directory/');
     'S_Sentence.json',
     'SuperUser.json',
     'User.json');
+
     for($i=0;$i<count($backup);$i++){
       $this->zip->add_data($Filenames[$i],$backup[$i]);
     }
+
     $this->zip->add_dir('Images');
     $images=json_decode($Images);
     $count=count($images->ID_Image);
     $path=$images->imgPath;
+
     for($i=0;$i<$count;$i++){
   $this->zip->add_data('Images/' . $path[$i], file_get_contents($path[$i]));
   }
     $this->zip->archive('/path/to/directory/my_backup.zip');
-    if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-      $this->zip->download($name.'.zip');
-    } else {
-      $this->zip->download($Fname.'.zip');
-    }
+
   // Download the file to your desktop. Name it "my_backup.zip"
-
+  $this->zip->download($Fname.'.zip');
   }
-}
-public function uploadBackup_post() {
-  $errorText = array();
-  $ID_User=$this->session->idusu;
-  $target_dir="/xampp/htdocs/Temp/";
-  $error = false;
-  for ($i = 0; $i < count($_FILES); $i++) {
-      $md5Name = $this->Rename_Img(basename($_FILES['file' . $i]['name']));
-      if (!($_FILES['file' . $i]['type'] == "application/octet-stream")) {
-          $errorProv = ["errorImg1", $_FILES['file' . $i]['type']];
-          array_push($errorText, $errorProv);
-          $error = true;
-          continue;
-      }
-      $handle = fopen($target_dir . $md5Name, "r");
-      if (is_resource($handle)) {
-          fclose($handle);
-          //MODIF: lanzar error
-          $errorProv = ["errorImg2", $_FILES['file' . $i]['name']];
-          array_push($errorText, $errorProv);
-          $error = true;
-          continue;
-      }
-      //MODIF: poner tamaño a 100 kb y tamaño 150 minimo
-  //    if ($_FILES['file' . $i]['size'] > 10000) {
-          $success = move_uploaded_file($_FILES['file' . $i]['tmp_name'],$target_dir . basename($_FILES['file' . $i]['name']));
-    //  }
-      if (!$success) {
-          $errorProv = ["errorImadsvg2", $_FILES['file' . $i]['name']];
-          $max_upload = ini_get('memory_limit');
-          array_push($errorText, $max_upload);
-          $error = true;
-          continue;
-      }
-         $dir12=substr(substr($_FILES['file' . $i]['name'],0,-4),9)."-".$ID_User;
-         mkdir($target_dir.$dir12);
-         $this->unzip->extract('/xampp/htdocs/Temp/'.basename($_FILES['file' . $i]['name']),"/xampp/htdocs/Temp/$dir12");
-  }
-  $response = [
-      'url' => $dir12,
-      'errorText' => $errorText,
-      'error' => $error
-  ];
-
-  $this->response($response, REST_Controller::HTTP_OK);
 }

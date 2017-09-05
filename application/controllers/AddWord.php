@@ -13,6 +13,7 @@ class AddWord extends REST_Controller {
         $this->load->library('session');
         $this->load->model('panelInterface');
         $this->load->model('BoardInterface');
+        $this->load->model('main_model');
         $this->load->model('AddWordInterface');
         $this->load->model('InsertVocabulari');
     }
@@ -111,11 +112,16 @@ class AddWord extends REST_Controller {
         $this->response($response, REST_Controller::HTTP_OK);
     }
 
-    public function InsertWordData_post() {
+     public function InsertWordData_post(){
         $postdata = file_get_contents("php://input");
         $request = json_decode($postdata);
         $objAdd = $request->objAdd;
-        $this->InsertVocabulari->insertPicto($objAdd);
+        $url=$objAdd->imgPicto;
+        list($status) = get_headers($url);
+        if (strpos($status, '404') === FALSE) {
+          $objAdd->imgPicto=substr($this->main_model->downloadImageArasaac($url),11);
+        }
+          $this->InsertVocabulari->insertPicto($objAdd);
     }
     
     public function getAllVerbs_post(){

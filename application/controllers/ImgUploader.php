@@ -1,14 +1,19 @@
 <?php
+
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
+
 require APPPATH . '/libraries/REST_Controller.php';
+
 class ImgUploader extends REST_Controller {
+
     public function __construct() {
         parent::__construct();
-        $this->load->library('unzip');
         $this->load->model('ImgUploader_model');
+        $this->load->library('unzip');
 
     }
+
     //MODIF: mirar que hacer aqui...
     public function index_get() {
         // CHECK COOKIES
@@ -23,14 +28,15 @@ class ImgUploader extends REST_Controller {
             }
         }
     }
-    public function uploadBackup_post() {
+    public function uploadBackupWin_post(){
       $errorText = array();
       $ID_User=$this->session->idusu;
       $target_dir="/xampp/htdocs/Temp/";
       $error = false;
       for ($i = 0; $i < count($_FILES); $i++) {
           $md5Name = $this->Rename_Img(basename($_FILES['file' . $i]['name']));
-          if (!($_FILES['file' . $i]['type'] == 'application/octet-stream')) {
+          if (/*!($_FILES['file' . $i]['type'] == 'application/octet-stream') ||
+          !($_FILES['file' . $i]['type'] == 'application/zip')*/false) {
               $errorProv = ["errorImg1", $_FILES['file' . $i]['name']];
               array_push($errorText,$_FILES['file' . $i]['type']);
               $error = true;
@@ -64,8 +70,57 @@ class ImgUploader extends REST_Controller {
           'error' => $error
       ];
       $this->response($response, REST_Controller::HTTP_OK);
+    }
 
-  }
+    public function uploadBackup_post() {
+        $errorText = array();
+        $ID_User=$this->session->idusu;
+        $target_dir="./Temp/";
+        $error = false;
+        for ($i = 0; $i < count($_FILES); $i++) {
+            $md5Name = $this->Rename_Img(basename($_FILES['file' . $i]['name']));
+            if (!($_FILES['file' . $i]['type'] == "application/zip"
+            || $_FILES['file' . $i]['type'] == "application/octet-stream")) {
+                $errorProv = ["errorImg1", $_FILES['file' . $i]['name']];
+                array_push($errorText, $errorProv);
+                $error = true;
+                continue;
+            }
+            $handle = fopen($target_dir . $md5Name, "r");
+            if (is_resource($handle)) {
+                fclose($handle);
+                //MODIF: lanzar error
+                $errorProv = ["errorImg2", $_FILES['file' . $i]['name']];
+                array_push($errorText, $errorProv);
+                $error = true;
+                continue;
+            }
+            //MODIF: poner tamaño a 100 kb y tamaño 150 minimo
+        //    if ($_FILES['file' . $i]['size'] > 10000) {
+                $success = move_uploaded_file($_FILES['file' . $i]['tmp_name'],
+                $target_dir . basename($_FILES['file' . $i]['name']));
+          //  }
+            if (!$success) {
+                $errorProv = ["errorImadsvg2", $_FILES['file' . $i]['name']];
+                $max_upload = ini_get('memory_limit');
+                array_push($errorText, $max_upload);
+                $error = true;
+                continue;
+            }
+            $dir12=substr(substr($_FILES['file' . $i]['name'],0,-4),9)."-".$ID_User;
+                mkdir("./Temp/$dir12");
+               $this->unzip->extract('./Temp/'.basename($_FILES['file' . $i]['name']),
+                "./Temp/$dir12");
+        }
+        $response = [
+            'url' => $dir12,
+            'errorText' => $errorText,
+            'error' => $error
+        ];
+
+        $this->response($response, REST_Controller::HTTP_OK);
+    }
+
     public function upload_post() {
         //"vocabulary" is a string.....
         if (filter_input(INPUT_POST, 'vocabulary') == "true") {
@@ -100,7 +155,7 @@ class ImgUploader extends REST_Controller {
             }
             if ($success) {
                 $idusu = $this->session->userdata('idsu');
-                $this->ImgUploader_model->insertImg($idusu, basename($_FILES['file' . $i]['name']), $md5Name);
+                $this->ImgUploader_model->insertImg($idusu, basename($_FILES['file' . $i]['name']), $md5Name, $target_dir);
             } else {
                 $errorProv = ["errorImg2", $_FILES['file' . $i]['name']];
                 array_push($errorText, $errorProv);
@@ -108,31 +163,40 @@ class ImgUploader extends REST_Controller {
                 continue;
             }
         }
+
         $response = [
             'url' => $target_dir . $md5Name,
             'errorText' => $errorText,
             'error' => $error
         ];
+
         $this->response($response, REST_Controller::HTTP_OK);
     }
+
     function Rename_Img($string) {
+
         $idusu = $this->session->userdata('idsu');
         $fecha = microtime();
         //MODIF: Pasar superuser no user
         $stringlen = strlen($string);
         $pointpos = strrpos($string, '.');
+
         $ext = substr($string, $pointpos, $stringlen);
         $name = "idu" . $idusu . "-" . $string . "-" . $fecha;
         $name = md5($name . $idusu);
         $md5Name = $name . $ext;
         return $md5Name;
     }
+
     function Img_Resize($src_path, $target_dir, $dst_path) {
         $success = true;
+
         $x = getimagesize($src_path);
+
         $width = $x['0'];
         $height = $x['1'];
         $type = $x['mime'];
+
         $rs_width = $width / 2; //resize to half of the original width.
         $rs_height = $height / 2; //resize to half of the original height.
         // The grater value between height and width have to be, at least, 150
@@ -147,6 +211,7 @@ class ImgUploader extends REST_Controller {
             $rs_height = $rs_height * $ratio;
             $rs_width = $rs_width * $ratio;
         }
+
         switch ($type) {
             case "image/gif":
                 $img = imagecreatefromgif($src_path);
@@ -167,19 +232,23 @@ class ImgUploader extends REST_Controller {
                 $background = imagecolorallocate($img_base, 0, 0, 0);
                 // removing the black from the placeholder
                 imagecolortransparent($img_base, $background);
+
                 // turning off alpha blending (to ensure alpha channel information
                 // is preserved, rather than removed (blending with the rest of the
                 // image in the form of black))
                 imagealphablending($img_base, false);
+
                 // turning on alpha channel information saving (to ensure the full range
                 // of transparency is preserved)
                 imagesavealpha($img_base, true);
+
                 break;
             case "image/gif":
                 // integer representation of the color black (rgb: 0,0,0)
                 $background = imagecolorallocate($img_base, 0, 0, 0);
                 // removing the black from the placeholder
                 imagecolortransparent($img_base, $background);
+
                 break;
         }
         //Copy the img
@@ -211,30 +280,20 @@ class ImgUploader extends REST_Controller {
         }
         return $success;
     }
+
     function getImagesUploads_post() {
         $postdata = file_get_contents("php://input");
         $request = json_decode($postdata);
         $name = $request->name;
+
         $idusu = $this->session->userdata('idsu');
         $data = $this->ImgUploader_model->getImages($idusu, $name);
+
         $response = [
             'data' => $data
         ];
+
         $this->response($response, REST_Controller::HTTP_OK);
     }
-    function getImagesArasaac_post() {
-        $postdata = file_get_contents("php://input");
-        $request = json_decode($postdata);
-        $name = $request->name;
-        $idusu = $this->session->userdata('idusu');
-        $languageInt = $this->session->userdata('uinterfacelangauge');
-        $data = $this->ImgUploader_model->getImagesArasaac($idusu, $name, $languageInt);
-        for ($i = 0; $i < count($data); $i++) {
-            $data[$i]["imgPath"] = "img/pictos/" . $data[$i]["imgPath"];
-        }
-        $response = [
-            'data' => $data
-        ];
-        $this->response($response, REST_Controller::HTTP_OK);
-    }
+
 }

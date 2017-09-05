@@ -2,8 +2,6 @@
      includes others view like sentece, edit (board/cell) panel, etc etc
 -->
 <link rel="stylesheet" href="css/historic.css"/>
-<!--<link rel="stylesheet" href="css/style-jc.css"/>-->
-
 <audio id="utterance" src="{{sound}}" type="audio/mp3"></audio>
 <style>html, body, .container-table{height: 100%;height: 100vh;background: url('{{img.fons}}') no-repeat center center fixed;
     -webkit-background-size: cover;-moz-background-size: cover;-o-background-size: cover;background-size: cover;}
@@ -42,13 +40,24 @@
         }
     }
 </script>
+
+<div ng-if="showDeleteHistoricmodal" class="scoreContainer">
+        <div class="scoreContainerLeft">
+            <img src="/img/srcWeb/feliz_1.png" class="goodPhrase" ng-click="!inScan ? enable_disableHistorial(1) : null" ng-mouseenter="cfgTimeOverOnOff?TimeoutOverClick(3,'Good'):null" ng-mouseleave="cfgTimeOverOnOff?CancelTimeoutOverClick():null" ng-class="{'scaneo': isScanning == 'goodphrase'}" ng-style="isScanning == 'goodPhrase' && {'border':'7px solid #{{cfgScanColor}}'}"/>
+        </div>
+
+        <div class="scoreContainerRight">
+            <img src="/img/srcWeb/triste_1.png" class="goodPhrase" ng-click="!inScan ? enable_disableHistorial(0) : null" ng-mouseenter="cfgTimeOverOnOff?TimeoutOverClick(3,'Bad'):null" ng-mouseleave="cfgTimeOverOnOff?CancelTimeoutOverClick():null" ng-class="{'scaneo': isScanning == 'badphrase'}" ng-style=" isScanning == 'badPhrase' && {'border':'7px solid #{{cfgScanColor}}'}"/>
+        </div>
+</div>
+
 <div ng-include="'/angular_templates/dropdownMenuBar.html'"></div>
 <div ng-include="'/angular_templates/logoutModal.html'"></div>
-<div ng-show="cfgMenuBlock" ng-include="'/angular_templates/confirmPasswordHistoricView.html'"></div>
+
+<div ng-show="cfgMenuBlock == 1" ng-include="'/angular_templates/confirmPasswordHistoricView.html'"></div>
 
     <!--menu superior dropdown-->
     <div id="main" style="background-image: url('/img/srcWeb/patterns/fons.png');background-size:100% 100%" ng-click="scanLeftClick()" ng-right-click="scanRightClick()" onmousedown="audiohallelujah()">
-
     <div class="row historicView">
         <div class="col-xs-12 containerHistoric">
             <div ng-if="isScanning == '1row' && !isScanningCancel" class="scaneo" ng-style="{'border':'7px solid #{{cfgScanColor}}'}"></div>
@@ -64,7 +73,13 @@
                     <img class="imgResponsive icon " ng-src="{{baseurl}}img/srcWeb/Menu/inici_icon.png"/>
                 </div>
             </div>
-            <div class="col-xs-10 holderButtons" style="background-image: url('/img/srcWeb/patterns/pattern{{cfgBgColorMenu}}.png')">
+            <div class="col-xs-1 fullheight">
+                <div ng-if="isScanning == 'historial' && !isScanningCancel" class="scaneo" ng-style="{'border':'7px solid #{{cfgScanColor}}'}"></div>
+                <div ng-class="isActivated ? 'backgroundReturn' : 'backgroundDisabled'" ng-click="!inScan ? showModalHistorial() : null">
+                    <img class="imgResponsive icon " ng-src="{{baseurl}}img/srcWeb/home/historial.png"/>
+                </div>
+            </div>
+            <div class="col-xs-9 holderButtons" style="background-image: url('/img/srcWeb/patterns/pattern{{cfgBgColorMenu}}.png')">
                 <div class="col-xs-4 buttonPadding" ng-click="!inScan ? getTodayHistoric() : null">
                     <div ng-if="isScanning == 'today' && !isScanningCancel" class="scaneoButton" ng-style="{'border':'7px solid #{{cfgScanColor}}'}"></div>
                     <div ng-class="timeHis == 'today' ? 'timeButtonAcitve' : 'timeButton'">
@@ -177,10 +192,10 @@
                                 <img ng-if="h[0].sPreRecImg3 != null && h[0].sPreRecImg3 != ''" ng-src="{{baseurl}}{{h[0].sPreRecImg3}}" class="imgResponsiveHistoricPreRec"/>
                             </div>
                             <!--Display the phrase-->
-                            <div ng-if="h != null && h[0].isPreRec != 1" class="col-xs-12 phraseText text-uppercase">
+                            <div ng-if="h != null && h[0].isPreRec != 1" class="col-xs-12 phraseText text-uppercase truncate-text">
                                 {{h[0].generatorString}}
                             </div>
-                            <div ng-if="h != null && h[0].isPreRec == 1"class="col-xs-12 phraseText text-uppercase">
+                            <div ng-if="h != null && h[0].isPreRec == 1"class="col-xs-12 phraseText text-uppercase truncate-text">
                                 {{h[0].sPreRecText}}
                             </div>
                         </div>

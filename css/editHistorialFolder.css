@@ -7,6 +7,9 @@
     padding-left: 5vh !important;
     padding-right: 5vh !important;
 }
+.lupa{
+  margin-top: 10%;
+}
 .historicInputText{
     height: 5vh;
     width: 100%;
@@ -62,7 +65,6 @@ input.imageRadio[type=radio]:checked + label{
 input.imageRadio[type=radio]:empty + label:hover{
     box-shadow: 0 0 10px #404040;
 }
-
 .maginColorSelectText{
     margin-top: 1vh;
 }
@@ -77,3 +79,4 @@ input.imageRadio[type=radio]:empty + label:hover{
     border: none;
     box-shadow: 0 0 10px #404040;
 }
+

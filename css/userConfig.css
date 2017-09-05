@@ -366,47 +366,17 @@ input[type="text"] {
     width: auto;
     cursor: pointer;
 }
-
-
-
 input.imageRadio[type=radio]:empty + label{
     cursor: pointer;
-    opacity: 0.5;
     box-shadow: 0 1vh 1vh rgba(0, 0, 0, 0.7);
 }
 input.imageRadio[type=radio]:checked + label{
     border: 0.5vh solid #97dee4;
-    opacity: 1;
     box-shadow: 0 1vh 1vh #6b999d;
 }
 input.imageRadio[type=radio]:empty + label:hover{
     box-shadow: 0 0 10px #404040;
 }
-
-
-/* #JORGE: Añadir código CSS para boton Solo Texto de userConfig */
-
-.img-configSwitch2{
-    height: 4.8vw;
-    width: auto;
-    cursor: pointer;
-}
-
-input.imageSwitch2[type=checkbox]:empty + label{
-    cursor: pointer;
-    opacity: 0.5;
-    box-shadow: 0 0 10px #404040;
-}
-input.imageSwitch2[type=checkbox]:checked + label{
-    opacity: 1;
-    box-shadow: 0 1vh 1vh rgba(0, 0, 0, 0.7);
-}
-input.imageSwitch2[type=checkbox]:empty + label:hover{
-    box-shadow: 0 0 10px #404040;
-}
-
-
-/* Fin de código*/
 
 #colorSelect{
     color:white;
@@ -434,7 +404,6 @@ input.imageSwitch2[type=checkbox]:empty + label:hover{
   box-shadow: 0 1vh 1vh rgba(0, 0, 0, 0.7);
   cursor: default;
 }
-
 
 .img-configSwitch{
     height: 4.2vw;
@@ -566,20 +535,10 @@ input[type=number] {
 #scanOrder .img-configRadio{
     height: 8.1vw;
 }
-
-#interficie .img-configSwitch2{
-    height: 6vw;
-}
-#scanOrder .img-configSwitch2{
-    height: 8.1vw;
-}
-
 .titlePictosUserConfig *{
     font-size: 2.2vh;
     text-align: center;
 }
-
-
 .arrowMenuBar{
     margin-top: 1.2vh;
     height: 2vh;

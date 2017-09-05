@@ -127,17 +127,18 @@ angular.module('controllers', [])
             $scope.viewActivated = false; // para activar el gif de loading...
         })
 
-        //Controlador del registro de usuario
+//Controlador del registro de usuario
         .controller('RegisterCtrl', function ($scope, $rootScope, $captcha, Resources, md5, $q, $location, dropdownMenuBarInit) {
 
             //Inicializamos el formulario y las variables necesarias
             $scope.formData = {};  //Datos del formulario
             $scope.languageList = []; //lista de idiomas seleccionados por el usuario
             //#Raul
-            $scope.state = {user: "", password: "", email : ""}; // estado de cada campo del formulario
+            $scope.state = {user: "", password: ""};// estado de cada campo del formulario
             var userOk = false; // variables de validación
             var emailOk = false; // variables de validación
             var languageOk = false; // variables de validación
+
 
             //Imagenes
             $scope.img = [];
@@ -776,14 +777,13 @@ angular.module('controllers', [])
             $scope.img.menuButton5 = '/img/srcWeb/UserConfig/menuButton5.jpg';
             $scope.img.menuButton6 = '/img/srcWeb/UserConfig/menuButton6.jpg';
 
-
             $scope.img.textInCellOff = '/img/srcWeb/UserConfig/textInCellOff.png';
             $scope.img.textInCellOn = '/img/srcWeb/UserConfig/textInCellOn.png';
 
             //#Jorge (Tarea 4) y #Hector Nuevo codigo
             $scope.img.textOnly = '/img/srcWeb/UserConfig/textOnly.png';
-            $scope.img.CellWithBorder = '/img/srcWeb/UserConfig/CellWithBorder.png'
-            $scope.img.CellWithoutBorder = '/img/srcWeb/UserConfig/textInCellOff.png'
+            $scope.img.CellWithBorder = '/img/srcWeb/UserConfig/CellWithBorder.png';
+            $scope.img.CellWithoutBorder = '/img/srcWeb/UserConfig/CellWithoutBorder.png';
 
             //#Jorge (Tarea 5)
             $scope.img.textInRdngBarOn = '/img/srcWeb/UserConfig/txtInRdngBarOn.png'
@@ -852,7 +852,7 @@ angular.module('controllers', [])
                             $scope.userData.cfgUserExpansionFeedback = ($scope.userData.cfgUserExpansionFeedback === "1");
                             $scope.userData.cfgInterfaceVoiceMascFem = ($scope.userData.cfgInterfaceVoiceMascFem === "masc");
                             $scope.scanOrder = $scope.userData.cfgScanOrderPred + $scope.userData.cfgScanOrderMenu + $scope.userData.cfgScanOrderPanel;
-                            /*Tarea 2: Nuevo codigo menu copiar en el portapapeles*/
+                            /*#Jorge Tarea 2: Nuevo codigo menu copiar en el portapapeles.*/
                             $scope.userData.cfgMenuCopyClipboard = ($scope.userData.cfgMenuCopyClipboard === "1");
                             $scope.userData.cfgMenuCopyTxtImgClipboard = ($scope.userData.cfgMenuCopyTxtImgClipboard === "1");
                             /*#Jorge y Hector.*/
@@ -861,7 +861,7 @@ angular.module('controllers', [])
                             $scope.userData.cfgMenuDeleteSelectedPicto = ($scope.userData.cfgMenuDeleteSelectedPicto === "1");
 
                             /*Arreglo Tarea 3: #Jorge */
-                            $scope.userData.cfgMenuBlock = ($scope.userData.cfgMenuBlock === "1")
+                            $scope.userData.cfgMenuBlock = ($scope.userData.cfgMenuBlock === "1");
 
                             var count = results.users[0].ID_ULanguage;
                             angular.forEach(results.users, function (value) {
@@ -1272,7 +1272,6 @@ angular.module('controllers', [])
                 $('#infoModal').modal('toggle');
             };
 
-
             $scope.viewActived = false; // para activar el gif del loading
 
              $scope.deleteUser = function () {
@@ -1291,13 +1290,26 @@ angular.module('controllers', [])
                     }
                     });
 
+
         })
         .controller('myCtrl', function (Resources, $location, $scope, $http, ngDialog, txtContent, $rootScope, $interval, $timeout, dropdownMenuBarInit, AuthService, md5, $window) {
+
+            $scope.isAndroid = false;
+
+            $(function() { // Wait for page to finish loading.
+                if(navigator != undefined && navigator.userAgent != undefined) {
+                    user_agent = navigator.userAgent.toLowerCase();
+                    if(user_agent.indexOf('android') > -1) { // Is Android.
+                        $scope.isAndroid = true;
+                    }
+                }
+            });
 
             $scope.viewActived = false;
             $timeout(function () {
                 $scope.viewActived = true;
             }, 1000);
+
 
             /* #Jorge Tarea 3: Add variables values */
             $scope.timerPassword = null;
@@ -1307,6 +1319,7 @@ angular.module('controllers', [])
             $scope.deleteButtonActive = false;
             $scope.chooseAngularChildElement = null;
             $scope.choosePreviousAngularChildElement = null;
+
 
 
             //Dropdown Menu Bar
@@ -1331,6 +1344,24 @@ angular.module('controllers', [])
                             }
                         });
                     });
+            $scope.getArasaacPictos=function(pictoaras,bw){
+                      var postdata = {picto: pictoaras,ByN:bw};
+                      $http.post("PanelGroup/getArasaacPictos",postdata).success(function (results) {
+                        var pics=results.data;
+                        console.log(pics);
+                        var picasarashow=[];
+                            for(var i=0;i<results.data.length;i++){
+                              if(pics[i]!=null){
+                                picasarashow.push(true);
+                              }else{
+                                picasarashow.push(false);
+                              }
+                            }
+                            $scope.imgData=picasarashow;
+                            $scope.picsara=pics;
+                            console.log(pics);
+                          });
+                    }
             //function to change html view
             $scope.go = function (path) {
                 if (path == '/') {
@@ -1386,6 +1417,7 @@ angular.module('controllers', [])
             // Get event Init call in the mune bar
             $scope.$on("IniciCallFromMenu", function () {
                 //MODIF: Se tiene que hacer con configuracion de usuario
+
                 $scope.config();
             });
             //MODIF: Solo para hacer pruebas
@@ -1395,95 +1427,97 @@ angular.module('controllers', [])
 
 
             // JORGE: #Tarea 3. Esta función sirve para comprobar si el usuario y la contraseña que usamos para acceder al menu es correcta.
-            $scope.confirmPassword = function (){
+          $scope.confirmPassword = function (){
 
-              var url = $scope.baseurl +  "Main/confirmPassword";
-              var postdata = {user: $scope.usernameCopyPanel, pass: $scope.passwordCopyPanel};
+            var url = $scope.baseurl +  "Main/confirmPassword";
+            var postdata = {user: $scope.usernameCopyPanel, pass: $scope.passwordCopyPanel};
 
-              if($scope.isLoged === "true"){
-                $('#confirmPassword').modal("hide");
-                return;
-              }
+            if($scope.isLoged === "true"){
+              $('#confirmPassword').modal("hide");
+              return;
+            }
 
-              $scope.passwordCopyPanel = null;
-              var userConf = JSON.parse(window.localStorage.getItem('userData'));
-              $scope.idUser = userConf.ID_User;
-              $scope.usernameCopyPanel = userConf.SUname;
-              $scope.isLoged = '';
-              /* Código para quitar popup pulsando desde fuera de este*/
-              $('#confirmPassword').modal('show');
+            $scope.passwordCopyPanel = null;
+            var userConf = JSON.parse(window.localStorage.getItem('userData'));
+            $scope.idUser = userConf.ID_User;
+            $scope.usernameCopyPanel = userConf.SUname;
+            $scope.isLoged = '';
+            /* Código para quitar popup pulsando desde fuera de este*/
+            $('#confirmPassword').modal('show');
 
-              $http.post(url,postdata).success(function(response){
-                $scope.state2 = '';
-                var password = response.userPass;
-                $timeout.cancel($scope.timerPassword);
+            $http.post(url,postdata).success(function(response){
+              $scope.state2 = '';
+              var password = response.userPass;
+              $timeout.cancel($scope.timerPassword);
 
-                /* Código cuando introducimos la password y es correcta. */
-                if(md5.createHash(String(password)) === userConf.pswd){
-                    $scope.isLoged = 'true';
-                    $scope.state2 = 'has-success';
-                    $timeout(function(){
+              /* Código cuando introducimos la password y es correcta. */
+              if(md5.createHash(String(password)) === userConf.pswd){
+                  $scope.isLoged = 'true';
+                  $scope.state2 = 'has-success';
+                  $timeout(function(){
+                    $('#confirmPassword').modal('hide');
+                    $scope.passwordCopyPanel = null;
+                  },0);
+                  console.log('Contraseña correcta');
+                }
+
+                /* Código cuando introducimos la password y no es correcta */
+                else if(md5.createHash(String(password)) !== userConf.pswd && response.userPass !== null){
+                  $scope.isLoged = 'false';
+                  $scope.state2 = 'has-error';
+
+                  $scope.timerPassword = $timeout(function(){
+                    angular.element('#clkOutside').triggerHandler('click');
+                      $('#confirmPassword').modal('hide');
+
+                      $scope.passwordCopyPanel = null;
+                    }, 10000);
+
+                  $scope.isLoged = '';
+                  $timeout(function(){
+                    //angular.element('#clkOutside').triggerHandler('click');
+                    //$('#confirmPassword').modal('hide');
+
+                    $scope.passwordCopyPanel = null;
+                  }, 0);
+                  console.log('Contraseña incorrecta');
+
+                }
+
+                /* Código de inicio del timeout. Actualización de timeout al añadir un elemento al input text*/
+                else if(response.userID === null && response.userPass === null){
+                  $scope.isLoged = '';
+                  $scope.state2 = '';
+                  //console.log("Introduce la contraseña");
+                  $scope.timerPassword = $timeout(function(){
+                    angular.element('#clkOutside').triggerHandler('click');
                       $('#confirmPassword').modal('hide');
                       $scope.passwordCopyPanel = null;
-                    },0);
-                    console.log('Contraseña correcta');
-                  }
+                    }, 10000);
 
-                  /* Código cuando introducimos la password y no es correcta */
-                  else if(md5.createHash(String(password)) !== userConf.pswd && response.userPass !== null){
-                    $scope.isLoged = 'false';
-                    $scope.state2 = 'has-error';
-
+                  $('#input_id').on('input',function(e){
+                    $timeout.cancel($scope.timerPassword);
                     $scope.timerPassword = $timeout(function(){
                       angular.element('#clkOutside').triggerHandler('click');
-                        $('#confirmPassword').modal('hide');
-                        $scope.passwordCopyPanel = null;
-                      }, 10000);
-
-                    $scope.isLoged = '';
-                    $timeout(function(){
-                      //angular.element('#clkOutside').triggerHandler('click');
-                      //$('#confirmPassword').modal('hide');
-
+                      $('#confirmPassword').modal('hide');
                       $scope.passwordCopyPanel = null;
-                    }, 0);
-                    console.log('Contraseña incorrecta');
+                    }, 10000);
+                    console.log('Reinicio timeout');
+                  });
+                }
 
-                  }
+              });
+          };
 
-                  /* Código de inicio del timeout. Actualización de timeout al añadir un elemento al input text*/
-                  else if(response.userID === null && response.userPass === null){
-                    $scope.isLoged = '';
-                    $scope.state2 = '';
-                    //console.log("Introduce la contraseña");
-                    $scope.timerPassword = $timeout(function(){
-                      angular.element('#clkOutside').triggerHandler('click');
-                        $('#confirmPassword').modal('hide');
-                        $scope.passwordCopyPanel = null;
-                      }, 10000);
+          $scope.cancelForm = function(){
+              $timeout.cancel($scope.timerPassword);
+              $timeout(function(){
+                $scope.passwordCopyPanel = null;
+                angular.element('#clkOutside').triggerHandler('click');
+                $('#confirmPassword').modal("hide");
+              }, 0);
+          };
 
-                    $('#input_id').on('input',function(e){
-                      $timeout.cancel($scope.timerPassword);
-                      $scope.timerPassword = $timeout(function(){
-                        angular.element('#clkOutside').triggerHandler('click');
-                        $('#confirmPassword').modal('hide');
-                        $scope.passwordCopyPanel = null;
-                      }, 10000);
-                      console.log('Reinicio timeout');
-                    });
-                  }
-
-                });
-            }
-
-            $scope.cancelForm = function(){
-                $timeout.cancel($scope.timerPassword);
-                $timeout(function(){
-                  $scope.passwordCopyPanel = null;
-                  angular.element('#clkOutside').triggerHandler('click');
-                  $('#confirmPassword').modal("hide");
-                }, 0);
-            }
 
             $scope.setTimer = function () {
                 $interval.cancel($scope.intervalScan);
@@ -1718,8 +1752,6 @@ angular.module('controllers', [])
                     });
                 }
             };
-
-
             //This method check if the actual scan block (second level in the custom scan) it's correct
             $scope.getCustomScanCell = function () {
                 if ($scope.indexScannedCells > $scope.maxCustomScanBlock) {
@@ -1774,7 +1806,7 @@ angular.module('controllers', [])
                         return false;
                     }
                     if (!$scope.haveToBeScanned($scope.arrayScannedCells[$scope.indexScannedCells])) {
-                        $scope.nextBlockScan();$s
+                        $scope.nextBlockScan();
                     }
                 }
             };
@@ -1782,7 +1814,7 @@ angular.module('controllers', [])
             $scope.haveToBeScanned = function (picto) {
                 return (picto.activeCell == 1 && (picto.ID_CFunction != null || picto.ID_CPicto != null || picto.ID_CSentence != null || picto.ID_Fuction != null || picto.boardLink != null || picto.sentenceFolder));
             };
-            //OrderScan contains the order that the user establish so, whenever we pass to another scan (only first level) we have to determine the next by this array. Be careful the array start with 0 and the user order is 1, 2 and 3, so we don't have to increment the index, we use the current block orde to resolve what the next is
+            //OrderScan contains the order that the user establish so, whenever we pass to another scan (only first level) we have to determine the next by this array. Be carefulthe array start with 0 and the user order is 1, 2 and 3, so we don't have to increment the index, we use the current block orde to resolve what the next is
             $scope.nextBlockToScan = function (current) {
                 switch ($scope.orderScan[current]) {
                     case "prediction":
@@ -1803,7 +1835,6 @@ angular.module('controllers', [])
                         $scope.indexScannedBlock = 0; //Column or row inside the whole board
                         $scope.arrayScannedCells = $scope.getScanArray();
                         break;
-
                     default:
                         $scope.isScanning = "nowait";
                         $scope.InitScan();
@@ -1859,21 +1890,19 @@ angular.module('controllers', [])
                                 $scope.nextBlockScan();
                             }
                             break;
-
                         case "read":
                             $scope.isScanning = "deletelast";
                             if ($scope.cfgMenuDeleteLastActive == 0) {
                                 $scope.nextBlockScan();
                             }
                             break;
-
-
                         case "deletelast":
                             $scope.isScanning = "deleteselectedpicto";
                             if ($scope.cfgMenuDeleteSelectedPicto == 0) {
                                 $scope.nextBlockScan();
                             }
                             break;
+
 
                         //#Jorge: Escaneo elemento eliminar pictograma seleccionado.
                         case "deleteselectedpicto":
@@ -1921,7 +1950,6 @@ angular.module('controllers', [])
 
 
                         //# Fin de código.
-
                         case "deleteall":
                             $scope.isScanning = "copyclipboard";
                             if ($scope.cfgMenuCopyClipboard  == 0) {
@@ -1930,7 +1958,6 @@ angular.module('controllers', [])
                             break;
 
                         //#Jorge: Escaneo elementos copiar texto y copiar texto e imagenes en el portapapeles.
-
                         case "copyclipboard":
                             $scope.isScanning = "copytxtimgclipboard";
                             if ($scope.cfgMenuCopyTxtImgClipboard == 0) {
@@ -1941,10 +1968,6 @@ angular.module('controllers', [])
                           $scope.isScanning = "nowait";
                           $scope.InitScan();
                           break;
-
-                          //# Fin de código.
-
-
                     }
 
                 }
@@ -2018,6 +2041,7 @@ angular.module('controllers', [])
                             $scope.InitScan();
                             break;
 
+
                         //#Jorge: Escaneo borrar pictograma elegido.
                         case "deleteselectedpicto":
                             if($scope.chooseElementDeleted == null){
@@ -2074,13 +2098,13 @@ angular.module('controllers', [])
                             break;
 
                         //#Fin de codigo.
+
                         case "deleteall":
                             $scope.deleteAll();
                             $scope.InitScan();
                             break;
-
-                        //#Jorge: Escaneo elementos copiar texto y copiar texto e imagenes en el portapapeles.
-                        case "copyclipboard":
+                            //#Jorge
+                            case "copyclipboard":
                             $scope.toAllBrowsersClipboard();
                             $scope.InitScan();
                             break;
@@ -2089,7 +2113,6 @@ angular.module('controllers', [])
                             $scope.InitScan();
                             break;
 
-                        //#Fin de codigo.
                     }
                 }
             };
@@ -2134,6 +2157,11 @@ angular.module('controllers', [])
             $scope.isClickEnable = function () {
                 return(!($scope.inScan || $scope.cfgTimeOverOnOff));
             };
+
+            $scope.OS = function() {
+               return $http.get('Main/getOS');
+            };
+
             // Get the user config and show the board
             $scope.config = function ()
             {
@@ -2187,11 +2215,10 @@ angular.module('controllers', [])
                 $scope.cfgMenuCopyClipboard = userConfig.cfgMenuCopyClipboard;
                 $scope.cfgMenuCopyTxtImgClipboard = userConfig.cfgMenuCopyTxtImgClipboard;
                 $scope.cfgMenuDeleteSelectedPicto = userConfig.cfgMenuDeleteSelectedPicto;
-
+                //Fin nuevo codigo
                 $scope.cfgSentenceBarUpDown = userConfig.cfgSentenceBarUpDown;
-                $scope.pictoBarWidth = 12 - $scope.cfgMenuHomeActive - $scope.cfgMenuReadActive - $scope.cfgMenuDeleteLastActive - $scope.cfgMenuCopyClipboard - $scope.cfgMenuCopyTxtImgClipboard - $scope.cfgMenuDeleteAllActive - $scope.cfgMenuDeleteSelectedPicto;
                 //#Jorge nuevo codigo
-
+                $scope.pictoBarWidth = 12 - $scope.cfgMenuHomeActive - $scope.cfgMenuReadActive - $scope.cfgMenuDeleteLastActive - $scope.cfgMenuCopyClipboard - $scope.cfgMenuCopyTxtImgClipboard - $scope.cfgMenuDeleteAllActive - $scope.cfgMenuDeleteSelectedPicto;
                 $scope.cfgAutoEraseSentenceBar = userConfig.cfgAutoEraseSentenceBar;
                 $scope.cfgScanningCustomRowCol = userConfig.cfgScanningCustomRowCol;
                 $scope.longclick = userConfig.cfgScanningAutoOnOff == 0 ? true : false;
@@ -2205,14 +2232,15 @@ angular.module('controllers', [])
                 $scope.cfgScanningOnOff = userConfig.cfgScanningOnOff;
                 $scope.cfgScanStartClick = userConfig.cfgScanStartClick == 1 ? true : false;
                 $scope.cfgCancelScanOnOff = userConfig.cfgCancelScanOnOff == 1 ? true : false;
+                //$scope.cfgTextInCell = userConfig.cfgTextInCell == 1 ? true : false;
                 /*Añadir configuración aquí. Hector y Jorge*/
+                $scope.cfgTextOnly = userConfig.cfgTextOnly == 1 ? true : false;
                 $scope.cfgCellWithBorder = userConfig.cfgCellWithBorder == 1 ? true : false;
-                $scope.cfgTextInCell = userConfig.cfgTextInCell;
                 $scope.cfgTxtRdngBarOnOff = userConfig.cfgTxtRdngBarOnOff;
+                $scope.cfgTextInCell = userConfig.cfgTextInCell;
 
                 /*Arreglo Tarea 3: Nuevo código*/
                 $scope.cfgMenuBlock = userConfig.cfgMenuBlock == 1 ? true : false;
-
 
                 $scope.cfgUserExpansionFeedback = userConfig.cfgUserExpansionFeedback == 1 ? true : false;
                 $scope.cfgScanOrderPred = userConfig.cfgScanOrderPred;
@@ -2580,15 +2608,28 @@ angular.module('controllers', [])
                         $location.path('/historic');
                         return false;
                     }
-                    if (cell.ID_CSentence) {
-                        $scope.readText(cell.sPreRecText, false);
-                        return false;
-                    }
                     var text = "";
                     // Just read once, and, if the autoread is activated in this board we don't have to read (the text will be mixed up)
                     var readed = false;
                     if ($scope.autoRead) {
                         readed = true;
+                    }
+                    if (cell.ID_CSentence) {
+                        if (cell.boardLink !== null) {
+                            if (readed === true) {
+                                text = "";
+                            } else {
+                                text = cell.textInCell;
+                            }
+
+                            $scope.showBoard(cell.boardLink);
+                            console.log("HOLAA");
+                            $scope.readText(cell.sPreRecText, false);
+                            readed = true;
+                        } else{
+                            $scope.readText(cell.sPreRecText, false);
+                        }
+                        return false;
                     }
                     if (cell.ID_CPicto !== null) {
                         if (cell.textInCell !== null) {
@@ -2709,13 +2750,13 @@ angular.module('controllers', [])
                     //#Jorge
                     else if (object === 'copyClipboard'){
                         $scope.OverAutoClick = $timeout(function () {
-                          ngClipboard.toAllBrowsersClipboard();
+                          $scope.toAllBrowsersClipboard();
                         }, $scope.cfgTimeOver);
                     }
 
                     else if(object === 'copyTxtImgClipboard'){
                       $scope.OverAutoClick = $timeout(function () {
-                        ngClipboard.toAllBrowsersTxtImgClipboard();
+                        $scope.toAllBrowsersTxtImgClipboard();
                       }, $scope.cfgTimeOver);
                     }
 
@@ -2815,21 +2856,28 @@ angular.module('controllers', [])
              */
             $scope.clickOnFunction = function (id, text, readed) {
                 var url = $scope.baseurl + "Board/getFunction";
-                var postdata = {id: id, tense: $scope.tense, tipusfrase: $scope.tipusfrase, negativa: $scope.negativa};
-
+                /*var postdata = {id: id, tense: $scope.tense, tipusfrase: $scope.tipusfrase, negativa: $scope.negativa};*/
+                /*New code*/
+                var postdata = {id: id, tense: $scope.tense, tipusfrase: $scope.tipusfrase, negativa: $scope.negativa, pos: $scope.chooseElementDeleted};
+                /*New code*/
                 $http.post(url, postdata).success(function (response)
                 {
                     var control = response.control;
                     console.log(control);
+
                     $scope.dataTemp = response.data;
                     $scope.tense = response.tense;
                     $scope.tipusfrase = response.tipusfrase;
                     $scope.negativa = response.negativa;
-                    $scope.pos = response.pos;
+                    /*New code*/
+                    $scope.chooseElementDeleted = response.pos;
+                    /*New code*/
                     if ((control !== "") && (control !== "home") && (control !== "historic") && (control !== "stopAudio")) {
                         var url = $scope.baseurl + "Board/" + control;
-                        //var postdata = {tense: $scope.tense, tipusfrase: $scope.tipusfrase, negativa: $scope.negativa};
-                        var postdata = {tense: $scope.tense, tipusfrase: $scope.tipusfrase, negativa: $scope.negativa};
+                        /*var postdata = {tense: $scope.tense, tipusfrase: $scope.tipusfrase, negativa: $scope.negativa};*/
+                        /*New code*/
+                        var postdata = {tense: $scope.tense, tipusfrase: $scope.tipusfrase, negativa: $scope.negativa, pos: $scope.chooseElementDeleted};
+                        /*New code*/
                         $http.post(url, postdata).success(function (response)
                         {
                             $scope.info = response.info;
@@ -2843,6 +2891,43 @@ angular.module('controllers', [])
                                 } else if (control === "deleteLastWord") {
                                     $scope.getPred();
                                 }
+
+                                /*New code*/
+                                else if(control === "deleteSelectedWord"){
+                                  console.log($scope.inScan);
+                                  /* Hay que hacer dos formas de activar la función. La primera es la activar la función sin escaneo y la segunda es activando la función con escaneo */
+                                  if(!$scope.inScan){
+                                    var ngDeleteSelectedPicto = angular.element($window.document.getElementById('txtImgContainer'));
+                                    var children = ngDeleteSelectedPicto.children();
+                                    var s = children.length;
+                                    for(i = 0; i < s; i++){
+                                      var chooseChild = children[i];
+                                      $scope.chooseAngularChildElement = angular.element(chooseChild);
+                                      $scope.chooseAngularChildElement.toggleClass('selectedDeletePicto');
+                                    }
+
+                                    if($scope.deleteButtonActive == false){
+                                      $scope.deleteButtonActive = true;
+                                    }
+                                    else{
+                                      $scope.deleteButtonActive = false;
+                                      $scope.chooseAngularChildElement.toggleClass('selectedDeletePicto', !$scope.deleteButtonActive);
+                                    }
+
+                                    $scope.getPred();
+                                  }
+
+                                  else{
+                                    $scope.isScanning = "deleteselectedpicto";
+                                    //$scope.isScanning = "deleteselectedpicto";
+                                    $scope.selectBlockScan();
+
+
+
+                                  }
+
+                                }
+
 
                                 if (!readed) {
                                     $scope.readText(text, true);
@@ -2865,30 +2950,6 @@ angular.module('controllers', [])
                         aux.pause();
                         aux.currentTime = 0;
                     }
-
-                    /*else if(control === "deleteSelectedWord"){
-                      $scope.chooseElement($scope.pos)
-                      var ngDeleteSelectedPicto = angular.element($window.document.getElementById('txtImgContainer'));
-                      var children = ngDeleteSelectedPicto.children();
-                      var s = children.length;
-                      for(i = 0; i < s; i++){
-                        var chooseChild = children[i];
-                        $scope.chooseAngularChildElement = angular.element(chooseChild);
-                        $scope.chooseAngularChildElement.toggleClass('selectedDeletePicto');
-                      }
-
-                      if($scope.deleteButtonActive == false){
-                        $scope.deleteButtonActive = true;
-                      }
-                      else{
-                        $scope.deleteButtonActive = false;
-                        $scope.chooseAngularChildElement.toggleClass('selectedDeletePicto', !$scope.deleteButtonActive);
-                      }
-
-                      $scope.getPred();
-                    }*/
-
-
                     else {
                         if (!readed) {
                             $scope.readText(text, true);
@@ -2896,21 +2957,19 @@ angular.module('controllers', [])
                     }
                 });
             };
-
             /*
              * Remove last word added to the sentence
              */
-
             $scope.deleteLast = function () {
 
                 var url = $scope.baseurl + "Board/deleteLastWord";
 
-                $http.post(url).success(function (response){
+                $http.post(url).success(function (response)
+                {
                     $scope.dataTemp = response.data;
                     $scope.getPred();
                 });
             };
-
             /*
              * Remove the whole sentence
              */
@@ -2930,7 +2989,7 @@ angular.module('controllers', [])
                 });
             };
 
-          /*
+            /*
           * #Jorge. Tarea 6: Remove the word chosen of the sentence.
           */
 
@@ -2958,8 +3017,6 @@ angular.module('controllers', [])
 
             $http.post(url, postdata).success(function (response){
                 $scope.dataTemp = response.data;
-                console.log($scope.chooseElementDeleted);
-                $scope.getPred();
             });
           };
 
@@ -2977,7 +3034,7 @@ angular.module('controllers', [])
             $scope.chooseElementDeleted = null;
           };
 
-            /*
+          /*
             * Copy text and Copy text and images in the clipboard
             */
 
@@ -3013,6 +3070,9 @@ angular.module('controllers', [])
                 console.log('Copying text command was ' + msg);
                 $window.getSelection().removeAllRanges();
             };
+
+
+            //#Tarea 2: Copiar texto en el portapapeles y copiar texto e imagenes en el portapapeles.
 
             $scope.toAllBrowsersTxtImgClipboard = function(){
 
@@ -3063,6 +3123,7 @@ angular.module('controllers', [])
               console.log('Copying text and images command was ' + msg);
               getSelection().removeAllRanges();
             };
+
 
             $scope.goPrimaryBoard = function () {
                 $scope.config();
@@ -3223,22 +3284,27 @@ angular.module('controllers', [])
             /*
              * Return uploaded images from database. There are two types, the users images an the arasaac (not user images)
              */
-            $scope.searchImg = function (name, typeImgEditSearch) {
+            $scope.searchImg = function (name, typeImgEditSearch,bw) {
                 var URL = "";
                 switch (typeImgEditSearch)
                 {
                     case "Arasaac":
-                        URL = $scope.baseurl + "ImgUploader/getImagesArasaac";
+                        if(name!=''){
+                        $scope.getArasaacPictos(name,bw);
+                        }
+                        $scope.BW=true;
                         break;
                     case "Uploads":
                         URL = $scope.baseurl + "ImgUploader/getImagesUploads";
+                        $scope.BW=false;
                         break;
                 }
                 var postdata = {name: name};
+
                 $http.post(URL, postdata).
-                        success(function (response)
-                        {
-                            $scope.imgData = response.data;
+                        success(function (response){
+                          console.log(response.data)
+                          $scope.picsara=response.data;
                         });
             }
 
@@ -3279,7 +3345,30 @@ angular.module('controllers', [])
                             }
                         });
             };
+            $scope.uploadBackup = function () {
+                $scope.myFile = document.getElementById('file-input').files;
+                $scope.uploading = true;
+                var i;
+                var uploadUrl = $scope.baseurl + "ImgUploader/uploadBackup";
 
+                var fd = new FormData();
+                fd.append('vocabulary', angular.toJson(false));
+                for (i = 0; i < $scope.myFile.length; i++) {
+                    fd.append('file' + i, $scope.myFile[i]);
+                }
+                $http.post(uploadUrl, fd, {
+                    headers: {'Content-Type': undefined}
+                })
+                        .success(function (response) {
+                            $scope.uploading = false;
+                            if (response.error) {
+                                //open modal
+                                console.log(response.errorText);
+                                $scope.errorText = response.errorText;
+                                $('#errorImgModal').modal({backdrop: 'static'});
+                            }
+                        });
+            };
 
             /*
              * PosInBoard is the element over we drop the "draggable data". Data contains the info we drag
@@ -3685,7 +3774,16 @@ angular.module('controllers', [])
             };
         })
 
-        .controller('historicCtrl', function ($scope, $rootScope, txtContent, $location, $http, dropdownMenuBarInit, ngDialog, AuthService, Resources, $timeout, $interval, md5, $window) {
+        .controller('historicCtrl', function ($scope, $rootScope, txtContent, $location, $http, dropdownMenuBarInit, AuthService, Resources, $timeout, $interval,md5) {
+            // Comprobación del login   IMPORTANTE!!! PONER EN TODOS LOS CONTROLADORES
+            if (!$rootScope.isLogged) {
+                $rootScope.dropdownMenuBarValue = '/home'; //Dropdown bar button selected on this view
+                $location.path('/home');
+            }
+            // Pedimos los textos para cargar la pagina
+            txtContent("historicview").then(function (results) {
+                $scope.content = results.data;
+            });
 
             /* #Jorge: Add variables values */
             $scope.timerPassword = null;
@@ -3700,12 +3798,11 @@ angular.module('controllers', [])
                 console.log('hover');
                 $scope.dropdownMenuOpen = true;
             });
-
+            //Choose the buttons to show on bar
             dropdownMenuBarInit($rootScope.interfaceLanguageId)
                     .then(function () {
                         //Choose the buttons to show on bar
                         angular.forEach($rootScope.dropdownMenuBar, function (value) {
-                            //if (value.href == '/' || value.href == 'editPanel' || value.href == '/panelGroups' || value.href == '/userConfig' || value.href == '/faq' || value.href == '/tips' || value.href == '/privacy' || value.href == 'logout') {
                             if (value.href == '/' || value.href == '/panelGroups' || value.href == '/userConfig' || value.href == '/faq' || value.href == '/tips' || value.href == '/privacy' || value.href == 'logout') {
                                 value.show = true;
                             } else {
@@ -3713,17 +3810,13 @@ angular.module('controllers', [])
                             }
                         });
                     });
-
             //function to change html view
             $scope.go = function (path) {
                 if (path == '/') {
                     $scope.back();
-                }
-                else if (path == 'logout') {
+                } else if (path == 'logout') {
                     $('#logoutModal').modal('toggle');
-                }
-
-                else {
+                } else {
                     $location.path(path);
                     $rootScope.dropdownMenuBarValue = path; //Button selected on this view
                 }
@@ -3733,53 +3826,16 @@ angular.module('controllers', [])
             $scope.img = [];
             $scope.img.lowSorpresaFlecha = '/img/srcWeb/Mus/lowSorpresaFlecha.png';
             $scope.img.Patterns1_08 = '/img/srcWeb/patterns/pattern3.png';
-            $scope.img.loading = '/img/srcWeb/Login/loading.gif';
             Resources.main.get({'section': 'logoutModal', 'idLanguage': $rootScope.interfaceLanguageId}, {'funct': "content"}).$promise
                     .then(function (results) {
                         $scope.logoutContent = results.data;
                     });
-
-
             $scope.logout = function () {
                 $scope.viewActived = false;
                 $timeout(function () {
                     AuthService.logout();
                 }, 1000);
             };
-
-            /*if (!$rootScope.isLogged) {
-              $rootScope.dropdownMenuBarValue = '/home'; //Dropdown bar button selected on this view
-              $location.path('/home');
-            } else {
-                Resources.main.get({'IdSu': $rootScope.sUserId},{'funct': "getConfig"}).$promise.then(function (results) {
-                if (results.userConfig.UserValidated == '1') {
-                    //redirecciona a configuración de usuario para el primer acceso a la aplicación
-                    $location.path('/userConfig');
-                }
-              });
-            }*/
-
-          // Pedimos los textos para cargar la pagina
-          txtContent("historicview").then(function (results) {
-              $scope.content = results.data;
-          });
-
-          // Get event Edit call in the menu bar
-          /*$scope.$on("EditCallFromMenu", function () {
-              $scope.edit();
-          });
-
-          // Get event Init call in the menu bar
-          $scope.$on("IniciCallFromMenu", function () {
-              //MODIF: Se tiene que hacer con configuracion de usuario
-              $scope.config();
-          });
-
-          //MODIF: Solo para hacer pruebas
-            $scope.$on("ScanCallFromMenu", function () {
-                $scope.InitScan();
-            });*/
-
 
             // JORGE: Esta función sirve para comprobar si el usuario y la contraseña que usamos para acceder al menu es correcta.
             $scope.confirmPassword = function (){
@@ -3873,7 +3929,6 @@ angular.module('controllers', [])
             };
 
 
-
             $scope.back = function () {
                 $rootScope.boardToShow = $scope.backBoard;
                 $location.path('/');
@@ -3940,6 +3995,13 @@ angular.module('controllers', [])
                             }
                         });
             };
+
+           $scope.allIsDisabled = function() {
+                          return ($scope.pagBackHistoricEnabled == false
+                                  && $scope.pagNextHistoricEnabled == false
+                                  && $scope.pagBackFolderEnabled == false
+                                  && $scope.pagNextFolderEnabled == false);
+                      }
 
             $scope.previousPagHistoric = function () {
                 if ($scope.pagBackHistoricEnabled) {
@@ -4216,7 +4278,11 @@ angular.module('controllers', [])
                         case "waiting":
                             break;
                         case "1row":
-                            $scope.isScanning = "2row";
+                            if($scope.allIsDisabled()){
+                                $scope.isScanning = "1column";
+                            } else {
+                                $scope.isScanning = "2row";
+                            }
                             break;
                         case "2row":
                             $scope.isScanning = "1column";
@@ -4232,7 +4298,7 @@ angular.module('controllers', [])
                             $scope.isScanning = "home";
                             break;
                         case "home":
-                            $scope.isScanning = "today";
+                            $scope.isScanning = "historial";
                             break;
                         case "today":
                             $scope.isScanning = "lastWeek";
@@ -4272,6 +4338,16 @@ angular.module('controllers', [])
                             break;
                         case "odd":
                             $scope.nextSenteceToScan();
+                            break;
+                        case "historial":
+                            $scope.isScanning = "today";
+                            break;
+                        case "goodphrase":
+                            $scope.isScanning = "badphrase"
+                            break;
+                        case "badphrase":
+                            $scope.isScanning = "today";
+                            $scope.showDeleteHistoricmodal = false;
                             break;
                     }
 
@@ -4363,11 +4439,23 @@ angular.module('controllers', [])
                         case "odd":
                             $scope.getSenteceToScan();
                             break;
+                        case "historial":
+                            $scope.showModalHistorial();
+                            $scope.isScanning = "goodphrase"
+                            break;
+                        case "goodphrase":
+                            $scope.isScanning = "today";
+                            $scope.showDeleteHistoricmodal = false;
+                            $scope.enable_disableHistorial(1);
+                            break;
+                        case "badphrase":
+                            $scope.isScanning = "today";
+                            $scope.showDeleteHistoricmodal = false;
+                            $scope.enable_disableHistorial(0);
+                            break;
                     }
                 }
             };
-
-
             var userConfig = JSON.parse(localStorage.getItem('userData'));
             $scope.cfgScanColor = userConfig.cfgScanColor;
             $scope.longclick = userConfig.cfgScanningAutoOnOff == 0 ? true : false;
@@ -4378,6 +4466,8 @@ angular.module('controllers', [])
             $scope.cfgScanningOnOff = userConfig.cfgScanningOnOff;
             $scope.cfgScanStartClick = userConfig.cfgScanStartClick == 1 ? true : false;
             $scope.cfgCancelScanOnOff = userConfig.cfgCancelScanOnOff == 1 ? true : false;
+
+            $scope.cfgMenuBlock = userConfig.cfgMenuBlock;
 
             if (userConfig.cfgUsageMouseOneCTwoC == 0) {
                 $scope.longclick = false;
@@ -4403,7 +4493,6 @@ angular.module('controllers', [])
             if ($scope.cfgScanningOnOff == 1) {
                 $scope.InitScan();
             }
-
             //Init the pag
 
             $scope.pagNextFolderEnabled = true;
@@ -4430,7 +4519,35 @@ angular.module('controllers', [])
                 $scope.timeHis = "today";
                 $scope.getHistoric();
             }
-          })
+
+            /* Enable or disable Historial
+             * @rjlopezdev
+             */
+            $scope.showDeleteHistoricmodal = false;
+            $scope.showModalHistorial = function(){
+                $scope.showDeleteHistoricmodal = true;
+            };
+
+            $scope.isActivated = false;
+            $http.get('Historic/getHistorialState')
+            .success(function(response){
+                $scope.isActivated = (response.state == '1') ? true : false;
+            })
+
+            $scope.enable_disableHistorial = function(newValue){
+                $http.post('Historic/changeHistorialState',
+                          {
+                            newState : newValue
+                          } )
+                .success(function (response) {
+                    $scope.showDeleteHistoricmodal = false;
+                    location.reload(true);
+                });
+            };
+
+        })
+
+
 
           /*
           * New directive function: Copy the text in the clipboard and copy text and images in the clipboard.
@@ -4470,6 +4587,7 @@ angular.module('controllers', [])
               document.execCommand('copy');
               input.remove();
               document.getElementById('frase').contentEditable = false;
+
 
               //Execute the command copy to get the text in the clipboard
 
@@ -4541,8 +4659,10 @@ angular.module('controllers', [])
           }
         }])
 
+
         /*New code*/
-        //Add a directive in order to recognize the right click
+
+//Add a directive in order to recognize the right click
         .directive('ngRightClick', function ($parse) {
             return function (scope, element, attrs) {
                 var fn = $parse(attrs.ngRightClick);

@@ -733,6 +733,7 @@ input.switch:checked ~ label:after
     border: none;
 }
 
+
 .truncate-text {
   width: 90%;
   white-space: nowrap;

@@ -5,11 +5,27 @@ angular.module('controllers')
             $location.path('/home');
             $rootScope.dropdownMenuBarValue = '/home'; //Dropdown bar button selected on this view
         }
+        $scope.folderName = "";
         // Pedimos los textos para cargar la pagina
         txtContent("historySentencesFold").then(function (results) {
             $scope.content = results.data;
             $scope.editHistoricFolderContent = results.data;
             $scope.createFolderContentTitle = false; //Change the modal title to create folder or edit folder
+            if ($routeParams.folderId<0) {
+                switch($routeParams.folderId) {
+                    case '-1': 
+                        $scope.folderName = results.data.Today;
+                        break;
+                    case '-7': 
+                        $scope.folderName = results.data.LastWeek;
+                        break;
+                    case '-30': 
+                        $scope.folderName = results.data.LastMonth;
+                        break;
+                    default:
+                        break;
+                }
+            }
         });
 
         //Dropdown Menu Bar
@@ -90,11 +106,11 @@ angular.module('controllers')
         if($routeParams.folderId<0){
             $scope.historicFolder = true;
             if($routeParams.folderId=='-1'){
-                $scope.folderSelected = {'ID_Folder':'-1', 'ID_SFUser':$rootScope.userId, 'folderDescr':'', 'folderName':$scope.content.historyTodayFolder, 'imgSFolder':'img/pictos/hoy.png', 'folderColor':'dfdfdf', 'folderOrder':'0'};
+                $scope.folderSelected = {'ID_Folder':'-1', 'ID_SFUser':$rootScope.userId, 'folderDescr':'', 'imgSFolder':'img/pictos/hoy.png', 'folderColor':'dfdfdf', 'folderOrder':'0'};
             }else if($routeParams.folderId=='-7'){
-                $scope.folderSelected = {'ID_Folder':'-7', 'ID_SFUser':$rootScope.userId, 'folderDescr':'', 'folderName':$scope.content.historyLastWeekFolder, 'imgSFolder':'img/pictos/semana.png', 'folderColor':'dfdfdf', 'folderOrder':'0'};
+                $scope.folderSelected = {'ID_Folder':'-7', 'ID_SFUser':$rootScope.userId, 'folderDescr':'', 'imgSFolder':'img/pictos/semana.png', 'folderColor':'dfdfdf', 'folderOrder':'0'};
             }else if($routeParams.folderId=='-30'){
-                $scope.folderSelected = {'ID_Folder':'-30', 'ID_SFUser':$rootScope.userId, 'folderDescr':'', 'folderName':$scope.content.historyLastMonthFolder, 'imgSFolder':'img/pictos/mes.png', 'folderColor':'dfdfdf', 'folderOrder':'0'};
+                $scope.folderSelected = {'ID_Folder':'-30', 'ID_SFUser':$rootScope.userId, 'folderDescr':'', 'imgSFolder':'img/pictos/mes.png', 'folderColor':'dfdfdf', 'folderOrder':'0'};
             }
         }
         //Get sentences folder or Historic folder
@@ -102,7 +118,7 @@ angular.module('controllers')
             Resources.main.save({'ID_Folder': $routeParams.folderId},{'funct': "getSentencesOrHistoricFolder"}).$promise
             .then(function (results) {
                 $scope.sentences = results.sentences;
-                if($scope.sentences!=null){
+                if($scope.sentences!=null && !$scope.historicFolder){
                     $scope.sentences.sort(function(a, b){return a.posInFolder-b.posInFolder});
                 }
                 $scope.viewActived = true;
@@ -285,25 +301,56 @@ angular.module('controllers')
         /*
          * Return uploaded images from database. There are two types, the users images an the arasaac (not user images)
          */
-        $scope.searchImg = function (name, typeImgEditSearch) {
+        $scope.searchImg = function (name, typeImgEditSearch,bw) {
             var URL = "";
             switch (typeImgEditSearch)
             {
                 case "Arasaac":
-                    URL = $scope.baseurl + "ImgUploader/getImagesArasaac";
+                    if(name!=''){
+                      $scope.getArasaacPictos(name,bw)
+                    }
+                    $scope.BW=true;
                     break;
                 case "Uploads":
                     URL = $scope.baseurl + "ImgUploader/getImagesUploads";
+                    $scope.BW=false;
                     break;
             }
             var postdata = {name: name};
             $http.post(URL, postdata).
-                success(function (response)
-                {
-                    $scope.imgData = response.data;
+                success(function (response){
+                  picsara=[];
+                  picasarashow=[false,false,false,false]
+                  if(response.data.length>4){
+                    itsize=4
+                  }else{
+                    itsize=response.data.length;
+                  }
+                  for(var i=0;i<itsize;i++){
+                    picsara.push(response.data[i].imgPath);
+                    picasarashow[i]=true;
+                  }
+                  $scope.picsara=picsara;
+                  $scope.imgData=picasarashow;
                 });
         }
-
+        $scope.getArasaacPictos=function(pictoaras,bw){
+          var postdata = {picto: pictoaras,ByN:bw};
+          $http.post("PanelGroup/getArasaacPictos",postdata).success(function (results) {
+            var pics=results.data;
+            var picasarashow=[];
+                for(var i=0;i<4;i++){
+                  if(pics[i]!=null){
+                    picasarashow.push(true);
+                  }else{
+                    picasarashow.push(false);
+                  }
+                }
+                $scope.imgData=picasarashow;
+                $scope.picsara=pics;
+                console.log(pics);
+              });
+        }
         //get all the photos attached to the pictos
         $scope.searchFoto = function (name)
         {
@@ -360,43 +407,54 @@ angular.module('controllers')
         */
         $scope.WordIsGenerated = false;
         $scope.WordDocumentPath;
+
         //Send info about current tematic folder
         $scope.downloadWord = function(){
 
           $scope.sentencesToWord = {
             preRecSentences: [],
             NOTpreRecSentences: [],
-            folderTitle: $scope.folderSelected.folderName
+            folderTitle: $scope.folderSelected.folderName || $scope.content.historialTitle
           };
+
           // SAVE preRecSentences
           if($scope.sentences !== null){
               $scope.sentencesToWord.preRecSentences = $scope.sentences.reduce((previous, i) => {
-                if(i.isPreRec === '1')
-                (previous[i.ID_SSentence] = previous[i.ID_SSentence] || [])
+                if(i.isPreRec === '1'){
+                    (previous[i.ID_SSentence] = previous[i.ID_SSentence] || [])
                     .push({
-                    sentence: i.generatorString,
-                    image1:   i.sPreRecImg1,
-                    image2:   i.sPreRecImg2,
-                    image3:   i.sPreRecImg3
+                        sentence: i.generatorString,
+                        image1:   i.sPreRecImg1,
+                        image2:   i.sPreRecImg2,
+                        image3:   i.sPreRecImg3
                     });
-                    console.log(previous);
+                }
+                
                 return previous;
             }, []).filter((element) => element !== undefined);
 
             // SAVE NOTpreRecSentences
             $scope.sentencesToWord.NOTpreRecSentences = $scope.sentences.reduce((previous, i) => {
-                if(i.isPreRec === '0')
-                (previous[i.ID_SSentence] = previous[i.ID_SSentence] || [])
+                if(i.isPreRec === '0'){
+                    (previous[i.ID_SSentence] = previous[i.ID_SSentence] || [])
                     .push({
-                    sentence: i.generatorString,
-                    imgPicto: i.imgPicto,
-                    isFem:    i.isfem,
-                    isPlural: i.isplural
+                        sentence: i.generatorString,
+                        imgPicto: i.imgPicto,
+                        isFem:    i.isfem,
+                        isPlural: i.isplural
                     });
+                } else {
+                    (previous[i.ID_RSHPSentence] = previous[i.ID_RSHPSentence] || [])
+                    .push({
+                        sentence: i.generatorString,
+                        imgPicto: i.imgPicto,
+                        isFem:    i.isfem,
+                        isPlural: i.isplural
+                    });
+                }
+                console.log('hola');
                 return previous;
             }, []).filter((element) => element !== undefined);
-
-            console.log($scope.sentencesToWord);
 
             //GET WordDocument
             $http.post('WordDocument', {'sentences' : $scope.sentencesToWord})
@@ -404,7 +462,7 @@ angular.module('controllers')
                 $scope.WordDocumentPath = $scope.baseurl + response.documentPath;
                 //console.log(response);
                 $scope.WordIsGenerated = true;
-                $scope.toggleDownloadModal('Descarga', 'Su documento');
+                $scope.toggleDownloadModal('', '');
                 });
             };
           }
@@ -417,4 +475,8 @@ angular.module('controllers')
             $scope.style_changes_title = 'padding-top: 2vh;';
             $('#downloadModal').modal('toggle');
         };
+
+        $('#download').click(function(){
+            $('#downloadModal').modal('hide');
+        });
     });

@@ -9,6 +9,60 @@
         font-size: 1.3vw;
     }
 }
+.prueba{
+  border:1px solid black;
+  height:75px;
+  width: 75px;
+}
+.buttonAddImg{
+    height: 5vh;
+    width: auto;
+    margin-top: -10%;
+    cursor: pointer;
+}
+.imgAdapted{
+  height: 7.5vh;
+  width: 7.5vh;
+}
+.searchtext{
+  width: 100%;
+}
+.fullwidth{
+    width: 100%;
+}
+.paddingcontent{
+  margin-top: 5%;
+  width: 100%;
+}
+.imgCellLg{
+    height: 60px;
+    width: 60px;
+    background-color: #ffffff;
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow: 0 1vh 1vh rgba(0, 0, 0, 0.7);
+}
+.lupa{
+  height: 30px;
+  margin-top: -10%;
+}
+.imgCell{
+    height: 7.5vh;
+    width: 7.5vh;
+    border: 0.4vh solid #8f8f8f;
+    background-color: #ffffff;
+    border-radius: 1vh;
+    cursor: pointer;
+    box-shadow: 0 1vh 1vh rgba(0, 0, 0, 0.7);
+}
+.img-rounded{
+    height: 18vh;
+    width: auto;
+    border-radius: 10px;
+    border:none;
+    margin-left: 0.1vh;
+    cursor: pointer;
+}
 .folderContainer{
     padding: 4vh 15vw;
     height: 100vh;
@@ -206,8 +260,8 @@ input.switchclear:checked ~ label:after
     cursor: pointer;
     background-color: #2d2d2d;
     padding: 1.5vh;
-    max-width: 200px;
-    min-width: 100px;
+    max-width: 250px;
+    min-width: 150px;
     margin: 0 auto;
 }
 .ButtonAddWord:active{
