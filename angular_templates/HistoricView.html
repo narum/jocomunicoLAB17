@@ -57,7 +57,7 @@
 <div ng-show="cfgMenuBlock" ng-include="'/angular_templates/confirmPasswordHistoricView.html'"></div>
 
     <!--menu superior dropdown-->
-    <div id="main" style="background-image: url('/img/srcWeb/patterns/fons.png');background-size:100% 100%" ng-click="scanLeftClick()" ng-right-click="scanRightClick()" onmousedown="audiohallelujah()">
+    <div id="main" style="background-image: url('/img/srcWeb/patterns/fons.png');background-size:100% 100%" ng-click="scanLeftClick()" ng-right-click="scanRightClick()" ng-mousedown="playLongClick()" ng-mouseup="cancelLongClick()" onmousedown="audiohallelujah()">
     <div class="row historicView">
         <div class="col-xs-12 containerHistoric">
             <div ng-if="isScanning == '1row' && !isScanningCancel" class="scaneo" ng-style="{'border':'7px solid #{{cfgScanColor}}'}"></div>
