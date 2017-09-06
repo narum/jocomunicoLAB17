@@ -1,0 +1,137 @@
+<link rel="stylesheet" type="text/css" href="{{baseurl}}css/style-jc.css">
+<link rel="stylesheet" type="text/css" href="{{baseurl}}css/generico.css">
+<link rel="stylesheet" type="text/css" href="{{baseurl}}css/addWord.css">
+<link rel="stylesheet" type="text/css" href="{{baseurl}}/libraries/scrollbarPanel.css">
+<style>html, body, .container-table{height: 100%;height: 100vh;background: url('{{img.fons}}') no-repeat center center fixed;-webkit-background-size: cover;-moz-background-size: cover;-o-background-size: cover;background-size: cover;}
+</style>
+<div ng-include="'/angular_templates/errorImgModal.html'"></div>
+<!--menu superior dropdown-->
+<div ng-include="'/angular_templates/dropdownMenuBar.html'"></div>
+<div ng-include="'/angular_templates/logoutModal.html'"></div>
+<div id="main" style="background-image: url('/img/srcWeb/patterns/fons.png');background-size:100% 100%">
+    <div class="row folderContainer">
+        <div class="col-xs-5 imgRounded imgconfirmContainer">
+            <div class="row">
+                <div class="col-xs-12 imgRounded imgContainer">
+                    <div class="fullheight imgRounded" style="background-image: url(img/srcWeb/patterns/pattern4.png)">
+                        <div id="header" class="row headerAddWord">
+                            <div class="col-xs-10 headerTitle headerAdd" ng-if="NewModif == 1">{{content.addNameImageTitle}}</div>
+                            <div class="col-xs-10 headerTitle headerAdd" ng-if="NewModif == 0">{{content.editNameImageTitle}}</div>
+                        </div>
+                        <div class="paddingContainerImg">
+                          <div class="paddingcontent">
+                          <div class="row">
+                            <div class="col-xs-offset-1 col-xs-4 imgCellLg">
+                              <img class="img-rounded" ng-src="{{objAdd.imgPicto}}" style="width:7vh;height:7vh;"/>
+                            </div>
+                            <div class="col-xs-7">
+                              <div class="row">
+                                <div class="col-xs-offset-1 col-xs-6">
+                                  <input type="text" class="searchtext" ng-model="imgEditSearch"/><br>
+                                </div>
+                                <div class="col-xs-4">
+                                <div class="col-xs-6">
+                                  <img ng-click="getArasaacPictos(imgEditSearch,BWSearch)" class="lupa" src='img/icons/lupa.png'></img>
+                                </div>
+                                <div class="col-xs-6">
+                                  <div class="buttonsSearchView">
+                                      <label for="file-input" class="fullwidth">
+                                          <div>
+                                              <img class="buttonAddImg pull-right" src="img/icons/add_photo.png"/>
+                                          </div>
+                                      </label>
+                                      <input type="file" multiple id="file-input" onchange="angular.element(this).scope().uploadFileToWord()" ng-show="false"/>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="col-xs-12">
+                                  <label class="radio-inline" style="margin-left:-5px;">
+                                      <input type="checkbox" ng-model="BWSearch" value="1"/>
+                                      ByN
+                                  </label>
+                              </div>
+                              </div>
+
+
+                              <div class="col-xs-2">
+                                  <div class="buttonsSearchView">
+                                      <label for="file-input" class="fullwidth">
+                                          <div ng-init="imgsrc=img.addPhoto" ng-mouseover="imgsrc=img.addPhotoSelected" ng-mouseout="imgsrc=img.addPhoto">
+                                              <img class="buttonAddImg pull-right" ng-src="{{imgsrc}}"/>
+                                          </div>
+                                      </label>
+                                      <input type="file" multiple id="file-input" onchange="angular.element(this).scope().uploadFile()" ng-show="false"/>
+                                  </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="row" style="width:80%;margin-top:10%;margin-left:10%;">
+                            <div class="col-xs-3">
+                              <div class="imgCell" ng-click="objAdd.imgPicto=picsara[0];shwimg=false">
+                              <img class="img-rounded" ng-src="{{picsara[0]}}" style="width:6.5vh;height:6.5vh;"/>
+                            </div>
+                          </div>
+                            <div class="col-xs-3"><div class="imgCell" ng-click="objAdd.imgPicto=picsara[1];shwimg=true">
+                              <img class="img-rounded" ng-src="{{picsara[1]}}" style="width:6.5vh;height:6.5vh;"/>
+                            </div>
+                          </div>
+                            <div class="col-xs-3"><div class="imgCell" ng-click="objAdd.imgPicto=picsara[2];shwimg=true">
+                              <img class="img-rounded" ng-src="{{picsara[2]}}" style="width:6.5vh;height:6.5vh;"/>
+                            </div>
+                          </div>
+                            <div class="col-xs-3"><div class="imgCell" ng-click="objAdd.imgPicto=picsara[3];shwimg=true">
+                              <img class="img-rounded" ng-src="{{picsara[3]}}" style="width:6.5vh;height:6.5vh;"/>
+                            </div>
+                          </div>
+                          </div>
+
+                        </div>
+                      </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 imgRounded confirmContainer">
+                    <div class="fullheight imgRounded paddingContainerButtons row" style="background-image: url(img/srcWeb/patterns/pattern6.png)">
+                         <div  class="col-xs-12 paddingButtonAddWord">
+                            <div class=" imgRounded ButtonAddWord row" ng-click="saveAddWord()">
+                                <div class="col-xs-8 fullheight TextAddWord">{{content.saveWord}}</div>
+                                <div class="col-xs-4">
+                                    <img class="imgResponsiveAddWord" ng-src="{{baseurl}}img/srcWeb/imagenesvarias/save_as_gris.png"/>
+                                </div>
+                            </div>
+                        </div>
+                         <div  class="col-xs-12 paddingButtonAddWord">
+                            <div class="imgRounded ButtonAddWord row" ng-click="cancelAddWord()">
+                                <div class="col-xs-8 fullheight TextAddWord">{{content.cancelWord}}</div>
+                                <div class="col-xs-4">
+                                <img class="imgResponsiveAddWord" ng-src="{{baseurl}}img/srcWeb/imagenesvarias/cross_gris.png"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div ng-if="NewModif == 0" class="col-xs-12 paddingButtonAddWord">
+                            <div class="imgRounded ButtonAddWord row" ng-click="EditWordRemove()">
+                                <div class="col-xs-8 fullheight TextAddWord">{{content.eraseWord}}</div>
+                                <div class="col-xs-4">
+                                <img class="imgResponsiveAddWord" ng-src="{{baseurl}}img/srcWeb/imagenesvarias/trashnou_gris.png"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-7 addWordContainer">
+            <div class="fullheight imgRounded" style="background-image: url(img/srcWeb/patterns/pattern3.png)">
+                <div id="header" class="row headerAddWord">
+                    <div class="col-xs-10 headerTitle" ng-if="addWordType == 'name' && NewModif == 1">{{content.addNameTitle}}</div>
+                    <div class="col-xs-10 headerTitle" ng-if="addWordType == 'name' && NewModif == 0">{{content.editNameTitle}}</div>
+                    <div class="col-xs-10 headerTitle" ng-if="addWordType == 'adj' && NewModif == 1">{{content.addAdjTitle}}</div>
+                    <div class="col-xs-10 headerTitle" ng-if="addWordType == 'adj' && NewModif == 0">{{content.editAdjTitle}}</div>
+                </div>
+                <div class="paddingContainerAddword">
+                    <div ng-if="addWordType == 'name'" ng-include="'/angular_templates/addWordName.html'"></div>
+                    <div ng-if="addWordType == 'adj'" ng-include="'/angular_templates/addWordAdj.html'"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
