@@ -106,7 +106,6 @@ angular.module('controllers')
                     $scope.NewModif = $rootScope.addWordparam.newmod;
                     $scope.addWordType = $rootScope.addWordparam.type;
                     $rootScope.addWordparam = null;
-                    console.log($scope.addWordType);
                 } else {
                     $location.path("/panelGroups");
                 }
@@ -219,7 +218,7 @@ angular.module('controllers')
                             $scope.commit = 0;
                             $scope.errAdd.erradd3 = true;
                         }
-                        
+                        //console.log($scope.NClassList[1]);
                         if($scope.commit == 1)
                         {
                             $scope.objAdd = {
@@ -237,7 +236,7 @@ angular.module('controllers')
                                 imgPicto: $scope.objAdd.imgPicto, 
                                 pictoid: $scope.idEditWord != null ? $scope.idEditWord : false, 
                                 new: $scope.NewModif == 1 ? true : false,
-                                class: $scope.NClassList, 
+                                class: $scope.NClassList,
                                 supExp: $scope.objAdd.supExp == true ? "1" : "0"};
                             
                             if ($scope.objAdd.singpl == "pl"){
@@ -326,7 +325,7 @@ angular.module('controllers')
             };
             $scope.addNClass = function (nameTypeClass) {
                 angular.forEach($scope.classNoun, function (value, key) {
-                    if (value.classType == nameTypeClass) {
+                    if (value.nameType == nameTypeClass.toString()) {
                         $scope.NClassList.push($scope.classNoun[key]);
                         $scope.classNoun.splice(key, 1);
                     }
@@ -338,7 +337,7 @@ angular.module('controllers')
             };
             $scope.addAdjClass = function (AdjTypeClass) {
                 angular.forEach($scope.classAdj, function (value, key) {
-                    if (value.classType == AdjTypeClass) {
+                    if (value.adjType == AdjTypeClass.toString()) {
                         $scope.AdjClassList.push($scope.classAdj[key]);
                         $scope.classAdj.splice(key, 1);
                     }
@@ -360,24 +359,6 @@ angular.module('controllers')
                 $scope.style_changes_title = 'padding-top: 2vh;';
                 $('#infoModal').modal('toggle');
             };
-            $scope.getArasaacPictos=function(pictoaras,bw){
-              var postdata = {picto: pictoaras,ByN:bw};
-              $http.post("PanelGroup/getArasaacPictos",postdata).success(function (results) {
-                var pics=results.data;
-                console.log(pics);
-                var picasarashow=[];
-                    for(var i=0;i<4;i++){
-                      if(pics[i]!=null){
-                        picasarashow.push(true);
-                      }else{
-                        picasarashow.push(false);
-                      }
-                    }
-                    $scope.imgData=picasarashow;
-                    $scope.picsara=pics;
-                    console.log(pics);
-                  });
-            }
 
         });
         
