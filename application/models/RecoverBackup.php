@@ -79,6 +79,7 @@ class RecoverBackup extends CI_Model {
     function LaunchParcialRecover_Folder(){
       $Fname=$this->getLastGlobalBackup();
       $this->InsertSFolder($Fname);
+      $this->InsertSSentence($Fname);
       $this->InsertSHistoric($Fname);
       $this->InsertRSSentencePictograms($Fname);
       $this->InsertRSHistoricPictograms($Fname);
@@ -628,7 +629,7 @@ private function UpdateSuperUser($Folder){
  $ID_User=$this->session->idusu;
  $file = file_get_contents($Folder."/SuperUser.json");
  $su=json_decode($file);
-  $sql="UPDATE SuperUser SET realname=?, surnames=?, email=?, cfgDefUser=?, cfgIsFem=?, cfgUsageMouseOneCTwoC=?,
+  $sql="UPDATE SuperUser SET realname=?, surnames=?, cfgDefUser=?, cfgIsFem=?, cfgUsageMouseOneCTwoC=?,
    cfgTimeClick=?, cfgExpansionOnOff=?, cfgAutoEraseSentenceBar=?, cfgPredOnOff=?,
    cfgPredBarVertHor=?, cfgPredBarNumPred=?, cfgScanningOnOff=?, cfgScanningCustomRowCol=?,
    cfgScanningAutoOnOff=?, cfgCancelScanOnOff=?, cfgTimeScanning=?, cfgScanStartClick=?,
@@ -642,7 +643,6 @@ private function UpdateSuperUser($Folder){
   array(
   $su->realname,
   $su->surnames,
-  $su->email,
   $ID_User,
   $su->cfgIsFem,
   $su->cfgUsageMouseOneCTwoC,
@@ -691,17 +691,14 @@ private function UpdateUser($Folder){
  $us=json_decode($file);
  $count=count($us->ID_User);
  for($i=0;$i<$count;$i++){
-  $sql="UPDATE User SET ID_USU=?,ID_ULanguage=?, ID_UOrg=?,
-  cfgExpansionVoiceOnline=?, cfgExpansionVoiceOnlineType=?, cfgExpansionVoiceOffline=?,
+  $sql="UPDATE User SET ID_USU=?,ID_ULanguage=?, ID_UOrg=?, cfgExpansionVoiceOnlineType=?,
   cfgInterfaceVoiceOnOff=?, cfgInterfaceVoiceMascFem=?, cfgVoiceOfflineRate=?, cfgExpansionLanguage=?,
   errorTemp=? WHERE ID_User=?";
   $this->db->query($sql,array(
     $ID_SU,
     $us->ID_ULanguage[$i],
     $us->ID_UOrg[$i],
-    $us->cfgExpansionVoiceOnline[$i],
     $us->cfgExpansionVoiceOnlineType[$i],
-    $us->cfgExpansionVoiceOffline[$i],
     $us->cfgInterfaceVoiceOnOff[$i],
     $us->cfgInterfaceVoiceMascFem[$i],
     $us->cfgVoiceOfflineRate[$i],

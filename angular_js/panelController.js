@@ -617,7 +617,7 @@ angular.module('controllers')
                   image=true;
                   voc=true;
                   folder=true;
-                  $scope.recparcialBackupCall_OW('recpanels');
+                  $scope.recparcialBackupCall_NOW('recpanels');
                 }
                 if(image)$scope.recparcialBackupCall_NOW('recimages');
                 if(voc)$scope.recparcialBackupCall_NOW('recvocabulary');
@@ -634,7 +634,7 @@ angular.module('controllers')
               $("#lfold").attr("checked",true)
             }
         //funcion que llama al backend para hacer una recuperacion total backup
-        $scope.rectotalBackup=function(){
+      /*  $scope.rectotalBackup=function(){
               $http.get("BackupController/recbackup").success(function (results) {
                 console.log(results);
                 $scope.viewActived=false;
@@ -642,7 +642,7 @@ angular.module('controllers')
                   $route.reload();
                 }, 3000);
               });
-        }
+        }*/
             //funcion que llama al backend para hacer un backup total
             $scope.totalBackup=function(){
               var promise = $http.get('BackupController');
@@ -692,17 +692,13 @@ angular.module('controllers')
                         });
             };
             $scope.showparcialBackup=function(images,voc,folder,cfg,panelb){
-              if(images===true&&voc===true&&folder===true&&cfg===true&&panelb===true){
-                $scope.rectotalBackup();
-              }else{
+              console.log("sadf")
                 $scope.imagesr=images
                 $scope.voc=voc
                 $scope.folder=folder
                 $scope.cfg=cfg
                 $scope.panelb=panelb
                 $('#recmbackup').modal('toggle');
-              }
-
             }
             $scope.ShowAddGroupsInfo=function(){
               $('#AddGroupsInfo').modal('toggle');

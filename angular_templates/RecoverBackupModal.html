@@ -13,19 +13,22 @@
                       <div class="col-xs-12" style="display: block; position: relative; margin-top: 1vh;">
                           <div class="col-xs-offset-1 col-xs-11 text-left radioEditWord">
                               <label id='limgrec' class="radio-inline">
-                                  <input type="checkbox" ng-model="images" ng-checked="panelb" ng-init="images=true"/>
+                                  <input type="checkbox" ng-model="images" ng-disabled="panelb"
+                                   ng-init="images=true"/>
                                   {{content.imagenesbackup}}
                               </label>
                           </div>
                           <div class="col-xs-offset-1 col-xs-11 text-left radioEditWord">
                               <label id='lvoc' class="radio-inline">
-                                  <input id='voc' type="checkbox" ng-model="voc" ng-checked="panelb" ng-init="voc=true"/>
+                                  <input id='voc' type="checkbox" ng-disabled="panelb"
+                                  ng-model="voc" ng-init="voc=true"/>
                                   {{content.vocabulariobackup}}
                               </label>
                           </div>
                           <div class="col-xs-offset-1 col-xs-11 text-left radioEditWord">
                               <label id='lfold' class="radio-inline">
-                                  <input id='fold' type="checkbox" ng-checked="panelb" ng-model="folder" ng-init="folder=true" />
+                                  <input id='fold' type="checkbox" ng-disabled="panelb"
+                                  ng-model="folder" ng-init="folder=true" />
                                   {{content.carpetabackup}}
                               </label>
                           </div>

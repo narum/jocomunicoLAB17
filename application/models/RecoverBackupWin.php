@@ -79,6 +79,7 @@ class RecoverBackupWin extends CI_Model {
     function LaunchParcialRecover_Folder(){
       $Fname=$this->getLastGlobalBackup();
       $this->InsertSFolder($Fname);
+      $this->InsertSSentence($Fname);
       $this->InsertSHistoric($Fname);
       $this->InsertRSSentencePictograms($Fname);
       $this->InsertRSHistoricPictograms($Fname);
