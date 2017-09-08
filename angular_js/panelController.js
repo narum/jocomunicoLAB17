@@ -443,6 +443,16 @@ angular.module('controllers')
                 }
 
             };
+
+            $scope.addVerb = function (newModif){
+                if (newModif == 1) {
+                    $rootScope.addWordparam = {newmod: newModif};
+                    $timeout(function () {
+                            $location.path('/addVerb');
+                    }, 1000);
+                }
+            };
+
             $scope.selectAddWordEdit = function (newModif, id) {
                 $rootScope.addWordparam = {newmod: newModif, type: id};
                 $timeout(function () {

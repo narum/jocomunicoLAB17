@@ -63,6 +63,10 @@ angular.module('app', [
 			controller:'addWordCtrl',
 			templateUrl:'../../angular_templates/addWord.html'
 		})
+        		.when('/addVerb', {
+            controller:'addVerb',
+            templateUrl:'../../angular_templates/addVerb.html'
+        })
                 .when('/historic', {
 			controller:'historicCtrl',
 			templateUrl:'../../angular_templates/HistoricView.html'

@@ -2033,10 +2033,7 @@ angular.module('controllers', [])
                             break;
                         case "read":
                             $scope.generate();
-                            // only initialize the scan if the FeedBack popup is not there
-                            if (!$scope.cfgUserExpansionFeedback) {
-                                $scope.InitScan();
-                            }
+                            $scope.InitScan();
                             break;
                         case "deletelast":
                             $scope.deleteLast();
@@ -2123,18 +2120,7 @@ angular.module('controllers', [])
             $scope.selectScannedCell = function ()
             {
                 $scope.clickOnCell($scope.arrayScannedCells[$scope.indexScannedCells]);
-                if ($scope.inScan) {
-                    // wait for clickoncell function to finish
-                    // if the cell is a function that moves the scan, InitScan should not be called
-                    $timeout(function () {
-                        if ($scope.isScanning !== "sentencebar") {
-                            $scope.InitScan();
-                        }
-                    }, 300);
-                }
-                else {
-                    $scope.InitScan();
-                }
+                $scope.InitScan();
             };
 
             // Select the current cell (the index point to the array with all the cells)
@@ -2659,8 +2645,7 @@ angular.module('controllers', [])
                         if (readed === true) {
                             text = "";
                         } else {
-                            if (cell.textInCell !== null) text = cell.textInCell;
-                            else text = cell.textFunction;
+                            text = cell.textInCell;
                         }
 
                         $scope.showBoard(cell.boardLink);
