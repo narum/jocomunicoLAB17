@@ -1323,6 +1323,9 @@ angular.module('controllers', [])
 
 
             //Dropdown Menu Bar
+            //$scope.dropdownMenuOpen = false;
+
+
             $rootScope.dropdownMenuBar = null;
             $rootScope.dropdownMenuBarValue = '/'; //Button selected on this view
             $rootScope.dropdownMenuBarButtonHide = true;
@@ -1330,7 +1333,7 @@ angular.module('controllers', [])
             //SentenceBar button to open dropdown menu bar when hover
             $("#idSentenceBar").hover(function () {
                 console.log('hover');
-                $scope.dropdownMenuOpen = true;
+                $rootScope.dropdownMenuOpen = true;
             });
             //Choose the buttons to show on bar
             dropdownMenuBarInit($rootScope.interfaceLanguageId)
@@ -1426,11 +1429,45 @@ angular.module('controllers', [])
             });
 
 
+
+
             // JORGE: #Tarea 3. Esta función sirve para comprobar si el usuario y la contraseña que usamos para acceder al menu es correcta.
           $scope.confirmPassword = function (){
 
+
+
+            if($scope.cfgMenuBlock == false){
+              var eventLaunched = false;
+              $rootScope.dropdownMenuOpen = true;
+
+              if($rootScope.dropdownMenuOpen){
+                //console.log("Menu abierto");
+
+                $("#clkOutside").bind("click", function() {
+                    eventLaunched = true;
+                    //console.log("Evento lanzado");
+                    //console.log("Menu cerrado");
+                    $timeout.cancel($scope.timerPassword);
+                  });
+
+                $scope.timerPassword = $timeout(function(){
+                  angular.element('#clkOutside').triggerHandler('click');
+                  $rootScope.dropdownMenuOpen = false;
+                  eventLaunched = true;
+                  //console.log("Menu cerrado");
+                },10000);
+
+                return;
+              }
+
+            }
+
+
+
+
             var url = $scope.baseurl +  "Main/confirmPassword";
             var postdata = {user: $scope.usernameCopyPanel, pass: $scope.passwordCopyPanel};
+
 
             if($scope.isLoged === "true"){
               $('#confirmPassword').modal("hide");
@@ -1469,7 +1506,6 @@ angular.module('controllers', [])
                   $scope.timerPassword = $timeout(function(){
                     angular.element('#clkOutside').triggerHandler('click');
                       $('#confirmPassword').modal('hide');
-
                       $scope.passwordCopyPanel = null;
                     }, 10000);
 
@@ -1519,7 +1555,7 @@ angular.module('controllers', [])
           };
 
 
-            $scope.setTimer = function () {
+          $scope.setTimer = function () {
                 $interval.cancel($scope.intervalScan);
                 var Intervalscan = $scope.cfgTimeScanning;
                 function myTimer() {
@@ -2034,7 +2070,10 @@ angular.module('controllers', [])
                             break;
                         case "read":
                             $scope.generate();
-                            $scope.InitScan();
+                            // only initialize the scan if the FeedBack popup is not there
+                            if (!$scope.cfgUserExpansionFeedback) {
+                                $scope.InitScan();
+                            }
                             break;
                         case "deletelast":
                             $scope.deleteLast();
@@ -2121,7 +2160,18 @@ angular.module('controllers', [])
             $scope.selectScannedCell = function ()
             {
                 $scope.clickOnCell($scope.arrayScannedCells[$scope.indexScannedCells]);
-                $scope.InitScan();
+                if ($scope.inScan) {
+                    // wait for clickoncell function to finish
+                    // if the cell is a function that moves the scan, InitScan should not be called
+                    $timeout(function () {
+                        if ($scope.isScanning !== "sentencebar") {
+                            $scope.InitScan();
+                        }
+                    }, 300);
+                }
+                else {
+                    $scope.InitScan();
+                }
             };
 
             // Select the current cell (the index point to the array with all the cells)
@@ -2646,7 +2696,8 @@ angular.module('controllers', [])
                         if (readed === true) {
                             text = "";
                         } else {
-                            text = cell.textInCell;
+                            if (cell.textInCell !== null) text = cell.textInCell;
+                            else text = cell.textFunction;
                         }
 
                         $scope.showBoard(cell.boardLink);
@@ -2854,109 +2905,109 @@ angular.module('controllers', [])
              * If you click in a function (not a pictogram) this controller carries you
              * to the specific function
              */
-            $scope.clickOnFunction = function (id, text, readed) {
-                var url = $scope.baseurl + "Board/getFunction";
-                /*var postdata = {id: id, tense: $scope.tense, tipusfrase: $scope.tipusfrase, negativa: $scope.negativa};*/
-                /*New code*/
-                var postdata = {id: id, tense: $scope.tense, tipusfrase: $scope.tipusfrase, negativa: $scope.negativa, pos: $scope.chooseElementDeleted};
-                /*New code*/
-                $http.post(url, postdata).success(function (response)
-                {
-                    var control = response.control;
-                    console.log(control);
+             $scope.clickOnFunction = function (id, text, readed) {
+                 var url = $scope.baseurl + "Board/getFunction";
+                 /*var postdata = {id: id, tense: $scope.tense, tipusfrase: $scope.tipusfrase, negativa: $scope.negativa};*/
+                 /*New code*/
+                 var postdata = {id: id, tense: $scope.tense, tipusfrase: $scope.tipusfrase, negativa: $scope.negativa, pos: $scope.chooseElementDeleted};
+                 /*New code*/
+                 $http.post(url, postdata).success(function (response)
+                 {
+                     var control = response.control;
+                     console.log(control);
 
-                    $scope.dataTemp = response.data;
-                    $scope.tense = response.tense;
-                    $scope.tipusfrase = response.tipusfrase;
-                    $scope.negativa = response.negativa;
-                    /*New code*/
-                    $scope.chooseElementDeleted = response.pos;
-                    /*New code*/
-                    if ((control !== "") && (control !== "home") && (control !== "historic") && (control !== "stopAudio")) {
-                        var url = $scope.baseurl + "Board/" + control;
-                        /*var postdata = {tense: $scope.tense, tipusfrase: $scope.tipusfrase, negativa: $scope.negativa};*/
-                        /*New code*/
-                        var postdata = {tense: $scope.tense, tipusfrase: $scope.tipusfrase, negativa: $scope.negativa, pos: $scope.chooseElementDeleted};
-                        /*New code*/
-                        $http.post(url, postdata).success(function (response)
-                        {
-                            $scope.info = response.info;
-                            if (control !== "generate") {
-                                $scope.dataTemp = response.data;
-                                if (control === "deleteAllWords") {
-                                    $scope.tense = "defecte";
-                                    $scope.tipusfrase = "defecte";
-                                    $scope.negativa = false;
-                                    $scope.getPred();
-                                } else if (control === "deleteLastWord") {
-                                    $scope.getPred();
-                                }
+                     $scope.dataTemp = response.data;
+                     $scope.tense = response.tense;
+                     $scope.tipusfrase = response.tipusfrase;
+                     $scope.negativa = response.negativa;
+                     /*New code*/
+                     $scope.chooseElementDeleted = response.pos;
+                     /*New code*/
+                     if ((control !== "") && (control !== "home") && (control !== "historic") && (control !== "stopAudio")) {
+                         var url = $scope.baseurl + "Board/" + control;
+                         /*var postdata = {tense: $scope.tense, tipusfrase: $scope.tipusfrase, negativa: $scope.negativa};*/
+                         /*New code*/
+                         var postdata = {tense: $scope.tense, tipusfrase: $scope.tipusfrase, negativa: $scope.negativa, pos: $scope.chooseElementDeleted};
+                         /*New code*/
+                         $http.post(url, postdata).success(function (response)
+                         {
+                             $scope.info = response.info;
+                             if (control !== "generate") {
+                                 $scope.dataTemp = response.data;
+                                 if (control === "deleteAllWords") {
+                                     $scope.tense = "defecte";
+                                     $scope.tipusfrase = "defecte";
+                                     $scope.negativa = false;
+                                     $scope.getPred();
+                                 } else if (control === "deleteLastWord") {
+                                     $scope.getPred();
+                                 }
 
-                                /*New code*/
-                                else if(control === "deleteSelectedWord"){
-                                  console.log($scope.inScan);
-                                  /* Hay que hacer dos formas de activar la función. La primera es la activar la función sin escaneo y la segunda es activando la función con escaneo */
-                                  if(!$scope.inScan){
-                                    var ngDeleteSelectedPicto = angular.element($window.document.getElementById('txtImgContainer'));
-                                    var children = ngDeleteSelectedPicto.children();
-                                    var s = children.length;
-                                    for(i = 0; i < s; i++){
-                                      var chooseChild = children[i];
-                                      $scope.chooseAngularChildElement = angular.element(chooseChild);
-                                      $scope.chooseAngularChildElement.toggleClass('selectedDeletePicto');
-                                    }
+                                 /*New code*/
+                                 else if(control === "deleteSelectedWord"){
+                                   console.log($scope.inScan);
+                                   /* Hay que hacer dos formas de activar la función. La primera es la activar la función sin escaneo y la segunda es activando la función con escaneo */
+                                   if(!$scope.inScan){
+                                     var ngDeleteSelectedPicto = angular.element($window.document.getElementById('txtImgContainer'));
+                                     var children = ngDeleteSelectedPicto.children();
+                                     var s = children.length;
+                                     for(i = 0; i < s; i++){
+                                       var chooseChild = children[i];
+                                       $scope.chooseAngularChildElement = angular.element(chooseChild);
+                                       $scope.chooseAngularChildElement.toggleClass('selectedDeletePicto');
+                                     }
 
-                                    if($scope.deleteButtonActive == false){
-                                      $scope.deleteButtonActive = true;
-                                    }
-                                    else{
-                                      $scope.deleteButtonActive = false;
-                                      $scope.chooseAngularChildElement.toggleClass('selectedDeletePicto', !$scope.deleteButtonActive);
-                                    }
+                                     if($scope.deleteButtonActive == false){
+                                       $scope.deleteButtonActive = true;
+                                     }
+                                     else{
+                                       $scope.deleteButtonActive = false;
+                                       $scope.chooseAngularChildElement.toggleClass('selectedDeletePicto', !$scope.deleteButtonActive);
+                                     }
 
-                                    $scope.getPred();
-                                  }
+                                     $scope.getPred();
+                                   }
 
-                                  else{
-                                    $scope.isScanning = "deleteselectedpicto";
-                                    //$scope.isScanning = "deleteselectedpicto";
-                                    $scope.selectBlockScan();
-
-
-
-                                  }
-
-                                }
+                                   else{
+                                     $scope.isScanning = "deleteselectedpicto";
+                                     //$scope.isScanning = "deleteselectedpicto";
+                                     $scope.selectBlockScan();
 
 
-                                if (!readed) {
-                                    $scope.readText(text, true);
-                                }
-                            } else {
-                                $scope.tense = "defecte";
-                                $scope.tipusfrase = "defecte";
-                                $scope.negativa = false
 
-                                $scope.readText($scope.info.frasefinal, false);
-                            }
-                        });
-                    } else if ((control === "home")) {
-                        $scope.config();
-                    } else if ((control === "historic")) {
-                        $rootScope.senteceFolderToShow = {folder: null, boardID: $scope.idboard};
-                        $location.path('/historic');
-                    } else if ((control === "stopAudio")){
-                        var aux = document.getElementById('utterance');
-                        aux.pause();
-                        aux.currentTime = 0;
-                    }
-                    else {
-                        if (!readed) {
-                            $scope.readText(text, true);
-                        }
-                    }
-                });
-            };
+                                   }
+
+                                 }
+
+
+                                 if (!readed) {
+                                     $scope.readText(text, true);
+                                 }
+                             } else {
+                                 $scope.tense = "defecte";
+                                 $scope.tipusfrase = "defecte";
+                                 $scope.negativa = false
+
+                                 $scope.readText($scope.info.frasefinal, false);
+                             }
+                         });
+                     } else if ((control === "home")) {
+                         $scope.config();
+                     } else if ((control === "historic")) {
+                         $rootScope.senteceFolderToShow = {folder: null, boardID: $scope.idboard};
+                         $location.path('/historic');
+                     } else if ((control === "stopAudio")){
+                         var aux = document.getElementById('utterance');
+                         aux.pause();
+                         aux.currentTime = 0;
+                     }
+                     else {
+                         if (!readed) {
+                             $scope.readText(text, true);
+                         }
+                     }
+                 });
+             };
             /*
              * Remove last word added to the sentence
              */
@@ -3788,6 +3839,7 @@ angular.module('controllers', [])
             /* #Jorge: Add variables values */
             $scope.timerPassword = null;
 
+
             //Dropdown Menu Bar
             $rootScope.dropdownMenuBar = null;
             $rootScope.dropdownMenuBarValue = '/'; //Button selected on this view
@@ -3796,7 +3848,7 @@ angular.module('controllers', [])
             //SentenceBar button to open dropdown menu bar when hover
             $("#idSentenceBar").hover(function () {
                 console.log('hover');
-                $scope.dropdownMenuOpen = true;
+                $rootScope.dropdownMenuOpen = true;
             });
             //Choose the buttons to show on bar
             dropdownMenuBarInit($rootScope.interfaceLanguageId)
@@ -3839,6 +3891,32 @@ angular.module('controllers', [])
 
             // JORGE: Esta función sirve para comprobar si el usuario y la contraseña que usamos para acceder al menu es correcta.
             $scope.confirmPassword = function (){
+
+              if($scope.cfgMenuBlock == false){
+                var eventLaunched = false;
+                $rootScope.dropdownMenuOpen = true;
+
+                if($rootScope.dropdownMenuOpen){
+                  console.log("Menu abierto");
+
+                  $("#clkOutside").bind("click", function() {
+                      eventLaunched = true;
+                      console.log("Evento lanzado");
+                      console.log("Menu cerrado");
+                      $timeout.cancel($scope.timerPassword);
+                    });
+
+                  $scope.timerPassword = $timeout(function(){
+                    angular.element('#clkOutside').triggerHandler('click');
+                    $rootScope.dropdownMenuOpen = false;
+                    eventLaunched = true;
+                    console.log("Menu cerrado");
+                  },10000);
+
+                  return;
+                }
+
+              }
 
               var url = $scope.baseurl +  "Main/confirmPassword";
               var postdata = {user: $scope.usernameCopyPanel, pass: $scope.passwordCopyPanel};
