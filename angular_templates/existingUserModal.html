@@ -1,0 +1,53 @@
+<div class="modal fade" id="existingUserModal" role="dialog" style="z-index: 1000000;" data-backdrop="true">
+    <div class="modal-dialog modal-lg">
+        <div class="row marginModalTopOwl"><img class="img-owl pull-right" src={{img.lowSorpresaFlecha}}/></div>
+        <div class="row" id="boxUserConfig" style="background-image: url('/img/srcWeb/patterns/pattern2.png')">
+            <div id="header" class="row">
+                <div class="col-xs-10 headerTitle-confirms">{{content.accesoMenu}}</div>
+            </div>
+            <div class="row backgroundUserConfigBox">
+                <div class="row fonsAlert-info">
+                    <div class="row">
+                        <div class="row" style="margin-bottom:10px;">
+                            <span class="col-xs-11 col-xs-offset-1"> {{content.txtAccesoMenu}} </span>
+                        </div>
+                        <div class="col-xs-12">
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <!-- User name -->
+                                    <div class="input-group input-group-auto col-xs-12" style="margin-bottom: 10px">
+                                        <span class="input-group-addon"><i class="icon-user"></i></span>
+                                        <input class="form-control" type="text" name="user" placeholder="{{content.user}}" ng-model="existingUserData.name" required/>
+                                    </div>
+                                    <!-- User password -->
+                                    <div class="input-group input-group-auto" style="margin-bottom: 20px">
+                                        <span class="input-group-addon"><i class="icon-unlock-alt"></i></span>
+                                        <input class="form-control" type="password" name="pass" placeholder="{{content.password}}" ng-model="existingUserData.password" required/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Notifier if user is valid -->
+                        <div class="row" ng-show="!userExistsState">
+                            <div class="col-xs-12">
+                                <span class="warningcoment"> {{content.notPossibleAddUser}} </span>
+                            </div>
+                        </div>
+                        <br>
+                        <!-- Confirm and cancel button -->
+                        <div class="row">
+                            <!-- Confirm User -->
+                            <div class="col-xs-2">
+                                <button ng-click="userExists()" id="btnAccept" type="button" class="btn-gray center-block">{{logoutContent.confirm}}</button>
+                            </div>
+                            <!-- Cancel -->
+                            <div class="col-xs-2 col-xs-offset-7">
+                                <button id="btnCancel" data-dismiss="modal" type="button" class="btn-gray center-block" style="display:right;">{{logoutContent.cancel}}</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
