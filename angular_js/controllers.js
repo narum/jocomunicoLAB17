@@ -1330,7 +1330,7 @@ angular.module('controllers', [])
             //SentenceBar button to open dropdown menu bar when hover
             $("#idSentenceBar").hover(function () {
                 console.log('hover');
-                $scope.dropdownMenuOpen = true;
+                $rootScope.dropdownMenuOpen = true;
             });
             //Choose the buttons to show on bar
             dropdownMenuBarInit($rootScope.interfaceLanguageId)
@@ -1429,6 +1429,36 @@ angular.module('controllers', [])
             // JORGE: #Tarea 3. Esta función sirve para comprobar si el usuario y la contraseña que usamos para acceder al menu es correcta.
           $scope.confirmPassword = function (){
 
+<<<<<<< HEAD
+=======
+
+            if($scope.cfgMenuBlock == false){
+              var eventLaunched = false;
+              $rootScope.dropdownMenuOpen = true;
+
+              if($rootScope.dropdownMenuOpen){
+                //console.log("Menu abierto");
+
+                $("#clkOutside").bind("click", function() {
+                    eventLaunched = true;
+                    //console.log("Evento lanzado");
+                    //console.log("Menu cerrado");
+                    $timeout.cancel($scope.timerPassword);
+                  });
+
+                $scope.timerPassword = $timeout(function(){
+                  angular.element('#clkOutside').triggerHandler('click');
+                  $rootScope.dropdownMenuOpen = false;
+                  eventLaunched = true;
+                  //console.log("Menu cerrado");
+                },10000);
+
+                return;
+              }
+
+            }
+
+>>>>>>> refs/remotes/origin/jorge
             var url = $scope.baseurl +  "Main/confirmPassword";
             var postdata = {user: $scope.usernameCopyPanel, pass: $scope.passwordCopyPanel};
 
@@ -2870,19 +2900,24 @@ angular.module('controllers', [])
              */
             $scope.clickOnFunction = function (id, text, readed) {
                 var url = $scope.baseurl + "Board/getFunction";
-                var postdata = {id: id, tense: $scope.tense, tipusfrase: $scope.tipusfrase, negativa: $scope.negativa};
+                var postdata = {id: id, tense: $scope.tense, tipusfrase: $scope.tipusfrase, negativa: $scope.negativa, pos: $scope.chooseElementDeleted};
 
-                $http.post(url, postdata).success(function (response)
-                {
+                $http.post(url, postdata).success(function (response){
                     var control = response.control;
                     console.log(control);
                     $scope.dataTemp = response.data;
                     $scope.tense = response.tense;
                     $scope.tipusfrase = response.tipusfrase;
                     $scope.negativa = response.negativa;
+<<<<<<< HEAD
+=======
+                    /*New code*/
+                    $scope.chooseElementDeleted = response.pos;
+                    /*New code*/
+>>>>>>> refs/remotes/origin/jorge
                     if ((control !== "") && (control !== "home") && (control !== "historic") && (control !== "stopAudio")) {
                         var url = $scope.baseurl + "Board/" + control;
-                        var postdata = {tense: $scope.tense, tipusfrase: $scope.tipusfrase, negativa: $scope.negativa};
+                        var postdata = {tense: $scope.tense, tipusfrase: $scope.tipusfrase, negativa: $scope.negativa, pos: $scope.chooseElementDeleted};
 
                         $http.post(url, postdata).success(function (response)
                         {
@@ -2897,6 +2932,42 @@ angular.module('controllers', [])
                                 } else if (control === "deleteLastWord") {
                                     $scope.getPred();
                                 }
+
+
+                                 /*New code*/
+                                 else if(control === "deleteSelectedWord"){
+                                   console.log($scope.inScan);
+                                   /* Hay que hacer dos formas de activar la función. La primera es la activar la función sin escaneo y la segunda es activando la función con escaneo */
+                                   if(!$scope.inScan){
+                                     var ngDeleteSelectedPicto = angular.element($window.document.getElementById('txtImgContainer'));
+                                     var children = ngDeleteSelectedPicto.children();
+                                     var s = children.length;
+                                     for(i = 0; i < s; i++){
+                                       var chooseChild = children[i];
+                                       $scope.chooseAngularChildElement = angular.element(chooseChild);
+                                       $scope.chooseAngularChildElement.toggleClass('selectedDeletePicto');
+                                     }
+
+                                     if($scope.deleteButtonActive == false){
+                                       $scope.deleteButtonActive = true;
+                                     }
+                                     else{
+                                       $scope.deleteButtonActive = false;
+                                       $scope.chooseAngularChildElement.toggleClass('selectedDeletePicto', !$scope.deleteButtonActive);
+                                     }
+
+                                     $scope.getPred();
+                                   }
+
+                                   else{
+                                     $scope.isScanning = "deleteselectedpicto";
+                                     //$scope.isScanning = "deleteselectedpicto";
+                                     $scope.selectBlockScan();
+
+                                   }
+
+                                 }
+
                                 if (!readed) {
                                     $scope.readText(text, true);
                                 }
@@ -3765,7 +3836,7 @@ angular.module('controllers', [])
             //SentenceBar button to open dropdown menu bar when hover
             $("#idSentenceBar").hover(function () {
                 console.log('hover');
-                $scope.dropdownMenuOpen = true;
+                $rootScope.dropdownMenuOpen = true;
             });
             //Choose the buttons to show on bar
             dropdownMenuBarInit($rootScope.interfaceLanguageId)
@@ -3809,6 +3880,35 @@ angular.module('controllers', [])
             // JORGE: Esta función sirve para comprobar si el usuario y la contraseña que usamos para acceder al menu es correcta.
             $scope.confirmPassword = function (){
 
+<<<<<<< HEAD
+=======
+              if($scope.cfgMenuBlock == false){
+                var eventLaunched = false;
+                $rootScope.dropdownMenuOpen = true;
+
+                if($rootScope.dropdownMenuOpen){
+                  console.log("Menu abierto");
+
+                  $("#clkOutside").bind("click", function() {
+                      eventLaunched = true;
+                      console.log("Evento lanzado");
+                      console.log("Menu cerrado");
+                      $timeout.cancel($scope.timerPassword);
+                    });
+
+                  $scope.timerPassword = $timeout(function(){
+                    angular.element('#clkOutside').triggerHandler('click');
+                    $rootScope.dropdownMenuOpen = false;
+                    eventLaunched = true;
+                    console.log("Menu cerrado");
+                  },10000);
+
+                  return;
+                }
+
+              }
+
+>>>>>>> refs/remotes/origin/jorge
               var url = $scope.baseurl +  "Main/confirmPassword";
               var postdata = {user: $scope.usernameCopyPanel, pass: $scope.passwordCopyPanel};
 

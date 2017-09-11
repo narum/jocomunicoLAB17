@@ -29,6 +29,7 @@
         //Reset the timer and postpone the refresh in the next 10min.
         clearTimeout(Timer);
         Timer = window.setTimeout(refreshPage, 600000);
+<<<<<<< HEAD
     }
     function refreshPage() {
             location.reload(true);
@@ -38,6 +39,17 @@
     window.onhashchange = function () {
         window.clearTimeout(Timer);
     }
+=======
+    }
+    function refreshPage() {
+            location.reload(true);
+    }
+
+     // Delete the Timer when the view change.
+    window.onhashchange = function () {
+        window.clearTimeout(Timer);
+    }
+>>>>>>> refs/remotes/origin/jorge
 
     function waitloop(audiotoplayinitial, myVar) {
         var aux = document.getElementById('utterance');
@@ -69,9 +81,13 @@
 <div ng-include="'/angular_templates/errorNoPrimaryBoard.html'"></div>
 
 
+<<<<<<< HEAD
 <div ng-show="cfgMenuBlock" ng-include="'/angular_templates/confirmPassword.html'"></div>
 
 
+=======
+<div ng-show="cfgMenuBlock == true" ng-include="'/angular_templates/confirmPassword.html'"></div>
+>>>>>>> refs/remotes/origin/jorge
 
 <div id="main" style="background-image: url('/img/srcWeb/patterns/fons.png');background-size:100% 100%">
 <div class="loadingGif" ng-show="!viewActived"><img class="img-loadingGif" ng-src={{img.loading}}/></div>
