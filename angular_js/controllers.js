@@ -1429,9 +1429,6 @@ angular.module('controllers', [])
             // JORGE: #Tarea 3. Esta función sirve para comprobar si el usuario y la contraseña que usamos para acceder al menu es correcta.
           $scope.confirmPassword = function (){
 
-<<<<<<< HEAD
-=======
-
             if($scope.cfgMenuBlock == false){
               var eventLaunched = false;
               $rootScope.dropdownMenuOpen = true;
@@ -1457,8 +1454,7 @@ angular.module('controllers', [])
               }
 
             }
-
->>>>>>> refs/remotes/origin/jorge
+            
             var url = $scope.baseurl +  "Main/confirmPassword";
             var postdata = {user: $scope.usernameCopyPanel, pass: $scope.passwordCopyPanel};
 
@@ -2909,12 +2905,11 @@ angular.module('controllers', [])
                     $scope.tense = response.tense;
                     $scope.tipusfrase = response.tipusfrase;
                     $scope.negativa = response.negativa;
-<<<<<<< HEAD
-=======
+
                     /*New code*/
                     $scope.chooseElementDeleted = response.pos;
                     /*New code*/
->>>>>>> refs/remotes/origin/jorge
+                        
                     if ((control !== "") && (control !== "home") && (control !== "historic") && (control !== "stopAudio")) {
                         var url = $scope.baseurl + "Board/" + control;
                         var postdata = {tense: $scope.tense, tipusfrase: $scope.tipusfrase, negativa: $scope.negativa, pos: $scope.chooseElementDeleted};
@@ -3880,8 +3875,6 @@ angular.module('controllers', [])
             // JORGE: Esta función sirve para comprobar si el usuario y la contraseña que usamos para acceder al menu es correcta.
             $scope.confirmPassword = function (){
 
-<<<<<<< HEAD
-=======
               if($scope.cfgMenuBlock == false){
                 var eventLaunched = false;
                 $rootScope.dropdownMenuOpen = true;
@@ -3907,8 +3900,7 @@ angular.module('controllers', [])
                 }
 
               }
-
->>>>>>> refs/remotes/origin/jorge
+              
               var url = $scope.baseurl +  "Main/confirmPassword";
               var postdata = {user: $scope.usernameCopyPanel, pass: $scope.passwordCopyPanel};
 
