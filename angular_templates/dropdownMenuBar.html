@@ -2,7 +2,7 @@
 <link rel="stylesheet" type="text/css" href="css/dropdownMenuBar.css">
 <!--Normal Button-->
 <div ng-show="!$root.dropdownMenuBarButtonHide">
-    <div id="dropdownMenuButton" ng-init="imgMenuButton='/img/srcWeb/DropdownMenuBar/menuButton1.png';$root.dropdownMenuOpen=false" ng-mouseover="imgMenuButton='/img/srcWeb/DropdownMenuBar/menuButton2.png';" ng-mouseout="imgMenuButton='/img/srcWeb/DropdownMenuBar/menuButton1.png'">
+    <div id="dropdownMenuButton" ng-init="imgMenuButton='/img/srcWeb/DropdownMenuBar/menuButton1.png';$root.dropdownMenuOpen=false" ng-mouseover="imgMenuButton='/img/srcWeb/DropdownMenuBar/menuButton2.png'" ng-mouseout="imgMenuButton='/img/srcWeb/DropdownMenuBar/menuButton1.png'">
         <input type="image" class="imgDropdownMenuButton" ng-src="{{imgMenuButton}}" ng-click="$root.dropdownMenuOpen=!$root.dropdownMenuOpen">
     </div>
     <div class="dropdownMenuBar">
@@ -12,7 +12,7 @@
 <!--Hide Button-->
 <div ng-show="$root.dropdownMenuBarButtonHide && !inEdit">
     <div id="dropdownMenuButton" ng-init="imgMenuButton='/img/srcWeb/DropdownMenuBar/menuButton1.png';$root.dropdownMenuOpen=false" ng-mouseover="imgMenuButton='/img/srcWeb/DropdownMenuBar/menuButton2.png';$root.dropdownMenuOpen=true" ng-mouseout="imgMenuButton='/img/srcWeb/DropdownMenuBar/menuButton1.png'">
-      <input type="image" class="imgDropdownMenuButtonHide" ng-class="{imgDropdownMenuButtonHideOpened: $root.dropdownMenuOpen}" ng-src="{{imgMenuButton}}" ng-click="$root.dropdownMenuOpen=!$root.dropdownMenuOpen" ng-mouseover="confirmPassword()">
+        <input type="image" class="imgDropdownMenuButtonHide" ng-class="{imgDropdownMenuButtonHideOpened: $root.dropdownMenuOpen}" ng-src="{{imgMenuButton}}" ng-click="$root.dropdownMenuOpen=!$root.dropdownMenuOpen" ng-mouseover="confirmPassword()">
     </div>
     <div class="dropdownMenuBarHide">
         <div class="menuBarAnimationHide" ng-class="{menuBarAnimationOpenedHide: $root.dropdownMenuOpen}"></div>
@@ -22,8 +22,9 @@
 <!-- Hide Button Edit Screen -->
 
 <div ng-show="$root.dropdownMenuBarButtonHide && inEdit">
-    <div id="dropdownMenuButton" ng-init="imgMenuButton='/img/srcWeb/DropdownMenuBar/menuButton1.png';$root.dropdownMenuOpen=false" ng-mouseover="imgMenuButton='/img/srcWeb/DropdownMenuBar/menuButton2.png';dropdownMenuOpen=true" ng-mouseout="imgMenuButton='/img/srcWeb/DropdownMenuBar/menuButton1.png'">
-        <input type="image" class="imgDropdownMenuButtonHide" ng-class="{imgDropdownMenuButtonHideOpened: $root.dropdownMenuOpen}" ng-src="{{imgMenuButton}}" ng-click="$root.dropdownMenuOpen=!$root.dropdownMenuOpen" ng-mouseover="confirmPassword()">
+    <div id="dropdownMenuButton" ng-init="imgMenuButton='/img/srcWeb/DropdownMenuBar/menuButton1.png';$root.dropdownMenuOpen=false" ng-mouseover="imgMenuButton='/img/srcWeb/DropdownMenuBar/menuButton2.png';$root.dropdownMenuOpen=true" ng-mouseout="imgMenuButton='/img/srcWeb/DropdownMenuBar/menuButton1.png'">
+        <input type="image" class="imgDropdownMenuButtonHide" ng-class="{imgDropdownMenuButtonHideOpened: $root.dropdownMenuOpen}" ng-src="{{imgMenuButton}}" ng-click="$root.dropdownMenuOpen=!$root.dropdownMenuOpen">
+
     </div>
     <div class="dropdownMenuBarHide">
         <div class="menuBarAnimationHide" ng-class="{menuBarAnimationOpenedHide: $root.dropdownMenuOpen}"></div>

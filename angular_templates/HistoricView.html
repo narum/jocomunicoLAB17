@@ -54,9 +54,7 @@
 <div ng-include="'/angular_templates/dropdownMenuBar.html'"></div>
 <div ng-include="'/angular_templates/logoutModal.html'"></div>
 
-<div ng-show="cfgMenuBlock == true">
-  <div ng-include="'/angular_templates/confirmPasswordHistoricView.html'"></div>
-</div>
+<div ng-show="cfgMenuBlock == true" ng-include="'/angular_templates/confirmPasswordHistoricView.html'"></div>
 
     <!--menu superior dropdown-->
     <div id="main" style="background-image: url('/img/srcWeb/patterns/fons.png');background-size:100% 100%" ng-click="scanLeftClick()" ng-right-click="scanRightClick()" ng-mousedown="playLongClick()" ng-mouseup="cancelLongClick()" onmousedown="audiohallelujah()">

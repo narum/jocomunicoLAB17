@@ -1323,9 +1323,6 @@ angular.module('controllers', [])
 
 
             //Dropdown Menu Bar
-            //$scope.dropdownMenuOpen = false;
-
-
             $rootScope.dropdownMenuBar = null;
             $rootScope.dropdownMenuBarValue = '/'; //Button selected on this view
             $rootScope.dropdownMenuBarButtonHide = true;
@@ -1429,11 +1426,8 @@ angular.module('controllers', [])
             });
 
 
-
-
             // JORGE: #Tarea 3. Esta función sirve para comprobar si el usuario y la contraseña que usamos para acceder al menu es correcta.
           $scope.confirmPassword = function (){
-
 
 
             if($scope.cfgMenuBlock == false){
@@ -1462,12 +1456,8 @@ angular.module('controllers', [])
 
             }
 
-
-
-
             var url = $scope.baseurl +  "Main/confirmPassword";
             var postdata = {user: $scope.usernameCopyPanel, pass: $scope.passwordCopyPanel};
-
 
             if($scope.isLoged === "true"){
               $('#confirmPassword').modal("hide");
@@ -1555,7 +1545,7 @@ angular.module('controllers', [])
           };
 
 
-          $scope.setTimer = function () {
+            $scope.setTimer = function () {
                 $interval.cancel($scope.intervalScan);
                 var Intervalscan = $scope.cfgTimeScanning;
                 function myTimer() {
@@ -2905,43 +2895,38 @@ angular.module('controllers', [])
              * If you click in a function (not a pictogram) this controller carries you
              * to the specific function
              */
-             $scope.clickOnFunction = function (id, text, readed) {
-                 var url = $scope.baseurl + "Board/getFunction";
-                 /*var postdata = {id: id, tense: $scope.tense, tipusfrase: $scope.tipusfrase, negativa: $scope.negativa};*/
-                 /*New code*/
-                 var postdata = {id: id, tense: $scope.tense, tipusfrase: $scope.tipusfrase, negativa: $scope.negativa, pos: $scope.chooseElementDeleted};
-                 /*New code*/
-                 $http.post(url, postdata).success(function (response)
-                 {
-                     var control = response.control;
-                     console.log(control);
+            $scope.clickOnFunction = function (id, text, readed) {
+                var url = $scope.baseurl + "Board/getFunction";
+                var postdata = {id: id, tense: $scope.tense, tipusfrase: $scope.tipusfrase, negativa: $scope.negativa, pos: $scope.chooseElementDeleted};
 
-                     $scope.dataTemp = response.data;
-                     $scope.tense = response.tense;
-                     $scope.tipusfrase = response.tipusfrase;
-                     $scope.negativa = response.negativa;
-                     /*New code*/
-                     $scope.chooseElementDeleted = response.pos;
-                     /*New code*/
-                     if ((control !== "") && (control !== "home") && (control !== "historic") && (control !== "stopAudio")) {
-                         var url = $scope.baseurl + "Board/" + control;
-                         /*var postdata = {tense: $scope.tense, tipusfrase: $scope.tipusfrase, negativa: $scope.negativa};*/
-                         /*New code*/
-                         var postdata = {tense: $scope.tense, tipusfrase: $scope.tipusfrase, negativa: $scope.negativa, pos: $scope.chooseElementDeleted};
-                         /*New code*/
-                         $http.post(url, postdata).success(function (response)
-                         {
-                             $scope.info = response.info;
-                             if (control !== "generate") {
-                                 $scope.dataTemp = response.data;
-                                 if (control === "deleteAllWords") {
-                                     $scope.tense = "defecte";
-                                     $scope.tipusfrase = "defecte";
-                                     $scope.negativa = false;
-                                     $scope.getPred();
-                                 } else if (control === "deleteLastWord") {
-                                     $scope.getPred();
-                                 }
+                $http.post(url, postdata).success(function (response){
+                    var control = response.control;
+                    console.log(control);
+                    $scope.dataTemp = response.data;
+                    $scope.tense = response.tense;
+                    $scope.tipusfrase = response.tipusfrase;
+                    $scope.negativa = response.negativa;
+                    /*New code*/
+                    $scope.chooseElementDeleted = response.pos;
+                    /*New code*/
+                    if ((control !== "") && (control !== "home") && (control !== "historic") && (control !== "stopAudio")) {
+                        var url = $scope.baseurl + "Board/" + control;
+                        var postdata = {tense: $scope.tense, tipusfrase: $scope.tipusfrase, negativa: $scope.negativa, pos: $scope.chooseElementDeleted};
+
+                        $http.post(url, postdata).success(function (response)
+                        {
+                            $scope.info = response.info;
+                            if (control !== "generate") {
+                                $scope.dataTemp = response.data;
+                                if (control === "deleteAllWords") {
+                                    $scope.tense = "defecte";
+                                    $scope.tipusfrase = "defecte";
+                                    $scope.negativa = false;
+                                    $scope.getPred();
+                                } else if (control === "deleteLastWord") {
+                                    $scope.getPred();
+                                }
+
 
                                  /*New code*/
                                  else if(control === "deleteSelectedWord"){
@@ -2973,41 +2958,38 @@ angular.module('controllers', [])
                                      //$scope.isScanning = "deleteselectedpicto";
                                      $scope.selectBlockScan();
 
-
-
                                    }
 
                                  }
 
+                                if (!readed) {
+                                    $scope.readText(text, true);
+                                }
+                            } else {
+                                $scope.tense = "defecte";
+                                $scope.tipusfrase = "defecte";
+                                $scope.negativa = false
 
-                                 if (!readed) {
-                                     $scope.readText(text, true);
-                                 }
-                             } else {
-                                 $scope.tense = "defecte";
-                                 $scope.tipusfrase = "defecte";
-                                 $scope.negativa = false
-
-                                 $scope.readText($scope.info.frasefinal, false);
-                             }
-                         });
-                     } else if ((control === "home")) {
-                         $scope.config();
-                     } else if ((control === "historic")) {
-                         $rootScope.senteceFolderToShow = {folder: null, boardID: $scope.idboard};
-                         $location.path('/historic');
-                     } else if ((control === "stopAudio")){
-                         var aux = document.getElementById('utterance');
-                         aux.pause();
-                         aux.currentTime = 0;
-                     }
-                     else {
-                         if (!readed) {
-                             $scope.readText(text, true);
-                         }
-                     }
-                 });
-             };
+                                $scope.readText($scope.info.frasefinal, false);
+                            }
+                        });
+                    } else if ((control === "home")) {
+                        $scope.config();
+                    } else if ((control === "historic")) {
+                        $rootScope.senteceFolderToShow = {folder: null, boardID: $scope.idboard};
+                        $location.path('/historic');
+                    } else if ((control === "stopAudio")){
+                        var aux = document.getElementById('utterance');
+                        aux.pause();
+                        aux.currentTime = 0;
+                    }
+                    else {
+                        if (!readed) {
+                            $scope.readText(text, true);
+                        }
+                    }
+                });
+            };
             /*
              * Remove last word added to the sentence
              */
