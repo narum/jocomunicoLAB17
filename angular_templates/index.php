@@ -52,6 +52,7 @@
             stringScript += '<script type="text/javascript" src="angular_js/captcha.js"></' + 'script>';
             stringScript += '<script type="text/javascript" src="angular_js/panelController.js"></' + 'script>';
             stringScript += '<script type="text/javascript" src="angular_js/addWordController.js"></' + 'script>';
+            stringScript += '<script type="text/javascript" src="angular_js/addVerb.js"></' + 'script>';
             stringScript += '<script type="text/javascript" src="angular_js/sentencesFolderController.js"></' + 'script>';
             stringScript += '<script type="text/javascript" src="angular_js/infoController.js"></' + 'script>';
             stringScript += '<script type="text/javascript" src="angular_js/consellsController.js"></' + 'script>';

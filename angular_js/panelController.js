@@ -181,47 +181,6 @@ angular.module('controllers')
         /*
          * Return uploaded images from database. There are two types, the users images an the arasaac (not user images)
          */
-        $scope.searchImg = function (name, typeImgEditSearch,bw) {
-            var URL = "";
-            switch (typeImgEditSearch)
-            {
-                case "Arasaac":
-                    if(name!=''){
-                      $scope.getArasaacPictos(name,bw)
-                    }
-                    $scope.BW=true;
-                    $scope.search=true;
-                    picasarashow=[false,false,false,false];
-                    break;
-                case "Uploads":
-                    URL = $scope.baseurl + "ImgUploader/getImagesUploads";
-                    $scope.BW=false;
-                    $scope.search=false;
-                    picasarashow=[true,true,true,true];
-                    break;
-            }
-            var postdata = {name: name};
-            $http.post(URL, postdata).
-                success(function (response)
-                {
-                    picsara=[];
-                    picasarashow=[false,false,false,false]
-                    if(response.data.length>4){
-                      itsize=4
-                    }else{
-                      itsize=response.data.length;
-                    }
-                    for(var i=0;i<itsize;i++){
-                      picsara.push(response.data[i].imgPath);
-                      picasarashow[i]=true;
-                    }
-                    $scope.picsara=picsara;
-                    $scope.imgData=picasarashow;
-
-
-                });
-        }
-
         //get all the photos attached to the pictos
         $scope.searchFoto = function (name)
         {
@@ -443,6 +402,16 @@ angular.module('controllers')
                 }
 
             };
+
+            $scope.addVerb = function (newModif){
+                if (newModif == 1) {
+                    $rootScope.addWordparam = {newmod: newModif};
+                    $timeout(function () {
+                            $location.path('/addVerb');
+                    }, 1000);
+                }
+            };
+
             $scope.selectAddWordEdit = function (newModif, id) {
                 $rootScope.addWordparam = {newmod: newModif, type: id};
                 $timeout(function () {
