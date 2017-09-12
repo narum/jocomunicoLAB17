@@ -78,10 +78,13 @@ class RecoverBackup extends CI_Model {
       }
       $gbcont=count($this->getGBkeys());
       $bcont=count($this->getBoardkey());
+      $scont=count($this->getSentencekey());
+      $fcont=count($this->getfolderkey());
+      $pcont=count($this->getPictokeys());
       $this->InsertGroupBoards($Fname,$mainGboard);
       $this->InsertBoards($Fname,$gbcont);
-      $this->InsertCells($Fname,$bcont);
-      return $bla;
+      $this->InsertCells($Fname,$bcont,$scont,$fcont,$pcont);
+      return $Fname;
     }
     //devuelve el nombre de la capeta del ultimo backup global
     private function getLastGlobalBackup(){
@@ -247,7 +250,7 @@ private function InsertSHistoric($Folder){
   return $count;
 }
 //Inserta en la base de datos los registros correspondientes a cells
-private function InsertCells($Folder,$bcont){
+private function InsertCells($Folder,$bcont,$scont,$fcont,$pcont){
  $ID_Cell=array();
  $sentencekey=$this->getSentencekey();
  $folderkey=$this->getfolderkey();
@@ -264,6 +267,10 @@ private function InsertCells($Folder,$bcont){
  $pic=json_decode($picto);
  $sfolder=json_decode($filefol);
  $count=count($cells->ID_Cell);
+ $boardkey=array_slice($boardkey,$bcont);
+ $sentencekey=array_slice($sentencekey,$scont);
+ $folderkey=array_slice($folderkey,$fcont);
+ $pictokey=array_slice($pictokey,$pcont);
  for($i=0;$i<$count;$i++){
    if(!(is_null($cells->boardLink[$i]))){
        $posc=array_search($cells->boardLink[$i],$boards->ID_Board);

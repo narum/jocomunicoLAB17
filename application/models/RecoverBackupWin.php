@@ -80,10 +80,13 @@ class RecoverBackupWin extends CI_Model {
         }
         $gbcont=count($this->getGBkeys());
         $bcont=count($this->getBoardkey());
+        $scont=count($this->getSentencekey());
+        $fcont=count($this->getfolderkey());
+        $pcont=count($this->getPictokeys());
         $this->InsertGroupBoards($Fname,$mainGboard);
         $this->InsertBoards($Fname,$gbcont);
-        $this->InsertCells($Fname,$bcont);
-        return $bla;
+        $this->InsertCells($Fname,$bcont,$scont,$fcont,$pcont);
+        return $Fname;
       }
     //devuelve el nombre de la capeta del ultimo backup global
     private function getLastGlobalBackup(){
