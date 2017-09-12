@@ -87,9 +87,8 @@ class AddWordInterface extends CI_Model {
     function getDBClassNames($id) {
         $output = array();
         $userlanguage = $this->session->userdata('ulangabbr');
-        $usergroup = $this->getUserGroup();
 
-        $this->db->where('nameid', $usergroup);
+        $this->db->where('nameid', $id);
         $this->db->select('class');
         $query = $this->db->get('NameClass' . $userlanguage);
 
@@ -103,9 +102,8 @@ class AddWordInterface extends CI_Model {
     function getDBClassAdj($id) {
         $output = array();
         $userlanguage = $this->session->userdata('ulangabbr');
-        $usergroup = $this->getUserGroup();
 
-        $this->db->where('adjid', $usergroup);
+        $this->db->where('adjid', $id);
         $this->db->select('class');
         $query = $this->db->get('adjclass' . $userlanguage);
 
@@ -155,7 +153,7 @@ class AddWordInterface extends CI_Model {
         $languageInt = $this->session->userdata('uinterfacelangauge');
         $usergroup = $this->getUserGroup();
         $output = array();
-        $this->db->limit(6); // limit up to 6
+        //$this->db->limit(6); // limit up to 6
 
         $this->db->where_in('Pictograms.ID_PUser', $usergroup);
         //$this->db->where('Pictograms.ID_PUser', $this->usergroup);
@@ -191,7 +189,7 @@ class AddWordInterface extends CI_Model {
         $this->db->where_in('Pictograms.ID_PUser', $usergroup);
         $this->db->where_in('Pictograms.ID_PUser', $usergroup);
         $this->db->where('PictogramsLanguage.languageid', $languageInt); //Get all default and own user pictos
-        $this->db->select('verbid as id, PictogramsLanguage.pictotext as text, imgPicto');
+        $this->db->select('verbid as id, PictogramsLanguage.pictotext as text, imgPicto, Pictograms.ID_PUser as ID_PUser');
         $this->db->from('Verb' . $languageExp);
         $this->db->join('Pictograms', 'Verb' . $languageExp . '.verbid = Pictograms.pictoid', 'left');
         $this->db->join('PictogramsLanguage', 'PictogramsLanguage.pictoid = Pictograms.pictoid', 'left');
@@ -219,11 +217,11 @@ class AddWordInterface extends CI_Model {
         $usergroup = $this->getUserGroup();
         $output = array();
 
-        $this->db->limit(6);
+        //$this->db->limit(6);
         $this->db->where_in('Pictograms.ID_PUser', $usergroup);
         $this->db->where_in('Pictograms.ID_PUser', $usergroup);
         $this->db->where('PictogramsLanguage.languageid', $languageInt); //Get all default and own user pictos
-        $this->db->select('adjid as id,PictogramsLanguage.pictotext as text, imgPicto');
+        $this->db->select('adjid as id,PictogramsLanguage.pictotext as text, imgPicto, Pictograms.ID_PUser as ID_PUser');
         $this->db->from('Adjective' . $languageExp);
         $this->db->join('Pictograms', 'Adjective' . $languageExp . '.adjid = Pictograms.pictoid', 'left');
         $this->db->join('PictogramsLanguage', 'PictogramsLanguage.pictoid = Pictograms.pictoid', 'left');
@@ -253,7 +251,7 @@ class AddWordInterface extends CI_Model {
         $this->db->where_in('Pictograms.ID_PUser', $usergroup);
         $this->db->where_in('Pictograms.ID_PUser', $usergroup);
         $this->db->where('PictogramsLanguage.languageid', $languageInt); //Get all default and own user pictos
-        $this->db->select('exprid as id, PictogramsLanguage.pictotext as text, imgPicto');
+        $this->db->select('exprid as id, PictogramsLanguage.pictotext as text, imgPicto, Pictograms.ID_PUser as ID_PUser');
         $this->db->from('Expressions' . $languageExp);
         $this->db->join('Pictograms', 'Expressions' . $languageExp . '.exprid = Pictograms.pictoid', 'left');
         $this->db->join('PictogramsLanguage', 'PictogramsLanguage.pictoid = Pictograms.pictoid', 'left');
@@ -283,7 +281,7 @@ class AddWordInterface extends CI_Model {
         $this->db->where_in('Pictograms.ID_PUser', $usergroup);
         $this->db->where_in('Pictograms.ID_PUser', $usergroup);
         $this->db->where('PictogramsLanguage.languageid', $languageInt); //Get all default and own user pictos
-        $this->db->select('advid as id, PictogramsLanguage.pictotext as text, imgPicto');
+        $this->db->select('advid as id, PictogramsLanguage.pictotext as text, imgPicto, Pictograms.ID_PUser as ID_PUser');
         $this->db->from('Adverb' . $languageExp);
         $this->db->join('Pictograms', 'Adverb' . $languageExp . '.advid = Pictograms.pictoid', 'left');
         $this->db->join('PictogramsLanguage', 'PictogramsLanguage.pictoid = Pictograms.pictoid', 'left');
@@ -314,7 +312,7 @@ class AddWordInterface extends CI_Model {
         $this->db->where_in('Pictograms.ID_PUser', $usergroup);
         $this->db->where_in('Pictograms.ID_PUser', $usergroup);
         $this->db->where('PictogramsLanguage.languageid', $languageInt); //Get all default and own user pictos
-        $this->db->select('modid as id, PictogramsLanguage.pictotext as text, imgPicto');
+        $this->db->select('modid as id, PictogramsLanguage.pictotext as text, imgPicto, Pictograms.ID_PUser as ID_PUser');
         $this->db->from('Modifier' . $languageExp);
         $this->db->join('Pictograms', 'Modifier' . $languageExp . '.modid = Pictograms.pictoid', 'left');
         $this->db->join('PictogramsLanguage', 'PictogramsLanguage.pictoid = Pictograms.pictoid', 'left');
@@ -345,7 +343,7 @@ class AddWordInterface extends CI_Model {
         $this->db->where_in('Pictograms.ID_PUser', $usergroup);
         $this->db->where_in('Pictograms.ID_PUser', $usergroup);
         $this->db->where('PictogramsLanguage.languageid', $languageInt);  //Get all default and own user pictos
-        $this->db->select('questid as id, PictogramsLanguage.pictotext as text, imgPicto');
+        $this->db->select('questid as id, PictogramsLanguage.pictotext as text, imgPicto, Pictograms.ID_PUser as ID_PUser');
         $this->db->from('QuestionPart' . $languageExp);
         $this->db->join('Pictograms', 'QuestionPart' . $languageExp . '.questid = Pictograms.pictoid', 'left');
         $this->db->join('PictogramsLanguage', 'PictogramsLanguage.pictoid = Pictograms.pictoid', 'left');

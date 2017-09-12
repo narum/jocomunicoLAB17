@@ -208,8 +208,9 @@ class SuperUserAdminModel extends CI_Model {
              WHERE su.ID_SU = u.ID_USU 
                 AND su.SUname = ?
                 AND su.pswd = ?
+                AND u.ID_ULanguage = ?
             ',
-            array($user, $password)
+            array($user, $password, $this->session->userdata('ulanguage'))
         )->result()[0]->ID_SU;
 
     }
@@ -292,7 +293,7 @@ class SuperUserAdminModel extends CI_Model {
                     array($superUser)
                 );
 
-                array_push($usergroup, $superUser);
+                array_push($usergroup, $superUser, $idUser);
                 foreach($query->result() as $row)
                     array_push($usergroup, $row->Child);
             break;

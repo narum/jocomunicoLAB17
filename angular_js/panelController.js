@@ -484,6 +484,7 @@ angular.module('controllers')
                         success(function (response)
                         {
                             $scope.dataWordAddWord = response.data;
+                            console.log(response)
                         });
             };
             $scope.searchAddWord = function (name, Searchtype)
