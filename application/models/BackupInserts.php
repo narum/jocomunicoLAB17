@@ -95,6 +95,7 @@ class BackupInserts extends CI_Model{
     $fp = fopen('./backups/'.$Fname.'/Boards.json', 'w');
   fwrite($fp, json_encode($data));
   fclose($fp);
+  return $data;
   }
   //Genera json de la tabla cell
   private function generateCellJson($Fname){

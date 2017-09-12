@@ -534,7 +534,6 @@ angular.module('controllers')
             $scope.getHistorialState = function () {
                 $http.get('Historic/getHistorialState').success(function (response) {
                     $scope.HistoricState = (response.state === '1') ? true : false;
-                    console.log(response.state);
                 });
             };
 
@@ -552,7 +551,6 @@ angular.module('controllers')
                     })
                     .success(function (response) {
                         $scope.getHistorialState();
-                        console.log('hola');
                     });
             };
 
@@ -576,13 +574,13 @@ angular.module('controllers')
             $scope.recparcialBackupCall_OW=function(BackupRoute){
               var postdata = {overwrite: true};
               $http.post("BackupController/"+BackupRoute,postdata).success(function (results) {
-                console.log(results.data);
+                console.log(results);
               });
             }
             $scope.recparcialBackupCall_NOW=function(BackupRoute){
               var postdata = {overwrite: false};
               $http.post("BackupController/"+BackupRoute,postdata).success(function (results) {
-                console.log(results.data);
+                console.log(results);
               });
             }
             //funcion que se llama en el click del boton recuperar parcial
@@ -648,6 +646,7 @@ angular.module('controllers')
               var promise = $http.get('BackupController');
               promise.then(function(results) {
                 $scope.backup=results.data.data;
+                console.log(results);
                 $('#DownloadBackup').modal('toggle');
               });
 
@@ -658,6 +657,7 @@ angular.module('controllers')
                else {
                DownloadUrl="DownloadBackup/backup/"+backup;
                }
+               console.log(DownloadUrl)
               setTimeout(function(){
                 window.location.href=DownloadUrl;
                 $('#DownloadBackup').modal('toggle');
@@ -692,7 +692,6 @@ angular.module('controllers')
                         });
             };
             $scope.showparcialBackup=function(images,voc,folder,cfg,panelb){
-              console.log("sadf")
                 $scope.imagesr=images
                 $scope.voc=voc
                 $scope.folder=folder

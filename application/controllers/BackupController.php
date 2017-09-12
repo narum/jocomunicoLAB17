@@ -62,10 +62,10 @@ public function recfolder_post(){
   if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
     $this->RecoverBackupWin->LaunchParcialRecover_Folder();
   } else {
-    $this->RecoverBackup->LaunchParcialRecover_Folder();
+    $data=$this->RecoverBackup->LaunchParcialRecover_Folder();
   }
   $response = [
-      'data' => $overwrite
+      'data' => $data
   ];
   $this->response($response, REST_Controller::HTTP_OK);
 }
@@ -73,13 +73,11 @@ public function recfolder_post(){
 //recupera las cfg y las inserta en la nueva base de datos
 public function reccfg_post(){
   $overwrite=$this->post('overwrite');
-
   if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-    $this->RecoverBackupWin->LaunchParcialRecover_cfg();
+    $this->RecoverBackupWin->LaunchParcialRecover_cfg($overwrite);
   } else {
-    $this->RecoverBackup->LaunchParcialRecover_cfg();
+    $this->RecoverBackup->LaunchParcialRecover_cfg($overwrite);
   }
-
 }
 //recupera las panels y las inserta en la nueva base de datos
 public function recpanels_post(){

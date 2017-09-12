@@ -9,26 +9,6 @@ class RecoverBackupWin extends CI_Model {
         $this->load->library('session');
         $this->load->database();
     }
-    //lanza una recuperacion total de los datos, llama a todas las recuperaciones parciales
-    public function LaunchTotalRecover(){
-      $folder="/xampp/htdocs/Temp/".$this->getLastGlobalBackup();
-      $this->UpdateSuperUser($folder);
-      $this->UpdateUser($folder);
-      $this->InsertPictograms($folder);
-      $this->InsertPictogramsLanguage($folder);
-      $this->InsertNames($folder);
-      $this->InsertAdjectives($folder);
-      $this->InsertGroupBoards($folder);
-      $this->InsertBoards($folder);
-      $this->InsertImages($folder);
-      $this->InsertSFolder($folder);
-      $this->InsertSHistoric($folder);
-      $this->InsertSSentence($folder);
-      $this->InsertRSSentencePictograms($folder);
-      $this->InsertRSHistoricPictograms($folder);
-      $this->InsertCells($folder);
-      return $folder;
-    }
     //Comprueba si existe una carpeta con un backup total
     function checkiftotalexists(){
       $exists=true;
@@ -78,17 +58,18 @@ class RecoverBackupWin extends CI_Model {
       //llama a la recuperacion parcial de la carpetas tematicas
     function LaunchParcialRecover_Folder(){
       $Fname=$this->getLastGlobalBackup();
+      $cfold=count($this->getfolderkey());
       $this->InsertSFolder($Fname);
-      $this->InsertSSentence($Fname);
+      $data=$this->InsertSSentence($Fname,$cfold);
       $this->InsertSHistoric($Fname);
       $this->InsertRSSentencePictograms($Fname);
       $this->InsertRSHistoricPictograms($Fname);
-      return $Fname;
+      return $data;
     }
       //llama a la recuperacion parcial de configuracion
-    function LaunchParcialRecover_cfg(){
+    function LaunchParcialRecover_cfg($ow){
       $Fname=$this->getLastGlobalBackup();
-      $this->UpdateSuperUser($Fname);
+      $this->UpdateSuperUser($Fname,$ow);
       $this->UpdateUser($Fname);
     }
       //llama a la recuperacion parcial de paneles
@@ -587,114 +568,165 @@ private function InsertSFolder($Folder){
 }
 }
 //Inserta en la base de datos los registros correspondientes a S_Sentence
-private function InsertSSentence($Folder){
- $ID_User=$this->session->idusu;
- $folderkey=$this->getfolderkey();
- $file = file_get_contents($Folder."/S_Sentence.json");
- $ss=json_decode($file);
- $count=count($ss->ID_SSentence);
- sort($ss->ID_SFolder);
- $pos=-1;
- for($i=0;$i<$count;$i++){
-   if($ss->ID_SFolder[$i]>$ant&&$ss->ID_SFolder[$i]!=null){
-     $pos++;
-     $ant=$ss->ID_SFolder[$i];
-   }else{
-     $ant=$ss->ID_SFolder[$i];
-   }
-  $sql="INSERT INTO S_Sentence(ID_SSUser,ID_SFolder,posInFolder,sentenceType,isNegative,sentenceTense,sentenceDate,
-  sentenceFinished,intendedSentence,inputWords,inputIds,parseScore,parseString,generatorScore,generatorString,comments,userScore,
-  isPreRec,sPreRecText,sPreRecDate,sPreRecImg1,sPreRecImg2,sPreRecImg3,sPreRecPath)
-  VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-  $this->db->query($sql,array(
-  $ID_User,
-  $folderkey[$pos],
-  $ss->posInFolder[$i],
-  $ss->sentenceType[$i],
-  $ss->isNegative[$i],
-  $ss->sentenceTense[$i],
-  $ss->sentenceDate[$i],
-  $ss->sentenceFinished[$i],
-  $ss->intendedSentence[$i],
-  $ss->inputWords[$i],
-  $ss->inputIds[$i],
-  $ss->parseScore[$i],
-  $ss->parseString[$i],
-  $ss->generatorScore[$i],
-  $ss->generatorString[$i],
-  $ss->comments[$i],
-  $ss->userScore[$i],
-  $ss->isPreRec[$i],
-  $ss->sPreRecText[$i],
-  $ss->sPreRecDate[$i],
-  $ss->sPreRecImg1[$i],
-  $ss->sPreRecImg2[$i],
-  $ss->sPreRecImg3[$i],
-  $ss->sPreRecPath[$i]
-));
-}
-return $pos;
+private function InsertSSentence($Folder,$folds){
+  $ID_User=$this->session->idusu;
+  $folderkey=$this->getfolderkey();
+  $file = file_get_contents($Folder."/S_Sentence.json");
+  $filefol= file_get_contents($Folder."/S_Folder.json");
+  $ss=json_decode($file);
+  $sfolder=json_decode($filefol);
+  $count=count($ss->ID_SSentence);
+  $folderkey=array_slice($folderkey,$folds);
+  for($i=0;$i<$count;$i++){
+    if(!(is_null($ss->ID_SFolder[$i]))){
+        $posf=array_search($ss->ID_SFolder[$i],$sfolder->ID_Folder);
+    }else{
+        $posf=null;
+    }
+   $sql="INSERT INTO S_Sentence(ID_SSUser,ID_SFolder,posInFolder,sentenceType,isNegative,sentenceTense,sentenceDate,
+   sentenceFinished,intendedSentence,inputWords,inputIds,parseScore,parseString,generatorScore,generatorString,comments,userScore,
+   isPreRec,sPreRecText,sPreRecDate,sPreRecImg1,sPreRecImg2,sPreRecImg3,sPreRecPath)
+   VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+   $this->db->query($sql,array(
+   $ID_User,
+   $folderkey[$posf],
+   $ss->posInFolder[$i],
+   $ss->sentenceType[$i],
+   $ss->isNegative[$i],
+   $ss->sentenceTense[$i],
+   $ss->sentenceDate[$i],
+   $ss->sentenceFinished[$i],
+   $ss->intendedSentence[$i],
+   $ss->inputWords[$i],
+   $ss->inputIds[$i],
+   $ss->parseScore[$i],
+   $ss->parseString[$i],
+   $ss->generatorScore[$i],
+   $ss->generatorString[$i],
+   $ss->comments[$i],
+   $ss->userScore[$i],
+   $ss->isPreRec[$i],
+   $ss->sPreRecText[$i],
+   $ss->sPreRecDate[$i],
+   $ss->sPreRecImg1[$i],
+   $ss->sPreRecImg2[$i],
+   $ss->sPreRecImg3[$i],
+   $ss->sPreRecPath[$i]
+ ));
+ }
 }
 //sobreescribe en la base de datos los registros correspondientes a SuperUser
-private function UpdateSuperUser($Folder){
+private function UpdateSuperUser($Folder,$ow){
  $ID_SU=$this->session->idsu;
  $ID_User=$this->session->idusu;
  $file = file_get_contents($Folder."/SuperUser.json");
  $su=json_decode($file);
-  $sql="UPDATE SuperUser SET realname=?, surnames=?, email=?, cfgDefUser=?, cfgIsFem=?, cfgUsageMouseOneCTwoC=?,
-   cfgTimeClick=?, cfgExpansionOnOff=?, cfgAutoEraseSentenceBar=?, cfgPredOnOff=?,
-   cfgPredBarVertHor=?, cfgPredBarNumPred=?, cfgScanningOnOff=?, cfgScanningCustomRowCol=?,
-   cfgScanningAutoOnOff=?, cfgCancelScanOnOff=?, cfgTimeScanning=?, cfgScanStartClick=?,
-   cfgScanOrderPred=?, cfgScanOrderMenu=?, cfgScanOrderPanel=?, cfgScanColor=?,
-   cfgMenuReadActive=?, cfgMenuHomeActive=?, cfgMenuDeleteLastActive=?,
-   cfgMenuDeleteAllActive=?, cfgSentenceBarUpDown=?, cfgBgColorPanel=?, cfgBgColorPred=?,
-   cfgTextInCell=?, cfgUserExpansionFeedback=?, cfgHistOnOff=?, cfgBlackOnWhiteVSWhiteOnBlack=?,
-   cfgTimeLapseSelectOnOff=?, cfgTimeLapseSelect=?, cfgTimeNoRepeatedClickOnOff=?,
-   cfgTimeNoRepeatedClick=?, UserValidated=?,insertDate=? WHERE ID_SU=?";
-  $this->db->query($sql,
-  array(
-  $su->realname,
-  $su->surnames,
-  $su->email,
-  $ID_User,
-  $su->cfgIsFem,
-  $su->cfgUsageMouseOneCTwoC,
-  $su->cfgTimeClick,
-  $su->cfgExpansionOnOff,
-  $su->cfgAutoEraseSentenceBar,
-  $su->cfgPredOnOff,
-  $su->cfgPredBarVertHor,
-  $su->cfgPredBarNumPred,
-  $su->cfgScanningOnOff,
-  $su->cfgScanningCustomRowCol,
-  $su->cfgScanningAutoOnOff,
-  $su->cfgCancelScanOnOff,
-  $su->cfgTimeScanning,
-  $su->cfgScanStartClick,
-  $su->cfgScanOrderPred,
-  $su->cfgScanOrderMenu,
-  $su->cfgScanOrderPanel,
-  $su->cfgScanColor,
-  $su->cfgMenuReadActive,
-  $su->cfgMenuHomeActive,
-  $su->cfgMenuDeleteLastActive,
-  $su->cfgMenuDeleteAllActive,
-  $su->cfgSentenceBarUpDown,
-  $su->cfgBgColorPanel,
-  $su->cfgBgColorPred,
-  $su->cfgTextInCell,
-  $su->cfgUserExpansionFeedback,
-  $su->cfgHistOnOff,
-  $su->cfgBlackOnWhiteVSWhiteOnBlack,
-  $su->cfgTimeLapseSelectOnOff,
-  $su->cfgTimeLapseSelect,
-  $su->cfgTimeNoRepeatedClickOnOff,
-  $su->cfgTimeNoRepeatedClick,
-  $su->UserValidated,
-  $su->insertdate,
-  $ID_SU
-)
-);
+ if($ow){
+   $sql="UPDATE SuperUser SET realname=?, surnames=?, email=?, cfgDefUser=?, cfgIsFem=?, cfgUsageMouseOneCTwoC=?,
+    cfgTimeClick=?, cfgExpansionOnOff=?, cfgAutoEraseSentenceBar=?, cfgPredOnOff=?,
+    cfgPredBarVertHor=?, cfgPredBarNumPred=?, cfgScanningOnOff=?, cfgScanningCustomRowCol=?,
+    cfgScanningAutoOnOff=?, cfgCancelScanOnOff=?, cfgTimeScanning=?, cfgScanStartClick=?,
+    cfgScanOrderPred=?, cfgScanOrderMenu=?, cfgScanOrderPanel=?, cfgScanColor=?,
+    cfgMenuReadActive=?, cfgMenuHomeActive=?, cfgMenuDeleteLastActive=?,
+    cfgMenuDeleteAllActive=?, cfgSentenceBarUpDown=?, cfgBgColorPanel=?, cfgBgColorPred=?,
+    cfgTextInCell=?, cfgUserExpansionFeedback=?, cfgHistOnOff=?, cfgBlackOnWhiteVSWhiteOnBlack=?,
+    cfgTimeLapseSelectOnOff=?, cfgTimeLapseSelect=?, cfgTimeNoRepeatedClickOnOff=?,
+    cfgTimeNoRepeatedClick=?, UserValidated=?,insertDate=? WHERE ID_SU=?";
+    $this->db->query($sql,
+    array(
+    $su->realname,
+    $su->surnames,
+    $su->email,
+    $ID_User,
+    $su->cfgIsFem,
+    $su->cfgUsageMouseOneCTwoC,
+    $su->cfgTimeClick,
+    $su->cfgExpansionOnOff,
+    $su->cfgAutoEraseSentenceBar,
+    $su->cfgPredOnOff,
+    $su->cfgPredBarVertHor,
+    $su->cfgPredBarNumPred,
+    $su->cfgScanningOnOff,
+    $su->cfgScanningCustomRowCol,
+    $su->cfgScanningAutoOnOff,
+    $su->cfgCancelScanOnOff,
+    $su->cfgTimeScanning,
+    $su->cfgScanStartClick,
+    $su->cfgScanOrderPred,
+    $su->cfgScanOrderMenu,
+    $su->cfgScanOrderPanel,
+    $su->cfgScanColor,
+    $su->cfgMenuReadActive,
+    $su->cfgMenuHomeActive,
+    $su->cfgMenuDeleteLastActive,
+    $su->cfgMenuDeleteAllActive,
+    $su->cfgSentenceBarUpDown,
+    $su->cfgBgColorPanel,
+    $su->cfgBgColorPred,
+    $su->cfgTextInCell,
+    $su->cfgUserExpansionFeedback,
+    $su->cfgHistOnOff,
+    $su->cfgBlackOnWhiteVSWhiteOnBlack,
+    $su->cfgTimeLapseSelectOnOff,
+    $su->cfgTimeLapseSelect,
+    $su->cfgTimeNoRepeatedClickOnOff,
+    $su->cfgTimeNoRepeatedClick,
+    $su->UserValidated,
+    $su->insertdate,
+    $ID_SU
+  ));
+ }else{
+   $sql="UPDATE SuperUser SET cfgDefUser=?, cfgIsFem=?, cfgUsageMouseOneCTwoC=?,
+    cfgTimeClick=?, cfgExpansionOnOff=?, cfgAutoEraseSentenceBar=?, cfgPredOnOff=?,
+    cfgPredBarVertHor=?, cfgPredBarNumPred=?, cfgScanningOnOff=?, cfgScanningCustomRowCol=?,
+    cfgScanningAutoOnOff=?, cfgCancelScanOnOff=?, cfgTimeScanning=?, cfgScanStartClick=?,
+    cfgScanOrderPred=?, cfgScanOrderMenu=?, cfgScanOrderPanel=?, cfgScanColor=?,
+    cfgMenuReadActive=?, cfgMenuHomeActive=?, cfgMenuDeleteLastActive=?,
+    cfgMenuDeleteAllActive=?, cfgSentenceBarUpDown=?, cfgBgColorPanel=?, cfgBgColorPred=?,
+    cfgTextInCell=?, cfgUserExpansionFeedback=?, cfgHistOnOff=?, cfgBlackOnWhiteVSWhiteOnBlack=?,
+    cfgTimeLapseSelectOnOff=?, cfgTimeLapseSelect=?, cfgTimeNoRepeatedClickOnOff=?,
+    cfgTimeNoRepeatedClick=?, UserValidated=?,insertDate=? WHERE ID_SU=?";
+    $this->db->query($sql,
+    array(
+    $ID_User,
+    $su->cfgIsFem,
+    $su->cfgUsageMouseOneCTwoC,
+    $su->cfgTimeClick,
+    $su->cfgExpansionOnOff,
+    $su->cfgAutoEraseSentenceBar,
+    $su->cfgPredOnOff,
+    $su->cfgPredBarVertHor,
+    $su->cfgPredBarNumPred,
+    $su->cfgScanningOnOff,
+    $su->cfgScanningCustomRowCol,
+    $su->cfgScanningAutoOnOff,
+    $su->cfgCancelScanOnOff,
+    $su->cfgTimeScanning,
+    $su->cfgScanStartClick,
+    $su->cfgScanOrderPred,
+    $su->cfgScanOrderMenu,
+    $su->cfgScanOrderPanel,
+    $su->cfgScanColor,
+    $su->cfgMenuReadActive,
+    $su->cfgMenuHomeActive,
+    $su->cfgMenuDeleteLastActive,
+    $su->cfgMenuDeleteAllActive,
+    $su->cfgSentenceBarUpDown,
+    $su->cfgBgColorPanel,
+    $su->cfgBgColorPred,
+    $su->cfgTextInCell,
+    $su->cfgUserExpansionFeedback,
+    $su->cfgHistOnOff,
+    $su->cfgBlackOnWhiteVSWhiteOnBlack,
+    $su->cfgTimeLapseSelectOnOff,
+    $su->cfgTimeLapseSelect,
+    $su->cfgTimeNoRepeatedClickOnOff,
+    $su->cfgTimeNoRepeatedClick,
+    $su->UserValidated,
+    $su->insertdate,
+    $ID_SU
+  ));
+ }
 }
 //sobreescribe en la base de datos los registros correspondientes a User
 private function UpdateUser($Folder){
