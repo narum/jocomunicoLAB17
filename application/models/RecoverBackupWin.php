@@ -73,17 +73,18 @@ class RecoverBackupWin extends CI_Model {
       $this->UpdateUser($Fname);
     }
       //llama a la recuperacion parcial de paneles
-    function LaunchParcialRecover_panels($mainGboard){
-      $Fname=$this->getLastGlobalBackup();
-      if(!$this->checkifPictogramsexists()){
-      $this->LaunchParcialRecover_Pictograms();
+      function LaunchParcialRecover_panels($mainGboard){
+        $Fname=$this->getLastGlobalBackup();
+        if(!$this->checkifPictogramsexists()){
+        $this->LaunchParcialRecover_Pictograms();
+        }
+        $gbcont=count($this->getGBkeys());
+        $bcont=count($this->getBoardkey());
+        $this->InsertGroupBoards($Fname,$mainGboard);
+        $this->InsertBoards($Fname,$gbcont);
+        $this->InsertCells($Fname,$bcont);
+        return $bla;
       }
-      $this->InsertGroupBoards($Fname,$mainGboard);
-      $this->InsertBoards($Fname);
-      $this->InsertCells($Fname);
-      $this->InsertRBoardCell($Fname);
-      return $mainGboard;
-    }
     //devuelve el nombre de la capeta del ultimo backup global
     private function getLastGlobalBackup(){
       $ID_User=$this->session->idusu;
@@ -186,20 +187,20 @@ private function InsertAdjectives($Folder){
 $this->InsertAdjectivesClass($Folder);
 }
 //Inserta en la base de datos los registros correspondientes a boards
-private function InsertBoards($Folder){
+private function InsertBoards($Folder,$gbcont){
  $gbkeys=$this->getGBkeys();
  $file = file_get_contents($Folder."/Boards.json");
+ $fileGB = file_get_contents($Folder."/GroupBoards.json");
  $boards=json_decode($file);
+ $GB=json_decode($fileGB);
  $count=count($boards->ID_Board);
- sort($boards->ID_GBBoard);
- $posc=-1;
+ $gbkeys=array_slice($gbkeys,$gbcont);
  for($i=0;$i<$count;$i++){
- if($boards->ID_GBBoard[$i]>$ant&&$boards->ID_GBBoard[$i]!=null){
-   $posc++;
-   $ant=$boards->ID_GBBoard[$i];
- }else{
-   $ant=$boards->ID_GBBoard[$i];
- }
+   if(!(is_null($boards->ID_GBBoard[$i]))){
+       $posc=array_search($boards->ID_GBBoard[$i],$GB->ID_GB);
+   }else{
+       $posc=null;
+   }
   $sql="INSERT INTO Boards(ID_GBBoard,primaryboard,Bname,width,height,autoReturn,autoReadSentence)
    VALUES (?,?,?,?,?,?,?)";
   $this->db->query($sql,array(
@@ -212,7 +213,7 @@ private function InsertBoards($Folder){
     $boards->autoReadSentence[$i]
   ));
 }
-return $gbkeys;
+return count($gbkeys);
 }
 private function InsertSHistoric($Folder){
   $ID_User=$this->session->idusu;
@@ -244,7 +245,7 @@ private function InsertSHistoric($Folder){
   return $count;
 }
 //Inserta en la base de datos los registros correspondientes a cells
-private function InsertCells($Folder){
+private function InsertCells($Folder,$bcont){
   $ID_Cell=array();
   $sentencekey=$this->getSentencekey();
   $folderkey=$this->getfolderkey();
@@ -303,42 +304,27 @@ private function InsertCells($Folder){
      $res=$query->result();
      array_push($ID_Cell,$res[0]->s2);
  }
-  $this->InsertRBoardCell($Folder,$ID_Cell);
+  $this->InsertRBoardCell($Folder,$ID_Cell,$bcont);
 }
 //Inserta en la base de datos los registros correspondientes a groupboards
-private function InsertGroupBoards($Folder,$mainGboard){
+private function InsertGroupBoards($Folder){
  $ID_User=$this->session->idusu;
  $file = file_get_contents($Folder."/GroupBoards.json");
  $gboards=json_decode($file);
  $count=count($gboards->ID_GBUser);
- if(!$mainGboard){
    for($i=0;$i<$count;$i++){
+     if($i==0 && !$this->existsmain()) $mainGboard="1"; else $mainGboard="0";
     $sql="INSERT INTO GroupBoards(ID_GBUser,GBname,primaryGroupBoard,defWidth,defHeight,imgGB)VALUES (?,?,?,?,?,?)";
     $this->db->query($sql,
      array(
       $ID_User,
       $gboards->GBname[$i],
-      0,
+      $mainGboard,
       $gboards->defWidth[$i],
       $gboards->defHeight[$i],
       $gboards->imgGB[$i]
     ));
   }
-}else{
-  for($i=0;$i<$count;$i++){
-   $sql="INSERT INTO GroupBoards(ID_GBUser,GBname,primaryGroupBoard,defWidth,defHeight,imgGB)VALUES (?,?,?,?,?,?)";
-   $this->db->query($sql,
-    array(
-     $ID_User,
-     $gboards->GBname[$i],
-     $gboards->primaryGroupBoard[$i],
-     $gboards->defWidth[$i],
-     $gboards->defHeight[$i],
-     $gboards->imgGB[$i]
-   ));
- }
-}
-return $count;
 }
 //Inserta en la base de datos los registros correspondientes a images
 private function InsertImages($Folder){
@@ -458,24 +444,22 @@ private function InsertPictogramsLanguage($Folder){
 }
 }
 //Inserta en la base de datos los registros correspondientes a R_BoardCell
-private function InsertRBoardCell($Folder,$ID_Cell){
+private function InsertRBoardCell($Folder,$ID_Cell,$bcont){
    $boardkey=$this->getBoardkey();
    $file = file_get_contents($Folder."/R_BoardCell.json");
+   $fileB=file_get_contents($Folder."/Boards.json");
    $rbcell=json_decode($file);
+   $boards=json_decode($fileB);
    $count=count($rbcell->ID_RBoard);
-   sort($rbcell->ID_RBoard);
-   $a=array();
-   $posc=-1;
+   $boardkey=array_slice($boardkey,$bcont);
    for($i=0;$i<$count;$i++){
-   if($rbcell->ID_RBoard[$i]>$ant){
-     $posc++;
-     $ant=$rbcell->ID_RBoard[$i];
-   }else{
-     $ant=$rbcell->ID_RBoard[$i];
-   }
+     if(!(is_null($rbcell->ID_RBoard[$i]))){
+         $posc=array_search($rbcell->ID_RBoard[$i],$boards->ID_Board);
+     }else{
+         $posc=null;
+     }
     $sql="INSERT INTO R_BoardCell(ID_RBoard,ID_RCell,posInBoard,isMenu,posInMenu,customScanBlock1,customScanBlockText1,customScanBlock2,
       customScanBlockText2)VALUES (?,?,?,?,?,?,?,?,?)";
-      array_push($a,$rbcell->posInBoard[$i]);
     $this->db->query($sql,array(
       $boardkey[$posc],
       $ID_Cell[$i],
@@ -488,7 +472,6 @@ private function InsertRBoardCell($Folder,$ID_Cell){
       $rbcell->customScanBlockText2[$i]
     ));
   }
-  return $a;
 }
 //Inserta en la base de datos los registros correspondientes a R_S_HistoricPictograms
 private function InsertRSHistoricPictograms($Folder){
