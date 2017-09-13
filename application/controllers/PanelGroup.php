@@ -30,15 +30,6 @@ class PanelGroup extends REST_Controller {
             }
         }
     }
-    public function getArasaacPictos_post(){
-        $picto=$this->post('picto');
-        $bw=$this->post('ByN');
-        $data=$this->PanelInterface->getArasaacPictos($picto,$bw);
-        $response = [
-            'data'=>$data
-        ];
-        $this->response($response, REST_Controller::HTTP_OK);
-    }
     public function getPanelGroupInfo_post() {
         $postdata = file_get_contents("php://input");
         $request = json_decode($postdata);
@@ -227,7 +218,7 @@ class PanelGroup extends REST_Controller {
         $idusu = $request->user;
         $srcGroupBoard = $request->id;
         $changedLinks = array();
-        
+
         $this->BoardInterface->initTrans();
         $primaryBoard = $this->BoardInterface->getInfoGroupBoard($srcGroupBoard);
 

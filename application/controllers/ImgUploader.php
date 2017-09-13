@@ -28,6 +28,21 @@ class ImgUploader extends REST_Controller {
             }
         }
     }
+    function getImagesArasaac_post() {
+    $postdata = file_get_contents("php://input");
+    $request = json_decode($postdata);
+    $name = $request->name;
+    $idusu = $this->session->userdata('idusu');
+    $languageInt = $this->session->userdata('uinterfacelangauge');
+    $data = $this->ImgUploader_model->getImagesArasaac($idusu, $name, $languageInt);
+    for ($i = 0; $i < count($data); $i++) {
+        $data[$i]["imgPath"] = "img/pictos/" . $data[$i]["imgPath"];
+    }
+    $response = [
+        'data' => $data
+    ];
+    $this->response($response, REST_Controller::HTTP_OK);
+}
     public function uploadBackupWin_post(){
       $errorText = array();
       $ID_User=$this->session->idusu;

@@ -1,7 +1,5 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
-
 require APPPATH . '/libraries/REST_Controller.php';
-
 class Main extends REST_Controller {
 
     public function __construct()
@@ -22,28 +20,22 @@ class Main extends REST_Controller {
         //parametros que nos llegan del get
         $section = $this->query("section");
         $idLanguage = $this->query("idLanguage");
-
         //comprobación de los parametros
         if($section == NULL || $section == "" || $idLanguage == NULL || $idLanguage == "") {
             $this->response("missing argument startswith", 400);
         }
         else {
-
             //Petición al modelo
             $saveResult = $this->main_model->getContent($section, $idLanguage);
-
 
             //Cojemos los datos de las dos columnas de la petición y lo convertimos en un objecto clave:valor
             $array1 = array_column($saveResult, 'tagString');
             $array2 = array_column($saveResult, 'content');
-
             $keyValue = array_combine($array1, $array2);
-
             // Convertimos el array en un objeto
             $response = [
                 "data" => $keyValue
             ];
-
             //respuesta
             $this->response($response, REST_Controller::HTTP_OK); // OK (200) being the HTTP response code
         }
@@ -61,7 +53,6 @@ class Main extends REST_Controller {
     {
         $ID_SU = $this->query('IdSu');
         $data = json_decode($this->query("data"), true); // convertimos el string json del post en array.
-
         $response = $this->main_model->changeData('SuperUser', 'ID_SU', $ID_SU, $data);
         //reescrivimos la cookies
         $this->main_model->getConfig($ID_SU);
@@ -87,7 +78,6 @@ class Main extends REST_Controller {
             $pass = ['pswd'=> $newPass];
             //Save new password
             $response = $this->main_model->changeData('SuperUser', 'ID_SU', $ID_SU, $pass);
-
             $this->response($response, REST_Controller::HTTP_OK); // OK (200) being the HTTP response code
         }else{
             $this->response("Passwords does not match", 400);
@@ -96,37 +86,11 @@ class Main extends REST_Controller {
         $this->main_model->getConfig($ID_SU);
     }
 
-    /* Nueva función para probar como lanzar el popup */
-
-
-  public function confirmPassword_post(){
-
-      $postdata = file_get_contents("php://input");
-      $request = json_decode($postdata);
-      $user = $request->user;
-      $pass = $request->pass;
-
-      $userObj = $this->main_model->getUser($user, $pass);
-
-
-      $response = ['userName' => $user,
-          'userID' => $userObj[0]->ID_User,
-          'userPass' => $pass];
-
-
-      $this->response($response, REST_Controller::HTTP_OK);
-    }
-
-
-
-
-
     public function changeDefUser_post()
     {
         $ID_SU = $this->query('IdSu');
         $ID_U = $this->query('idU');
         $data = ['cfgDefUser'=> $ID_U]; // convertimos el string json del post en array.
-
         $response = $this->main_model->changeData('SuperUser', 'ID_SU', $ID_SU, $data);
         //reescrivimos la cookies
         $this->main_model->getConfig($ID_SU);
@@ -138,7 +102,6 @@ class Main extends REST_Controller {
     {
         $ID_SU = $this->query('IdSu');
         $data = ['cfg'.$this->query('data') => $this->query('value')]; // convertimos el string json del post en array.
-
         $this->main_model->changeData('SuperUser', 'ID_SU', $ID_SU, $data);
         //reescrivimos la cookies
         $response = $this->main_model->getConfig($ID_SU);
@@ -150,7 +113,6 @@ class Main extends REST_Controller {
     {
         $ID_U = $this->query('IdU');
         $data = ['cfg'.$this->query('data') => $this->query('value')]; // convertimos el string json del post en array.
-
         $response = $this->main_model->changeData('User', 'ID_User', $ID_U, $data);
         //respuesta
         $this->response($response, REST_Controller::HTTP_OK); // OK (200) being the HTTP response code
@@ -164,7 +126,6 @@ class Main extends REST_Controller {
             'ID_ULanguage'=>$this->query('ID_ULanguage'),
             'cfgExpansionLanguage'=>$this->query('cfgExpansionLanguage')
             ];
-
         $response = $this->main_model->saveData('User', $data);
         //respuesta
         $this->response($response, REST_Controller::HTTP_OK); // OK (200) being the HTTP response code
@@ -227,7 +188,6 @@ class Main extends REST_Controller {
     public function userValidate2_post(){
         $ID_SU = $this->query('IdSu');
         $data = [$this->query('data') => $this->query('value')]; // convertimos el string json del post en array.
-
         $response = $this->main_model->changeData('SuperUser', 'ID_SU', $ID_SU, $data);
         //respuesta
         $this->response($response, REST_Controller::HTTP_OK); // OK (200) being the HTTP response code
@@ -242,7 +202,6 @@ class Main extends REST_Controller {
         $today = $this->main_model->getHistoric($idusu, '1');
         $lastWeek = $this->main_model->getHistoric($idusu, '7');
         $lastMonth = $this->main_model->getHistoric($idusu, '30');
-
         $response = [
             'today' => $today,
             'lastWeek' => $lastWeek,
@@ -303,7 +262,6 @@ class Main extends REST_Controller {
     {
         $idusu = $this->session->userdata('idusu');
         $ID_Folder = $this->query('ID_Folder');
-
         if($ID_Folder<0){
             $sentences = $this->main_model->getHistoric($idusu, ($ID_Folder * (-1)));
         }else{
@@ -350,7 +308,6 @@ class Main extends REST_Controller {
             $sentence['ID_SSUser'] = $idusu;
             unset($sentence['ID_SHistoric']);
             unset($sentence['ID_SHUser']);
-            unset($sentence['isDeleted']);
             $sentence['posInFolder'] = $posInFolder + 1;
 
             //Save sentence
@@ -426,17 +383,13 @@ class Main extends REST_Controller {
     public function createSentenceFolder_post()
     {
         $idusu = $this->session->userdata('idusu');
-        $url=$this->query('imgSFolder');
-        if (filter_var($url, FILTER_VALIDATE_URL) === TRUE)
-        $imgfolder=$this->main_model->downloadImageArasaac($url);
-        else
-        $imgfolder=$url;
+
         $folders = $this->main_model->getHistoricFolders($idusu);
         $folderOrder = $folders[0][folderOrder]+1;
         $data = [
             'ID_SFUser'=>$idusu,
             'folderName'=>$this->query('folderName'),
-            'imgSFolder'=>$imgfolder,
+            'imgSFolder'=>$this->query('imgSFolder'),
             'folderColor'=>$this->query('folderColor'),
             'folderOrder'=>$folderOrder
         ];
@@ -460,7 +413,6 @@ class Main extends REST_Controller {
         $data = json_decode($this->query("folder"), true); // convertimos el string json del post en array.
         $idusu = $this->session->userdata('idusu');
         $ID_Folder = $data['ID_Folder'];
-
         $this->main_model->changeHistFolder($idusu, $ID_Folder, $data);
 
         $response = [
@@ -485,7 +437,6 @@ class Main extends REST_Controller {
 
         //delete sentences
         $this->main_model->deleteSingleData('S_Sentence', 'ID_SSUser', $idusu, 'ID_SFolder', $ID_Folder);
-
         //delete Folder
         $this->main_model->deleteSingleData('S_Folder', 'ID_SFUser', $idusu, 'ID_Folder', $ID_Folder);
 
@@ -508,9 +459,6 @@ class Main extends REST_Controller {
         if($size > 0){
             $posInFolder=$sentencesOrdered[$size-1]->posInFolder;
         }
-        $pic=$this->main_model->downloadImageArasaac($pictograms[0]);
-        $pic1=$this->main_model->downloadImageArasaac($pictograms[1]);
-        $pic2=$this->main_model->downloadImageArasaac($pictograms[2]);
         $sentence=[
             'ID_SSUser'=>$idusu,
             'ID_SFolder'=>$ID_Folder,
@@ -519,11 +467,10 @@ class Main extends REST_Controller {
             'isPreRec'=>'1',
             'sPreRecText'=>$this->query('sentence'),
             'sPreRecDate'=>date('Y-m-d'),
-            'sPreRecImg1'=>$pic,
-            'sPreRecImg2'=>$pic1,
-            'sPreRecImg3'=>$pic2
+            'sPreRecImg1'=>$pictograms[0],
+            'sPreRecImg2'=>$pictograms[1],
+            'sPreRecImg3'=>$pictograms[2]
         ];
-
         $saved=$this->main_model->saveData('S_Sentence', $sentence);
 
         $response = [
@@ -534,22 +481,19 @@ class Main extends REST_Controller {
         $this->response($response, REST_Controller::HTTP_OK);
     }
     //Edit manual sentence
-    public function editManualSentence_post(){
+    public function editManualSentence_post()
+    {
         $pictograms = json_decode($this->query("pictograms"), true); // convertimos el string json del post en array.
         $idusu = $this->session->userdata('idusu');
         $ID_SSentence = $this->query('ID_SSentence');
-        $pic=$this->main_model->downloadImageArasaac($pictograms[0]);
-        $pic1=$this->main_model->downloadImageArasaac($pictograms[1]);
-        $pic2=$this->main_model->downloadImageArasaac($pictograms[2]);
         $sentence=[
             'generatorString'=>$this->query('sentence'),
             'sPreRecText'=>$this->query('sentence'),
             'sPreRecDate'=>date('Y-m-d'),
-            'sPreRecImg1'=>$pic,
-            'sPreRecImg2'=>$pic1,
-            'sPreRecImg3'=>$pic2
+            'sPreRecImg1'=>$pictograms[0],
+            'sPreRecImg2'=>$pictograms[1],
+            'sPreRecImg3'=>$pictograms[2]
         ];
-
         $saved=$this->main_model->changeData('S_Sentence', 'ID_SSentence', $ID_SSentence, $sentence);
 
         $response = [

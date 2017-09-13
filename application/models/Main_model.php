@@ -22,20 +22,6 @@ class Main_model extends CI_Model {
         return $query->result_array();// retornem l'array query amb els resultats
     }
 
-    public function downloadImageArasaac($url){
-      $imgname=substr($url,-9);
-      $imgSFolder=str_replace('/','',$imgname);
-      $location="img/pictos/".$imgSFolder;
-      $ch = curl_init($url);
-      $fp = fopen($location, 'wb');
-      curl_setopt($ch, CURLOPT_FILE, $fp);
-      curl_setopt($ch, CURLOPT_HEADER, 0);
-      curl_exec($ch);
-      curl_close($ch);
-      fclose($fp);
-      return $location;
-    }
-
     /* @rjlopezdev
      * Languages that cannot Expand will be filtered in the Interface, if needs be, and will not be shown
      */
