@@ -2156,7 +2156,7 @@ angular.module('controllers', [])
                         if ($scope.isScanning !== "sentencebar") {
                             $scope.InitScan();
                         }
-                    }, 300);
+                    }, 400);
                 }
                 else {
                     $scope.InitScan();
