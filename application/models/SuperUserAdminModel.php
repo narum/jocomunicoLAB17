@@ -197,11 +197,23 @@ class SuperUserAdminModel extends CI_Model {
      *
      * @param user: user name
      * @param password: user password
-     * @return: - if exists -> user id
+     * @return: - if distinct language -> 
+     *          - if exists -> user id
      *          - if not    -> null
      */
     function userExists($user, $password) {
+        $query = $this->db->query(
+            'SELECT ID_ULanguage
+            FROM SuperUser su, User u
+            WHERE su.ID_SU = u.ID_USU
+                AND SUname = ?
+            ',
+            array($user)
+        );
 
+        if((string)$query->result()[0]->ID_ULanguage != (string)$this->session->userdata('ulanguage') && $query->result()[0]->ID_ULanguage != null )
+            return 'distinctLanguage';
+        
         return $this->db->query(
             'SELECT ID_SU
              FROM User u, SuperUser su

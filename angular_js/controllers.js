@@ -1415,13 +1415,16 @@ angular.module('controllers', [])
                 })
                 .success(function(response) {
                     //If exists -> add User
-                    if(response.userExists != null)
-                    {
+                    if(response.userExists == 'distinctLanguage'){
+                        $scope.errorAddingUser = $scope.content.errorAddingUserDifferentLanguage;
+                    }else if(response.userExists != null){
+                        $scope.errorAddingUser = "";
                         $scope.userExistsState = true;
                         $scope.existingUserData.id = response.userExists;
                         $scope.addExistingUser();
                     }
                     else
+                    $scope.errorAddingUser = $scope.content.notPossibleAddUser;
                         $scope.userExistsState = false;
                 })
         }
