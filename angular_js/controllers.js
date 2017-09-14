@@ -1389,10 +1389,10 @@ angular.module('controllers', [])
             //Adding existing User
             if(new_OR_Existing === 'existing'){
                 //Show Input [User, Password] Modal
-                $('#chooseNew_OR_ExistingModal').on('hidden.bs.modal', function(){
+                //$('#chooseNew_OR_ExistingModal').on('hidden.bs.modal', function(){
                     $('#existingUserModal').modal('toggle');
                     $('#chooseNew_OR_ExistingModal').unbind();
-                });
+                //});
 
             //Adding new User
             }else if(new_OR_Existing === 'new'){
