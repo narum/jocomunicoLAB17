@@ -76,7 +76,16 @@ class Board extends REST_Controller {
      * Get the cells of the boards that will be displayed and the
      * number of rows and columns in order to set the proportion
      */
-
+        public function getPrimaryBoardP_post(){
+        $postdata = file_get_contents("php://input");
+        $request = json_decode($postdata);
+        $id = $request->id;
+        $primaryboard = $this->BoardInterface->getPrimaryBoard($id);
+        $response = [
+            'idboard' => $primaryboard[0]->ID_Board
+        ];
+        $this->response($response, REST_Controller::HTTP_OK);
+    }
     public function getCellboard_post() {
         $postdata = file_get_contents("php://input");
         $request = json_decode($postdata);
