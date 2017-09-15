@@ -48,7 +48,7 @@ class AddWord extends REST_Controller {
         }
         return ($a < $b) ? -1 : 1;
     }
-    
+
     public function EditWordRemove_post() {
         $postdata = file_get_contents("php://input");
         $request = json_decode($postdata);
@@ -105,44 +105,39 @@ class AddWord extends REST_Controller {
                 break;
         }
         usort($data, array('SearchWord', 'cmpclass'));
-        
+
         $response = [
             "data" => $data
         ];
         $this->response($response, REST_Controller::HTTP_OK);
     }
 
-     public function InsertWordData_post(){
+    public function InsertWordData_post() {
         $postdata = file_get_contents("php://input");
         $request = json_decode($postdata);
         $objAdd = $request->objAdd;
-        $url=$objAdd->imgPicto;
-        list($status) = get_headers($url);
-        if (strpos($status, '404') === FALSE) {
-          $objAdd->imgPicto=substr($this->main_model->downloadImageArasaac($url),11);
-        }
-          $this->InsertVocabulari->insertPicto($objAdd);
+        $this->InsertVocabulari->insertPicto($objAdd);
     }
-    
+
     public function getAllVerbs_post(){
-    
-        
+
+
         $Verbs = $this->AddWordInterface->getDBVerbs();
-        
+
         $response = [
             "data" => $Verbs
         ];
         $this->response($response, REST_Controller::HTTP_OK); // OK (200) being the HTTP response code
 
-        
+
     }
-    
+
     public function getDBAll_post() {
         $postdata = file_get_contents("php://input");
         $request = json_decode($postdata);
         $startswith = $request->id;
         $language = $this->session->userdata('ulangabbr');
-        
+
         $user = $this->session->userdata('idusu');
 
         // Controller search all names from all picto table

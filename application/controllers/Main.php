@@ -424,36 +424,32 @@ class Main extends REST_Controller {
     }
     //Create sentence folder
     public function createSentenceFolder_post()
-    {
-        $idusu = $this->session->userdata('idusu');
-        $url=$this->query('imgSFolder');
-        if (filter_var($url, FILTER_VALIDATE_URL) === TRUE)
-        $imgfolder=$this->main_model->downloadImageArasaac($url);
-        else
-        $imgfolder=$url;
-        $folders = $this->main_model->getHistoricFolders($idusu);
-        $folderOrder = $folders[0][folderOrder]+1;
-        $data = [
-            'ID_SFUser'=>$idusu,
-            'folderName'=>$this->query('folderName'),
-            'imgSFolder'=>$imgfolder,
-            'folderColor'=>$this->query('folderColor'),
-            'folderOrder'=>$folderOrder
-        ];
+      {
+          $idusu = $this->session->userdata('idusu');
 
-        //Save folder
-        $saved=$this->main_model->saveData('S_Folder', $data);
+          $folders = $this->main_model->getHistoricFolders($idusu);
+          $folderOrder = $folders[0][folderOrder]+1;
+          $data = [
+              'ID_SFUser'=>$idusu,
+              'folderName'=>$this->query('folderName'),
+              'imgSFolder'=>$this->query('imgSFolder'),
+              'folderColor'=>$this->query('folderColor'),
+              'folderOrder'=>$folderOrder
+          ];
 
-        if($saved){
-            $folder = $this->main_model->getSingleData('S_Folder', 'ID_SFUser', $idusu, 'folderOrder', $folderOrder)[0];
-        }
+          //Save folder
+          $saved=$this->main_model->saveData('S_Folder', $data);
 
-        $response = [
-            'folder'=>$folder
-        ];
+          if($saved){
+              $folder = $this->main_model->getSingleData('S_Folder', 'ID_SFUser', $idusu, 'folderOrder', $folderOrder)[0];
+          }
 
-        $this->response($response, REST_Controller::HTTP_OK);
-    }
+          $response = [
+              'folder'=>$folder
+          ];
+
+          $this->response($response, REST_Controller::HTTP_OK);
+      }
     //Edit sentence folder
     public function editSentenceFolder_post()
     {
@@ -497,68 +493,61 @@ class Main extends REST_Controller {
     }
     //Add manual sentence
     public function addManualSentence_post()
-    {
-        $pictograms = json_decode($this->query("pictograms"), true); // convertimos el string json del post en array.
-        $idusu = $this->session->userdata('idusu');
-        $ID_Folder = $this->query('ID_SFolder');
+      {
+          $pictograms = json_decode($this->query("pictograms"), true); // convertimos el string json del post en array.
+          $idusu = $this->session->userdata('idusu');
+          $ID_Folder = $this->query('ID_SFolder');
 
-        //Get sentences in folder to know de order number of the new sentence
-        $sentencesOrdered = $this->main_model->getSentencesOrdered($idusu, $ID_Folder);
-        $size=count($sentencesOrdered);
-        if($size > 0){
-            $posInFolder=$sentencesOrdered[$size-1]->posInFolder;
-        }
-        $pic=$this->main_model->downloadImageArasaac($pictograms[0]);
-        $pic1=$this->main_model->downloadImageArasaac($pictograms[1]);
-        $pic2=$this->main_model->downloadImageArasaac($pictograms[2]);
-        $sentence=[
-            'ID_SSUser'=>$idusu,
-            'ID_SFolder'=>$ID_Folder,
-            'posInFolder'=>$posInFolder + 1,
-            'generatorString'=>$this->query('sentence'),
-            'isPreRec'=>'1',
-            'sPreRecText'=>$this->query('sentence'),
-            'sPreRecDate'=>date('Y-m-d'),
-            'sPreRecImg1'=>$pic,
-            'sPreRecImg2'=>$pic1,
-            'sPreRecImg3'=>$pic2
-        ];
+          //Get sentences in folder to know de order number of the new sentence
+          $sentencesOrdered = $this->main_model->getSentencesOrdered($idusu, $ID_Folder);
+          $size=count($sentencesOrdered);
+          if($size > 0){
+              $posInFolder=$sentencesOrdered[$size-1]->posInFolder;
+          }
+          $sentence=[
+              'ID_SSUser'=>$idusu,
+              'ID_SFolder'=>$ID_Folder,
+              'posInFolder'=>$posInFolder + 1,
+              'generatorString'=>$this->query('sentence'),
+              'isPreRec'=>'1',
+              'sPreRecText'=>$this->query('sentence'),
+              'sPreRecDate'=>date('Y-m-d'),
+              'sPreRecImg1'=>$pictograms[0],
+              'sPreRecImg2'=>$pictograms[1],
+              'sPreRecImg3'=>$pictograms[2]
+          ];
+          $saved=$this->main_model->saveData('S_Sentence', $sentence);
 
-        $saved=$this->main_model->saveData('S_Sentence', $sentence);
+          $response = [
+              'sentence'=>$sentence,
+              'pictograms'=>$pictograms,
+          ];
 
-        $response = [
-            'sentence'=>$sentence,
-            'pictograms'=>$pictograms,
-        ];
-
-        $this->response($response, REST_Controller::HTTP_OK);
-    }
+          $this->response($response, REST_Controller::HTTP_OK);
+      }
     //Edit manual sentence
-    public function editManualSentence_post(){
-        $pictograms = json_decode($this->query("pictograms"), true); // convertimos el string json del post en array.
-        $idusu = $this->session->userdata('idusu');
-        $ID_SSentence = $this->query('ID_SSentence');
-        $pic=$this->main_model->downloadImageArasaac($pictograms[0]);
-        $pic1=$this->main_model->downloadImageArasaac($pictograms[1]);
-        $pic2=$this->main_model->downloadImageArasaac($pictograms[2]);
-        $sentence=[
-            'generatorString'=>$this->query('sentence'),
-            'sPreRecText'=>$this->query('sentence'),
-            'sPreRecDate'=>date('Y-m-d'),
-            'sPreRecImg1'=>$pic,
-            'sPreRecImg2'=>$pic1,
-            'sPreRecImg3'=>$pic2
-        ];
+    public function editManualSentence_post()
+  {
+      $pictograms = json_decode($this->query("pictograms"), true); // convertimos el string json del post en array.
+      $idusu = $this->session->userdata('idusu');
+      $ID_SSentence = $this->query('ID_SSentence');
+      $sentence=[
+          'generatorString'=>$this->query('sentence'),
+          'sPreRecText'=>$this->query('sentence'),
+          'sPreRecDate'=>date('Y-m-d'),
+          'sPreRecImg1'=>$pictograms[0],
+          'sPreRecImg2'=>$pictograms[1],
+          'sPreRecImg3'=>$pictograms[2]
+      ];
+      $saved=$this->main_model->changeData('S_Sentence', 'ID_SSentence', $ID_SSentence, $sentence);
 
-        $saved=$this->main_model->changeData('S_Sentence', 'ID_SSentence', $ID_SSentence, $sentence);
+      $response = [
+          'sentence'=>$sentence,
+          'pictograms'=>$pictograms,
+      ];
 
-        $response = [
-            'sentence'=>$sentence,
-            'pictograms'=>$pictograms,
-        ];
-
-        $this->response($response, REST_Controller::HTTP_OK);
-    }
+      $this->response($response, REST_Controller::HTTP_OK);
+  }
     //Up sentence position in folder
     public function upSentenceOrderOnFolder_post()
     {

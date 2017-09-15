@@ -709,9 +709,8 @@ class Board extends REST_Controller {
         $request = json_decode($postdata);
         $id = $request->idboard;
         $posInBoard = $request->pos;
-        $imgCell = $this->Main_model->downloadImageArasaac($request->imgCell);
+        $imgCell = $request->imgCell;
         $idusu = $this->session->userdata('idusu');
-
         $cell = $this->BoardInterface->getIDCell($posInBoard, $id);
         $idPicto = $this->BoardInterface->updateImgCell($cell[0]->ID_RCell, $imgCell);
         $data = $this->BoardInterface->getCellsBoard($id);
@@ -721,7 +720,6 @@ class Board extends REST_Controller {
         ];
         $this->response($response, REST_Controller::HTTP_OK);
     }
-
     public function changePrimaryBoard_post() {
         $postdata = file_get_contents("php://input");
         $request = json_decode($postdata);
