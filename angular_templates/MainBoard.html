@@ -29,6 +29,7 @@
         //Reset the timer and postpone the refresh in the next 10min.
         clearTimeout(Timer);
         Timer = window.setTimeout(refreshPage, 600000);
+
     }
     function refreshPage() {
             location.reload(true);

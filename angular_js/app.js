@@ -9,7 +9,7 @@ angular.module('app', [
         'ngDialog',
         'ngScrollbar',
         'angular-bind-html-compile',
-        
+
 	//Modules
 	'controllers',
 	'services',
@@ -103,6 +103,11 @@ angular.module('app', [
 			controller:'downloadCtrl',
 			templateUrl:'../../angular_templates/Download.html'
 		})
+								.when('/tutoriales',{
+			controller:'infoCtrl',
+			templateUrl: '../../angular_templates/Tutorials.html'
+		})
+
 		.otherwise({ redirectTo:'/' });
 })
 .run(function(AuthService){
@@ -113,7 +118,7 @@ angular.module('app', [
 //Function to filter Duplicates From ng-repeat List
 .filter('unique', function() {
     return function(collection, keyname) {
-       var output = [], 
+       var output = [],
            keys = [];
 
        angular.forEach(collection, function(item) {
@@ -127,4 +132,3 @@ angular.module('app', [
        return output;
     };
 });
-

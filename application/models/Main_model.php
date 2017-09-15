@@ -420,4 +420,25 @@ class Main_model extends CI_Model {
         $this->db->where('ID_User', $idusu);
         $this->db->update('User', $data);
     }
+
+    function getVideotutoriales($idLanguage) {
+      $output = array();
+
+
+
+      /*return $this-> db-> query('SELECT Description, Url FROM videotutoriales WHERE ID_ULanguage = ?'
+      , array($idLanguage))->result();*/
+
+      $this-> db-> from('videotutoriales');
+      $this-> db-> where('ID_ULanguage', $idLanguage);
+      $query = $this->db->get();
+      if ($query->num_rows() > 0) {
+          $output = $query->result();
+      } else{
+          $output = null;
+      }
+      return $output;
+
+    }
+
 }

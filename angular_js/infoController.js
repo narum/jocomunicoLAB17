@@ -1,5 +1,5 @@
 angular.module('controllers')
-        .controller('infoCtrl', function ($scope, $rootScope, $location, $http, ngDialog, dropdownMenuBarInit, AuthService, Resources, $timeout,$routeParams) {
+        .controller('infoCtrl', function ($scope, $rootScope, $location, $http, ngDialog, dropdownMenuBarInit, AuthService, Resources, $timeout,$routeParams, $sce) {
 
             /*
              * MENU CONFIGURATION
@@ -12,7 +12,7 @@ angular.module('controllers')
             $scope.img.loading = '/img/srcWeb/Login/loading.gif';
 
 
-        //Dropdown Menu Bar
+            //Dropdown Menu Bar
             $rootScope.dropdownMenuBar = null;
             if($rootScope.isLogged){
                 var languageId = $rootScope.interfaceLanguageId;
@@ -21,6 +21,7 @@ angular.module('controllers')
                 var languageId = $rootScope.contentLanguageUserNonLoged;
                 $rootScope.dropdownMenuBarChangeLanguage = true;//Languages button available
             }
+            
             dropdownMenuBarInit(languageId)
                     .then(function () {
                         //Choose the buttons to show on bar
@@ -113,6 +114,17 @@ angular.module('controllers')
                 .then(function (results) {
                     $scope.text = results.data;
                 });
+
+
+            $http.post($scope.baseurl + 'Register/getVideotutoriales',{'idLanguage': $rootScope.contentLanguageUserNonLoged}).success(function(response){
+              $scope.videotutoriales = response.videotutoriales;
+              console.log($scope.videotutoriales);
+            });
+
+            $scope.trustSrc = function(src) {
+               return $sce.trustAsResourceUrl(src);
+             }
+
 
             $scope.linkHome = function () {
                 $rootScope.dropdownMenuBarValue = '/home'; //Button selected on this view

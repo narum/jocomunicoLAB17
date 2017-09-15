@@ -1429,7 +1429,6 @@ angular.module('controllers', [])
             // JORGE: #Tarea 3. Esta función sirve para comprobar si el usuario y la contraseña que usamos para acceder al menu es correcta.
           $scope.confirmPassword = function (){
 
-
             if($scope.cfgMenuBlock == false){
               var eventLaunched = false;
               $rootScope.dropdownMenuOpen = true;
@@ -1455,7 +1454,7 @@ angular.module('controllers', [])
               }
 
             }
-
+            
             var url = $scope.baseurl +  "Main/confirmPassword";
             var postdata = {user: $scope.usernameCopyPanel, pass: $scope.passwordCopyPanel};
 
@@ -2906,9 +2905,11 @@ angular.module('controllers', [])
                     $scope.tense = response.tense;
                     $scope.tipusfrase = response.tipusfrase;
                     $scope.negativa = response.negativa;
+
                     /*New code*/
                     $scope.chooseElementDeleted = response.pos;
                     /*New code*/
+                        
                     if ((control !== "") && (control !== "home") && (control !== "historic") && (control !== "stopAudio")) {
                         var url = $scope.baseurl + "Board/" + control;
                         var postdata = {tense: $scope.tense, tipusfrase: $scope.tipusfrase, negativa: $scope.negativa, pos: $scope.chooseElementDeleted};
@@ -3899,7 +3900,7 @@ angular.module('controllers', [])
                 }
 
               }
-
+              
               var url = $scope.baseurl +  "Main/confirmPassword";
               var postdata = {user: $scope.usernameCopyPanel, pass: $scope.passwordCopyPanel};
 
