@@ -179,8 +179,16 @@ $this->response($response, REST_Controller::HTTP_OK);
             }
         }
 
+        $imgpath = "";
+        
+        if (filter_input(INPUT_POST, 'vocabulary') == "true") {
+            $imgpath = $md5Name;
+        } else {
+            $imgpath = $target_dir . $md5Name;
+        }
+
         $response = [
-            'url' => $target_dir . $md5Name,
+            'url' => $imgpath,
             'errorText' => $errorText,
             'error' => $error
         ];
