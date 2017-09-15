@@ -13,13 +13,13 @@ angular.module('controllers')
             $scope.createFolderContentTitle = false; //Change the modal title to create folder or edit folder
             if ($routeParams.folderId<0) {
                 switch($routeParams.folderId) {
-                    case '-1': 
+                    case '-1':
                         $scope.folderName = results.data.Today;
                         break;
-                    case '-7': 
+                    case '-7':
                         $scope.folderName = results.data.LastWeek;
                         break;
-                    case '-30': 
+                    case '-30':
                         $scope.folderName = results.data.LastMonth;
                         break;
                     default:
@@ -66,7 +66,7 @@ angular.module('controllers')
                     AuthService.logout();
                 }, 1000);
             };
-        
+
         //scrollbars
         $scope.$on('scrollbarSentences', function () {
             $scope.$broadcast('rebuild:meS');
@@ -96,12 +96,12 @@ angular.module('controllers')
         $scope.img.addPhotoSelected = '/img/icons/add_photo_selected.png';
         $scope.img.info = '/img/icons/info.png';
         $scope.img.Loading_icon = '/img/icons/Loading_icon.gif';
-        
+
         //Variable declaration
         $scope.viewActived = false;
         $scope.historicFolder = false;
         $scope.newSentenceImage=[];
-        
+
         //Folder info
         if($routeParams.folderId<0){
             $scope.historicFolder = true;
@@ -160,7 +160,7 @@ angular.module('controllers')
             });
         };
         getSentences();
-        
+
         //Copy sentence on folder
         $scope.copySentence = function(ID_SHistoric,ID_SSentence){
             if($scope.historicFolder){
@@ -249,7 +249,7 @@ angular.module('controllers')
                     $scope.addImg=false;
                     getSentences();
                 });
-                
+
             }else{
                 $('#createSentenceModal').modal('hide'); //Close modal
                 var pictograms = JSON.stringify($scope.newSentenceImage) //array to json format
@@ -281,7 +281,7 @@ angular.module('controllers')
             $('#createSentenceModal').modal('toggle');//Show static modal
             console.log(generatorString,sPreRecImg1,sPreRecImg2,sPreRecImg3,ID_SSentence);
         }
-        
+
         //Change sentence order in folder
         $scope.upSentenceOrder = function(idSentence){
             $scope.showUpDownButtons=false;
@@ -301,56 +301,25 @@ angular.module('controllers')
         /*
          * Return uploaded images from database. There are two types, the users images an the arasaac (not user images)
          */
-        $scope.searchImg = function (name, typeImgEditSearch,bw) {
-            var URL = "";
-            switch (typeImgEditSearch)
-            {
-                case "Arasaac":
-                    if(name!=''){
-                      $scope.getArasaacPictos(name,bw)
-                    }
-                    $scope.BW=true;
-                    break;
-                case "Uploads":
-                    URL = $scope.baseurl + "ImgUploader/getImagesUploads";
-                    $scope.BW=false;
-                    break;
-            }
-            var postdata = {name: name};
-            $http.post(URL, postdata).
-                success(function (response){
-                  picsara=[];
-                  picasarashow=[false,false,false,false]
-                  if(response.data.length>4){
-                    itsize=4
-                  }else{
-                    itsize=response.data.length;
-                  }
-                  for(var i=0;i<itsize;i++){
-                    picsara.push(response.data[i].imgPath);
-                    picasarashow[i]=true;
-                  }
-                  $scope.picsara=picsara;
-                  $scope.imgData=picasarashow;
-                });
-        }
-        $scope.getArasaacPictos=function(pictoaras,bw){
-          var postdata = {picto: pictoaras,ByN:bw};
-          $http.post("PanelGroup/getArasaacPictos",postdata).success(function (results) {
-            var pics=results.data;
-            var picasarashow=[];
-                for(var i=0;i<4;i++){
-                  if(pics[i]!=null){
-                    picasarashow.push(true);
-                  }else{
-                    picasarashow.push(false);
-                  }
-                }
-                $scope.imgData=picasarashow;
-                $scope.picsara=pics;
-                console.log(pics);
-              });
-        }
+         $scope.searchImg = function (name, typeImgEditSearch) {
+         var URL = "";
+         switch (typeImgEditSearch)
+         {
+             case "Arasaac":
+                 URL = $scope.baseurl + "ImgUploader/getImagesArasaac";
+                 break;
+             case "Uploads":
+                 URL = $scope.baseurl + "ImgUploader/getImagesUploads";
+                 break;
+         }
+         var postdata = {name: name};
+         $http.post(URL, postdata).
+             success(function (response)
+             {
+                 $scope.imgData = response.data;
+             });
+     }
+      
         //get all the photos attached to the pictos
         $scope.searchFoto = function (name)
         {
@@ -390,8 +359,8 @@ angular.module('controllers')
                     //alert(response.errorText);
                 });
         };
-        
-        
+
+
         $scope.style_changes_title = '';
 
          // Activate information modals (popups)
@@ -401,7 +370,7 @@ angular.module('controllers')
             $scope.style_changes_title = 'padding-top: 2vh;';
             $('#infoModal').modal('toggle');
         };
-   
+
         /* Download WordDocument generated based on tematic folder
          * @rjlopezdev
         */
@@ -429,7 +398,7 @@ angular.module('controllers')
                         image3:   i.sPreRecImg3
                     });
                 }
-                
+
                 return previous;
             }, []).filter((element) => element !== undefined);
 
@@ -466,7 +435,7 @@ angular.module('controllers')
                 });
             };
           }
-          
+
 
         //SHOW Download Document Modal
         $scope.toggleDownloadModal = function (title, text) {
