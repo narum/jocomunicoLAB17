@@ -29,8 +29,8 @@
     background-clip: content-box;
 }
 .Sujeto{
-    height: 23%;
-    width: 30%;
+    height: 39%;
+    width: 33%;
     padding: 1.5vh;
     background-color: white;
     background-clip: content-box;
@@ -38,32 +38,107 @@
 .paddingSujeto{
     padding: 1.5vh;
 }
-.Sujeto{
-    height: 23%;
-    width: 30%;
+
+.Complemento{
+    height: 39%;
+    width: 33%;
     padding: 1.5vh;
     background-color: white;
     background-clip: content-box;
 }
-.Complemento{
-    height: 30%;
-    width: 30%;
+
+.Receiver{
+    height: 39%;
+    width: 38%;
+    padding: 1.5vh;
+    background-color: white;
+    background-clip: content-box;
+}
+.Beneficiary{
+    height: 52%;
+    width: 38%;
+    padding: 1.5vh;
+    background-color: white;
+    background-clip: content-box;
+}
+
+.Acomp{
+    height: 40%;
+    width: 38%;
+    padding: 1.5vh;
+    background-color: white;
+    background-clip: content-box;
+}
+
+.Tool{
+    height: 40%;
+    width: 38%;
+    padding: 1.5vh;
+    background-color: white;
+    background-clip: content-box;
+}
+
+.Modo{
+    height: 40%;
+    width: 38%;
+    padding: 1.5vh;
+    background-color: white;
+    background-clip: content-box;
+}
+
+.Locativo{
+    height: 51%;
+    width: 38%;
     padding: 1.5vh;
     background-color: white;
     background-clip: content-box;
 }
 .ComplementoDirecto{
-    height: 40%;
-    width: 30%;
+    height: 62%;
+    width: 41%;
     padding: 1.5vh;
     background-color: white;
     background-clip: content-box;
+}
+
+.full-width{
+    width: 100%;
+}
+
+.patternPrepositionText{
+    color: #4c4c4c;
+    font-weight: bold;
+    width: 51%;
+    padding-top: 1vh;
+}
+
+.switchCDArt{
+    padding: 1vh 1.5vh 1vh 1.5vh;
 }
 .paddingComplementBtn{
     padding-top: 1vh;
     padding-left: 1vh;
     padding-right: 1vh;
 }
+
+.removePattern{
+    height: 15px !important;
+    width: 15px !important;
+    margin-top: 1.5vh;
+    right: 8%;
+    top: 4.5%;
+    /*max-width: 10%;*/
+    max-width: 18%;
+    height: auto;
+    /*max-height: 10%;*/
+    max-height: 18%;
+    width: auto;
+    z-index: 3;
+    position: absolute;
+    min-height: 10px;
+    min-width: 10px;
+}
+
 .boxEditFeature{
     width: 100%;
     margin-left: 3%;
@@ -212,7 +287,7 @@
 
 .buttonAddVerbPattern{
     background-color:rgba(255, 255, 255, 0.3);
-    width: 100%;
+    width: 95%;
     height: 10vh;
     border-radius: 15px;
     border-color: white;
@@ -231,7 +306,14 @@
 }
 
 .scrollVerbPattern{
-    margin: 5vh;
+
+
+    height: 76%;
+    overflow: hidden;
+    margin-top: 5vh;
+    margin-right: 5vh;
+    margin-bottom: 4.5%;
+    margin-left: 5vh;
 }
 
 .scrollbar-dynamic {
@@ -240,6 +322,7 @@
 }
 
 .verbPatternBar{
+    width: 95%;
     margin-top: 1vh;
     margin-bottom: 1vh;
 }

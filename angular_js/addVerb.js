@@ -51,28 +51,26 @@ var app = angular.module('controllers');
             }, 1000);
         };
 
-        //JQuery ScrollBar
-        $scope.jqueryScrollbarOptions = {
-            "onScroll":function(y, x){
-                if(y.scroll == y.maxScroll){
-                    alert('Scrolled to bottom');
-                }
-            }
-        };
-
-        $scope.$broadcast('buildScrollbar');
-        //Scrollbar
-        $scope.$on('scrollbar.show', function (ngRepeatFinishedEvent) {
-            $scope.$broadcast('buildScrollbar');
+        //Rebuild Scrollbar inside timeout
+        $timeout(function () {
+            $scope.$broadcast('rebuild:conjugationScrollbar');
         });
-        //Scrollbar inside div
-        $scope.$on('scrollbar.show', function (ngRepeatFinishedEvent) {
-            console.log('Scrollbar show');
+        /*
+        $scope.$on('rebuild:conjugationScrollbar', function () {
+            $scope.$broadcast('rebuild:conjugationScrollbar');
+        });
+        */
+        $timeout(function () {
+            $scope.$broadcast('rebuild:verbPatternScrollbar');
         });
 
-        var objDiv = document.getElementById("scroll");
-        objDiv.scrollTop = $scope.$broadcast('buildScrollbar');
-        
+        /*
+        $scope.$on('rebuild:verbPatternScrollbar', function () {
+            $scope.$broadcast('rebuild:verbPatternScrollbar');
+        });
+        */
+
+
         $scope.imgPicto = 'arrow question.png';
         $scope.verb ='';
 
@@ -227,17 +225,8 @@ var app = angular.module('controllers');
         $scope.cancelAddWord = function () {
             $location.path("/panelGroups");
         };
-        $scope.EditWordRemove = function () {
-            var postdata = {id: $scope.idEditWord, type: $scope.addWordType};
-            console.log(postdata);
-            var URL = $scope.baseurl + "AddWord/EditWordRemove";
-            $http.post(URL, postdata).
-            success(function (response)
-            {
 
-            });
-            $location.path("/panelGroups");
-        };
+
         $scope.saveAddWord = function () {
             $scope.commit = 1;
             switch ($scope.addWordType)
@@ -478,6 +467,27 @@ var app = angular.module('controllers');
         $scope.verbPattern2 = false;
         $scope.img.greenArrow = '/img/srcWeb/UserConfig/greenArrow.png';
 
+        $scope.pattern1 = [{
+            CD: [{priority: 0, type:"", preposition:"", article: 0}],
+            Receiver: [{priority:0, preposition:""}],
+            Beneficiary: [{priority:0, type:"", preposition:""}],
+            Acomp: [{priority:0, preposition:""}],
+            Tool: [{priority:0, preposition:""}],
+            Modo: [{priority:0, preposition:""}],
+            Locto: [{priority:0, type:"", preposition:""}],
+        }];
+
+        $scope.pattern2 = [{
+            CD: [{priority: 0, type:"", preposition:"", article: 0}],
+            Receiver: [{priority:0, preposition:""}],
+            Beneficiary: [{priority:0, type:"", preposition:""}],
+            Acomp: [{priority:0, preposition:""}],
+            Tool: [{priority:0, preposition:""}],
+            Modo: [{priority:0, preposition:""}],
+            Locto: [{priority:0, type:"", preposition:""}],
+        }];
+
+        console.log($scope.pattern1);
         $scope.subjOptions = function(){
             if ($scope.interfaceLanguageId == 1){//CAT
                 return [{value:"noun", name:"Substantiu", common:true},{value:"animate" ,name:"Animat", common:true},{value:"human", name:"Huma", common:true},
@@ -510,6 +520,14 @@ var app = angular.module('controllers');
             }
         }();
 
+        $scope.patternTemp = function (){
+            if ($scope.interfaceLanguageId == 1){
+                return [{value:"present", name:"Present"},{value:"perfet", name:"Perfet"},{value:"futur", name:"Futur"},{value:"imperatiu", name:"Imperatiu"},{value:"verbless", name:"Sense verb"}]
+            }else if($scope.interfaceLanguageId == 2){
+                return [{value:"present", name:"Presente"},{value:"perfet", name:"Perfecto"},{value:"futur", name:"Futuro"},{value:"imperatiu", name:"Imperativo"},{value:"verbless", name:"Sin verbo"}]
+            }
+        }();
+
         $scope.complementos = function (){
             if ($scope.interfaceLanguageId == 1){
                 return [{id:1, name:"Complement directe"},{id:2, name:"Receiver"},{id:3, name:"Beneficiary"},
@@ -533,7 +551,7 @@ var app = angular.module('controllers');
             if ($scope.interfaceLanguageId == 1){
                 var b = [{value:"adj", name:"Adjectiu", common:true},{value:"adv", name:"Adverbi", common:true}]
             }else if ($scope.interfaceLanguageId == 2){
-                var b = [{value:"adj", name:"Adjectivo", common:true},{value:"adv", name:"Adverbio", common:true}]
+                var b = [{value:"adj", name:"Adjetivo", common:true},{value:"adv", name:"Adverbio", common:true}]
             }
             return array.concat(b);
         }();
