@@ -424,12 +424,12 @@ class Main_model extends CI_Model {
     function getVideotutoriales($idLanguage) {
       $output = array();
 
-
-
       /*return $this-> db-> query('SELECT Description, Url FROM videotutoriales WHERE ID_ULanguage = ?'
       , array($idLanguage))->result();*/
 
-      $this-> db-> from('videotutoriales');
+      $this-> db->from('videotutoriales');
+      $this -> db->order_by('grupoID', 'ASC');
+      $this-> db->order_by('ordenID', 'ASC');
       $this-> db-> where('ID_ULanguage', $idLanguage);
       $query = $this->db->get();
       if ($query->num_rows() > 0) {

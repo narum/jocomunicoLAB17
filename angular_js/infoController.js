@@ -21,7 +21,7 @@ angular.module('controllers')
                 var languageId = $rootScope.contentLanguageUserNonLoged;
                 $rootScope.dropdownMenuBarChangeLanguage = true;//Languages button available
             }
-            
+
             dropdownMenuBarInit(languageId)
                     .then(function () {
                         //Choose the buttons to show on bar
