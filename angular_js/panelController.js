@@ -564,16 +564,17 @@ angular.module('controllers')
                           $scope.toggleInfoModal("information",
                           "Tienes que marcar al menos una casilla para que la recuperacion pueda llevarse a cabo");
                         }else{
+
+                          if(image)$scope.recparcialBackupCall_OW('recimages');
+                          if(voc)$scope.recparcialBackupCall_OW('recvocabulary');
+                          if(folder)$scope.recparcialBackupCall_OW('recfolder');
+                          if(cfg)$scope.recparcialBackupCall_OW('reccfg');
                           if(panelb){
                             image=true;
                             voc=true;
                             folder=true;
                             $scope.recparcialBackupCall_OW('recpanels');
                           }
-                          if(image)$scope.recparcialBackupCall_OW('recimages');
-                          if(voc)$scope.recparcialBackupCall_OW('recvocabulary');
-                          if(folder)$scope.recparcialBackupCall_OW('recfolder');
-                          if(cfg)$scope.recparcialBackupCall_OW('reccfg');
 
                           $scope.viewActived=false;
                           setTimeout(function(){ $route.reload(); }, 3000);
@@ -585,16 +586,17 @@ angular.module('controllers')
                           $scope.toggleInfoModal("information",
                           "Tienes que marcar al menos una casilla para que la recuperacion pueda llevarse a cabo");
                         }else{
+
+                          if(image)$scope.recparcialBackupCall_NOW('recimages');
+                          if(voc)$scope.recparcialBackupCall_NOW('recvocabulary');
+                          if(folder)$scope.recparcialBackupCall_NOW('recfolder');
+                          if(cfg)$scope.recparcialBackupCall_NOW('reccfg');
                           if(panelb){
                             image=true;
                             voc=true;
                             folder=true;
                             $scope.recparcialBackupCall_NOW('recpanels');
                           }
-                          if(image)$scope.recparcialBackupCall_NOW('recimages');
-                          if(voc)$scope.recparcialBackupCall_NOW('recvocabulary');
-                          if(folder)$scope.recparcialBackupCall_NOW('recfolder');
-                          if(cfg)$scope.recparcialBackupCall_NOW('reccfg');
 
                           $scope.viewActived=false;
                           setTimeout(function(){ $route.reload(); }, 3000);
@@ -605,16 +607,6 @@ angular.module('controllers')
                         $("#lvoc").attr("checked",true)
                         $("#lfold").attr("checked",true)
                       }
-                  //funcion que llama al backend para hacer una recuperacion total backup
-                /*  $scope.rectotalBackup=function(){
-                        $http.get("BackupController/recbackup").success(function (results) {
-                          console.log(results);
-                          $scope.viewActived=false;
-                          setTimeout(function(){
-                            $route.reload();
-                          }, 3000);
-                        });
-                  }*/
                       //funcion que llama al backend para hacer un backup total
                       $scope.totalBackup=function(){
                         var promise = $http.get('BackupController');
@@ -667,6 +659,7 @@ angular.module('controllers')
                       };
                       $scope.showRemoveBoardP = function (idboard) {
                         $scope.idboardP=idboard;
+                        console.log("DSaf")
                         $('#ConfirmRemoveBoardP').modal({backdrop: 'static'})
                       };
                       $scope.RemoveBoardP=function(idboard){
