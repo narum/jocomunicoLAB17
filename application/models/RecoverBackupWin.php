@@ -254,16 +254,20 @@ private function InsertCells($Folder,$bcont){
   $folderkey=$this->getfolderkey();
   $boardkey=$this->getBoardkey();
   $pictokey=$this->getPictokeys();
+
   $file = file_get_contents($Folder."/Cell.json");
   $files = file_get_contents($Folder."/Boards.json");
   $filesent = file_get_contents($Folder."/S_sentence.json");
   $filefol= file_get_contents($Folder."/S_Folder.json");
   $picto=file_get_contents($Folder."/Pictograms.json");
+
   $cells=json_decode($file);
   $boards=json_decode($files);
   $sentences=json_decode($filesent);
   $pic=json_decode($picto);
   $sfolder=json_decode($filefol);
+  
+  $boardkey=array_slice($boardkey,$bcont);
   $count=count($cells->ID_Cell);
   for($i=0;$i<$count;$i++){
     if(!(is_null($cells->boardLink[$i]))){

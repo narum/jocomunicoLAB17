@@ -83,8 +83,8 @@ class RecoverBackup extends CI_Model {
       $pcont=count($this->getPictokeys());
       $this->InsertGroupBoards($Fname,$mainGboard);
       $this->InsertBoards($Fname,$gbcont);
-      $this->InsertCells($Fname,$bcont,$scont,$fcont,$pcont);
-      return $Fname;
+      $a=$this->InsertCells($Fname,$bcont,$scont,$fcont,$pcont);
+      return $a;
     }
     //devuelve el nombre de la capeta del ultimo backup global
     private function getLastGlobalBackup(){
@@ -252,6 +252,7 @@ private function InsertSHistoric($Folder){
 //Inserta en la base de datos los registros correspondientes a cells
 private function InsertCells($Folder,$bcont,$scont,$fcont,$pcont){
  $ID_Cell=array();
+ $a=array();
  $sentencekey=$this->getSentencekey();
  $folderkey=$this->getfolderkey();
  $boardkey=$this->getBoardkey();
@@ -261,16 +262,15 @@ private function InsertCells($Folder,$bcont,$scont,$fcont,$pcont){
  $filesent = file_get_contents($Folder."/S_sentence.json");
  $filefol= file_get_contents($Folder."/S_Folder.json");
  $picto=file_get_contents($Folder."/Pictograms.json");
+
  $cells=json_decode($file);
  $boards=json_decode($files);
  $sentences=json_decode($filesent);
  $pic=json_decode($picto);
  $sfolder=json_decode($filefol);
- $count=count($cells->ID_Cell);
+
  $boardkey=array_slice($boardkey,$bcont);
- $sentencekey=array_slice($sentencekey,$scont);
- $folderkey=array_slice($folderkey,$fcont);
- $pictokey=array_slice($pictokey,$pcont);
+ $count=count($cells->ID_Cell);
  for($i=0;$i<$count;$i++){
    if(!(is_null($cells->boardLink[$i]))){
        $posc=array_search($cells->boardLink[$i],$boards->ID_Board);
@@ -293,6 +293,7 @@ private function InsertCells($Folder,$bcont,$scont,$fcont,$pcont){
    }else{
      $picto=$cells->ID_CPicto[$i];
    }
+   array_push($a,$poscs);
     $sql="INSERT INTO Cell(isFixedInGroupBoards,imgCell,ID_CPicto,ID_CSentence,sentenceFolder,boardLink,color,
     ID_CFunction,textInCell,textInCellTextOnOff,cellType,activeCell)VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
     $this->db->query($sql,array(
@@ -314,6 +315,7 @@ private function InsertCells($Folder,$bcont,$scont,$fcont,$pcont){
     array_push($ID_Cell,$res[0]->s2);
 }
  $this->InsertRBoardCell($Folder,$ID_Cell,$bcont);
+ return $sentencekey[0];
 }
 //Inserta en la base de datos los registros correspondientes a groupboards
 private function InsertGroupBoards($Folder){
@@ -787,7 +789,7 @@ private function getGBkeys(){
 //coge las claves de la tabla S_Folder insertadas anteriormente
 private function getfolderkey(){
   $keys=array();
-  $ID_User=$this->session->idusu;
+  $ID_User=$this->session->idsu;
   $sql="SELECT ID_Folder FROM S_Folder WHERE ID_SFUser=?";
   $query=$this->db->query($sql,$ID_User);
   foreach ($query->result() as $row) {
@@ -798,7 +800,7 @@ private function getfolderkey(){
 //coge las claves de la tabla S_Sentence insertadas anteriormente
 private function getSentencekey(){
   $keys=array();
-  $ID_User=$this->session->idusu;
+  $ID_User=$this->session->idsu;
   $sql="SELECT ID_SSentence FROM S_Sentence WHERE ID_SSUser=?";
   $query=$this->db->query($sql,$ID_User);
   foreach ($query->result() as $row) {
