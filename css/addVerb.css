@@ -87,14 +87,14 @@
 }
 
 .Locativo{
-    height: 51%;
+    height: 52%;
     width: 38%;
     padding: 1.5vh;
     background-color: white;
     background-clip: content-box;
 }
 .ComplementoDirecto{
-    height: 62%;
+    height: 52%;
     width: 41%;
     padding: 1.5vh;
     background-color: white;
@@ -112,9 +112,6 @@
     padding-top: 1vh;
 }
 
-.switchCDArt{
-    padding: 1vh 1.5vh 1vh 1.5vh;
-}
 .paddingComplementBtn{
     padding-top: 1vh;
     padding-left: 1vh;
@@ -352,4 +349,12 @@
 
 .verbContentBar{
     background-color: transparent;
+}
+.paddingPronominal {
+    padding-top: 0.4vh;
+    padding-left: 1.5vh;
+}
+
+.paddingPronCheckbox {
+    padding-left: 1vh;
 }

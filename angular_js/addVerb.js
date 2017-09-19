@@ -73,7 +73,7 @@ var app = angular.module('controllers');
 
         $scope.imgPicto = 'arrow question.png';
         $scope.verb ='';
-
+        $scope.pronominal = false;
         //var persona = {ps1:'', ps2:'', ps3:'', pp1:'', pp2:'', pp3:''};
         function getContent() {
             var array = [];
@@ -512,7 +512,7 @@ var app = angular.module('controllers');
             }
         }();
 
-        $scope.persona = function (){
+        $scope.defecto = function (){
             if ($scope.interfaceLanguageId == 1){
                 return [{value:1, name:"jo"},{value:2, name:"tu"},{value:"una cosa", name:"objecte"}]
             }else if($scope.interfaceLanguageId == 2){
@@ -552,6 +552,16 @@ var app = angular.module('controllers');
                 var b = [{value:"adj", name:"Adjectiu", common:true},{value:"adv", name:"Adverbi", common:true}]
             }else if ($scope.interfaceLanguageId == 2){
                 var b = [{value:"adj", name:"Adjetivo", common:true},{value:"adv", name:"Adverbio", common:true}]
+            }
+            return array.concat(b);
+        }();
+
+        $scope.LocatBenefOptions = function (){
+            var array = $scope.subjOptions;
+            if ($scope.interfaceLanguageId == 1){
+                var b = [{value:"adv", name:"Adverbi", common:true}]
+            }else if ($scope.interfaceLanguageId == 2){
+                var b = [{value:"adv", name:"Adverbio", common:true}]
             }
             return array.concat(b);
         }();
