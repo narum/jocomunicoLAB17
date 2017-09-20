@@ -789,7 +789,7 @@ private function getGBkeys(){
 //coge las claves de la tabla S_Folder insertadas anteriormente
 private function getfolderkey(){
   $keys=array();
-  $ID_User=$this->session->idsu;
+  $ID_User=$this->session->idusu;
   $sql="SELECT ID_Folder FROM S_Folder WHERE ID_SFUser=?";
   $query=$this->db->query($sql,$ID_User);
   foreach ($query->result() as $row) {
@@ -800,7 +800,7 @@ private function getfolderkey(){
 //coge las claves de la tabla S_Sentence insertadas anteriormente
 private function getSentencekey(){
   $keys=array();
-  $ID_User=$this->session->idsu;
+  $ID_User=$this->session->idusu;
   $sql="SELECT ID_SSentence FROM S_Sentence WHERE ID_SSUser=?";
   $query=$this->db->query($sql,$ID_User);
   foreach ($query->result() as $row) {
