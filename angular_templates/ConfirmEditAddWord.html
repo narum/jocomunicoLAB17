@@ -43,7 +43,7 @@
                     </div>
                     <div class="col-xs-6 row">
 
-                        <div bind-html-compile="dataword" class='col-xs-4' ng-repeat="picto in dataWordAddWord| limitTo: 6" style="margin-left: 0 !important">
+                        <div bind-html-compile="dataword" class='col-xs-4' ng-repeat="picto in dataWordAddWord | filter: {ID_PUser: '!1'}:true | limitTo: 6" style="margin-left: 0 !important">
                             <div class="imgRounded" style="cursor: pointer">
                                 <div ng-if="cfgTextInCell && picto.text !== null" class="textCellAddWord" >{{picto.text}}</div>
                                 <div ng-style="cfgTextInCell ? {'height': '13vh'} : {'height': '13vh'}" style="border: 1px grey solid; margin: 2px; border-radius: 10px;" data-dismiss="modal" ng-click="selectAddWordEdit(0, picto.id)">

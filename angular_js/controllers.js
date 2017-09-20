@@ -693,7 +693,7 @@ angular.module('controllers', [])
         })
 
 //Controlador de la configuración de usuario
-        .controller('UserConfCtrl', function ($http, $scope, $rootScope, Resources, AuthService, txtContent, $location, $timeout, dropdownMenuBarInit) {
+        .controller('UserConfCtrl', function ($http, $scope, $rootScope, Resources, AuthService, txtContent, $location, $timeout, dropdownMenuBarInit, md5) {
             // Comprobación del login   IMPORTANTE!!! PONER EN TODOS LOS CONTROLADORES
             if (!$rootScope.isLogged) {
                 $rootScope.dropdownMenuBarValue = '/home'; //Dropdown bar button selected on this view
@@ -1290,6 +1290,176 @@ angular.module('controllers', [])
                     }
                     });
 
+        /* SuperUser Administration
+        * @rjlopezdev
+        */
+        //console.log($scope)
+        //Dropdown User list
+        $scope.showUserList = false;
+        //Show Admin Panel IF isSU
+        $scope.isSU = false;
+        //If has SuperUser
+        $scope.hasSU;
+        //If user could be a Superuser
+        $scope.validCandidate;
+        //User list
+        $scope.userList;
+        //User to remove
+        $scope.userToRemove;
+        //Existing User data
+        $scope.existingUserData = {
+            name: '',
+            password: '',
+            id: ''
+        };
+        //SuperUser name (if exists)
+        $scope.superUserName;
+        //Check if user exists
+        $scope.userExistsState = true;
+
+        /* CHECK if User is SuperUser
+        * and Show Admin Panel if TRUE
+        */
+        $scope.isSU = function(){
+            $http.get($scope.baseurl + 'SuperUserAdmin/isSU')
+                .success(function(response){
+                    $scope.isSU = response.isSU;
+                    if($scope.isSU){
+                        $scope.getUserList();
+                    }
+                })
+        }
+        $scope.isSU();
+
+        $scope.showSUSwitch = function(){
+                        $http.get($scope.baseurl + 'SuperUserAdmin/hasSuperUser')
+            .success(function (response) {
+                $scope.validCandidate = response.isValid;
+                $scope.hasSU = !response.isValid;
+            });
+        };
+        $scope.showSUSwitch();
+
+        $scope.showBe_OR_ceaseToBeSU = function(){
+            if($scope.isSU){
+                $('#confirmCeaseToBeSU').modal('toggle');
+            } else {
+                $('#confirmBeSU').modal('toggle');
+            }
+        }
+
+        $scope.enable_disable_SU = function(newState){
+            $http.post($scope.baseurl + 'SuperUserAdmin/changeIsSUState',
+                        {
+                            newState: newState
+                        })
+                    .success(function(response){
+                        if($scope.isSU){
+                            $('#confirmCeaseToBeSU').on('hidden.bs.modal', function(){
+                                $('#confirmCeaseToBeSU').unbind();
+                            });
+                        }else {
+                            $('#confirmBeSU').on('hidden.bs.modal', function(){
+                                $('#confirmBeSU').unbind();
+                            });
+                        }
+                        $scope.isSU = response.newState;
+                        $scope.getUserList();
+                    })
+        }
+
+        // GET Users List belonging Super User
+        $scope.getUserList = function(){
+            $http.get($scope.baseurl + 'SuperUserAdmin/getBelongingUsers')
+                    .success(function(response){
+                    $scope.userList = response.belongingUsers;
+            })
+        };
+
+        //Show choosing modal
+        $scope.showNew_OR_ExistingModal = function(){
+            $('#chooseNew_OR_ExistingModal').modal('toggle');
+        }
+
+        //Adding existing or new User modal
+        $scope.addUser_New_OR_Existing = function(new_OR_Existing){
+            //Show choose Modal [existing or new User]
+            
+            //Adding existing User
+            if(new_OR_Existing === 'existing'){
+                //Show Input [User, Password] Modal
+                //$('#chooseNew_OR_ExistingModal').on('hidden.bs.modal', function(){
+                    $('#existingUserModal').modal('toggle');
+                    $('#chooseNew_OR_ExistingModal').unbind();
+                //});
+
+            //Adding new User
+            }else if(new_OR_Existing === 'new'){
+                /* Show UserRegister Modal
+                    * params: emailSU
+                    */
+                $('#chooseNew_OR_ExistingModal').on('hidden.bs.modal', function(){
+                    $('#newUserModal').modal('toggle');
+                    $('#chooseNew_OR_ExistingModal').unbind();
+                });
+            }
+        }
+
+        //Check if user exists
+        $scope.userExists = function(){
+            $http.post($scope.baseurl + 'SuperUserAdmin/userExists',
+                {
+                    user: $scope.existingUserData.name,
+                    password: md5.createHash($scope.existingUserData.password)
+                })
+                .success(function(response) {
+                    //If exists -> add User
+                    if(response.userExists == 'distinctLanguage'){
+                        $scope.errorAddingUser = $scope.content.errorAddingUserDifferentLanguage;
+                    }else if(response.userExists != null){
+                        $scope.errorAddingUser = "";
+                        $scope.userExistsState = true;
+                        $scope.existingUserData.id = response.userExists;
+                        $scope.addExistingUser();
+                    }
+                    else
+                    $scope.errorAddingUser = $scope.content.notPossibleAddUser;
+                        $scope.userExistsState = false;
+                })
+        }
+
+        //Add belonging user
+        $scope.addExistingUser = function() {
+            $http.post($scope.baseurl + 'SuperUserAdmin/addBelongingUser', 
+                        {
+                            idUser: $scope.existingUserData.id
+                        })
+                .success(function(response) {
+                    if(!response.statusCode)
+                        $scope.userExistsState = false;
+                    else{
+                        $scope.getUserList();
+                        $('#existingUserModal').modal('hide');
+                    }
+                })
+        }
+
+        //Remove User from SuperUser Scope
+        $scope.removeUser = function(){
+
+            $http.post($scope.baseurl + 'SuperUserAdmin/removeBelongingUser',
+                        {user_to_remove: $scope.userToRemove.ID_SU})
+                    .success(function(response){
+                        $scope.getUserList();
+                        $scope.toggleInfoModal($scope.content.successDeleteTitle, $scope.content.successDeleteBody);
+                    })
+        }
+
+        //Show confirmation Modal about to delete selected user
+        $scope.confirmRemoveUserModal = function(user){
+            $scope.userToRemove = user;
+            $('#deleteUser').modal('toggle');
+        }
 
         })
         .controller('myCtrl', function (Resources, $location, $scope, $http, ngDialog, txtContent, $rootScope, $interval, $timeout, dropdownMenuBarInit, AuthService, md5, $window) {

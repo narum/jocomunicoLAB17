@@ -5,6 +5,14 @@ class AddWordInterface extends CI_Model {
     function __construct() {
         // Call the Model constructor
         parent::__construct();
+        $this->load->model('SuperUserAdminModel');
+    }
+
+    private function getUserGroup(){
+        return $this->SuperUserAdminModel->getUserGroupOf(
+            'pictograms', 
+            $this->session->userdata('idusu')
+        );
     }
 
     function getTypePicto($idPicto) {
@@ -79,6 +87,7 @@ class AddWordInterface extends CI_Model {
     function getDBClassNames($id) {
         $output = array();
         $userlanguage = $this->session->userdata('ulangabbr');
+
         $this->db->where('nameid', $id);
         $this->db->select('class');
         $query = $this->db->get('NameClass' . $userlanguage);
@@ -93,6 +102,7 @@ class AddWordInterface extends CI_Model {
     function getDBClassAdj($id) {
         $output = array();
         $userlanguage = $this->session->userdata('ulangabbr');
+
         $this->db->where('adjid', $id);
         $this->db->select('class');
         $query = $this->db->get('adjclass' . $userlanguage);
@@ -104,7 +114,6 @@ class AddWordInterface extends CI_Model {
 
         return $output;
     }
-
     
     function getDBVerbs(){
         $user = $this->session->userdata('idusu');
@@ -112,10 +121,10 @@ class AddWordInterface extends CI_Model {
         $languageExp = $this->session->userdata('ulangabbr');
         //Interface language
         $languageInt = $this->session->userdata('uinterfacelangauge');
-
+        $usergroup = $this->getUserGroup();
         $output = array();
 
-        $this->db->where_in('Pictograms.ID_PUser', array('1',$user));
+        $this->db->where_in('Pictograms.ID_PUser', $usergroup);
         $this->db->where('PictogramsLanguage.languageid', $languageInt); //Get all default and own user pictos
         $this->db->select('verbid as id, PictogramsLanguage.pictotext as text');
         $this->db->from('Verb' . $languageExp);
@@ -142,12 +151,12 @@ class AddWordInterface extends CI_Model {
         $languageExp = $this->session->userdata('ulangabbr');
         //Interface language
         $languageInt = $this->session->userdata('uinterfacelangauge');
-
+        $usergroup = $this->getUserGroup();
         $output = array();
-        $this->db->limit(6); // limit up to 6
+        //$this->db->limit(6); // limit up to 6
 
-        $this->db->where_in('Pictograms.ID_PUser', array('1', $this->session->userdata('idusu')));
-        $this->db->where('Pictograms.ID_PUser', $user);
+        $this->db->where_in('Pictograms.ID_PUser', $usergroup);
+        //$this->db->where('Pictograms.ID_PUser', $this->usergroup);
         $this->db->where('PictogramsLanguage.languageid', $languageInt);
         //$this->db->or_where('Pictograms.ID_PUser', $user); //Get all default and own user pictos
         $this->db->select('nameid as id, PictogramsLanguage.pictotext as text, imgPicto, Pictograms.ID_PUser'); // rename the field like we want
@@ -173,14 +182,14 @@ class AddWordInterface extends CI_Model {
         $languageExp = $this->session->userdata('ulangabbr');
         //Interface language
         $languageInt = $this->session->userdata('uinterfacelangauge');
-
+        $usergroup = $this->getUserGroup();
         $output = array();
 
         $this->db->limit(6);
-        $this->db->where_in('Pictograms.ID_PUser', array('1', $this->session->userdata('idusu')));
-        $this->db->where('Pictograms.ID_PUser', $user);
+        $this->db->where_in('Pictograms.ID_PUser', $usergroup);
+        $this->db->where_in('Pictograms.ID_PUser', $usergroup);
         $this->db->where('PictogramsLanguage.languageid', $languageInt); //Get all default and own user pictos
-        $this->db->select('verbid as id, PictogramsLanguage.pictotext as text, imgPicto');
+        $this->db->select('verbid as id, PictogramsLanguage.pictotext as text, imgPicto, Pictograms.ID_PUser as ID_PUser');
         $this->db->from('Verb' . $languageExp);
         $this->db->join('Pictograms', 'Verb' . $languageExp . '.verbid = Pictograms.pictoid', 'left');
         $this->db->join('PictogramsLanguage', 'PictogramsLanguage.pictoid = Pictograms.pictoid', 'left');
@@ -205,14 +214,14 @@ class AddWordInterface extends CI_Model {
         $languageExp = $this->session->userdata('ulangabbr');
         //Interface language
         $languageInt = $this->session->userdata('uinterfacelangauge');
-
+        $usergroup = $this->getUserGroup();
         $output = array();
 
-        $this->db->limit(6);
-        $this->db->where_in('Pictograms.ID_PUser', array('1', $this->session->userdata('idusu')));
-        $this->db->where('Pictograms.ID_PUser', $user);
+        //$this->db->limit(6);
+        $this->db->where_in('Pictograms.ID_PUser', $usergroup);
+        $this->db->where_in('Pictograms.ID_PUser', $usergroup);
         $this->db->where('PictogramsLanguage.languageid', $languageInt); //Get all default and own user pictos
-        $this->db->select('adjid as id,PictogramsLanguage.pictotext as text, imgPicto');
+        $this->db->select('adjid as id,PictogramsLanguage.pictotext as text, imgPicto, Pictograms.ID_PUser as ID_PUser');
         $this->db->from('Adjective' . $languageExp);
         $this->db->join('Pictograms', 'Adjective' . $languageExp . '.adjid = Pictograms.pictoid', 'left');
         $this->db->join('PictogramsLanguage', 'PictogramsLanguage.pictoid = Pictograms.pictoid', 'left');
@@ -235,14 +244,14 @@ class AddWordInterface extends CI_Model {
         $languageExp = $this->session->userdata('ulangabbr');
         //Interface language
         $languageInt = $this->session->userdata('uinterfacelangauge');
-
+        $usergroup = $this->getUserGroup();
         $output = array();
 
         $this->db->limit(6);
-        $this->db->where_in('Pictograms.ID_PUser', array('1', $this->session->userdata('idusu')));
-        $this->db->where('Pictograms.ID_PUser', $user);
+        $this->db->where_in('Pictograms.ID_PUser', $usergroup);
+        $this->db->where_in('Pictograms.ID_PUser', $usergroup);
         $this->db->where('PictogramsLanguage.languageid', $languageInt); //Get all default and own user pictos
-        $this->db->select('exprid as id, PictogramsLanguage.pictotext as text, imgPicto');
+        $this->db->select('exprid as id, PictogramsLanguage.pictotext as text, imgPicto, Pictograms.ID_PUser as ID_PUser');
         $this->db->from('Expressions' . $languageExp);
         $this->db->join('Pictograms', 'Expressions' . $languageExp . '.exprid = Pictograms.pictoid', 'left');
         $this->db->join('PictogramsLanguage', 'PictogramsLanguage.pictoid = Pictograms.pictoid', 'left');
@@ -265,14 +274,14 @@ class AddWordInterface extends CI_Model {
         $languageExp = $this->session->userdata('ulangabbr');
         //Interface language
         $languageInt = $this->session->userdata('uinterfacelangauge');
-
+        $usergroup = $this->getUserGroup();
         $output = array();
 
         $this->db->limit(6);
-        $this->db->where_in('Pictograms.ID_PUser', array('1', $this->session->userdata('idusu')));
-        $this->db->where('Pictograms.ID_PUser', $user);
+        $this->db->where_in('Pictograms.ID_PUser', $usergroup);
+        $this->db->where_in('Pictograms.ID_PUser', $usergroup);
         $this->db->where('PictogramsLanguage.languageid', $languageInt); //Get all default and own user pictos
-        $this->db->select('advid as id, PictogramsLanguage.pictotext as text, imgPicto');
+        $this->db->select('advid as id, PictogramsLanguage.pictotext as text, imgPicto, Pictograms.ID_PUser as ID_PUser');
         $this->db->from('Adverb' . $languageExp);
         $this->db->join('Pictograms', 'Adverb' . $languageExp . '.advid = Pictograms.pictoid', 'left');
         $this->db->join('PictogramsLanguage', 'PictogramsLanguage.pictoid = Pictograms.pictoid', 'left');
@@ -296,14 +305,14 @@ class AddWordInterface extends CI_Model {
         $languageExp = $this->session->userdata('ulangabbr');
         //Interface language
         $languageInt = $this->session->userdata('uinterfacelangauge');
-
+        $usergroup = $this->getUserGroup();
         $output = array();
 
         $this->db->limit(6);
-        $this->db->where_in('Pictograms.ID_PUser', array('1', $this->session->userdata('idusu')));
-        $this->db->where('Pictograms.ID_PUser', $user);
+        $this->db->where_in('Pictograms.ID_PUser', $usergroup);
+        $this->db->where_in('Pictograms.ID_PUser', $usergroup);
         $this->db->where('PictogramsLanguage.languageid', $languageInt); //Get all default and own user pictos
-        $this->db->select('modid as id, PictogramsLanguage.pictotext as text, imgPicto');
+        $this->db->select('modid as id, PictogramsLanguage.pictotext as text, imgPicto, Pictograms.ID_PUser as ID_PUser');
         $this->db->from('Modifier' . $languageExp);
         $this->db->join('Pictograms', 'Modifier' . $languageExp . '.modid = Pictograms.pictoid', 'left');
         $this->db->join('PictogramsLanguage', 'PictogramsLanguage.pictoid = Pictograms.pictoid', 'left');
@@ -327,14 +336,14 @@ class AddWordInterface extends CI_Model {
         $languageExp = $this->session->userdata('ulangabbr');
         //Interface language
         $languageInt = $this->session->userdata('uinterfacelangauge');
-
+        $usergroup = $this->getUserGroup();
         $output = array();
 
         $this->db->limit(6);
-        $this->db->where_in('Pictograms.ID_PUser', array('1', $this->session->userdata('idusu')));
-        $this->db->where('Pictograms.ID_PUser', $user);
+        $this->db->where_in('Pictograms.ID_PUser', $usergroup);
+        $this->db->where_in('Pictograms.ID_PUser', $usergroup);
         $this->db->where('PictogramsLanguage.languageid', $languageInt);  //Get all default and own user pictos
-        $this->db->select('questid as id, PictogramsLanguage.pictotext as text, imgPicto');
+        $this->db->select('questid as id, PictogramsLanguage.pictotext as text, imgPicto, Pictograms.ID_PUser as ID_PUser');
         $this->db->from('QuestionPart' . $languageExp);
         $this->db->join('Pictograms', 'QuestionPart' . $languageExp . '.questid = Pictograms.pictoid', 'left');
         $this->db->join('PictogramsLanguage', 'PictogramsLanguage.pictoid = Pictograms.pictoid', 'left');

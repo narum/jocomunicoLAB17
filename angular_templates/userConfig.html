@@ -48,6 +48,7 @@
     <div ng-include="'/angular_templates/logoutModal.html'"></div>
     <div ng-include="'/angular_templates/errorVoicesModal.html'"></div>
     <div ng-include="'/angular_templates/infoModal.html'"></div>
+    <div ng-include="'/angular_templates/existingUserModal.html'"></div>
 
     <div class="loadingGif" ng-show="!viewActived"><img class="img-loadingGif" ng-src={{img.loading}}/></div>
 <div class="row scroll" id="scrollBar" ng-show="viewActived">
@@ -96,6 +97,14 @@
                                             ng-class="{
                                                     inputDadesUsuari: !canEdit,
                                                     inputDadesUsuariEditable: canEdit}"/>
+                                    </div>
+                                </div>
+                                <div class="row verticalMarginTop">
+                                    <div class="col-xs-4">Tipo de usuario</div>
+                                    <div class="col-xs-8">
+                                        <input 
+                                            value="{{ (isSU) ? content.userType_SU : (hasSU) ? content.userType_Belonging : content.userType_Default }}"
+                                            type="text" disabled placeholder="{{userData.realname}}" class="inputDadesUsuari"/>
                                     </div>
                                 </div>
                                 <!--collapsed contnet-->
@@ -223,6 +232,14 @@
                                                     inputDadesUsuariEditable: canEdit}"/>
                                     </div>
                                 </div>
+                                <div class="row verticalMarginTop">
+                                    <div class="col-xs-10" ng-show="!hasSU">{{content.SUOption}}</div>
+                                    <div class="col-xs-12" ng-show="hasSU">{{content.adminByCenter}}</div>
+                                    <div class="col-xs-2 verticalMarginBottom" ng-show="!hasSU">
+                                        <input type="checkbox" id="switchSU" class="switch hidden" ng-model="isSU"/>
+                                        <label ng-click="showBe_OR_ceaseToBeSU()">&nbsp;</label>
+                                    </div>
+                                </div>
                                 <!--collapsed contnet-->
                                 <div class="row">
                                     <div class="col-xs-12" uib-collapse="!canEdit">
@@ -254,7 +271,68 @@
                     </div>
                 </form>
             </div>
-        </div><br/>
+        </div>
+        <br ng-if="isSU">
+        
+        <!-- @rjlopezdev -->
+        <!-- SECTION: Users associated to SU List -->
+        <div class="row" id="boxUserConfig" style="background-image: url({{img.Patterns1_12}})" ng-if="isSU">
+
+            <!-- Panel Title -->
+            <form name="userAdmin">
+                <div id="header" class="row">
+                    <div class="col-xs-9 headerTitle">{{content.userAdminBarTitle}}</div>
+                    <div class="col-xs-3">
+                        <button
+                            type="reset"
+                            class="icon-plus-sign pull-right editButton"
+                            ng-click="addUser_New_OR_Existing('existing')">
+                            <i class="textButons"> {{content.userAdminAddButton}} </i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+            <!-- Dropdown Users List -->
+            <div class="row menuBar" style="padding: 30px" >
+                <div class="row headerBar" ng-click="showUserList = !showUserList">
+                    <div class="col-xs-6">
+                        <div class="col-xs-2 infoIconBox">
+                            <input type="image" class="img-icon" ng-src={{img.info}} ng-click="toggleInfoModal(content.modalInfoTitle, content.infoSU);">
+                        </div>
+                        <div class="col-xs-10 buttonBar">{{content.userList}}</div>
+                    </div>
+                    <div class="col-xs-5 buttonBar">&nbsp;</div>
+                    <div class="col-xs-1 buttonBar">&nbsp;
+                        <img class="arrowMenuBar pull-right" src={{img.orangeArrow}}/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="row" style="background-color: #97dee4">
+                            <div class="row">
+                                <div ng-repeat="user in userList" ng-show="showUserList" class="backgroundUserDataBox">
+                                    <div class="row">
+                                        <!-- User Item -->
+                                        <div class="col-xs-8">
+                                            <h2>&nbsp;{{user.SUname}} </h2>
+                                        </div>
+                                        <div class="col-xs-4">
+                                            <button
+                                                class="icon-remove-sign pull-right editButton removeButton"
+                                                ng-click="confirmRemoveUserModal({{user}})">
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        
+        <br>
         <div class="row" id="boxUserConfig" style="background-image: url({{img.Patterns1_08}})">
             <div class="col-xs-12">
                 <div id="header" class="row"><div class="col-xs-10 headerTitle">{{content.titleBar2}}</div></div>
@@ -1103,5 +1181,145 @@
                 </div>
             </div>
         </div><br/><br/>
+    </div>
+</div>
+
+<!--Choose New or Existing User Modal-->
+<div class="modal fade" id="chooseNew_OR_ExistingModal" role="dialog">
+    <div class="modal-dialog">
+        <div class="row marginModalTopOwl"><img class="img-owl pull-right" src={{img.lowSorpresaFlecha}}/></div>
+        <div class="row" id="boxUserConfig" style="background-image: url({{img.Patterns1_08}})">
+            <div id="header" class="row">
+                <div class="col-xs-10 headerTitle"> {{content.addUserTitle}} </div>
+            </div>
+            <div class="row backgroundUserConfigBox">
+                <div class="row fonsAlert">
+                    <div class="col-xs-12 textCenter"> {{content.addUserBody}} </div>
+                </div>
+                <div class="row dadesUsuariCentre">
+                    <div class="col-xs-6">
+                        <button type="reset" class="btn-gray pull-left" data-dismiss="modal" ng-click="addUser_New_OR_Existing('new')"> {{content.addUserNew}} </button>
+                    </div>
+                    <div class="col-xs-6">
+                        <button type="reset" class="btn-gray pull-right" data-dismiss="modal" ng-click="addUser_New_OR_Existing('existing')"> {{content.addUserExisting}} </button>
+                    </div>
+                </div>
+            </div>
+        <div class="row verticalMarginTop"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Confirm remove user Modal -->
+<div class="modal fade" id="ConfirmRemove" role="dialog" style="z-index: 1000000;}">
+    <div class="modal-dialog modal-lg">
+        <div class="row marginModalTopOwl"><img class="img-owl pull-right" src="img/srcWeb/Mus/lowSabiFlecha.png"/></div>
+        <div class="row" id="boxUserConfig" style="background-image: url({{img.Patterns1_08}})">
+            <div id="header" class="row">
+                <div class="col-xs-12 headerTitle-infomodal" style="{{style_changes_title}}">{{content.modalInfoTitle}}</div>
+            </div>
+            <div class="row backgroundUserConfigBox">
+                <div class="row fonsAlert-info text-info-modal" >
+                    <div class="col-xs-12 text-left">
+                        <p>
+                            <h1 style="color: red;">{{content.userName}}: {{userToRemove.SUname}}</h1>
+                            {{content.removeConfirmTextBody}}
+                        </p>
+                    </div>
+                    <div class="col-xs-6"></div>
+                    <div class="col-xs-3 verticalMarginTop">
+                        <button data-dismiss="modal" type="reset" class="btn-lightgreen pull-right" ng-click="removeUser()">{{content.confirm}}</button>
+                    </div>
+                    <div class="col-xs-3 verticalMarginTop">
+                        <button data-dismiss="modal" type="reset" class="btn-lightred">{{content.cancel}}</button>
+                    </div>
+                </div>
+            </div>
+            
+        <div class="row verticalMarginTop"></div>
+        </div>
+    </div>
+</div>
+
+<!--Confirm Remove User Modal-->
+<div class="modal fade" id="deleteUser" role="dialog">
+    <div class="modal-dialog">
+        <div class="row marginModalTopOwl"><img class="img-owl pull-right" src={{img.lowSorpresaFlecha}}/></div>
+        <div class="row" id="boxUserConfig" style="background-image: url({{img.Patterns1_08}})">
+            <div id="header" class="row">
+                <div class="col-xs-10 headerTitle"> {{content.modalInfoTitle}} </div>
+            </div>
+            <div class="row backgroundUserConfigBox">
+                <div class="row fonsAlert">
+                    <div class="col-xs-12 textCenter"> 
+                        <p>
+                            <h1 style="color: red;">{{content.userName}}: {{userToRemove.SUname}}</h1>
+                                {{content.removeConfirmTextBody}}
+                        </p>
+                    </div>
+                </div>
+                <div class="row dadesUsuariCentre">
+                    <div class="col-xs-6">
+                        <button type="reset" class="btn-gray center-block" data-dismiss="modal" ng-click="removeUser()"> {{content.confirm}} </button>
+                    </div>
+                    <div class="col-xs-6">
+                        <button type="reset" class="btn-gray center-block" data-dismiss="modal" > {{content.cancel}} </button>
+                    </div>
+                </div>
+            </div>
+        <div class="row verticalMarginTop"></div>
+        </div>
+    </div>
+</div>
+
+<!--Confirm Be SU Modal-->
+<div class="modal fade" id="confirmBeSU" role="dialog">
+    <div class="modal-dialog">
+        <div class="row marginModalTopOwl"><img class="img-owl pull-right" src={{img.lowSorpresaFlecha}}/></div>
+        <div class="row" id="boxUserConfig" style="background-image: url({{img.Patterns1_08}})">
+            <div id="header" class="row">
+                <div class="col-xs-10 headerTitle"> {{content.BeSUTitle}} </div>
+            </div>
+            <div class="row backgroundUserConfigBox">
+                <div class="row fonsAlert">
+                    <div class="col-xs-12 textCenter"> {{content.BeSUBody}} </div>
+                </div>
+                <div class="row dadesUsuariCentre">
+                    <div class="col-xs-6">
+                        <button type="reset" class="btn-gray center-block" data-dismiss="modal" ng-click="enable_disable_SU(!isSU)"> {{content.confirm}} </button>
+                    </div>
+                    <div class="col-xs-6">
+                        <button type="reset" class="btn-gray center-block" data-dismiss="modal" > {{content.cancel}} </button>
+                    </div>
+                </div>
+            </div>
+        <div class="row verticalMarginTop"></div>
+        </div>
+    </div>
+</div>
+
+<!--Confirm Cease to Be SU Modal-->
+<div class="modal fade" id="confirmCeaseToBeSU" role="dialog">
+    <div class="modal-dialog">
+        <div class="row marginModalTopOwl"><img class="img-owl pull-right" src={{img.lowSorpresaFlecha}}/></div>
+        <div class="row" id="boxUserConfig" style="background-image: url({{img.Patterns1_08}})">
+            <div id="header" class="row">
+                <div class="col-xs-10 headerTitle"> {{content.ceaseToBeSUTitle}} </div>
+            </div>
+            <div class="row backgroundUserConfigBox">
+                <div class="row fonsAlert">
+                    <div class="col-xs-12 textCenter"> {{content.ceaseToBeSUBody}} </div>
+                </div>
+                <div class="row dadesUsuariCentre">
+                    <div class="col-xs-6">
+                        <button type="reset" class="btn-gray center-block" data-dismiss="modal" ng-click="enable_disable_SU(!isSU)"> {{content.confirm}} </button>
+                    </div>
+                    <div class="col-xs-6">
+                        <button type="reset" class="btn-gray center-block" data-dismiss="modal"> {{content.cancel}} </button>
+                    </div>
+                </div>
+            </div>
+        <div class="row verticalMarginTop"></div>
+        </div>
     </div>
 </div>

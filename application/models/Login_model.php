@@ -63,6 +63,7 @@ class Login_model extends CI_Model {
         $this->session->set_userdata('idusu', $userConfig["ID_User"]);
         $this->session->set_userdata('uname', $userConfig["SUname"]);
         $this->session->set_userdata('ulanguage', $userConfig["cfgExpansionLanguage"]);
+        $this->session->set_userdata('isSU', $userConfig['isSU']);
         //MODIF: Cuando lo juntemos con jose dará fallo. Jose tiene que cambiar "uinterfacelangauge" por este
         $this->session->set_userdata('uinterfacelangauge', $userConfig["ID_ULanguage"]);
         $this->session->set_userdata('uinterfacelangtype', $userConfig["type"]);
