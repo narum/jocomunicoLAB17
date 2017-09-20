@@ -594,16 +594,16 @@ angular.module('controllers')
                             image=true;
                             voc=true;
                             folder=true;
-                            if(image)$scope.recparcialBackupCall_OW('recimages');
-                            if(voc)$scope.recparcialBackupCall_OW('recvocabulary');
-                            if(folder)$scope.recparcialBackupCall_OW('recfolder');
-                            if(cfg)$scope.recparcialBackupCall_OW('reccfg');
-                            $scope.recparcialBackupCall_OW('recpanels');
+                            if(image)$scope.recparcialBackupCall_NOW('recimages');
+                            if(voc)$scope.recparcialBackupCall_NOW('recvocabulary');
+                            if(folder)$scope.recparcialBackupCall_NOW('recfolder');
+                            if(cfg)$scope.recparcialBackupCall_NOW('reccfg');
+                            $scope.recparcialBackupCall_NOW('recpanels');
                           }else{
-                            if(image)$scope.recparcialBackupCall_OW('recimages');
-                            if(voc)$scope.recparcialBackupCall_OW('recvocabulary');
-                            if(folder)$scope.recparcialBackupCall_OW('recfolder');
-                            if(cfg)$scope.recparcialBackupCall_OW('reccfg');
+                            if(image)$scope.recparcialBackupCall_NOW('recimages');
+                            if(voc)$scope.recparcialBackupCall_NOW('recvocabulary');
+                            if(folder)$scope.recparcialBackupCall_NOW('recfolder');
+                            if(cfg)$scope.recparcialBackupCall_NOW('reccfg');
                           }
 
                           $scope.viewActived=false;
