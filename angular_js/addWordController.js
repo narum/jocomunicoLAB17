@@ -142,7 +142,7 @@ angular.module('controllers')
                         success(function (response)
                         {
                             $scope.addWordEditData = response.data[0];
-                            $scope.addWordEditData.imgPicto="/img/pictos/"+response.data[0].imgPicto;
+                            $scope.addWordEditData.imgPicto=response.data[0].imgPicto;
                             console.log($scope.addWordEditData.imgPicto);
 
                             var postdata = {id: $scope.idEditWord, type: $scope.addWordType};
