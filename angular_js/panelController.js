@@ -564,16 +564,20 @@ angular.module('controllers')
                           $scope.toggleInfoModal("information",
                           "Tienes que marcar al menos una casilla para que la recuperacion pueda llevarse a cabo");
                         }else{
-
-                          if(image)$scope.recparcialBackupCall_OW('recimages');
-                          if(voc)$scope.recparcialBackupCall_OW('recvocabulary');
-                          if(folder)$scope.recparcialBackupCall_OW('recfolder');
-                          if(cfg)$scope.recparcialBackupCall_OW('reccfg');
                           if(panelb){
                             image=true;
                             voc=true;
                             folder=true;
+                            if(image)$scope.recparcialBackupCall_OW('recimages');
+                            if(voc)$scope.recparcialBackupCall_OW('recvocabulary');
+                            if(folder)$scope.recparcialBackupCall_OW('recfolder');
+                            if(cfg)$scope.recparcialBackupCall_OW('reccfg');
                             $scope.recparcialBackupCall_OW('recpanels');
+                          }else{
+                            if(image)$scope.recparcialBackupCall_OW('recimages');
+                            if(voc)$scope.recparcialBackupCall_OW('recvocabulary');
+                            if(folder)$scope.recparcialBackupCall_OW('recfolder');
+                            if(cfg)$scope.recparcialBackupCall_OW('reccfg');
                           }
 
                           $scope.viewActived=false;
@@ -586,16 +590,20 @@ angular.module('controllers')
                           $scope.toggleInfoModal("information",
                           "Tienes que marcar al menos una casilla para que la recuperacion pueda llevarse a cabo");
                         }else{
-
-                          if(image)$scope.recparcialBackupCall_NOW('recimages');
-                          if(voc)$scope.recparcialBackupCall_NOW('recvocabulary');
-                          if(folder)$scope.recparcialBackupCall_NOW('recfolder');
-                          if(cfg)$scope.recparcialBackupCall_NOW('reccfg');
                           if(panelb){
                             image=true;
                             voc=true;
                             folder=true;
-                            $scope.recparcialBackupCall_NOW('recpanels');
+                            if(image)$scope.recparcialBackupCall_OW('recimages');
+                            if(voc)$scope.recparcialBackupCall_OW('recvocabulary');
+                            if(folder)$scope.recparcialBackupCall_OW('recfolder');
+                            if(cfg)$scope.recparcialBackupCall_OW('reccfg');
+                            $scope.recparcialBackupCall_OW('recpanels');
+                          }else{
+                            if(image)$scope.recparcialBackupCall_OW('recimages');
+                            if(voc)$scope.recparcialBackupCall_OW('recvocabulary');
+                            if(folder)$scope.recparcialBackupCall_OW('recfolder');
+                            if(cfg)$scope.recparcialBackupCall_OW('reccfg');
                           }
 
                           $scope.viewActived=false;
