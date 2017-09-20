@@ -3670,6 +3670,14 @@ angular.module('controllers', [])
                 $scope.uploadedFile = $scope.Editinfo.imgCell;
                 $scope.imgFunct = $scope.Editinfo.imgFunct;
                 // Check the values in order to active checkbox and this stuff
+                $scope.checkboxTextInCell = false;
+                $scope.changeCheckboxTextInCell = function(){
+                    if($scope.checkboxTextInCell === true){
+                        $scope.checkboxTextInCell = false;
+                    }else if($scope.checkboxTextInCell === false){
+                        $scope.checkboxTextInCell = true;
+                    }
+                };
                 if ($scope.Editinfo.textInCell !== null) {
                     $scope.checkboxTextInCell = true;
                     $scope.textInCell = $scope.Editinfo.textInCell;
