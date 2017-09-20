@@ -3711,7 +3711,7 @@ angular.module('controllers', [])
                     if (!$scope.checkboxBoardsGroup) {
                         postdata.boardLink = null;
                     }
-                    if (!$scope.checkboxTextInCell) {
+                    if (!$scope.checkboxTextInCell || $scope.cellType === 'picto') {
                         postdata.textInCell = null;
                     }
                     if (!$scope.checkboxVisible) {
