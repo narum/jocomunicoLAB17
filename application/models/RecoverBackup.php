@@ -7,28 +7,15 @@ class RecoverBackup extends CI_Model {
     public function __construct(){
         parent::__construct();
         $this->load->library('session');
+        $gbcont=count($this->getGBkeys());
+        $bcont=count($this->getBoardkey());
+        $scont=count($this->getSentencekey());
+        $fcont=count($this->getfolderkey());
+        $hcont=count($this->getHistorickey());
+        $pcont=count($this->getPictokeys());
         $this->load->database();
     }
-    //lanza una recuperacion total de los datos, llama a todas las recuperaciones parciales
-    public function LaunchTotalRecover(){
-      $folder=$this->getLastGlobalBackup();
-      $this->UpdateSuperUser($folder);
-      $this->UpdateUser($folder);
-      $this->InsertPictograms($folder);
-      $this->InsertPictogramsLanguage($folder);
-      $this->InsertNames($folder);
-      $this->InsertAdjectives($folder);
-      $this->InsertGroupBoards($folder);
-      $this->InsertBoards($folder);
-      $this->InsertImages($folder);
-      $this->InsertSFolder($folder);
-      $this->InsertSHistoric($folder);
-      $this->InsertSSentence($folder);
-      $this->InsertRSSentencePictograms($folder);
-      $this->InsertRSHistoricPictograms($folder);
-      $a=$this->InsertCells($folder);
-      return $a;
-    }
+
     //Comprueba si existe una carpeta con un backup total
     function checkiftotalexists(){
       $exists=true;
@@ -72,41 +59,48 @@ class RecoverBackup extends CI_Model {
       $this->InsertAdjectives($Fname);
       $this->InsertNames($Fname);
     }
-    function gg(){
-      return $this->getLastGlobalBackup();
-    }
       //llama a la recuperacion parcial de la carpetas tematicas
     function LaunchParcialRecover_Folder(){
       $Fname=$this->getLastGlobalBackup();
+      $cfold=count($this->getfolderkey());
       $this->InsertSFolder($Fname);
+      $this->InsertSSentence($Fname,$cfold);
       $this->InsertSHistoric($Fname);
-      $this->InsertRSSentencePictograms($Fname);
-      $this->InsertRSHistoricPictograms($Fname);
-      return $Fname;
+      $this->InsertRSSentencePictograms($Fname,$scont);
+      $bla=$this->InsertRSHistoricPictograms($Fname,$hcont);
+      return $bla;
     }
       //llama a la recuperacion parcial de configuracion
-    function LaunchParcialRecover_cfg(){
+    function LaunchParcialRecover_cfg($ow){
       $Fname=$this->getLastGlobalBackup();
-      $this->UpdateSuperUser($Fname);
+      $this->UpdateSuperUser($Fname,$ow);
       $this->UpdateUser($Fname);
     }
+
       //llama a la recuperacion parcial de paneles
     function LaunchParcialRecover_panels($mainGboard){
       $Fname=$this->getLastGlobalBackup();
       if(!$this->checkifPictogramsexists()){
       $this->LaunchParcialRecover_Pictograms();
       }
+      $gbcont=count($this->getGBkeys());
+      $bcont=count($this->getBoardkey());
+      $pcont=count($this->getPictokeys());
       $this->InsertGroupBoards($Fname,$mainGboard);
-      $this->InsertBoards($Fname);
-      $this->InsertCells($Fname);
-      $this->InsertRBoardCell($Fname);
-      return $mainGboard;
+      $this->InsertBoards($Fname,$gbcont);
+      $a=$this->InsertCells($Fname,$bcont,$scont,$fcont,$pcont);
+      return $a;
     }
     //devuelve el nombre de la capeta del ultimo backup global
     private function getLastGlobalBackup(){
       $ID_User=$this->session->idusu;
       $dates=array();
-      $dirs = array_filter(glob("Temp/*" ,GLOB_ONLYDIR), 'is_dir');
+      if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+        $folder="/xampp/htdocs/Temp/*";
+      } else {
+        $folder="Temp/*";
+      }
+      $dirs = array_filter(glob($folder ,GLOB_ONLYDIR), 'is_dir');
       for($i=0;$i<count($dirs);$i++){
          if($ID_User==substr($dirs[$i],25)&&substr($dirs[$i],29)=="")
           array_push($dates,$dirs[$i]);
@@ -203,20 +197,20 @@ private function InsertAdjectives($Folder){
 $this->InsertAdjectivesClass($Folder);
 }
 //Inserta en la base de datos los registros correspondientes a boards
-private function InsertBoards($Folder){
+private function InsertBoards($Folder,$gbcont){
  $gbkeys=$this->getGBkeys();
  $file = file_get_contents($Folder."/Boards.json");
+ $fileGB = file_get_contents($Folder."/GroupBoards.json");
  $boards=json_decode($file);
+ $GB=json_decode($fileGB);
  $count=count($boards->ID_Board);
- sort($boards->ID_GBBoard);
- $posc=-1;
+ $gbkeys=array_slice($gbkeys,$gbcont);
  for($i=0;$i<$count;$i++){
- if($boards->ID_GBBoard[$i]>$ant&&$boards->ID_GBBoard[$i]!=null){
-   $posc++;
-   $ant=$boards->ID_GBBoard[$i];
- }else{
-   $ant=$boards->ID_GBBoard[$i];
- }
+   if(!(is_null($boards->ID_GBBoard[$i]))){
+       $posc=array_search($boards->ID_GBBoard[$i],$GB->ID_GB);
+   }else{
+       $posc=null;
+   }
   $sql="INSERT INTO Boards(ID_GBBoard,primaryboard,Bname,width,height,autoReturn,autoReadSentence)
    VALUES (?,?,?,?,?,?,?)";
   $this->db->query($sql,array(
@@ -229,7 +223,7 @@ private function InsertBoards($Folder){
     $boards->autoReadSentence[$i]
   ));
 }
-return $gbkeys;
+return count($gbkeys);
 }
 private function InsertSHistoric($Folder){
   $ID_User=$this->session->idusu;
@@ -261,86 +255,59 @@ private function InsertSHistoric($Folder){
   return $count;
 }
 //Inserta en la base de datos los registros correspondientes a cells
-private function InsertCells($Folder){
+private function InsertCells($Folder,$bcont,$scont,$fcont,$pcont){
  $ID_Cell=array();
  $a=array();
  $sentencekey=$this->getSentencekey();
  $folderkey=$this->getfolderkey();
  $boardkey=$this->getBoardkey();
  $pictokey=$this->getPictokeys();
+
  $file = file_get_contents($Folder."/Cell.json");
+ $files = file_get_contents($Folder."/Boards.json");
+ $filesent = file_get_contents($Folder."/S_sentence.json");
+ $filefol= file_get_contents($Folder."/S_Folder.json");
+ $picto=file_get_contents($Folder."/Pictograms.json");
+
  $cells=json_decode($file);
+ $boards=json_decode($files);
+ $sentences=json_decode($filesent);
+ $pic=json_decode($picto);
+ $sfolder=json_decode($filefol);
+
+ $boardkey=array_slice($boardkey,$bcont);
+ $sentencekey=array_slice($sentencekey,$scont);
+ $folderkey=array_slice($folderkey,$fcont);
  $count=count($cells->ID_Cell);
- $boardlink=array_unique(array_filter($cells->boardLink));
- sort($boardlink);
- $IDCsentence=array_unique(array_filter($cells->ID_CSentence));
- sort($IDCsentence);
- $Sentencefolder=array_unique(array_filter($cells->sentenceFolder));
- sort($Sentencefolder);
- $posp=-1;
  for($i=0;$i<$count;$i++){
    if(!(is_null($cells->boardLink[$i]))){
-   for($j=0;$j<count($boardlink);$j++){
-     if($boardlink[$j]<=$ant){
-             $posc=array_search($boardlink[$j],$boardlink)+1;
-             $ant=$cells->boardLink[$i];
-     }else{
-             $ant=$cells->boardLink[$i];
-     }
+       $posc=array_search($cells->boardLink[$i],$boards->ID_Board);
+   }else{
+       $posc=null;
    }
- }else{
-   $posc=null;
-   $ant=$cells->boardLink[$i];
- }
-       if($cells->ID_CPicto[$i]>$ant1&&$cells->ID_CPicto[$i]!=null){
-         $posp++;
-         $ant1=$cells->ID_CPicto[$i];
-       }else{
-         $ant1=$cells->ID_CPicto[$i];
-       }
-
-       if(!(is_null($cells->ID_CSentence[$i]))){
-         $c=count($IDCsentence);
-         if($c>1){
-           for($z=0;$z<count($IDCsentence);$z++){
-             if($IDCsentence[$z]<=$ant2){
-                     $poscs=array_search($IDCsentence[$z],$IDCsentence)+1;
-                     $ant2=$cells->ID_CSentence[$i];
-             }else{
-                     $ant2=$cells->ID_CSentence[$i];
-             }
-           }
-         }else{
-           $poscs=array_search($IDCsentence[0],$IDCsentence)+1;
-         }
-       }else{
-         $poscs=null;
-         $ant2=$cells->ID_CSentence[$i];
-       }
-       if(!(is_null($cells->sentenceFolder[$i]))){
-         $c=count($Sentencefolder);
-         if($c>1){
-           for($s=0;$s<count($Sentencefolder);$s++){
-             if($Sentencefolder[$s]<=$ant3){
-                     $posf=array_search($Sentencefolder[$s],$Sentencefolder)+1;
-                     $ant3=$cells->sentenceFolder[$i];
-             }else{
-                     $ant3=$cells->sentenceFolder[$i];
-             }
-           }
-         }else{
-           $posf=array_search($Sentencefolder[0],$Sentencefolder)+1;
-         }
-       }else{
-         $posf=null;
-         $ant3=$cells->sentenceFolder[$i];
-       }
+   if(!(is_null($cells->ID_CSentence[$i]))){
+       $poscs=array_search($cells->ID_CSentence[$i],$sentences->ID_SSentence);
+    }else{
+       $poscs=null;
+    }
+   if(!(is_null($cells->sentenceFolder[$i]))){
+       $posf=array_search($cells->sentenceFolder[$i],$sfolder->ID_Folder);
+   }else{
+       $posf=null;
+   }
+   if($cells->ID_CPicto[$i]>2020){
+          $posp=array_search($cells->ID_CPicto[$i],$pic->pictoid);
+          $picto=$pictokey[$posp];
+   }else{
+     $picto=$cells->ID_CPicto[$i];
+   }
+   array_push($a,$poscs);
     $sql="INSERT INTO Cell(isFixedInGroupBoards,imgCell,ID_CPicto,ID_CSentence,sentenceFolder,boardLink,color,
     ID_CFunction,textInCell,textInCellTextOnOff,cellType,activeCell)VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
     $this->db->query($sql,array(
     $cells->isFixedInGroupBoards[$i],
     $cells->imgCell[$i],
-    $cells->ID_CPicto[$i],
+    $picto,
     $sentencekey[$poscs],
     $folderkey[$posf],
     $boardkey[$posc],
@@ -355,43 +322,28 @@ private function InsertCells($Folder){
     $res=$query->result();
     array_push($ID_Cell,$res[0]->s2);
 }
- $this->InsertRBoardCell($Folder,$ID_Cell);
+ $this->InsertRBoardCell($Folder,$ID_Cell,$bcont);
+ return $sentencekey;
 }
 //Inserta en la base de datos los registros correspondientes a groupboards
-private function InsertGroupBoards($Folder,$mainGboard){
+private function InsertGroupBoards($Folder){
  $ID_User=$this->session->idusu;
  $file = file_get_contents($Folder."/GroupBoards.json");
  $gboards=json_decode($file);
  $count=count($gboards->ID_GBUser);
- if(!$mainGboard){
    for($i=0;$i<$count;$i++){
+     if($i==0 && !$this->existsmain()) $mainGboard="1"; else $mainGboard="0";
     $sql="INSERT INTO GroupBoards(ID_GBUser,GBname,primaryGroupBoard,defWidth,defHeight,imgGB)VALUES (?,?,?,?,?,?)";
     $this->db->query($sql,
      array(
       $ID_User,
       $gboards->GBname[$i],
-      0,
+      $mainGboard,
       $gboards->defWidth[$i],
       $gboards->defHeight[$i],
       $gboards->imgGB[$i]
     ));
   }
-}else{
-  for($i=0;$i<$count;$i++){
-   $sql="INSERT INTO GroupBoards(ID_GBUser,GBname,primaryGroupBoard,defWidth,defHeight,imgGB)VALUES (?,?,?,?,?,?)";
-   $this->db->query($sql,
-    array(
-     $ID_User,
-     $gboards->GBname[$i],
-     $gboards->primaryGroupBoard[$i],
-     $gboards->defWidth[$i],
-     $gboards->defHeight[$i],
-     $gboards->imgGB[$i]
-   ));
- }
-}
-
-return $count;
 }
 //Inserta en la base de datos los registros correspondientes a images
 private function InsertImages($Folder){
@@ -511,24 +463,22 @@ private function InsertPictogramsLanguage($Folder){
 }
 }
 //Inserta en la base de datos los registros correspondientes a R_BoardCell
-private function InsertRBoardCell($Folder,$ID_Cell){
+private function InsertRBoardCell($Folder,$ID_Cell,$bcont){
    $boardkey=$this->getBoardkey();
    $file = file_get_contents($Folder."/R_BoardCell.json");
+   $fileB=file_get_contents($Folder."/Boards.json");
    $rbcell=json_decode($file);
+   $boards=json_decode($fileB);
    $count=count($rbcell->ID_RBoard);
-   sort($rbcell->ID_RBoard);
-   $a=array();
-   $posc=-1;
+   $boardkey=array_slice($boardkey,$bcont);
    for($i=0;$i<$count;$i++){
-   if($rbcell->ID_RBoard[$i]>$ant){
-     $posc++;
-     $ant=$rbcell->ID_RBoard[$i];
-   }else{
-     $ant=$rbcell->ID_RBoard[$i];
-   }
+     if(!(is_null($rbcell->ID_RBoard[$i]))){
+         $posc=array_search($rbcell->ID_RBoard[$i],$boards->ID_Board);
+     }else{
+         $posc=null;
+     }
     $sql="INSERT INTO R_BoardCell(ID_RBoard,ID_RCell,posInBoard,isMenu,posInMenu,customScanBlock1,customScanBlockText1,customScanBlock2,
       customScanBlockText2)VALUES (?,?,?,?,?,?,?,?,?)";
-      array_push($a,$rbcell->posInBoard[$i]);
     $this->db->query($sql,array(
       $boardkey[$posc],
       $ID_Cell[$i],
@@ -541,23 +491,25 @@ private function InsertRBoardCell($Folder,$ID_Cell){
       $rbcell->customScanBlockText2[$i]
     ));
   }
-  return $a;
 }
 //Inserta en la base de datos los registros correspondientes a R_S_HistoricPictograms
-private function InsertRSHistoricPictograms($Folder){
+private function InsertRSHistoricPictograms($Folder,$scont){
+  $a=array();
  $histokey=$this->getHistorickey();
  $ID_User=$this->session->idusu;
  $file = file_get_contents($Folder."/R_S_HistoricPictograms.json");
+ $his=file_get_contents($Folder."/S_Historic.json");
+ $hist=json_decode($his);
  $rshp=json_decode($file);
+ $histokey=array_slice($histokey,$scont);
  $count=count($rshp->ID_RSHPSentencePicto);
- $posh=-1;
  for($i=0;$i<$count;$i++){
-   if($rshp->ID_RSHPSentence[$i]>$ant&&$rshp->ID_RSHPSentence[$i]!=null){
-     $posh++;
-     $ant=$rshp->ID_RSHPSentence[$i];
+   if(!(is_null($rshp->ID_RSHPSentence[$i]))){
+       $posh=array_search($rshp->ID_RSHPSentence[$i],$hist->ID_SHistoric);
    }else{
-     $ant=$rshp->ID_RSHPSentence[$i];
+       $posh=null;
    }
+   array_push($a,$posh);
   $sql="INSERT INTO R_S_HistoricPictograms(ID_RSHPSentence,pictoid,isplural,isfem,coordinated,ID_RSHPUser,imgtemp)
   VALUES (?,?,?,?,?,?,?)";
   $this->db->query($sql,array(
@@ -570,23 +522,24 @@ private function InsertRSHistoricPictograms($Folder){
     $rshp->imgtemp[$i]
   ));
 }
-return $histokey;
+return $rshp;
 }
 //Inserta en la base de datos los registros correspondientes a R_S_SentencePictograms
-private function InsertRSSentencePictograms($Folder){
+private function InsertRSSentencePictograms($Folder,$scont){
  $histokey=$this->getSSentencekey();
  $ID_User=$this->session->idusu;
  $file = file_get_contents($Folder."/R_S_SentencePictograms.json");
+ $his = file_get_contents($Folder."/S_Sentence.json");
  $rssp=json_decode($file);
+ $hist=json_decode($his);
+ $histokey=array_slice($histokey,$scont);
  $count=count($rssp->ID_RSSPSentencePicto);
- $posh=-1;
  for($i=0;$i<$count;$i++){
-   if($rssp->ID_RSSPSentence[$i]>$ant&&$rssp->ID_RSSPSentence[$i]!=null){
-     $posh++;
-     $ant=$rssp->ID_RSSPSentence[$i];
-   }else{
-     $ant=$rssp->ID_RSSPSentence[$i];
-   }
+      if(!(is_null($rssp->ID_RSSPSentence[$i]))){
+          $posh=array_search($rssp->ID_RSSPSentence[$i],$hist->ID_SSentence);
+      }else{
+          $posh=null;
+      }
   $sql="INSERT INTO `R_S_SentencePictograms` (`ID_RSSPSentence`, `pictoid`, `isplural`, `isfem`, `coordinated`, `ID_RSSPUser`, `imgtemp`)
   VALUES (?,?,?,?,?,?,?);";
   $this->db->query($sql,array(
@@ -619,22 +572,23 @@ private function InsertSFolder($Folder){
     $sf->folderOrder[$i]
   ));
 }
+return $count;
 }
 //Inserta en la base de datos los registros correspondientes a S_Sentence
-private function InsertSSentence($Folder){
+private function InsertSSentence($Folder,$folds){
  $ID_User=$this->session->idusu;
  $folderkey=$this->getfolderkey();
  $file = file_get_contents($Folder."/S_Sentence.json");
+ $filefol= file_get_contents($Folder."/S_Folder.json");
  $ss=json_decode($file);
+ $sfolder=json_decode($filefol);
  $count=count($ss->ID_SSentence);
- sort($ss->ID_SFolder);
- $pos=-1;
+ $folderkey=array_slice($folderkey,$folds);
  for($i=0;$i<$count;$i++){
-   if($ss->ID_SFolder[$i]>$ant&&$ss->ID_SFolder[$i]!=null){
-     $pos++;
-     $ant=$ss->ID_SFolder[$i];
+   if(!(is_null($ss->ID_SFolder[$i]))){
+       $posf=array_search($ss->ID_SFolder[$i],$sfolder->ID_Folder);
    }else{
-     $ant=$ss->ID_SFolder[$i];
+       $posf=null;
    }
   $sql="INSERT INTO S_Sentence(ID_SSUser,ID_SFolder,posInFolder,sentenceType,isNegative,sentenceTense,sentenceDate,
   sentenceFinished,intendedSentence,inputWords,inputIds,parseScore,parseString,generatorScore,generatorString,comments,userScore,
@@ -642,7 +596,7 @@ private function InsertSSentence($Folder){
   VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
   $this->db->query($sql,array(
   $ID_User,
-  $folderkey[$pos],
+  $folderkey[$posf],
   $ss->posInFolder[$i],
   $ss->sentenceType[$i],
   $ss->isNegative[$i],
@@ -667,68 +621,119 @@ private function InsertSSentence($Folder){
   $ss->sPreRecPath[$i]
 ));
 }
-return $pos;
 }
 //sobreescribe en la base de datos los registros correspondientes a SuperUser
-private function UpdateSuperUser($Folder){
+private function UpdateSuperUser($Folder,$ow){
  $ID_SU=$this->session->idsu;
  $ID_User=$this->session->idusu;
  $file = file_get_contents($Folder."/SuperUser.json");
  $su=json_decode($file);
-  $sql="UPDATE SuperUser SET realname=?, surnames=?, email=?, cfgDefUser=?, cfgIsFem=?, cfgUsageMouseOneCTwoC=?,
-   cfgTimeClick=?, cfgExpansionOnOff=?, cfgAutoEraseSentenceBar=?, cfgPredOnOff=?,
-   cfgPredBarVertHor=?, cfgPredBarNumPred=?, cfgScanningOnOff=?, cfgScanningCustomRowCol=?,
-   cfgScanningAutoOnOff=?, cfgCancelScanOnOff=?, cfgTimeScanning=?, cfgScanStartClick=?,
-   cfgScanOrderPred=?, cfgScanOrderMenu=?, cfgScanOrderPanel=?, cfgScanColor=?,
-   cfgMenuReadActive=?, cfgMenuHomeActive=?, cfgMenuDeleteLastActive=?,
-   cfgMenuDeleteAllActive=?, cfgSentenceBarUpDown=?, cfgBgColorPanel=?, cfgBgColorPred=?,
-   cfgTextInCell=?, cfgUserExpansionFeedback=?, cfgHistOnOff=?, cfgBlackOnWhiteVSWhiteOnBlack=?,
-   cfgTimeLapseSelectOnOff=?, cfgTimeLapseSelect=?, cfgTimeNoRepeatedClickOnOff=?,
-   cfgTimeNoRepeatedClick=?, UserValidated=?,insertDate=? WHERE ID_SU=?";
-  $this->db->query($sql,
-  array(
-  $su->realname,
-  $su->surnames,
-  $su->email,
-  $ID_User,
-  $su->cfgIsFem,
-  $su->cfgUsageMouseOneCTwoC,
-  $su->cfgTimeClick,
-  $su->cfgExpansionOnOff,
-  $su->cfgAutoEraseSentenceBar,
-  $su->cfgPredOnOff,
-  $su->cfgPredBarVertHor,
-  $su->cfgPredBarNumPred,
-  $su->cfgScanningOnOff,
-  $su->cfgScanningCustomRowCol,
-  $su->cfgScanningAutoOnOff,
-  $su->cfgCancelScanOnOff,
-  $su->cfgTimeScanning,
-  $su->cfgScanStartClick,
-  $su->cfgScanOrderPred,
-  $su->cfgScanOrderMenu,
-  $su->cfgScanOrderPanel,
-  $su->cfgScanColor,
-  $su->cfgMenuReadActive,
-  $su->cfgMenuHomeActive,
-  $su->cfgMenuDeleteLastActive,
-  $su->cfgMenuDeleteAllActive,
-  $su->cfgSentenceBarUpDown,
-  $su->cfgBgColorPanel,
-  $su->cfgBgColorPred,
-  $su->cfgTextInCell,
-  $su->cfgUserExpansionFeedback,
-  $su->cfgHistOnOff,
-  $su->cfgBlackOnWhiteVSWhiteOnBlack,
-  $su->cfgTimeLapseSelectOnOff,
-  $su->cfgTimeLapseSelect,
-  $su->cfgTimeNoRepeatedClickOnOff,
-  $su->cfgTimeNoRepeatedClick,
-  $su->UserValidated,
-  $su->insertdate,
-  $ID_SU
-)
-);
+ if($ow){
+   $sql="UPDATE SuperUser SET realname=?, surnames=?, email=?, cfgDefUser=?, cfgIsFem=?, cfgUsageMouseOneCTwoC=?,
+    cfgTimeClick=?, cfgExpansionOnOff=?, cfgAutoEraseSentenceBar=?, cfgPredOnOff=?,
+    cfgPredBarVertHor=?, cfgPredBarNumPred=?, cfgScanningOnOff=?, cfgScanningCustomRowCol=?,
+    cfgScanningAutoOnOff=?, cfgCancelScanOnOff=?, cfgTimeScanning=?, cfgScanStartClick=?,
+    cfgScanOrderPred=?, cfgScanOrderMenu=?, cfgScanOrderPanel=?, cfgScanColor=?,
+    cfgMenuReadActive=?, cfgMenuHomeActive=?, cfgMenuDeleteLastActive=?,
+    cfgMenuDeleteAllActive=?, cfgSentenceBarUpDown=?, cfgBgColorPanel=?, cfgBgColorPred=?,
+    cfgTextInCell=?, cfgUserExpansionFeedback=?, cfgHistOnOff=?, cfgBlackOnWhiteVSWhiteOnBlack=?,
+    cfgTimeLapseSelectOnOff=?, cfgTimeLapseSelect=?, cfgTimeNoRepeatedClickOnOff=?,
+    cfgTimeNoRepeatedClick=?, UserValidated=?,insertDate=? WHERE ID_SU=?";
+    $this->db->query($sql,
+    array(
+    $su->realname,
+    $su->surnames,
+    $su->email,
+    $ID_User,
+    $su->cfgIsFem,
+    $su->cfgUsageMouseOneCTwoC,
+    $su->cfgTimeClick,
+    $su->cfgExpansionOnOff,
+    $su->cfgAutoEraseSentenceBar,
+    $su->cfgPredOnOff,
+    $su->cfgPredBarVertHor,
+    $su->cfgPredBarNumPred,
+    $su->cfgScanningOnOff,
+    $su->cfgScanningCustomRowCol,
+    $su->cfgScanningAutoOnOff,
+    $su->cfgCancelScanOnOff,
+    $su->cfgTimeScanning,
+    $su->cfgScanStartClick,
+    $su->cfgScanOrderPred,
+    $su->cfgScanOrderMenu,
+    $su->cfgScanOrderPanel,
+    $su->cfgScanColor,
+    $su->cfgMenuReadActive,
+    $su->cfgMenuHomeActive,
+    $su->cfgMenuDeleteLastActive,
+    $su->cfgMenuDeleteAllActive,
+    $su->cfgSentenceBarUpDown,
+    $su->cfgBgColorPanel,
+    $su->cfgBgColorPred,
+    $su->cfgTextInCell,
+    $su->cfgUserExpansionFeedback,
+    $su->cfgHistOnOff,
+    $su->cfgBlackOnWhiteVSWhiteOnBlack,
+    $su->cfgTimeLapseSelectOnOff,
+    $su->cfgTimeLapseSelect,
+    $su->cfgTimeNoRepeatedClickOnOff,
+    $su->cfgTimeNoRepeatedClick,
+    $su->UserValidated,
+    $su->insertdate,
+    $ID_SU
+  ));
+ }else{
+   $sql="UPDATE SuperUser SET cfgDefUser=?, cfgIsFem=?, cfgUsageMouseOneCTwoC=?,
+    cfgTimeClick=?, cfgExpansionOnOff=?, cfgAutoEraseSentenceBar=?, cfgPredOnOff=?,
+    cfgPredBarVertHor=?, cfgPredBarNumPred=?, cfgScanningOnOff=?, cfgScanningCustomRowCol=?,
+    cfgScanningAutoOnOff=?, cfgCancelScanOnOff=?, cfgTimeScanning=?, cfgScanStartClick=?,
+    cfgScanOrderPred=?, cfgScanOrderMenu=?, cfgScanOrderPanel=?, cfgScanColor=?,
+    cfgMenuReadActive=?, cfgMenuHomeActive=?, cfgMenuDeleteLastActive=?,
+    cfgMenuDeleteAllActive=?, cfgSentenceBarUpDown=?, cfgBgColorPanel=?, cfgBgColorPred=?,
+    cfgTextInCell=?, cfgUserExpansionFeedback=?, cfgHistOnOff=?, cfgBlackOnWhiteVSWhiteOnBlack=?,
+    cfgTimeLapseSelectOnOff=?, cfgTimeLapseSelect=?, cfgTimeNoRepeatedClickOnOff=?,
+    cfgTimeNoRepeatedClick=?, UserValidated=?,insertDate=? WHERE ID_SU=?";
+    $this->db->query($sql,
+    array(
+    $ID_User,
+    $su->cfgIsFem,
+    $su->cfgUsageMouseOneCTwoC,
+    $su->cfgTimeClick,
+    $su->cfgExpansionOnOff,
+    $su->cfgAutoEraseSentenceBar,
+    $su->cfgPredOnOff,
+    $su->cfgPredBarVertHor,
+    $su->cfgPredBarNumPred,
+    $su->cfgScanningOnOff,
+    $su->cfgScanningCustomRowCol,
+    $su->cfgScanningAutoOnOff,
+    $su->cfgCancelScanOnOff,
+    $su->cfgTimeScanning,
+    $su->cfgScanStartClick,
+    $su->cfgScanOrderPred,
+    $su->cfgScanOrderMenu,
+    $su->cfgScanOrderPanel,
+    $su->cfgScanColor,
+    $su->cfgMenuReadActive,
+    $su->cfgMenuHomeActive,
+    $su->cfgMenuDeleteLastActive,
+    $su->cfgMenuDeleteAllActive,
+    $su->cfgSentenceBarUpDown,
+    $su->cfgBgColorPanel,
+    $su->cfgBgColorPred,
+    $su->cfgTextInCell,
+    $su->cfgUserExpansionFeedback,
+    $su->cfgHistOnOff,
+    $su->cfgBlackOnWhiteVSWhiteOnBlack,
+    $su->cfgTimeLapseSelectOnOff,
+    $su->cfgTimeLapseSelect,
+    $su->cfgTimeNoRepeatedClickOnOff,
+    $su->cfgTimeNoRepeatedClick,
+    $su->UserValidated,
+    $su->insertdate,
+    $ID_SU
+  ));
+ }
 }
 //sobreescribe en la base de datos los registros correspondientes a User
 private function UpdateUser($Folder){
@@ -738,23 +743,12 @@ private function UpdateUser($Folder){
  $us=json_decode($file);
  $count=count($us->ID_User);
  for($i=0;$i<$count;$i++){
-  $sql="UPDATE User SET ID_USU=?,ID_ULanguage=?, ID_UOrg=?,
-  cfgExpansionVoiceOnline=?, cfgExpansionVoiceOnlineType=?, cfgExpansionVoiceOffline=?,
-  cfgInterfaceVoiceOnOff=?, cfgInterfaceVoiceMascFem=?, cfgInterfaceVoiceOnline=?,
-  cfgInterfaceVoiceOffline=?, cfgVoiceOfflineRate=?, cfgExpansionLanguage=?,
+  $sql="UPDATE User SET ID_USU=?,ID_ULanguage=?, ID_UOrg=?, cfgExpansionLanguage=?,
   errorTemp=? WHERE ID_User=?";
   $this->db->query($sql,array(
     $ID_SU,
     $us->ID_ULanguage[$i],
     $us->ID_UOrg[$i],
-    $us->cfgExpansionVoiceOnline[$i],
-    $us->cfgExpansionVoiceOnlineType[$i],
-    $us->cfgExpansionVoiceOffline[$i],
-    $us->cfgInterfaceVoiceOnOff[$i],
-    $us->cfgInterfaceVoiceMascFem[$i],
-    $us->cfgInterfaceVoiceOnline[$i],
-    $us->cfgInterfaceVoiceOffline[$i],
-    $us->cfgVoiceOfflineRate[$i],
     $us->cfgExpansionLanguage[$i],
     $us->errorTemp[$i],
     $ID_User
@@ -836,6 +830,14 @@ private function getSSentencekey(){
   }
   return $keys;
 }
+private function existsmain(){
+  $exists=false;
+  $ID_User=$this->session->idusu;
+  $sql="SELECT primaryGroupBoard FROM GroupBoards WHERE ID_GBUser=? AND primaryGroupBoard='1'";
+  $query=$this->db->query($sql,$ID_User);
+  if($query->num_rows()>0) $exists=true;
+  return $exists;
+}
 private function getHistorickey(){
   $keys=array();
   $ID_User=$this->session->idusu;
@@ -849,7 +851,12 @@ private function getHistorickey(){
 //mueve las imagenes del backup al servidor para que la aplicacion pueda usarlas
 private function moveImages($imgPath,$imgName){
   if(strlen($imgName)==36&&(substr($imgName,34)=='png'||substr($imgName,34)=='jpg')){
-    copy('./Temp/'.$Fname.'/'.'images/'.$imgName , $imgPath);
+    if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+      copy('/xampp/htdocs/Temp/'.$Fname.'/'.'images/'.$imgName , $imgPath);
+    } else {
+      copy('./Temp/'.$Fname.'/'.'images/'.$imgName , $imgPath);
+    }
+
   }
 }
 }
