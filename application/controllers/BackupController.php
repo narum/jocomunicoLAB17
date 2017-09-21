@@ -29,6 +29,14 @@ public function index_get(){
   ];
   $this->response($response, REST_Controller::HTTP_OK);
 }
+//comprueba si la copia de seguridad es del mismo idioma que el user
+public function checklang_get(){
+  $data=$this->RecoverBackup->checklang();
+  $response = [
+      'data' => $data
+  ];
+  $this->response($response, REST_Controller::HTTP_OK);
+}
 //recupera las imagenes y las inserta en la nueva base de datos
 public function recimages_post(){
   $overwrite=$this->post('overwrite');
