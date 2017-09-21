@@ -326,7 +326,8 @@ angular.module('controllers')
             };
             $scope.addNClass = function (nameTypeClass) {
                 angular.forEach($scope.classNoun, function (value, key) {
-                    if (value.nameType.toUpperCase() == nameTypeClass.toUpperCase()) {
+                    if ((value.nameType.toUpperCase() == nameTypeClass.toUpperCase()) || 
+                            (value.classType.toUpperCase() == nameTypeClass.toUpperCase())) {
                         $scope.NClassList.push($scope.classNoun[key]);
                         $scope.classNoun.splice(key, 1);
                     }
@@ -338,7 +339,8 @@ angular.module('controllers')
             };
             $scope.addAdjClass = function (AdjTypeClass) {
                 angular.forEach($scope.classAdj, function (value, key) {
-                    if (value.adjType.toUpperCase() == AdjTypeClass.toUpperCase()) {
+                    if ((value.adjType.toUpperCase() == AdjTypeClass.toUpperCase()) || 
+                            (value.classType.toUpperCase() == AdjTypeClass.toUpperCase())) {
                         $scope.AdjClassList.push($scope.classAdj[key]);
                         $scope.classAdj.splice(key, 1);
                     }
