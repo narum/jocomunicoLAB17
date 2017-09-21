@@ -2668,7 +2668,10 @@ angular.module('controllers', [])
                             text = "";
                         } else {
                             if (cell.textInCell !== null) text = cell.textInCell;
-                            else text = cell.Bname;
+                            else {
+                                if (cell.ID_CFunction !== null && cell.functType === "link") text = cell.textFunction;
+                                else text = cell.Bname;
+                            }
                         }
 
                         $scope.showBoard(cell.boardLink);
