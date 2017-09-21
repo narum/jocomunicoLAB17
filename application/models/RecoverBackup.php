@@ -7,6 +7,12 @@ class RecoverBackup extends CI_Model {
     public function __construct(){
         parent::__construct();
         $this->load->library('session');
+        $gbcont=count($this->getGBkeys());
+        $bcont=count($this->getBoardkey());
+        $scont=count($this->getSentencekey());
+        $fcont=count($this->getfolderkey());
+        $hcont=count($this->getHistorickey());
+        $pcont=count($this->getPictokeys());
         $this->load->database();
     }
 
@@ -58,11 +64,11 @@ class RecoverBackup extends CI_Model {
       $Fname=$this->getLastGlobalBackup();
       $cfold=count($this->getfolderkey());
       $this->InsertSFolder($Fname);
-      $data=$this->InsertSSentence($Fname,$cfold);
+      $this->InsertSSentence($Fname,$cfold);
       $this->InsertSHistoric($Fname);
-      $this->InsertRSSentencePictograms($Fname);
-      $this->InsertRSHistoricPictograms($Fname);
-      return $data;
+      $this->InsertRSSentencePictograms($Fname,$scont);
+      $bla=$this->InsertRSHistoricPictograms($Fname,$hcont);
+      return $bla;
     }
       //llama a la recuperacion parcial de configuracion
     function LaunchParcialRecover_cfg($ow){
@@ -70,6 +76,7 @@ class RecoverBackup extends CI_Model {
       $this->UpdateSuperUser($Fname,$ow);
       $this->UpdateUser($Fname);
     }
+
       //llama a la recuperacion parcial de paneles
     function LaunchParcialRecover_panels($mainGboard){
       $Fname=$this->getLastGlobalBackup();
@@ -78,8 +85,6 @@ class RecoverBackup extends CI_Model {
       }
       $gbcont=count($this->getGBkeys());
       $bcont=count($this->getBoardkey());
-      $scont=count($this->getSentencekey());
-      $fcont=count($this->getfolderkey());
       $pcont=count($this->getPictokeys());
       $this->InsertGroupBoards($Fname,$mainGboard);
       $this->InsertBoards($Fname,$gbcont);
@@ -257,6 +262,7 @@ private function InsertCells($Folder,$bcont,$scont,$fcont,$pcont){
  $folderkey=$this->getfolderkey();
  $boardkey=$this->getBoardkey();
  $pictokey=$this->getPictokeys();
+
  $file = file_get_contents($Folder."/Cell.json");
  $files = file_get_contents($Folder."/Boards.json");
  $filesent = file_get_contents($Folder."/S_sentence.json");
@@ -270,6 +276,8 @@ private function InsertCells($Folder,$bcont,$scont,$fcont,$pcont){
  $sfolder=json_decode($filefol);
 
  $boardkey=array_slice($boardkey,$bcont);
+ $sentencekey=array_slice($sentencekey,$scont);
+ $folderkey=array_slice($folderkey,$fcont);
  $count=count($cells->ID_Cell);
  for($i=0;$i<$count;$i++){
    if(!(is_null($cells->boardLink[$i]))){
@@ -315,7 +323,7 @@ private function InsertCells($Folder,$bcont,$scont,$fcont,$pcont){
     array_push($ID_Cell,$res[0]->s2);
 }
  $this->InsertRBoardCell($Folder,$ID_Cell,$bcont);
- return $sentencekey[0];
+ return $sentencekey;
 }
 //Inserta en la base de datos los registros correspondientes a groupboards
 private function InsertGroupBoards($Folder){
@@ -485,20 +493,23 @@ private function InsertRBoardCell($Folder,$ID_Cell,$bcont){
   }
 }
 //Inserta en la base de datos los registros correspondientes a R_S_HistoricPictograms
-private function InsertRSHistoricPictograms($Folder){
+private function InsertRSHistoricPictograms($Folder,$scont){
+  $a=array();
  $histokey=$this->getHistorickey();
  $ID_User=$this->session->idusu;
  $file = file_get_contents($Folder."/R_S_HistoricPictograms.json");
+ $his=file_get_contents($Folder."/S_Historic.json");
+ $hist=json_decode($his);
  $rshp=json_decode($file);
+ $histokey=array_slice($histokey,$scont);
  $count=count($rshp->ID_RSHPSentencePicto);
- $posh=-1;
  for($i=0;$i<$count;$i++){
-   if($rshp->ID_RSHPSentence[$i]>$ant&&$rshp->ID_RSHPSentence[$i]!=null){
-     $posh++;
-     $ant=$rshp->ID_RSHPSentence[$i];
+   if(!(is_null($rshp->ID_RSHPSentence[$i]))){
+       $posh=array_search($rshp->ID_RSHPSentence[$i],$hist->ID_SHistoric);
    }else{
-     $ant=$rshp->ID_RSHPSentence[$i];
+       $posh=null;
    }
+   array_push($a,$posh);
   $sql="INSERT INTO R_S_HistoricPictograms(ID_RSHPSentence,pictoid,isplural,isfem,coordinated,ID_RSHPUser,imgtemp)
   VALUES (?,?,?,?,?,?,?)";
   $this->db->query($sql,array(
@@ -511,23 +522,24 @@ private function InsertRSHistoricPictograms($Folder){
     $rshp->imgtemp[$i]
   ));
 }
-return $histokey;
+return $rshp;
 }
 //Inserta en la base de datos los registros correspondientes a R_S_SentencePictograms
-private function InsertRSSentencePictograms($Folder){
+private function InsertRSSentencePictograms($Folder,$scont){
  $histokey=$this->getSSentencekey();
  $ID_User=$this->session->idusu;
  $file = file_get_contents($Folder."/R_S_SentencePictograms.json");
+ $his = file_get_contents($Folder."/S_Sentence.json");
  $rssp=json_decode($file);
+ $hist=json_decode($his);
+ $histokey=array_slice($histokey,$scont);
  $count=count($rssp->ID_RSSPSentencePicto);
- $posh=-1;
  for($i=0;$i<$count;$i++){
-   if($rssp->ID_RSSPSentence[$i]>$ant&&$rssp->ID_RSSPSentence[$i]!=null){
-     $posh++;
-     $ant=$rssp->ID_RSSPSentence[$i];
-   }else{
-     $ant=$rssp->ID_RSSPSentence[$i];
-   }
+      if(!(is_null($rssp->ID_RSSPSentence[$i]))){
+          $posh=array_search($rssp->ID_RSSPSentence[$i],$hist->ID_SSentence);
+      }else{
+          $posh=null;
+      }
   $sql="INSERT INTO `R_S_SentencePictograms` (`ID_RSSPSentence`, `pictoid`, `isplural`, `isfem`, `coordinated`, `ID_RSSPUser`, `imgtemp`)
   VALUES (?,?,?,?,?,?,?);";
   $this->db->query($sql,array(

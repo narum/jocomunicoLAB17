@@ -448,12 +448,13 @@ function getHistoric(){
   $inputIds=array(); $parseScore=array();
   $parseString=array(); $generatorScore=array();
   $generatorString=array(); $comments=array();
-  $userScore=array();
+  $userScore=array(); $ID_SHistoric=array();
 
   $sql="SELECT * FROM S_Historic WHERE ID_SHUser=?";
   $query=$this->db->query($sql,$ID_User);
 
   foreach ($query->result() as $row) {
+    array_push($ID_SHistoric,$row->ID_SHistoric);
     array_push($ID_SHUser,$ID_User);
     array_push($sentenceType,$row->sentenceType);
     array_push($isNegative,$row->isNegative);
@@ -471,6 +472,7 @@ function getHistoric(){
     array_push($userScore,$row->userScore);
   }
   $data=array(
+    'ID_SHistoric'=>$ID_SHistoric,
     'ID_SHUser'=>$ID_User,
     'sentenceType'=>$sentenceType,
     'isNegative'=>$isNegative,
