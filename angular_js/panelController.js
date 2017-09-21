@@ -584,30 +584,40 @@ angular.module('controllers')
                           setTimeout(function(){ $route.reload(); }, 3000);
                         }
                       }
+                      $scope.checklang=function(){
+                        $http.get("BackupController/checklang").success(function (results) {
+                          return results;
+                        });
+                      }
                       $scope.recparcialBackup_NOW=function(image,voc,folder,cfg,panelb){
                         if((typeof image==='undefined'&& typeof voc==='undefined'&& typeof folder==='undefined'&&
                          typeof cfg==='undefined'&& typeof panelb==='undefined')||(!image&&!voc&&!folder&&!cfg&&!panelb)){
                           $scope.toggleInfoModal("information",
                           "Tienes que marcar al menos una casilla para que la recuperacion pueda llevarse a cabo");
                         }else{
-                          if(panelb){
-                            image=true;
-                            voc=true;
-                            folder=true;
-                            if(image)$scope.recparcialBackupCall_NOW('recimages');
-                            if(voc)$scope.recparcialBackupCall_NOW('recvocabulary');
-                            if(folder)$scope.recparcialBackupCall_NOW('recfolder');
-                            if(cfg)$scope.recparcialBackupCall_NOW('reccfg');
-                            $scope.recparcialBackupCall_NOW('recpanels');
-                          }else{
-                            if(image)$scope.recparcialBackupCall_NOW('recimages');
-                            if(voc)$scope.recparcialBackupCall_NOW('recvocabulary');
-                            if(folder)$scope.recparcialBackupCall_NOW('recfolder');
-                            if(cfg)$scope.recparcialBackupCall_NOW('reccfg');
-                          }
+                          if($scope.checklang()){
+                            console.log($scope.checklang());
+                            if(panelb){
+                              image=true;
+                              voc=true;
+                              folder=true;
+                              if(image)$scope.recparcialBackupCall_NOW('recimages');
+                              if(voc)$scope.recparcialBackupCall_NOW('recvocabulary');
+                              if(folder)$scope.recparcialBackupCall_NOW('recfolder');
+                              if(cfg)$scope.recparcialBackupCall_NOW('reccfg');
+                              $scope.recparcialBackupCall_NOW('recpanels');
+                            }else{
+                              if(image)$scope.recparcialBackupCall_NOW('recimages');
+                              if(voc)$scope.recparcialBackupCall_NOW('recvocabulary');
+                              if(folder)$scope.recparcialBackupCall_NOW('recfolder');
+                              if(cfg)$scope.recparcialBackupCall_NOW('reccfg');
+                            }
 
-                          $scope.viewActived=false;
-                          setTimeout(function(){ $route.reload(); }, 3000);
+                            $scope.viewActived=false;
+                            setTimeout(function(){ $route.reload(); }, 3000);
+                          }else{
+                            $scope.toggleInfoModal($scope.content.modalInfoTitle, $scope.content.modalInfoBack);
+                          }
                         }
                       }
                       $scope.checkboxparcial=function(){
