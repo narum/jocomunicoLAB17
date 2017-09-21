@@ -22,6 +22,13 @@ class RecoverBackup extends CI_Model {
       if($this->getLastGlobalBackup()===0)$exists=false;
       return $exists;
     }
+    function checklang(){
+      $Fname=$this->getLastGlobalBackup();
+      $ID_Language=$this->session->uinterfacelangauge;
+      $file = file_get_contents($Folder."/User.json");
+      $us=json_decode($file);
+      if($ID_Language==$us->ID_ULanguage) return true; else return false;
+    }
     //Comprueba si existen carpetas con backupParcial
     function checkifparcialexists(){
       $keys=array('images','vocabulary','Folder','cfg','Panels');
