@@ -465,29 +465,21 @@ var app = angular.module('controllers');
 
         $scope.verbPattern1 = false;
         $scope.verbPattern2 = false;
-        $scope.img.greenArrow = '/img/srcWeb/UserConfig/greenArrow.png';
 
-        $scope.pattern1 = [{
-            CD: [{priority: 0, type:"", preposition:"", article: 0}],
-            Receiver: [{priority:0, preposition:""}],
-            Beneficiary: [{priority:0, type:"", preposition:""}],
-            Acomp: [{priority:0, preposition:""}],
-            Tool: [{priority:0, preposition:""}],
-            Modo: [{priority:0, preposition:""}],
-            Locto: [{priority:0, type:"", preposition:""}],
-        }];
+        $scope.showPattern1 = {'CD':false,'Receiver':false,'Beneficiary':false,'Acomp':false,'Tool':false,'Modo':false,'Locto':false};
+        $scope.showPattern2 = {'CD':false,'Receiver':false,'Beneficiary':false,'Acomp':false,'Tool':false,'Modo':false,'Locto':false};
 
-        $scope.pattern2 = [{
-            CD: [{priority: 0, type:"", preposition:"", article: 0}],
-            Receiver: [{priority:0, preposition:""}],
-            Beneficiary: [{priority:0, type:"", preposition:""}],
-            Acomp: [{priority:0, preposition:""}],
-            Tool: [{priority:0, preposition:""}],
-            Modo: [{priority:0, preposition:""}],
-            Locto: [{priority:0, type:"", preposition:""}],
-        }];
+        $scope.Pattern1 = {
+            'Patron': {'pronominal': false, 'subj':"", 'subjdef':"", 'defaulttense':"", 'exemple':""},
+            'CD': {'priority': 0, 'type':"", 'preposition':""},
+            'Receiver': {'priority':0, 'preposition':""},
+            'Beneficiary': {'priority':0, 'type':"", 'preposition':""},
+            'Acomp': {'priority':0, 'preposition':""},
+            'Tool': {'priority':0, 'preposition':""},
+            'Modo': {'priority':0, 'type':""},
+            'Locto': {'priority':0, 'type':"", 'preposition':""},
+        };
 
-        console.log($scope.pattern1);
         $scope.subjOptions = function(){
             if ($scope.interfaceLanguageId == 1){//CAT
                 return [{value:"noun", name:"Substantiu", common:true},{value:"animate" ,name:"Animat", common:true},{value:"human", name:"Huma", common:true},
@@ -496,7 +488,7 @@ var app = angular.module('controllers');
                         {value:"objecte", name:"Objecte", common:true},{value:"color", name:"Color", common:false},{value:"forma", name:"Forma", common:false},
                         {value:"joc", name:"Joc", common:false},{value:"cos", name:"Cos", common:false},{value:"abstracte", name:"Abstracte", common:false},
                         {value:"lloc", name:"Lloc", common:false},{value:"menjar", name:"Menjar", common:false},{value:"beguda", name:"Beguda", common:false},
-                        {value:"time", name:"Temps", common:false},{value:"hora", name:"Hora", common:false},{value:"month", name:"Mes", common:false},
+                        {value:"hora", name:"Hora", common:false},{value:"month", name:"Mes", common:false},
                         {value: "week", name:"Setmana", common:false},{value:"tool", name:"Eina", common:false},{value:"profession", name:"Professió", common:false},
                         {value:"material", name:"Material", common:false}, {value:"verb", name:"Verb", common:true}];
             }else if($scope.interfaceLanguageId == 2){//ESP
@@ -506,7 +498,7 @@ var app = angular.module('controllers');
                         {value:"objecte", name:"Objeto", common:true},{value:"color", name:"Color", common:false},{value:"forma", name:"Forma", common:false},
                         {value:"joc", name:"Juego", common:false},{value:"cos", name:"Cosa", common:false},{value:"abstracte", name:"Abstracto", common:false},
                         {value:"lloc", name:"Lugar", common:false},{value:"menjar", name:"Comida", common:false},{value:"beguda", name:"Bebida", common:false},
-                        {value:"time", name:"Tiempo", common:false},{value:"hora", name:"Hora", common:false},{value:"month", name:"Mes", common:false},
+                        {value:"hora", name:"Hora", common:false},{value:"month", name:"Mes", common:false},
                         {value: "week", name:"Semana", common:false},{value:"tool", name:"Herramienta", common:false},{value:"profession", name:"Profesión", common:false},
                         {value:"material", name:"Material", common:false}, {value:"verb", name:"Verbo", common:true}];
             }
@@ -522,9 +514,9 @@ var app = angular.module('controllers');
 
         $scope.patternTemp = function (){
             if ($scope.interfaceLanguageId == 1){
-                return [{value:"present", name:"Present"},{value:"perfet", name:"Perfet"},{value:"futur", name:"Futur"},{value:"imperatiu", name:"Imperatiu"},{value:"verbless", name:"Sense verb"}]
+                return [{value:"present", name:"Present"},{value:"perfet", name:"Passat immediat"},{value:"perifrastic", name:"Passat"},{value:"futur", name:"Futur"},{value:"imperatiu", name:"Imperatiu"}]
             }else if($scope.interfaceLanguageId == 2){
-                return [{value:"present", name:"Presente"},{value:"perfet", name:"Perfecto"},{value:"futur", name:"Futuro"},{value:"imperatiu", name:"Imperativo"},{value:"verbless", name:"Sin verbo"}]
+                return [{value:"present", name:"Presente"},{value:"perfet", name:"Pasado inmediato"},{value:"perifrastic", name:"Pasado"},{value:"futur", name:"Futuro"},{value:"imperatiu", name:"Imperativo"}]
             }
         }();
 
@@ -546,14 +538,12 @@ var app = angular.module('controllers');
             }
         }();
 
-        $scope.themetipusOptions = function (){
-            var array = $scope.subjOptions;
+        $scope.maneraOptions = function (){
             if ($scope.interfaceLanguageId == 1){
-                var b = [{value:"adj", name:"Adjectiu", common:true},{value:"adv", name:"Adverbi", common:true}]
-            }else if ($scope.interfaceLanguageId == 2){
-                var b = [{value:"adj", name:"Adjetivo", common:true},{value:"adv", name:"Adverbio", common:true}]
+                return [{value:"adj", name:"Adjectiu"},{value:"adv", name:"Adverbi"},{value:"quant", name:"Quantificador"}]
+            }else if($scope.interfaceLanguageId == 2){
+                return [{value:"adj", name:"Adjetivo"},{value:"adv", name:"Adverbio"},{value:"quant", name:"Cuantificador"}]
             }
-            return array.concat(b);
         }();
 
         $scope.LocatBenefOptions = function (){
@@ -566,10 +556,82 @@ var app = angular.module('controllers');
             return array.concat(b);
         }();
 
-        console.log($scope.themetipusOptions);
+        $scope.showComplement = function(id){
+          switch(id) {
+              case 1:
+                  $scope.showPattern1.CD = true
+                  $scope.$broadcast('rebuild:verbPatternScrollbar');
+                  break;
+              case 2:
+                  $scope.showPattern1.Receiver = true;
+                  $scope.$broadcast('rebuild:verbPatternScrollbar');
+                  break;
+              case 3:
+                  $scope.showPattern1.Beneficiary = true;
+                  $scope.$broadcast('rebuild:verbPatternScrollbar');
+                  break;
+              case 4:
+                  $scope.showPattern1.Acomp = true;
+                  $scope.$broadcast('rebuild:verbPatternScrollbar');
+                  break;
+              case 5:
+                  $scope.showPattern1.Tool = true;
+                  $scope.$broadcast('rebuild:verbPatternScrollbar');
+                  break;
+              case 6:
+                  $scope.showPattern1.Modo = true;
+                  $scope.$broadcast('rebuild:verbPatternScrollbar');
+                  break;
+              case 7:
+                  $scope.showPattern1.Locto = true;
+                  $scope.$broadcast('rebuild:verbPatternScrollbar');
+                  break;
+          }
+        };
 
-        $scope.addComp = function(){
-          console.log($scope.complementoSelected);
+        $scope.cleanPattern = function (showPattern, Pattern, property){
+            switch(property) {
+                case 'CD':
+                    showPattern.CD = false;
+                    Pattern.CD = {'priority': 0, 'type':"", 'preposition':""};
+                    $scope.$broadcast('rebuild:verbPatternScrollbar');
+                    break;
+                case 'Receiver':
+                    showPattern.Receiver = false;
+                    Pattern.Receiver = {'priority':0, 'preposition':""};
+                    $scope.$broadcast('rebuild:verbPatternScrollbar');
+                    break;
+                case 'Beneficiary':
+                    showPattern.Beneficiary = false;
+                    Pattern.Beneficiary = {'priority':0, 'type':"", 'preposition':""};
+                    $scope.$broadcast('rebuild:verbPatternScrollbar');
+                    break;
+                case 'Acomp':
+                    showPattern.Acomp = false;
+                    Pattern.Acomp = {'priority':0, 'preposition':""};
+                    $scope.$broadcast('rebuild:verbPatternScrollbar');
+                    break;
+                case 'Tool':
+                    showPattern.Tool = false;
+                    Pattern.Tool = {'priority':0, 'preposition':""};
+                    $scope.$broadcast('rebuild:verbPatternScrollbar');
+                    break;
+                case 'Modo':
+                    showPattern.Modo = false;
+                    Pattern.Modo = {'priority':0, 'preposition':""};
+                    $scope.$broadcast('rebuild:verbPatternScrollbar');
+                    break;
+                case 'Locto':
+                    showPattern.Locto = false;
+                    Pattern.Locto = {'priority': 0, 'type':"", 'preposition':""};
+                    $scope.$broadcast('rebuild:verbPatternScrollbar');
+                    break;
+            }
+        }
+
+            $scope.guardar = function(){
+            console.log("GUARDANDO...");
+            console.log($scope.Pattern1);
         };
     });
 
