@@ -55,20 +55,15 @@ var app = angular.module('controllers');
         $timeout(function () {
             $scope.$broadcast('rebuild:conjugationScrollbar');
         });
-        /*
-        $scope.$on('rebuild:conjugationScrollbar', function () {
-            $scope.$broadcast('rebuild:conjugationScrollbar');
-        });
-        */
+
         $timeout(function () {
             $scope.$broadcast('rebuild:verbPatternScrollbar');
         });
 
-        /*
-        $scope.$on('rebuild:verbPatternScrollbar', function () {
+        $scope.rebuildScrollBarPatterns = function () {
             $scope.$broadcast('rebuild:verbPatternScrollbar');
-        });
-        */
+        };
+
 
 
         $scope.imgPicto = 'arrow question.png';
@@ -222,7 +217,7 @@ var app = angular.module('controllers');
                 });
             });
         };
-        $scope.cancelAddWord = function () {
+        $scope.cancelAddVerb = function () {
             $location.path("/panelGroups");
         };
 
@@ -369,6 +364,7 @@ var app = angular.module('controllers');
             var postdata = {verb : $scope.verb};
             $http.post(URL, postdata).success(function (response) {
                 $scope.conjugations = response;
+                console.log($scope.conjugations);
             });
             setConjugations();
         };
@@ -477,7 +473,17 @@ var app = angular.module('controllers');
             'Acomp': {'priority':0, 'preposition':""},
             'Tool': {'priority':0, 'preposition':""},
             'Modo': {'priority':0, 'type':""},
-            'Locto': {'priority':0, 'type':"", 'preposition':""},
+            'Locto': {'priority':0, 'type':"", 'preposition':""}
+        };
+        $scope.Pattern2 = {
+            'Patron': {'pronominal': false, 'subj':"", 'subjdef':"", 'defaulttense':"", 'exemple':""},
+            'CD': {'priority': 0, 'type':"", 'preposition':""},
+            'Receiver': {'priority':0, 'preposition':""},
+            'Beneficiary': {'priority':0, 'type':"", 'preposition':""},
+            'Acomp': {'priority':0, 'preposition':""},
+            'Tool': {'priority':0, 'preposition':""},
+            'Modo': {'priority':0, 'type':""},
+            'Locto': {'priority':0, 'type':"", 'preposition':""}
         };
 
         $scope.subjOptions = function(){
@@ -556,34 +562,34 @@ var app = angular.module('controllers');
             return array.concat(b);
         }();
 
-        $scope.showComplement = function(id){
+        $scope.showComplement = function(showPattern, id){
           switch(id) {
               case 1:
-                  $scope.showPattern1.CD = true
+                  showPattern.CD = true;
                   $scope.$broadcast('rebuild:verbPatternScrollbar');
                   break;
               case 2:
-                  $scope.showPattern1.Receiver = true;
+                  showPattern.Receiver = true;
                   $scope.$broadcast('rebuild:verbPatternScrollbar');
                   break;
               case 3:
-                  $scope.showPattern1.Beneficiary = true;
+                  showPattern.Beneficiary = true;
                   $scope.$broadcast('rebuild:verbPatternScrollbar');
                   break;
               case 4:
-                  $scope.showPattern1.Acomp = true;
+                  showPattern.Acomp = true;
                   $scope.$broadcast('rebuild:verbPatternScrollbar');
                   break;
               case 5:
-                  $scope.showPattern1.Tool = true;
+                  showPattern.Tool = true;
                   $scope.$broadcast('rebuild:verbPatternScrollbar');
                   break;
               case 6:
-                  $scope.showPattern1.Modo = true;
+                  showPattern.Modo = true;
                   $scope.$broadcast('rebuild:verbPatternScrollbar');
                   break;
               case 7:
-                  $scope.showPattern1.Locto = true;
+                  showPattern.Locto = true;
                   $scope.$broadcast('rebuild:verbPatternScrollbar');
                   break;
           }
@@ -627,11 +633,26 @@ var app = angular.module('controllers');
                     $scope.$broadcast('rebuild:verbPatternScrollbar');
                     break;
             }
-        }
+        };
+
+        $scope.DeletePattern = function(pattern){
+            pattern = {
+                'Patron': {'pronominal': false, 'subj':"", 'subjdef':"", 'defaulttense':"", 'exemple':""},
+                'CD': {'priority': 0, 'type':"", 'preposition':""},
+                'Receiver': {'priority':0, 'preposition':""},
+                'Beneficiary': {'priority':0, 'type':"", 'preposition':""},
+                'Acomp': {'priority':0, 'preposition':""},
+                'Tool': {'priority':0, 'preposition':""},
+                'Modo': {'priority':0, 'type':""},
+                'Locto': {'priority':0, 'type':"", 'preposition':""}
+            }
+        };
 
             $scope.guardar = function(){
             console.log("GUARDANDO...");
             console.log($scope.Pattern1);
+            console.log($scope.Pattern2);
+            console.log($scope.content.buscarConj);
         };
     });
 

@@ -50,17 +50,17 @@
                                 <div class="imgAddWordVerb">
                                     <div class="fullheight addVerb">
                                         <div class="row col-xs-12">
-                                            <div class="col-xs-2 addVerbPadding"> Verbo: </div>
+                                            <div class="col-xs-2 addVerbPadding"> {{content.verbtxt}}: </div>
                                             <div class="col-xs-5 VerbContainer">
                                                 <form id="custom-search-form" class="form-search form-horizontal pull-right">
                                                     <div class="input-append span12">
-                                                        <input type="text" class="search-query mac-style" placeholder="buscar conjugaciones..." ng-model="verb">
+                                                        <input type="text" class="search-query mac-style" placeholder="{{content.buscarConj}}" ng-model="verb">
                                                         <button type="submit" class="btn"><i class="icon-search" ng-click="getConjugations();"></i></button>
                                                     </div>
                                                 </form>
                                             </div>
                                             <!-- CHECKBOX ng-model="checked" ng-init="checked='sure'" ng-true-value="sure" ng-false-value="nope"> -->
-                                            <div class="col-xs-2 paddingPronominal"> Pronominal: </div>
+                                            <div class="col-xs-2 paddingPronominal"> {{content.pronominal}} </div>
                                             <div class="col-xs-3 paddingPronCheckbox">
                                                 <input id="switchPronominal" class="switchclear" type="checkbox"
                                                        ng-model="Pattern1.Patron.pronominal" ng-init="Pattern1.Patron.pronominal=0" ng-true-value="1" ng-false-value="0">
@@ -82,12 +82,12 @@
                                 <div class="col-xs-10 headerTitle headerAdd">{{content.addVerbPattern}}</div>
                             </div>
                             <div class="scrollVerbPattern" ng-scrollbar rebuild-on-resize rebuild-on="rebuild:verbPatternScrollbar">
-                                <div class="row buttonAddVerbPattern" ng-click="">+</div>
+                                <div class="row buttonAddVerbPattern" ng-click="verbPattern2=true;">+</div>
                                 <!-- Verb Pattern1 -->
                                 <div class="row verbPatternBar">
                                     <div class="row verbHeaderBar verbButtonBar" ng-click="verbPattern1=!verbPattern1">
                                         <div class="col-xs-11 text-indent-up">
-                                            Patrón verbal 1
+                                            {{content.verbPattern}} 1
                                         </div>
                                         <div class="col-xs-1">&nbsp;
                                             <img class="arrowVerbBar pull-right" src='/img/srcWeb/UserConfig/greenArrow.png'/>
@@ -97,7 +97,7 @@
                                     <div class="row col-xs-12 verbContentBar" uib-collapse="!verbPattern1">
                                         <div class="col-xs-4 Sujeto paddingPattern">
                                             <div class="row">
-                                                <div class="col-xs-4 paddingPattern">Sujeto:</div>
+                                                <div class="col-xs-4 paddingPattern">{{content.sujeto}}</div>
                                                 <div class="col-xs-7" style="padding-top: 0.5vh">
                                                     <select ng-model="Pattern1.Patron.subj" class="boxEditFeature dropdown-arrow">
                                                         <optgroup label="{{content.comunes}}">
@@ -114,7 +114,7 @@
                                                 </div>
                                             </div>
                                             <div class="row">
-                                                <div class="col-xs-4 paddingPattern">Defecto:</div>
+                                                <div class="col-xs-4 paddingPattern">{{content.defecto}}</div>
                                                 <div class="col-xs-7" style="padding-top: 0.5vh">
                                                     <select ng-model="Pattern1.Patron.subjdef" class="boxEditFeature dropdown-arrow">
                                                         <option ng-repeat="d in defecto" value="{{d.value}}">
@@ -124,7 +124,7 @@
                                                 </div>
                                             </div>
                                             <div class="row">
-                                                <div class="col-xs-4 paddingPattern">Tiempo:</div>
+                                                <div class="col-xs-4 paddingPattern">{{content.tiempo}}</div>
                                                 <div class="col-xs-7" style="padding-top: 0.5vh">
                                                     <select ng-model="Pattern1.Patron.defaulttense" class="boxEditFeature dropdown-arrow">
                                                         <option ng-repeat="p in patternTemp" value="{{p.value}}">
@@ -136,7 +136,7 @@
                                         </div>
                                         <div class="col-xs-4 Complemento paddingPattern">
                                         <div class="row">
-                                            <div class="col-xs-12 paddingPattern text-center">Añadir complementos</div>
+                                            <div class="col-xs-12 paddingPattern text-center">{{content.addComp}}</div>
                                         </div>
                                         <div class="row">
                                             <div class="col-xs-11" style="padding-left: 1vh">
@@ -147,17 +147,17 @@
                                         </div>
                                         <div class="row col-xs-12 paddingComplementBtn">
                                             <button type="button" class="center-block btn btn-success btn-lg" style="padding: 1vh"
-                                                    ng-click="showComplement(complementoSelected.id);"><span class="glyphicon glyphicon-plus"></span></button>
+                                                    ng-click="showComplement(showPattern1, complementoSelected.id);"><span class="glyphicon glyphicon-plus"></span></button>
                                         </div>
                                         </div>
                                         <!-- CD -->
                                         <div ng-if="showPattern1.CD" class="col-xs-4 ComplementoDirecto paddingPattern">
                                             <div class="row">
-                                                <div class="col-xs-11 paddingPattern text-center">Objeto Directo</div>
+                                                <div class="col-xs-11 paddingPattern text-center">{{content.objetoDirecto}}</div>
                                                 <img class="img-responsive col-xs-1 removePattern" ng-src="{{baseurl}}img/srcWeb/Edit/cross.png" ng-click="cleanPattern(showPattern1, Pattern1, 'CD');"/>
                                             </div>
                                             <div class="row">
-                                                <div class="col-xs-4 paddingPattern">Prioridad:</div>
+                                                <div class="col-xs-4 paddingPattern">{{content.prioridad}}</div>
                                                 <div class="col-xs-7" style="padding: 0.5vh">
                                                     <select ng-model="Pattern1.CD.priority" class="boxEditFeature dropdown-arrow">
                                                         <option ng-repeat="theme in themeOptions" value="{{theme.value}}">
@@ -167,7 +167,7 @@
                                                 </div>
                                             </div>
                                             <div class="row">
-                                                <div class="col-xs-4 paddingPattern">Tipo:</div>
+                                                <div class="col-xs-4 paddingPattern">{{content.tipo}}</div>
                                                 <div class="col-xs-7" style="padding: 0.5vh">
                                                     <select ng-model="Pattern1.CD.type" class="boxEditFeature dropdown-arrow">
                                                         <optgroup label="{{content.comunes}}">
@@ -184,7 +184,7 @@
                                                 </div>
                                             </div>
                                             <div class="row">
-                                                <div class="col-xs-5 paddingPattern">Preposición:</div>
+                                                <div class="col-xs-5 paddingPattern">{{content.preposicion}}</div>
                                                 <div class="col-xs-6 patternPrepositionText">
                                                     <input ng-model="Pattern1.CD.preposition" class="full-width" type="text" name="" />
                                                 </div>
@@ -193,11 +193,11 @@
                                         <!-- Receiver -->
                                         <div ng-if="showPattern1.Receiver" class="col-xs-4 Receiver paddingPattern">
                                             <div class="row">
-                                                <div class="col-xs-11 paddingPattern text-center">Receiver</div>
+                                                <div class="col-xs-11 paddingPattern text-center">{{content.receiver}}</div>
                                                 <img class="img-responsive col-xs-1 removePattern" ng-src="{{baseurl}}img/srcWeb/Edit/cross.png" ng-click="cleanPattern(showPattern1, Pattern1, 'Receiver');"/>
                                             </div>
                                             <div class="row">
-                                                <div class="col-xs-4 paddingPattern">Prioridad:</div>
+                                                <div class="col-xs-4 paddingPattern">{{content.prioridad}}</div>
                                                 <div class="col-xs-7" style="padding: 0.5vh">
                                                     <select ng-model="Pattern1.Receiver.priority" class="boxEditFeature dropdown-arrow">
                                                         <option ng-repeat="theme in themeOptions" value="{{theme.value}}">
@@ -207,7 +207,7 @@
                                                 </div>
                                             </div>
                                             <div class="row">
-                                                <div class="col-xs-5 paddingPattern">Preposición:</div>
+                                                <div class="col-xs-5 paddingPattern">{{content.preposicion}}</div>
                                                 <div class="col-xs-6 patternPrepositionText">
                                                     <input ng-model="Pattern1.Receiver.preposition" class="full-width" type="text" name="" />
                                                 </div>
@@ -216,11 +216,11 @@
                                         <!-- Benef -->
                                         <div ng-if="showPattern1.Beneficiary" class="col-xs-4 Beneficiary paddingPattern">
                                             <div class="row">
-                                                <div class="col-xs-11 paddingPattern text-center">Beneficiary</div>
+                                                <div class="col-xs-11 paddingPattern text-center">{{content.beneficiary}}</div>
                                                 <img class="img-responsive col-xs-1 removePattern" ng-src="{{baseurl}}img/srcWeb/Edit/cross.png" ng-click="cleanPattern(showPattern1, Pattern1, 'Beneficiary');"/>
                                             </div>
                                             <div class="row">
-                                                <div class="col-xs-4 paddingPattern">Prioridad:</div>
+                                                <div class="col-xs-4 paddingPattern">{{content.prioridad}}</div>
                                                 <div class="col-xs-7" style="padding: 0.5vh">
                                                     <select ng-model="Pattern1.Beneficiary.priority" class="boxEditFeature dropdown-arrow">
                                                         <option ng-repeat="theme in themeOptions" value="{{theme.value}}">
@@ -230,7 +230,7 @@
                                                 </div>
                                             </div>
                                             <div class="row">
-                                                <div class="col-xs-4 paddingPattern">Tipo:</div>
+                                                <div class="col-xs-4 paddingPattern">{{content.tipo}}</div>
                                                 <div class="col-xs-7" style="padding: 0.5vh">
                                                     <select ng-model="Pattern1.Beneficiary.type" class="boxEditFeature dropdown-arrow">
                                                         <optgroup label="{{content.comunes}}">
@@ -247,7 +247,7 @@
                                                 </div>
                                             </div>
                                             <div class="row">
-                                                <div class="col-xs-5 paddingPattern">Preposición:</div>
+                                                <div class="col-xs-5 paddingPattern">{{content.preposicion}}</div>
                                                 <div class="col-xs-6 patternPrepositionText">
                                                     <input ng-model="Pattern1.Beneficiary.preposition" class="full-width" type="text" name="" />
                                                 </div>
@@ -256,11 +256,11 @@
                                         <!-- Acomp -->
                                         <div ng-if="showPattern1.Acomp" class="col-xs-4 Acomp paddingPattern">
                                             <div class="row">
-                                                <div class="col-xs-11 paddingPattern text-center">Acompañante</div>
+                                                <div class="col-xs-11 paddingPattern text-center">{{content.acomp}}</div>
                                                 <img class="img-responsive col-xs-1 removePattern" ng-src="{{baseurl}}img/srcWeb/Edit/cross.png" ng-click="cleanPattern(showPattern1, Pattern1, 'Acomp');"/>
                                             </div>
                                             <div class="row">
-                                                <div class="col-xs-4 paddingPattern">Prioridad:</div>
+                                                <div class="col-xs-4 paddingPattern">{{content.prioridad}}</div>
                                                 <div class="col-xs-7" style="padding: 0.5vh">
                                                     <select ng-model="Pattern1.Acomp.priority" class="boxEditFeature dropdown-arrow">
                                                         <option ng-repeat="theme in themeOptions" value="{{theme.value}}">
@@ -270,7 +270,7 @@
                                                 </div>
                                             </div>
                                             <div class="row">
-                                                <div class="col-xs-5 paddingPattern">Preposición:</div>
+                                                <div class="col-xs-5 paddingPattern">{{content.preposicion}}</div>
                                                 <div class="col-xs-6 patternPrepositionText">
                                                     <input ng-model="Pattern1.Acomp.preposition" class="full-width" type="text" name="" />
                                                 </div>
@@ -279,11 +279,11 @@
                                         <!-- Tool -->
                                         <div ng-if="showPattern1.Tool" class="col-xs-4 Tool paddingPattern">
                                             <div class="row">
-                                                <div class="col-xs-11 paddingPattern text-center">Tool</div>
+                                                <div class="col-xs-11 paddingPattern text-center">{{content.tool}}</div>
                                                 <img class="img-responsive col-xs-1 removePattern" ng-src="{{baseurl}}img/srcWeb/Edit/cross.png" ng-click="cleanPattern(showPattern1, Pattern1, 'Tool');"/>
                                             </div>
                                             <div class="row">
-                                                <div class="col-xs-4 paddingPattern">Prioridad:</div>
+                                                <div class="col-xs-4 paddingPattern">{{content.prioridad}}</div>
                                                 <div class="col-xs-7" style="padding: 0.5vh">
                                                     <select ng-model="Pattern1.Tool.priority" class="boxEditFeature dropdown-arrow">
                                                         <option ng-repeat="theme in themeOptions" value="{{theme.value}}">
@@ -293,7 +293,7 @@
                                                 </div>
                                             </div>
                                             <div class="row">
-                                                <div class="col-xs-5 paddingPattern">Preposición:</div>
+                                                <div class="col-xs-5 paddingPattern">{{content.preposicion}}</div>
                                                 <div class="col-xs-6 patternPrepositionText">
                                                     <input ng-model="Pattern1.Tool.preposition" class="full-width" type="text" name="" />
                                                 </div>
@@ -302,11 +302,11 @@
                                         <!-- Manera -->
                                         <div ng-if="showPattern1.Modo" class="col-xs-4 Modo paddingPattern">
                                             <div class="row">
-                                                <div class="col-xs-11 paddingPattern text-center">Modo</div>
+                                                <div class="col-xs-11 paddingPattern text-center">{{content.modo}}</div>
                                                 <img class="img-responsive col-xs-1 removePattern" ng-src="{{baseurl}}img/srcWeb/Edit/cross.png" ng-click="cleanPattern(showPattern1, Pattern1, 'Modo');"/>
                                             </div>
                                             <div class="row">
-                                                <div class="col-xs-4 paddingPattern">Prioridad:</div>
+                                                <div class="col-xs-4 paddingPattern">{{content.prioridad}}</div>
                                                 <div class="col-xs-7" style="padding: 0.5vh">
                                                     <select ng-model="Pattern1.Modo.priority" class="boxEditFeature dropdown-arrow">
                                                         <option ng-repeat="theme in themeOptions" value="{{theme.value}}">
@@ -316,7 +316,7 @@
                                                 </div>
                                             </div>
                                             <div class="row">
-                                                <div class="col-xs-4 paddingPattern">Tipo:</div>
+                                                <div class="col-xs-4 paddingPattern">{{content.tipo}}</div>
                                                 <div class="col-xs-7" style="padding: 0.5vh">
                                                     <select ng-model="Pattern1.Modo.type"class="boxEditFeature dropdown-arrow">
                                                         <option ng-repeat="opt in maneraOptions | orderBy: 'name'" value="{{opt.value}}">
@@ -329,11 +329,11 @@
                                         <!-- Locativo -->
                                         <div ng-if="showPattern1.Locto" class="col-xs-4 Locativo paddingPattern">
                                             <div class="row">
-                                                <div class="col-xs-11 paddingPattern text-center">Locativo</div>
+                                                <div class="col-xs-11 paddingPattern text-center">{{content.locativo}}</div>
                                                 <img class="img-responsive col-xs-1 removePattern" ng-src="{{baseurl}}img/srcWeb/Edit/cross.png" ng-click="cleanPattern(showPattern1, Pattern1, 'Locto');"/>
                                             </div>
                                             <div class="row">
-                                                <div class="col-xs-4 paddingPattern">Prioridad:</div>
+                                                <div class="col-xs-4 paddingPattern">{{content.prioridad}}</div>
                                                 <div class="col-xs-7" style="padding: 0.5vh">
                                                     <select ng-model="Pattern1.Locto.priority" class="boxEditFeature dropdown-arrow">
                                                         <option ng-repeat="theme in themeOptions" value="{{theme.value}}">
@@ -343,7 +343,7 @@
                                                 </div>
                                             </div>
                                             <div class="row">
-                                                <div class="col-xs-4 paddingPattern">Tipo:</div>
+                                                <div class="col-xs-4 paddingPattern">{{content.tipo}}</div>
                                                 <div class="col-xs-7" style="padding: 0.5vh">
                                                     <select ng-model="Pattern1.Locto.type" class="boxEditFeature dropdown-arrow">
                                                         <optgroup label="{{content.comunes}}">
@@ -360,7 +360,7 @@
                                                 </div>
                                             </div>
                                             <div class="row">
-                                                <div class="col-xs-5 paddingPattern">Preposición:</div>
+                                                <div class="col-xs-5 paddingPattern">{{content.preposicion}}</div>
                                                 <div class="col-xs-6 patternPrepositionText">
                                                     <input ng-model="Pattern1.Locto.preposition" class="full-width" type="text" name="" />
                                                 </div>
@@ -369,9 +369,303 @@
                                         <!-- Frase de Ejemplo -->
                                         <div class="col-xs-12 FraseEjemplo paddingPattern">
                                             <div class="row">
-                                                <div class="col-xs-3 paddingPattern">Frase de ejemplo:</div>
+                                                <div class="col-xs-3 paddingPattern">{{content.frase}}</div>
                                                 <div class="col-xs-9 patternFraseEjemploText">
                                                     <input ng-model="Pattern1.Patron.exemple" class="full-width" type="text" name="" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Verb Pattern2 -->
+                                <div ng-if="verbPattern2" class="row verbPatternBar">
+                                    <div class="row verbHeaderBar verbButtonBar" ng-click="verbPattern2=!verbPattern2; rebuildScrollBarPatterns();">
+                                        <div class="col-xs-11 text-indent-up">
+                                            {{content.verbPattern}} 2
+                                        </div>
+                                        <div class="col-xs-1">&nbsp;
+                                            <img class="arrowVerbBar pull-right" src='/img/srcWeb/UserConfig/greenArrow.png'/>
+                                        </div>
+                                    </div>
+                                    <!-- Pattern2 -->
+                                    <div class="row col-xs-12 verbContentBar" uib-collapse="verbPattern2">
+                                        <div class="col-xs-4 Sujeto paddingPattern">
+                                            <div class="row">
+                                                <div class="col-xs-4 paddingPattern">{{content.sujeto}}</div>
+                                                <div class="col-xs-7" style="padding-top: 0.5vh">
+                                                    <select ng-model="Pattern2.Patron.subj" class="boxEditFeature dropdown-arrow">
+                                                        <optgroup label="{{content.comunes}}">
+                                                            <option ng-repeat="suj in subjOptions | filter: { common:true } | orderBy: 'name'" value="{{suj.value}}">
+                                                                {{suj.name}}
+                                                            </option>
+                                                        </optgroup>
+                                                        <optgroup label="{{content.otros}}">
+                                                            <option ng-repeat="suj in subjOptions | filter: { common:false } | orderBy: 'name'" value="{{suj.value}}">
+                                                                {{suj.name}}
+                                                            </option>
+                                                        </optgroup>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-xs-4 paddingPattern">{{content.defecto}}</div>
+                                                <div class="col-xs-7" style="padding-top: 0.5vh">
+                                                    <select ng-model="Pattern2.Patron.subjdef" class="boxEditFeature dropdown-arrow">
+                                                        <option ng-repeat="d in defecto" value="{{d.value}}">
+                                                            {{d.name}}
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-xs-4 paddingPattern">{{content.tiempo}}</div>
+                                                <div class="col-xs-7" style="padding-top: 0.5vh">
+                                                    <select ng-model="Pattern2.Patron.defaulttense" class="boxEditFeature dropdown-arrow">
+                                                        <option ng-repeat="p in patternTemp" value="{{p.value}}">
+                                                            {{p.name}}
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-4 Complemento paddingPattern">
+                                            <div class="row">
+                                                <div class="col-xs-12 paddingPattern text-center">{{content.addComp}}</div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-xs-11" style="padding-left: 1vh">
+                                                    <select ng-model="complementoSelected.id" class="boxEditFeature dropdown-arrow" style="font-size:95%"
+                                                            ng-options="c.id as c.name for c in complementos">
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="row col-xs-12 paddingComplementBtn">
+                                                <button type="button" class="center-block btn btn-success btn-lg" style="padding: 1vh"
+                                                        ng-click="showComplement(showPattern2, complementoSelected.id);"><span class="glyphicon glyphicon-plus"></span></button>
+                                            </div>
+                                        </div>
+                                        <!-- CD -->
+                                        <div ng-if="showPattern2.CD" class="col-xs-4 ComplementoDirecto paddingPattern">
+                                            <div class="row">
+                                                <div class="col-xs-11 paddingPattern text-center">{{content.objetoDirecto}}</div>
+                                                <img class="img-responsive col-xs-1 removePattern" ng-src="{{baseurl}}img/srcWeb/Edit/cross.png" ng-click="cleanPattern(showPattern2, Pattern2, 'CD');"/>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-xs-4 paddingPattern">{{content.prioridad}}</div>
+                                                <div class="col-xs-7" style="padding: 0.5vh">
+                                                    <select ng-model="Pattern2.CD.priority" class="boxEditFeature dropdown-arrow">
+                                                        <option ng-repeat="theme in themeOptions" value="{{theme.value}}">
+                                                            {{theme.name}}
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-xs-4 paddingPattern">{{content.tipo}}</div>
+                                                <div class="col-xs-7" style="padding: 0.5vh">
+                                                    <select ng-model="Pattern2.CD.type" class="boxEditFeature dropdown-arrow">
+                                                        <optgroup label="{{content.comunes}}">
+                                                            <option ng-repeat="opt in subjOptions | filter: { common:true } | orderBy: 'name'" value="{{opt.value}}">
+                                                                {{opt.name}}
+                                                            </option>
+                                                        </optgroup>
+                                                        <optgroup label="{{content.otros}}">
+                                                            <option ng-repeat="opt in subjOptions | filter: { common:false } | orderBy: 'name'" value="{{opt.value}}">
+                                                                {{opt.name}}
+                                                            </option>
+                                                        </optgroup>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-xs-5 paddingPattern">{{content.preposicion}}</div>
+                                                <div class="col-xs-6 patternPrepositionText">
+                                                    <input ng-model="Pattern2.CD.preposition" class="full-width" type="text" name="" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- Receiver -->
+                                        <div ng-if="showPattern2.Receiver" class="col-xs-4 Receiver paddingPattern">
+                                            <div class="row">
+                                                <div class="col-xs-11 paddingPattern text-center">{{content.receiver}}</div>
+                                                <img class="img-responsive col-xs-1 removePattern" ng-src="{{baseurl}}img/srcWeb/Edit/cross.png" ng-click="cleanPattern(showPattern2, Pattern2, 'Receiver');"/>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-xs-4 paddingPattern">{{content.prioridad}}</div>
+                                                <div class="col-xs-7" style="padding: 0.5vh">
+                                                    <select ng-model="Pattern2.Receiver.priority" class="boxEditFeature dropdown-arrow">
+                                                        <option ng-repeat="theme in themeOptions" value="{{theme.value}}">
+                                                            {{theme.name}}
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-xs-5 paddingPattern">{{content.preposicion}}</div>
+                                                <div class="col-xs-6 patternPrepositionText">
+                                                    <input ng-model="Pattern2.Receiver.preposition" class="full-width" type="text" name="" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- Benef -->
+                                        <div ng-if="showPattern2.Beneficiary" class="col-xs-4 Beneficiary paddingPattern">
+                                            <div class="row">
+                                                <div class="col-xs-11 paddingPattern text-center">{{content.beneficiary}}</div>
+                                                <img class="img-responsive col-xs-1 removePattern" ng-src="{{baseurl}}img/srcWeb/Edit/cross.png" ng-click="cleanPattern(showPattern2, Pattern2, 'Beneficiary');"/>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-xs-4 paddingPattern">{{content.prioridad}}</div>
+                                                <div class="col-xs-7" style="padding: 0.5vh">
+                                                    <select ng-model="Pattern2.Beneficiary.priority" class="boxEditFeature dropdown-arrow">
+                                                        <option ng-repeat="theme in themeOptions" value="{{theme.value}}">
+                                                            {{theme.name}}
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-xs-4 paddingPattern">{{content.tipo}}</div>
+                                                <div class="col-xs-7" style="padding: 0.5vh">
+                                                    <select ng-model="Pattern2.Beneficiary.type" class="boxEditFeature dropdown-arrow">
+                                                        <optgroup label="{{content.comunes}}">
+                                                            <option ng-repeat="opt in LocatBenefOptions | filter: { common:true } | orderBy: 'name'" value="{{opt.value}}">
+                                                                {{opt.name}}
+                                                            </option>
+                                                        </optgroup>
+                                                        <optgroup label="{{content.otros}}">
+                                                            <option ng-repeat="opt in LocatBenefOptions | filter: { common:false } | orderBy: 'name'" value="{{opt.value}}">
+                                                                {{opt.name}}
+                                                            </option>
+                                                        </optgroup>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-xs-5 paddingPattern">{{content.preposicion}}</div>
+                                                <div class="col-xs-6 patternPrepositionText">
+                                                    <input ng-model="Pattern2.Beneficiary.preposition" class="full-width" type="text" name="" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- Acomp -->
+                                        <div ng-if="showPattern2.Acomp" class="col-xs-4 Acomp paddingPattern">
+                                            <div class="row">
+                                                <div class="col-xs-11 paddingPattern text-center">{{content.acomp}}</div>
+                                                <img class="img-responsive col-xs-1 removePattern" ng-src="{{baseurl}}img/srcWeb/Edit/cross.png" ng-click="cleanPattern(showPattern2, Pattern2, 'Acomp');"/>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-xs-4 paddingPattern">{{content.prioridad}}</div>
+                                                <div class="col-xs-7" style="padding: 0.5vh">
+                                                    <select ng-model="Pattern2.Acomp.priority" class="boxEditFeature dropdown-arrow">
+                                                        <option ng-repeat="theme in themeOptions" value="{{theme.value}}">
+                                                            {{theme.name}}
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-xs-5 paddingPattern">{{content.preposicion}}</div>
+                                                <div class="col-xs-6 patternPrepositionText">
+                                                    <input ng-model="Pattern2.Acomp.preposition" class="full-width" type="text" name="" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- Tool -->
+                                        <div ng-if="showPattern2.Tool" class="col-xs-4 Tool paddingPattern">
+                                            <div class="row">
+                                                <div class="col-xs-11 paddingPattern text-center">{{content.tool}}</div>
+                                                <img class="img-responsive col-xs-1 removePattern" ng-src="{{baseurl}}img/srcWeb/Edit/cross.png" ng-click="cleanPattern(showPattern2, Pattern2, 'Tool');"/>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-xs-4 paddingPattern">{{content.prioridad}}</div>
+                                                <div class="col-xs-7" style="padding: 0.5vh">
+                                                    <select ng-model="Pattern2.Tool.priority" class="boxEditFeature dropdown-arrow">
+                                                        <option ng-repeat="theme in themeOptions" value="{{theme.value}}">
+                                                            {{theme.name}}
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-xs-5 paddingPattern">{{content.preposicion}}</div>
+                                                <div class="col-xs-6 patternPrepositionText">
+                                                    <input ng-model="Pattern2.Tool.preposition" class="full-width" type="text" name="" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- Manera -->
+                                        <div ng-if="showPattern2.Modo" class="col-xs-4 Modo paddingPattern">
+                                            <div class="row">
+                                                <div class="col-xs-11 paddingPattern text-center">{{content.modo}}</div>
+                                                <img class="img-responsive col-xs-1 removePattern" ng-src="{{baseurl}}img/srcWeb/Edit/cross.png" ng-click="cleanPattern(showPattern2, Pattern2, 'Modo');"/>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-xs-4 paddingPattern">{{content.prioridad}}</div>
+                                                <div class="col-xs-7" style="padding: 0.5vh">
+                                                    <select ng-model="Pattern2.Modo.priority" class="boxEditFeature dropdown-arrow">
+                                                        <option ng-repeat="theme in themeOptions" value="{{theme.value}}">
+                                                            {{theme.name}}
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-xs-4 paddingPattern">{{content.tipo}}</div>
+                                                <div class="col-xs-7" style="padding: 0.5vh">
+                                                    <select ng-model="Pattern2.Modo.type"class="boxEditFeature dropdown-arrow">
+                                                        <option ng-repeat="opt in maneraOptions | orderBy: 'name'" value="{{opt.value}}">
+                                                            {{opt.name}}
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- Locativo -->
+                                        <div ng-if="showPattern2.Locto" class="col-xs-4 Locativo paddingPattern">
+                                            <div class="row">
+                                                <div class="col-xs-11 paddingPattern text-center">{{content.locativo}}</div>
+                                                <img class="img-responsive col-xs-1 removePattern" ng-src="{{baseurl}}img/srcWeb/Edit/cross.png" ng-click="cleanPattern(showPattern2, Pattern2, 'Locto');"/>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-xs-4 paddingPattern">{{content.prioridad}}</div>
+                                                <div class="col-xs-7" style="padding: 0.5vh">
+                                                    <select ng-model="Pattern2.Locto.priority" class="boxEditFeature dropdown-arrow">
+                                                        <option ng-repeat="theme in themeOptions" value="{{theme.value}}">
+                                                            {{theme.name}}
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-xs-4 paddingPattern">{{content.tipo}}</div>
+                                                <div class="col-xs-7" style="padding: 0.5vh">
+                                                    <select ng-model="Pattern2.Locto.type" class="boxEditFeature dropdown-arrow">
+                                                        <optgroup label="{{content.comunes}}">
+                                                            <option ng-repeat="opt in LocatBenefOptions | filter: { common:true } | orderBy: 'name'" value="{{opt.value}}">
+                                                                {{opt.name}}
+                                                            </option>
+                                                        </optgroup>
+                                                        <optgroup label="{{content.otros}}">
+                                                            <option ng-repeat="opt in LocatBenefOptions | filter: { common:false } | orderBy: 'name'" value="{{opt.value}}">
+                                                                {{opt.name}}
+                                                            </option>
+                                                        </optgroup>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-xs-5 paddingPattern">{{content.preposicion}}</div>
+                                                <div class="col-xs-6 patternPrepositionText">
+                                                    <input ng-model="Pattern2.Locto.preposition" class="full-width" type="text" name="" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- Frase de Ejemplo -->
+                                        <div class="col-xs-12 FraseEjemplo paddingPattern">
+                                            <div class="row">
+                                                <div class="col-xs-3 paddingPattern">{{content.frase}}</div>
+                                                <div class="col-xs-9 patternFraseEjemploText">
+                                                    <input ng-model="Pattern2.Patron.exemple" class="full-width" type="text" name="" />
                                                 </div>
                                             </div>
                                         </div>
@@ -796,8 +1090,8 @@
                 <div class="col-xs-12 imgRounded">
                     <div class="imgRounded paddingContainerButtons paddingConfirmVerb" style="background-image: url(img/srcWeb/patterns/pattern6.png)">
                         <div class="col-xs-5" style="padding-left: 2vh">
-                            <div class=" imgRounded ButtonAddWord paddingButtonAddVerb fullheight row" ng-click="CancelAddVerb()">
-                                <div class="col-xs-offset-2 col-xs-4 text-center TextAddWord">Cancelar</div>
+                            <div class=" imgRounded ButtonAddWord paddingButtonAddVerb fullheight row" ng-click="cancelAddVerb()">
+                                <div class="col-xs-offset-2 col-xs-4 text-center TextAddWord">{{content.cancelar}}</div>
                                 <div class="col-xs-2">
                                     <img class="imgResponsiveConfirmButton" ng-src="{{baseurl}}img/srcWeb/imagenesvarias/cross_gris.png"/>
                                 </div>
@@ -805,7 +1099,7 @@
                         </div>
                         <div class="col-xs-offset-1 col-xs-5" style="padding-left: 1.5vh;">
                             <div class=" imgRounded ButtonAddWord paddingButtonAddVerb fullheight row" ng-click="guardar();">
-                                <div class="col-xs-offset-2 col-xs-4 text-center TextAddWord">Guardar</div>
+                                <div class="col-xs-offset-2 col-xs-4 text-center TextAddWord">{{content.guardar}}</div>
                                 <div class="col-xs-2">
                                     <img class="imgResponsiveConfirmButton" ng-src="{{baseurl}}img/srcWeb/imagenesvarias/save_as_gris.png"/>
                                 </div>
