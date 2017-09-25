@@ -16,132 +16,77 @@ class RecoverBackup extends CI_Model {
         $this->load->database();
     }
 
-    //Comprueba si existe una carpeta con un backup total
-    function checkiftotalexists(){
-      $exists=true;
-      if($this->getLastGlobalBackup()===0)$exists=false;
-      return $exists;
-    }
     function checklang(){
       $Fname=$this->getLastGlobalBackup();
       $ID_Language=$this->session->uinterfacelangauge;
       $file = file_get_contents($Folder."/User.json");
       $us=json_decode($file);
-      if($ID_Language==$us->ID_ULanguage) return true; else return false;
-    }
-    //Comprueba si existen carpetas con backupParcial
-    function checkifparcialexists(){
-      $keys=array('images','vocabulary','Folder','cfg','Panels');
-      $exists=array();
-      for($i=0;$i<5;$i++){
-        if($this->getLastParcialBackup($keys[$i])===0){
-        array_push($exists,false);
-         }else{
-          array_push($exists,true);
-        }
-      }
-      return $exists;
-    }
-    function checkifPictogramsexists(){
-      $exists=true;
-        if(count($this->getPictokeys())===0) $exists=false;
-      return $exists;
+      if($ID_Language==$us->ID_ULanguage)
+       return true;
+       else return false;
     }
     //llama a la recuperacion parcial de imagenes
-    function LaunchParcialRecover_images(){
-      $Fname=$this->getLastGlobalBackup();
+    function LaunchParcialRecover_images($Fname){
+      $Fname="Temp/".$Fname;
       $this->InsertImages($Fname);
+      return $Fname;
     }
-    function LaunchParcialRecover_Pictograms(){
-      $Fname=$this->getLastGlobalBackup();
+    function LaunchParcialRecover_Pictograms($Fname){
+      $Fname="Temp/".$Fname;
       $this->InsertPictograms($Fname);
       $this->InsertPictogramsLanguage($Fname);
+      return $Fname;
     }
       //llama a la recuperacion parcial de imagenes
-    function LaunchParcialRecover_vocabulary(){
-      $Fname=$this->getLastGlobalBackup();
+    function LaunchParcialRecover_vocabulary($Fname){
       if(!$this->checkifPictogramsexists()){
-      $this->LaunchParcialRecover_Pictograms();
+      $this->LaunchParcialRecover_Pictograms($Fname);
       }
+      $Fname="Temp/".$Fname;
       $this->InsertAdjectives($Fname);
       $this->InsertNames($Fname);
+      return $Fname;
     }
       //llama a la recuperacion parcial de la carpetas tematicas
-    function LaunchParcialRecover_Folder(){
-      $Fname=$this->getLastGlobalBackup();
+    function LaunchParcialRecover_Folder($Fname){
+      $Fname="Temp/$Fname";
       $cfold=count($this->getfolderkey());
-      $this->InsertSFolder($Fname);
+      $bla=$this->InsertSFolder($Fname);
       $this->InsertSSentence($Fname,$cfold);
       $this->InsertSHistoric($Fname);
       $this->InsertRSSentencePictograms($Fname,$scont);
-      $bla=$this->InsertRSHistoricPictograms($Fname,$hcont);
+      $this->InsertRSHistoricPictograms($Fname,$hcont);
       return $bla;
     }
       //llama a la recuperacion parcial de configuracion
-    function LaunchParcialRecover_cfg($ow){
-      $Fname=$this->getLastGlobalBackup();
+    function LaunchParcialRecover_cfg($ow,$Fname){
+      $Fname="Temp/".$Fname;
       $this->UpdateSuperUser($Fname,$ow);
       $this->UpdateUser($Fname);
+      return $Fname;
     }
+    function checkifPictogramsexists(){
+     $exists=true;
+       if(count($this->getPictokeys())===0) $exists=false;
+     return $exists;
+   }
 
       //llama a la recuperacion parcial de paneles
-    function LaunchParcialRecover_panels($mainGboard){
-      $Fname=$this->getLastGlobalBackup();
+    function LaunchParcialRecover_panels($mainGboard,$Fname){
+
       if(!$this->checkifPictogramsexists()){
-      $this->LaunchParcialRecover_Pictograms();
+      $this->LaunchParcialRecover_Pictograms($Fname);
       }
+      $Fname="Temp/$Fname";
       $gbcont=count($this->getGBkeys());
       $bcont=count($this->getBoardkey());
       $pcont=count($this->getPictokeys());
       $this->InsertGroupBoards($Fname,$mainGboard);
       $this->InsertBoards($Fname,$gbcont);
-      $a=$this->InsertCells($Fname,$bcont,$scont,$fcont,$pcont);
-      return $a;
+      $this->InsertCells($Fname,$bcont,$scont,$fcont,$pcont);
+      return $Fname;
     }
-    //devuelve el nombre de la capeta del ultimo backup global
-    private function getLastGlobalBackup(){
-      $ID_User=$this->session->idusu;
-      $dates=array();
-      if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-        $folder="/xampp/htdocs/Temp/*";
-      } else {
-        $folder="Temp/*";
-      }
-      $dirs = array_filter(glob($folder ,GLOB_ONLYDIR), 'is_dir');
-      for($i=0;$i<count($dirs);$i++){
-         if($ID_User==substr($dirs[$i],25)&&substr($dirs[$i],29)=="")
-          array_push($dates,$dirs[$i]);
-      }
-     return $this->getLastDate($dates);
-    }
-  //devuelve el nombre de la capeta del ultimo backup parcial por tematica
-public function getLastParcialBackup($key){
-  $ID_User=$this->session->idusu;
-  $dates=array();
-  $dirs = array_filter(glob("backups/*" ,GLOB_ONLYDIR), 'is_dir');
-  $lenth=count($dirs);
-  for($i=0;$i<$lenth;$i++){
-     if($ID_User==substr($dirs[$i],28,1)&&substr($dirs[$i],30)==$key)
-      array_push($dates,$dirs[$i]);
-  }
- return $this->getLastDate($dates);
-}
-  //funcion auxiliar que converite fechas a ms las compara
-private function getLastDate($dates){
-$ant=0;
-$dateEnc=0;
-$lenth=count($dates);
-if($lenth==1){
-  $dateEnc=$dates[0];
-}else{
-  for($i=0;$i<$lenth;$i++){
-    $dt = DateTime::createFromFormat("d-m-Y H-i-s",substr($dates[$i],5,19));
-  if($dt->getTimestamp()>$ant) $dateEnc=$dates[$i];
-  $ant=$dt->getTimestamp();
-  }
-}
-return $dateEnc;
-}
+
 //Inserta en la base de datos los registros correspondientes a adjectiveClass
 private function InsertAdjectivesClass($Folder){
   $ID_Language=$this->session->uinterfacelangauge;
@@ -579,7 +524,7 @@ private function InsertSFolder($Folder){
     $sf->folderOrder[$i]
   ));
 }
-return $count;
+return $sf;
 }
 //Inserta en la base de datos los registros correspondientes a S_Sentence
 private function InsertSSentence($Folder,$folds){
