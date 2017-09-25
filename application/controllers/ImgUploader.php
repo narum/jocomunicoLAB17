@@ -122,7 +122,7 @@ $this->response($response, REST_Controller::HTTP_OK);
                 $error = true;
                 continue;
             }
-            $dir12=substr(substr($_FILES['file' . $i]['name'],0,-4),9)."-".$ID_User;
+               $dir12=md5(substr($_FILES['file' . $i]['name'],0,-4));
                 mkdir("./Temp/$dir12");
                $this->unzip->extract('./Temp/'.basename($_FILES['file' . $i]['name']),
                 "./Temp/$dir12");
@@ -180,7 +180,7 @@ $this->response($response, REST_Controller::HTTP_OK);
         }
 
         $imgpath = "";
-        
+
         if (filter_input(INPUT_POST, 'vocabulary') == "true") {
             $imgpath = $md5Name;
         } else {

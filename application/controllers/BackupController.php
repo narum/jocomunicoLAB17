@@ -40,11 +40,12 @@ public function checklang_get(){
 //recupera las imagenes y las inserta en la nueva base de datos
 public function recimages_post(){
   $overwrite=$this->post('overwrite');
+  $Fname=$this->post("folder");
   if($overwrite) $this->BackupClean->LaunchParcialClean_images();
   if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-    $data=$this->RecoverBackupWin->LaunchParcialRecover_images();
+    $data=$this->RecoverBackupWin->LaunchParcialRecover_images($Fname);
   } else {
-    $data=$this->RecoverBackup->LaunchParcialRecover_images();
+    $data=$this->RecoverBackup->LaunchParcialRecover_images($Fname);
   }
   $response = [
       'data' => $data
@@ -55,22 +56,27 @@ public function recimages_post(){
 //recupera el vocabulario y las inserta en la nueva base de datos
 public function recvocabulary_post(){
   $overwrite=$this->post('overwrite');
+  $Fname=$this->post("folder");
   if($overwrite) $this->BackupClean->LaunchParcialClean_vocabulary();
   if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-    $this->RecoverBackupWin->LaunchParcialRecover_vocabulary();
+    $data=$this->RecoverBackupWin->LaunchParcialRecover_vocabulary($Fname);
   } else {
-    $this->RecoverBackup->LaunchParcialRecover_vocabulary();
+    $data=$this->RecoverBackup->LaunchParcialRecover_vocabulary($Fname);
   }
+  $response = [
+      'data' => $data
+  ];
 }
 
 //recupera las folder y las inserta en la nueva base de datos
 public function recfolder_post(){
   $overwrite=$this->post('overwrite');
+  $Fname=$this->post("folder");
   if($overwrite) $this->BackupClean->LaunchParcialClean_Folder();
   if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-    $this->RecoverBackupWin->LaunchParcialRecover_Folder();
+    $this->RecoverBackupWin->LaunchParcialRecover_Folder($Fname);
   } else {
-    $data=$this->RecoverBackup->LaunchParcialRecover_Folder();
+    $data=$this->RecoverBackup->LaunchParcialRecover_Folder($Fname);
   }
   $response = [
       'data' => $data
@@ -81,15 +87,20 @@ public function recfolder_post(){
 //recupera las cfg y las inserta en la nueva base de datos
 public function reccfg_post(){
   $overwrite=$this->post('overwrite');
+  $Fname=$this->post("folder");
   if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-    $this->RecoverBackupWin->LaunchParcialRecover_cfg($overwrite);
+    $this->RecoverBackupWin->LaunchParcialRecover_cfg($overwrite,$Fname);
   } else {
-    $this->RecoverBackup->LaunchParcialRecover_cfg($overwrite);
+    $this->RecoverBackup->LaunchParcialRecover_cfg($overwrite,$Fname);
   }
+  $response = [
+      'data' => $Fname
+  ];
 }
 //recupera las panels y las inserta en la nueva base de datos
 public function recpanels_post(){
   $overwrite=$this->post('overwrite');
+  $Fname=$this->post("folder");
   if($overwrite){
     $mainGboard=true;
     $this->BackupClean->LaunchParcialClean_panels();
@@ -97,24 +108,10 @@ public function recpanels_post(){
     $mainGboard=false;
   }
   if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-    $data=$this->RecoverBackupWin->LaunchParcialRecover_panels($mainGboard);
+    $data=$this->RecoverBackupWin->LaunchParcialRecover_panels($mainGboard,$Fname);
   } else {
-    $data=$this->RecoverBackup->LaunchParcialRecover_panels($mainGboard);
+    $data=$this->RecoverBackup->LaunchParcialRecover_panels($mainGboard,$Fname);
   }
-  $response = [
-      'data' => $data
-  ];
-  $this->response($response, REST_Controller::HTTP_OK);
-}
-public function checkifparcialexists_get(){
-  $data=$this->RecoverBackup->checkifparcialexists();
-  $response = [
-      'data' => $data
-  ];
-  $this->response($response, REST_Controller::HTTP_OK);
-}
-public function checkiftotalexists_get(){
-  $data=$this->RecoverBackup->checkiftotalexists();
   $response = [
       'data' => $data
   ];
