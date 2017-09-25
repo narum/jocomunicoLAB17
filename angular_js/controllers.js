@@ -314,34 +314,21 @@ angular.module('controllers', [])
                     emailOk = false;
                     return;
                 }
-                if (String(formData.email).search(emailFormat) == -1) {
-                    $scope.state.email = 'has-warning';
+                if (String(formData.email).search(emailFormat) != -1) {
+                    $scope.state.email = 'has-success';
                     //#Raul
                     $scope.confirmEmail = 'has-warning';
                     emailOk = false;
-                } else {
-                    Resources.register.get({//enviamos los datos de la tabla de la base de datos donde queremos comprobar el nombre
-                        'table': "SuperUser",
-                        'column': "email",
-                        'data': formData.email}, {'funct': "checkData"}
-                        ).$promise
-                            .then(function (results) {
-                                if (results.exist == "false") {
-                                    $scope.state.email = 'has-success'; //Si no exixte el nombre ponemos el checkbox en success
-                                } else if (results.exist == "true") {
-                                    $scope.state.email = 'has-error'; //Si exixte el nombre ponemos el checkbox en error
-                                    emailOk = false;
-                                }
-                            });
-                  /* Check matching password
-                  * @rjlopezdev
-                  */
-                } if(formData.email != formData.confirmEmail && !formData.confirmEmail.$dirty){
-                  $scope.state.confirmEmail = 'has-error';
-                  emailOk = false;
-                }else{
-                  $scope.state.confirmEmail = 'has-success';
-                  emailOk = true;
+                }
+                /* Check matching password
+                 * @rjlopezdev
+                */
+                if(formData.email != formData.confirmEmail && $scope.registerForm.confirmEmail.$dirty){
+                    $scope.state.confirmEmail = 'has-error';
+                    emailOk = false;
+                }else if(formData.email == formData.confirmEmail){
+                    $scope.state.confirmEmail = 'has-success';
+                    emailOk = true;
                 }
 
             };

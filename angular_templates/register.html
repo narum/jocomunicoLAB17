@@ -206,7 +206,7 @@
                                     <span class="errorcoment" ng-show="state.confirmEmail =='has-error'">{{ content.confirmMailDontMatch }}</span>
                                     <span class="warningcoment" ng-show="state.confirmEmail =='has-warning'">{{ content.incorrectFormat }}</span>
                                     <span class="errorcoment"
-                                          ng-show="registerForm.email.$touched && registerForm.email.$pristine && (state.email == undefined)">{{ content.required }}</span>
+                                    ng-show="registerForm.confirmEmail.$touched && registerForm.confirmEmail.$pristine && (state.confirmEmail == undefined)">{{ content.required }}</span>
                                 </div>
                             </div>
                         </div>
