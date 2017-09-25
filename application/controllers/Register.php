@@ -454,4 +454,20 @@ class Register extends REST_Controller {
 
 
       }
+
+      public function getUpdates_post(){
+
+        $idLanguage = $this->post('idLanguage');
+        $updates = $this->main_model->getUpdates($idLanguage);
+
+        $response = [
+          "updates" => $updates
+        ];
+        //$response = [];
+
+        $this->response($response, REST_Controller::HTTP_OK);
+
+
+      }
+
 }

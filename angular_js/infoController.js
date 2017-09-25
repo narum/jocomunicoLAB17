@@ -118,7 +118,7 @@ angular.module('controllers')
 
             $http.post($scope.baseurl + 'Register/getVideotutoriales',{'idLanguage': $rootScope.contentLanguageUserNonLoged}).success(function(response){
               $scope.videotutoriales = response.videotutoriales;
-              console.log($scope.videotutoriales);
+              //console.log($scope.videotutoriales);
             });
 
             $scope.trustSrc = function(src) {
@@ -158,7 +158,7 @@ angular.module('controllers')
 
             $scope.linkTutoriales = function() {
               //$rootScope.dropdownMenuBarValue = '/faq'; //Button selected on this view
-              $location.path('/tutoriales');
+              $location.path('/tutorials');
             }
 
             $scope.linkDownloads = function() {

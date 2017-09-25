@@ -50,7 +50,7 @@ angular.module('controllers')
                             dropdownMenuBarInit(value);
                         });
             };
-        
+
         /*
          * MENU CONFIGURATION
          */
@@ -65,6 +65,7 @@ angular.module('controllers')
         $scope.view.Mac = false;
         $scope.view.Android = false;
         $scope.view.iOS = false;
+        $scope.view.Updates = false;
 
         //Images
         $scope.img = [];
@@ -75,7 +76,7 @@ angular.module('controllers')
         $scope.img.loading = '/img/srcWeb/Login/loading.gif';
         $scope.img.whiteLoading = '/img/icons/whiteLoading.gif';
         $scope.img.Loading_icon = '/img/icons/Loading_icon.gif';
-        $scope.img.orangeArrow = '/img/srcWeb/UserConfig/orangeArrow.png';  
+        $scope.img.orangeArrow = '/img/srcWeb/UserConfig/orangeArrow.png';
 
         // Language
         $rootScope.langabbr = $rootScope.contentLanguageUserNonLogedAbbr;
@@ -85,14 +86,16 @@ angular.module('controllers')
         $scope.img.button2 = 'img/srcWeb/home/mac.png';
         $scope.img.button3 = 'img/srcWeb/home/android.png';
         $scope.img.button4 = 'img/srcWeb/home/ios.png';
+        $scope.img.button5 = 'img/srcWeb/home/btnUpdate.png'
 
         // Link colors
         $scope.link1color = "#3b93af";
         $scope.link2color = "#edb95d";
         $scope.link3color = "#f0a22e";
         $scope.link4color = "#3b93af";
+        $scope.link5color = "#7cb341";
 
-        // Get content for the home view from ddbb   
+        // Get content for the home view from ddbb
         Resources.register.get({'section': 'tips', 'idLanguage': $rootScope.contentLanguageUserNonLoged}, {'funct': "content"}).$promise
             .then(function (results) {
                 $scope.text = results.data;
@@ -139,7 +142,17 @@ angular.module('controllers')
                         $scope.img.button4 = 'img/srcWeb/home/iospress-hov.png';
                     }
                     break;
-                    
+
+                case "link-5":
+                    $scope.link5color = color;
+                    if (!inout) {
+                        $scope.img.button5 = 'img/srcWeb/home/btnUpdate.png';
+                    }
+                    else {
+                        $scope.img.button5 = 'img/srcWeb/home/btnUpdateHov.png';
+                    }
+                    break;
+
                 default:
                     break;
             }

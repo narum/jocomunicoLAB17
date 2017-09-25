@@ -103,9 +103,15 @@ angular.module('app', [
 			controller:'downloadCtrl',
 			templateUrl:'../../angular_templates/Download.html'
 		})
-								.when('/tutoriales',{
+
+		//Nuevas llamadas a la pagina tutoriales y la pagina actualizaciones. Tarea 7 y 8.
+								.when('/tutorials',{
 			controller:'infoCtrl',
 			templateUrl: '../../angular_templates/Tutorials.html'
+		})
+								.when('/updates',{
+			controller: 'updatesCtrl',
+			templateUrl: '../../angular_templates/Updates.html'
 		})
 
 		.otherwise({ redirectTo:'/' });

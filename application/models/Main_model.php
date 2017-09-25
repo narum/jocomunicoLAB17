@@ -441,4 +441,22 @@ class Main_model extends CI_Model {
 
     }
 
+
+    function getUpdates($idLanguage) {
+      $output = array();
+      $this-> db->select('idUpdate, ID_ULanguage, title, version, descripcion, urlWin, urlMac, fecha');
+      $this-> db->select("DATE_FORMAT(fecha, '%d/%m/%Y') AS fecha", FALSE);
+      $this-> db->from('updates');
+      $this -> db->order_by('version', 'DESC');
+      $this-> db-> where('ID_ULanguage', $idLanguage);
+      $query = $this->db->get();
+      if ($query->num_rows() > 0) {
+          $output = $query->result();
+      } else{
+          $output = null;
+      }
+      return $output;
+
+    }
+
 }
