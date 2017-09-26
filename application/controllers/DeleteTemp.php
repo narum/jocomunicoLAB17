@@ -4,13 +4,12 @@ class DeleteTemp extends CI_Controller {
 
   public function __construct(){
       parent::__construct();
+      $this->load->helper('file');
   }
 
   public function index(){
-    $files = glob('./tmp/*');
-    foreach($files as $file){
-      unlink($file);
-    }
+    $dir="Temp";
+    delete_files('Temp', TRUE);
   }
 
 }
