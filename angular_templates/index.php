@@ -9,7 +9,7 @@
         <meta name="apple-mobile-web-app-capable" content="no"/>
         <meta name="apple-mobile-web-app-status-bar-style" content="black">
         <meta http-equiv="Cache-control" content="no-transform">
-        
+
         <!-- Android and iOS app link icons -->
         <link href="img/icons/apple-touch-icon.png" rel="apple-touch-icon" />
         <link href="img/icons/apple-touch-icon-57x57.png" rel="apple-touch-icon" sizes="57x57" />
@@ -20,7 +20,7 @@
         <link href="img/icons/apple-touch-icon-180x180.png" rel="apple-touch-icon" sizes="180x180" />
         <link href="img/icons/icon-hires.png" rel="icon" sizes="192x192" />
         <link href="img/icons/icon-normal.png" rel="icon" sizes="128x128" />
-        
+
         <link rel="stylesheet" type="text/css" href="libraries/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="libraries/font-awesome.min.css">
         <link rel="stylesheet" type="text/css" href="css/typeahead.css">
@@ -56,6 +56,7 @@
             stringScript += '<script type="text/javascript" src="angular_js/infoController.js"></' + 'script>';
             stringScript += '<script type="text/javascript" src="angular_js/consellsController.js"></' + 'script>';
             stringScript += '<script type="text/javascript" src="angular_js/downloadController.js"></' + 'script>';
+            stringScript += '<script type="text/javascript" src="angular_js/updatesController.js"></' + 'script>';
             stringScript += '<script type="text/javascript" src="angular_js/faqController.js"></' + 'script>';
             stringScript += '<script type="text/javascript" src="libraries/angular-bind-html-compile.js"></' + 'script>';
             stringScript += '<script type="text/javascript" src="libraries/ngTouch.min.js"></' + 'script>';
@@ -65,4 +66,3 @@
         </script>
     </body>
 </html>
-

@@ -407,4 +407,42 @@ class Main_model extends CI_Model {
         $this->db->where('ID_User', $idusu);
         $this->db->update('User', $data);
     }
+
+    function getVideotutoriales($idLanguage) {
+      $output = array();
+
+      /*return $this-> db-> query('SELECT Description, Url FROM videotutoriales WHERE ID_ULanguage = ?'
+      , array($idLanguage))->result();*/
+
+      $this-> db->from('videotutoriales');
+      $this -> db->order_by('grupoID', 'ASC');
+      $this-> db->order_by('ordenID', 'ASC');
+      $this-> db-> where('ID_ULanguage', $idLanguage);
+      $query = $this->db->get();
+      if ($query->num_rows() > 0) {
+          $output = $query->result();
+      } else{
+          $output = null;
+      }
+      return $output;
+
+    }
+
+
+  function getUpdates($idLanguage) {
+    $output = array();
+    $this-> db->select('idUpdate, ID_ULanguage, title, version, descripcion, urlWin, urlMac, dateUpdate');
+    $this-> db->select("DATE_FORMAT(dateUpdate, '%d/%m/%Y') AS dateUpdate", FALSE);
+    $this-> db->from('updates');
+    $this -> db->order_by('version', 'DESC');
+    $this-> db-> where('ID_ULanguage', $idLanguage);
+    $query = $this->db->get();
+    if ($query->num_rows() > 0) {
+        $output = $query->result();
+    } else{
+        $output = null;
+    }
+    return $output;
+
+  }
 }
