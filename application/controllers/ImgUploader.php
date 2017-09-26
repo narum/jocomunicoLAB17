@@ -122,7 +122,7 @@ $this->response($response, REST_Controller::HTTP_OK);
                 $error = true;
                 continue;
             }
-               $dir12=md5(substr($_FILES['file' . $i]['name'],0,-4));
+               $dir12=md5(date('l jS \of F Y h:i:s A'));
                 mkdir("./Temp/$dir12");
                $this->unzip->extract('./Temp/'.basename($_FILES['file' . $i]['name']),
                 "./Temp/$dir12");
