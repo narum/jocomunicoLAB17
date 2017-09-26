@@ -29,7 +29,7 @@ class RecoverBackup extends CI_Model {
     function LaunchParcialRecover_images($Fname){
       $Fname="Temp/".$Fname;
       $this->InsertImages($Fname);
-      return $Fname;
+      return ":d";
     }
     function LaunchParcialRecover_Pictograms($Fname){
       $Fname="Temp/".$Fname;
@@ -51,11 +51,13 @@ class RecoverBackup extends CI_Model {
     function LaunchParcialRecover_Folder($Fname){
       $Fname="Temp/$Fname";
       $cfold=count($this->getfolderkey());
-      $bla=$this->InsertSFolder($Fname);
+      $sscont=count($this->getSentencekey());
+      $hcont=count($this->getHistorickey());
+      $this->InsertSFolder($Fname);
       $this->InsertSSentence($Fname,$cfold);
       $this->InsertSHistoric($Fname);
-      $this->InsertRSSentencePictograms($Fname,$scont);
       $this->InsertRSHistoricPictograms($Fname,$hcont);
+      $bla=$this->InsertRSSentencePictograms($Fname,$sscont);
       return $bla;
     }
       //llama a la recuperacion parcial de configuracion
@@ -230,6 +232,7 @@ private function InsertCells($Folder,$bcont,$scont,$fcont,$pcont){
  $boardkey=array_slice($boardkey,$bcont);
  $sentencekey=array_slice($sentencekey,$scont);
  $folderkey=array_slice($folderkey,$fcont);
+ //$pictokey=array_slice($pictokey,$pcont);
  $count=count($cells->ID_Cell);
  for($i=0;$i<$count;$i++){
    if(!(is_null($cells->boardLink[$i]))){
@@ -310,9 +313,8 @@ private function InsertImages($Folder){
     $images->imgPath[$i],
     $images->imgName[$i]
   ));
-  $this->moveImages($images->imgPath[$i],$images->imgName[$i]);
+   $this->moveImages($images->imgPath[$i],$images->imgName[$i]);
 }
-return $images;
 }
 //Inserta en la base de datos los registros correspondientes a nameclass
 private function InsertNameClass($Folder){
@@ -478,24 +480,26 @@ return $rshp;
 }
 //Inserta en la base de datos los registros correspondientes a R_S_SentencePictograms
 private function InsertRSSentencePictograms($Folder,$scont){
- $histokey=$this->getSSentencekey();
+ $a=array();
+ $sentkey=$this->getSSentencekey();
  $ID_User=$this->session->idusu;
  $file = file_get_contents($Folder."/R_S_SentencePictograms.json");
- $his = file_get_contents($Folder."/S_Sentence.json");
+ $sent = file_get_contents($Folder."/S_Sentence.json");
  $rssp=json_decode($file);
- $hist=json_decode($his);
- $histokey=array_slice($histokey,$scont);
+ $sen=json_decode($sent);
+ $sentkey=array_slice($sentkey,$scont);
  $count=count($rssp->ID_RSSPSentencePicto);
  for($i=0;$i<$count;$i++){
       if(!(is_null($rssp->ID_RSSPSentence[$i]))){
-          $posh=array_search($rssp->ID_RSSPSentence[$i],$hist->ID_SSentence);
+          $posh=array_search($rssp->ID_RSSPSentence[$i],$sen->ID_SSentence);
       }else{
           $posh=null;
       }
+      array_push($a,$posh);
   $sql="INSERT INTO `R_S_SentencePictograms` (`ID_RSSPSentence`, `pictoid`, `isplural`, `isfem`, `coordinated`, `ID_RSSPUser`, `imgtemp`)
   VALUES (?,?,?,?,?,?,?);";
   $this->db->query($sql,array(
-    $histokey[$posh],
+    $sentkey[$posh],
     $rssp->pictoid[$i],
     $rssp->isplural[$i],
     $rssp->isfem[$i],
@@ -504,7 +508,7 @@ private function InsertRSSentencePictograms($Folder,$scont){
     $rssp->imgtemp[$i]
   ));
 }
-return $rssp;
+return $sentkey;
 }
 //Inserta en la base de datos los registros correspondientes a S_Folder
 private function InsertSFolder($Folder){
@@ -531,47 +535,49 @@ private function InsertSSentence($Folder,$folds){
  $ID_User=$this->session->idusu;
  $folderkey=$this->getfolderkey();
  $file = file_get_contents($Folder."/S_Sentence.json");
+ $filer=file_get_contents($Folder."/R_S_SentencePictograms.json");
  $filefol= file_get_contents($Folder."/S_Folder.json");
+ $rss=json_decode($filer);
  $ss=json_decode($file);
  $sfolder=json_decode($filefol);
  $count=count($ss->ID_SSentence);
  $folderkey=array_slice($folderkey,$folds);
  for($i=0;$i<$count;$i++){
-   if(!(is_null($ss->ID_SFolder[$i]))){
-       $posf=array_search($ss->ID_SFolder[$i],$sfolder->ID_Folder);
-   }else{
-       $posf=null;
-   }
-  $sql="INSERT INTO S_Sentence(ID_SSUser,ID_SFolder,posInFolder,sentenceType,isNegative,sentenceTense,sentenceDate,
-  sentenceFinished,intendedSentence,inputWords,inputIds,parseScore,parseString,generatorScore,generatorString,comments,userScore,
-  isPreRec,sPreRecText,sPreRecDate,sPreRecImg1,sPreRecImg2,sPreRecImg3,sPreRecPath)
-  VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-  $this->db->query($sql,array(
-  $ID_User,
-  $folderkey[$posf],
-  $ss->posInFolder[$i],
-  $ss->sentenceType[$i],
-  $ss->isNegative[$i],
-  $ss->sentenceTense[$i],
-  $ss->sentenceDate[$i],
-  $ss->sentenceFinished[$i],
-  $ss->intendedSentence[$i],
-  $ss->inputWords[$i],
-  $ss->inputIds[$i],
-  $ss->parseScore[$i],
-  $ss->parseString[$i],
-  $ss->generatorScore[$i],
-  $ss->generatorString[$i],
-  $ss->comments[$i],
-  $ss->userScore[$i],
-  $ss->isPreRec[$i],
-  $ss->sPreRecText[$i],
-  $ss->sPreRecDate[$i],
-  $ss->sPreRecImg1[$i],
-  $ss->sPreRecImg2[$i],
-  $ss->sPreRecImg3[$i],
-  $ss->sPreRecPath[$i]
-));
+     if(!(is_null($ss->ID_SFolder[$i]))){
+         $posf=array_search($ss->ID_SFolder[$i],$sfolder->ID_Folder);
+     }else{
+         $posf=null;
+     }
+    $sql="INSERT INTO S_Sentence(ID_SSUser,ID_SFolder,posInFolder,sentenceType,isNegative,sentenceTense,sentenceDate,
+    sentenceFinished,intendedSentence,inputWords,inputIds,parseScore,parseString,generatorScore,generatorString,comments,userScore,
+    isPreRec,sPreRecText,sPreRecDate,sPreRecImg1,sPreRecImg2,sPreRecImg3,sPreRecPath)
+    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+    $this->db->query($sql,array(
+    $ID_User,
+    $folderkey[$posf],
+    $ss->posInFolder[$i],
+    $ss->sentenceType[$i],
+    $ss->isNegative[$i],
+    $ss->sentenceTense[$i],
+    $ss->sentenceDate[$i],
+    $ss->sentenceFinished[$i],
+    $ss->intendedSentence[$i],
+    $ss->inputWords[$i],
+    $ss->inputIds[$i],
+    $ss->parseScore[$i],
+    $ss->parseString[$i],
+    $ss->generatorScore[$i],
+    $ss->generatorString[$i],
+    $ss->comments[$i],
+    $ss->userScore[$i],
+    $ss->isPreRec[$i],
+    $ss->sPreRecText[$i],
+    $ss->sPreRecDate[$i],
+    $ss->sPreRecImg1[$i],
+    $ss->sPreRecImg2[$i],
+    $ss->sPreRecImg3[$i],
+    $ss->sPreRecPath[$i]
+  ));
 }
 }
 //sobreescribe en la base de datos los registros correspondientes a SuperUser
@@ -775,7 +781,7 @@ private function getSentencekey(){
 private function getSSentencekey(){
   $keys=array();
   $ID_User=$this->session->idusu;
-  $sql="SELECT ID_SSentence FROM S_Sentence WHERE ID_SSUser=? AND isPreRec='0'";
+  $sql="SELECT ID_SSentence FROM S_Sentence WHERE ID_SSUser=?";
   $query=$this->db->query($sql,$ID_User);
   foreach ($query->result() as $row) {
     array_push($keys,$row->ID_SSentence);
@@ -802,14 +808,12 @@ private function getHistorickey(){
 }
 //mueve las imagenes del backup al servidor para que la aplicacion pueda usarlas
 private function moveImages($imgPath,$imgName){
-  if(strlen($imgName)==36&&(substr($imgName,34)=='png'||substr($imgName,34)=='jpg')){
-    if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-      copy('/xampp/htdocs/Temp/'.$Fname.'/'.'images/'.$imgName , $imgPath);
-    } else {
-      copy('./Temp/'.$Fname.'/'.'images/'.$imgName , $imgPath);
+    if(substr($imgPath,4,6)=='pictos'){
+      copy('./Temp/'.$Fname.'/'.'img/pictos/'.$imgName , $imgPath);
+    }else{
+      copy('./Temp/'.$Fname.'/'.'img/users/'.$imgName , $imgPath);
     }
-
-  }
+    return substr($imgPath,4,6);
 }
 }
 ?>
