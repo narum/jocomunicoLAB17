@@ -1,5 +1,10 @@
 <?php
+include_once(APPPATH."third_party/PhpWord/Autoloader.php");
 
+use PhpOffice\PhpWord\Autoloader;
+use PhpOffice\PhpWord\Settings;
+Autoloader::register();
+Settings::loadConfig();
 /* Provide a Word Document
  * @rjlopezdev
  */
