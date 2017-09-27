@@ -336,6 +336,21 @@ input.switch:checked ~ label:after
     position: relative;
     z-index: 2;
 }
+
+.imgResponsive2 {
+    pointer-events: none;
+    display: block;
+    max-width: 85%;
+    height: auto;
+    max-height: 85%;
+    width: auto;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    position: absolute;
+    z-index: 2;
+}
+
 .iconResponsive{
     display: block;
     max-width: 100%;

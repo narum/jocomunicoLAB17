@@ -46,10 +46,11 @@ angular.module('controllers')
             };
 
             $scope.initAddWord = function () {
-            switch ($scope.addWordType)
-                {
+              $scope.imgHasBeenUploaded = false;
+              switch ($scope.addWordType)
+                  {
                     case "name":
-                        $scope.objAdd = {type: "name", nomtext: null, mf: false, singpl: false, contabincontab: null, determinat: "1", ispropernoun: false, defaultverb: null, plural: null, femeni: null, fempl: null, imgPicto: $scope.baseurl+'/img/srcWeb/imagenesvarias/arrow-question.png', supExp: true};
+                        $scope.objAdd = {type: "name", nomtext: null, mf: false, singpl: false, contabincontab: null, determinat: "1", ispropernoun: false, defaultverb: null, plural: null, femeni: null, fempl: null, imgPicto: '/img/srcWeb/imagenesvarias/arrow-question.png', supExp: true};
                         $scope.switchName = {s1: false, s2: false, s3: false, s4: false, s5: false, s6: false};
                         $scope.NClassList = [];
                         $scope.errAdd = {erradd1: false, erradd2: false,erradd3: false};
@@ -320,13 +321,17 @@ angular.module('controllers')
                                 $scope.errorText = response.errorText;
                                 $('#errorImgModal').modal({backdrop: 'static'});
                             }
+
+                            else {
+                              $scope.imgHasBeenUploaded = true;
+                            }
                         })
                         .error(function (response) {
                         });
             };
             $scope.addNClass = function (nameTypeClass) {
                 angular.forEach($scope.classNoun, function (value, key) {
-                    if ((value.nameType.toUpperCase() == nameTypeClass.toUpperCase()) || 
+                    if ((value.nameType.toUpperCase() == nameTypeClass.toUpperCase()) ||
                             (value.classType.toUpperCase() == nameTypeClass.toUpperCase())) {
                         $scope.NClassList.push($scope.classNoun[key]);
                         $scope.classNoun.splice(key, 1);
@@ -339,7 +344,7 @@ angular.module('controllers')
             };
             $scope.addAdjClass = function (AdjTypeClass) {
                 angular.forEach($scope.classAdj, function (value, key) {
-                    if ((value.adjType.toUpperCase() == AdjTypeClass.toUpperCase()) || 
+                    if ((value.adjType.toUpperCase() == AdjTypeClass.toUpperCase()) ||
                             (value.classType.toUpperCase() == AdjTypeClass.toUpperCase())) {
                         $scope.AdjClassList.push($scope.classAdj[key]);
                         $scope.classAdj.splice(key, 1);
