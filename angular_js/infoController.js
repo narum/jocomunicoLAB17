@@ -84,6 +84,20 @@ angular.module('controllers')
                 $scope.footerclass = "footer-cookies-fade";
             };
 
+            /*
+             * Modal for Updates
+             * Show if not cookies set
+            */
+            $http.get($scope.baseurl + 'Register/getLatestUpdateChecked').success(function(response){
+                $scope.showUpdateFooter = (window.localStorage.getItem('updateAccepted') != 'true') && (response.latestUpdateChecked == 1);
+                $scope.footerUpdateClass = ($scope.showUpdateFooter) ? "footer-updates" : "footer-cookies-fade";
+            });
+
+            $scope.okUpdates = function() {
+                window.localStorage.setItem('updateAccepted', true);
+                $scope.footerUpdateClass = "footer-cookies-fade";
+            };
+
             // Language
             $rootScope.langabbr = $rootScope.contentLanguageUserNonLogedAbbr;
 
