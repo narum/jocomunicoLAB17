@@ -468,4 +468,13 @@ class Register extends REST_Controller {
 
       }
 
+    public function getLatestUpdateChecked_get(){
+
+        $this->response(
+            [
+                "latestUpdateChecked" => $this->main_model->getLatestUpdateChecked()
+            ],
+            REST_Controller::HTTP_OK);
+    }
+
 }

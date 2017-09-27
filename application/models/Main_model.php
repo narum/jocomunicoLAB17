@@ -445,4 +445,16 @@ class Main_model extends CI_Model {
     return $output;
 
   }
+
+  public function getLatestUpdateChecked(){
+      return $this->db->query(
+        'SELECT `showPopUp`
+        FROM Updates u
+        WHERE u.version >= (SELECT version
+                            FROM Updates
+                            LIMIT 1
+					        )
+        LIMIT 1'
+      )->result()[0]->showPopUp;
+  }
 }

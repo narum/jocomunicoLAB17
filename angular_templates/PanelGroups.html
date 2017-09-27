@@ -2,6 +2,7 @@
 <link rel="stylesheet" type="text/css" href="{{baseurl}}css/generico.css">
 <link rel="stylesheet" type="text/css" href="{{baseurl}}css/editHistorialFolder.css">
 <link rel="stylesheet" type="text/css" href="{{baseurl}}/libraries/scrollbarPanel.css">
+<link rel="stylesheet" type="text/css" href="css/home.css">
 
 <div ng-include="'/angular_templates/RecoverBackupModal.html'"></div>
 <div ng-include="'/angular_templates/RecoverParcialBackupModal.html'"></div>
@@ -216,4 +217,8 @@
             </div>
         </div>
     </div>
+</div>
+
+<div class="{{footerUpdateClass}}" ng-show="showUpdateFooter" ng-click="okUpdates()">
+    <span bind-html-compile="text.updatesPopup"></span>
 </div>
