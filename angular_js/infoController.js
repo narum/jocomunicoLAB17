@@ -83,6 +83,17 @@ angular.module('controllers')
                 $scope.acceptcookies = true;
                 $scope.footerclass = "footer-cookies-fade";
             };
+            /*
+             * Modal for Updates
+             * Show if not cookies set
+             */
+            $scope.footerUpdateClass = "footer-updates"
+            $scope.showUpdateFooter = !window.localStorage.getItem('updateAccepted');
+            $scope.okUpdates = function() {
+                $scope.okUpdates = true;
+                window.localStorage.setItem('updateAccepted', true);
+                $scope.footerUpdateClass = "footer-cookies-fade"
+            };
 
             // Language
             $rootScope.langabbr = $rootScope.contentLanguageUserNonLogedAbbr;

@@ -81,6 +81,10 @@
             </div>
         </div>
     </div>
+
+    <div class="{{footerUpdateClass}}" ng-show="showUpdateFooter" ng-click="okUpdates()">
+        <span bind-html-compile="text.updatesPopup"></span>
+    </div>
     
     <div class="{{footerclass}}" ng-click="okCookies();">
         <span bind-html-compile="text.cookiespopup"></span>
