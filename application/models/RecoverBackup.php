@@ -855,6 +855,7 @@ private function moveImages($imgPath,$Fname){
     }else{
       copy($Fname.'/Images/'.$imgPath , $imgPath);
     }
+
     return substr($imgPath,4,6);
 }
 }
