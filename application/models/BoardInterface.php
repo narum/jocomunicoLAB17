@@ -606,9 +606,9 @@ class BoardInterface extends CI_Model {
       $ID_User=$this->session->idusu;
       $ID_Language=$this->session->uinterfacelangauge;
       if($ID_Language==1){
-        $GBname='nous Grups';
+        $GBname='Exemple';
       }else{
-        $GBname='Grupos nuevos';
+        $GBname='Ejemplo';
       }
        $sql="INSERT INTO `GroupBoards` (`ID_GBUser`, `GBname`, `primaryGroupBoard`, `defWidth`, `defHeight`, `imgGB`)
        VALUES (?,?,?,?,?,?)";
