@@ -21,6 +21,13 @@ angular.module('controllers')
             $rootScope.dropdownMenuBarValue = '/panelGroups'; //Button selected on this view
             $rootScope.dropdownMenuBarChangeLanguage = false;//Languages button available
 
+            // Check if the user has already added the Example panels
+            $scope.alreadyExamplePanels = false;
+//            if ($cookies.get('alreadyExamplePanels')) {
+//                $scope.alreadyExamplePanels = true;
+//            }              
+
+        
             //Choose the buttons to show on bar
             dropdownMenuBarInit($rootScope.interfaceLanguageId)
                     .then(function () {
@@ -754,6 +761,8 @@ angular.module('controllers')
                         $http.get("Board/AddBoards").success(function (results) {
                                 console.log(results.data);
                                 $scope.viewActived=false;
+                                //$cookies.put('alreadyExamplePanels', true);
+                                //$scope.alreadyExamplePanels = true;
                                 $route.reload();
                             });
                       }
