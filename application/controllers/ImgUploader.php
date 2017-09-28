@@ -75,7 +75,7 @@ $this->response($response, REST_Controller::HTTP_OK);
               $error = true;
               continue;
           }
-          $dir12=substr(substr($_FILES['file' . $i]['name'],0,-4),0)."-".$ID_User;
+          $dir12=md5(date('l jS \of F Y h:i:s A'));
               mkdir("/xampp/htdocs/Temp/$dir12");
             $this->unzip->extract('/xampp/htdocs/Temp/'.basename($_FILES['file' . $i]['name']),"/xampp/htdocs/Temp/$dir12");
       }
