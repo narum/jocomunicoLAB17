@@ -43,7 +43,7 @@
                     <div ng-if="finished" class="col-xs-offset-1 scrollMenuPanels" ng-style="!isScroll ? {'width': '98%'} : {'width': '84%'}" ng-scrollbar rebuild-on-resize rebuild-on="rebuild:me" is-bar-shown="isScroll">
                         <div class="scrollWidth">
                             <div class="col-xs-12 buttonAddFolder" ng-click="newPanellGroup()">+</div>
-                            <div class="col-xs-12 addGroups" ng-click="ShowAddGroupsInfo()">
+                            <div ng-if="!alreadyExamplePanels" class="col-xs-12 addGroups" ng-click="ShowAddGroupsInfo()">
                             {{content.addgroups}}
                             </div>
                             <div class="col-xs-12 panelContainer" ng-repeat="panel in panels" on-Finish-Loop="scrollbarPanel">
