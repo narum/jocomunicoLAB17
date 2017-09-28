@@ -37,6 +37,14 @@ public function checklang_get(){
   ];
   $this->response($response, REST_Controller::HTTP_OK);
 }
+
+public function getkeycounts_get(){
+  $data=$this->RecoverBackup->getKeyCounts();
+  $response = [
+      'data' => $data
+  ];
+  $this->response($response, REST_Controller::HTTP_OK);
+}
 //recupera las imagenes y las inserta en la nueva base de datos
 public function recimages_post(){
   $overwrite=$this->post('overwrite');
@@ -52,31 +60,46 @@ public function recimages_post(){
   ];
   $this->response($response, REST_Controller::HTTP_OK);
 }
-
-//recupera el vocabulario y las inserta en la nueva base de datos
-public function recvocabulary_post(){
+public function recpictos_post(){
   $overwrite=$this->post('overwrite');
   $Fname=$this->post("folder");
-  if($overwrite) $this->BackupClean->LaunchParcialClean_vocabulary();
+  if($overwrite) $this->BackupClean->LaunchParcialClean_Pictograms();
   if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-    $data=$this->RecoverBackupWin->LaunchParcialRecover_vocabulary($Fname);
+    $data=$this->RecoverBackupWin->LaunchParcialRecover_Pictograms($Fname);
   } else {
-    $data=$this->RecoverBackup->LaunchParcialRecover_vocabulary($Fname);
+    $data=$this->RecoverBackup->LaunchParcialRecover_Pictograms($Fname, $overwrite);
   }
   $response = [
       'data' => $data
   ];
+  $this->response($response, REST_Controller::HTTP_OK);
+}
+//recupera el vocabulario y las inserta en la nueva base de datos
+public function recvocabulary_post(){
+  $overwrite=$this->post('overwrite');
+  $Fname=$this->post("folder");
+  if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+    $data=$this->RecoverBackupWin->LaunchParcialRecover_Pictograms($Fname);
+  } else {
+    $data=$this->RecoverBackup->LaunchParcialRecover_Pictograms($Fname, $overwrite);
+  }
+  $response = [
+      'data' => $data
+  ];
+   $this->response($response, REST_Controller::HTTP_OK);
 }
 
 //recupera las folder y las inserta en la nueva base de datos
 public function recfolder_post(){
   $overwrite=$this->post('overwrite');
   $Fname=$this->post("folder");
+  $keycounts=$this->post("keycounts");
+  
   if($overwrite) $this->BackupClean->LaunchParcialClean_Folder();
   if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
     $this->RecoverBackupWin->LaunchParcialRecover_Folder($Fname);
   } else {
-    $data=$this->RecoverBackup->LaunchParcialRecover_Folder($Fname);
+    $data=$this->RecoverBackup->LaunchParcialRecover_Folder($Fname,$keycounts["fcont"],$keycounts["scont"],$keycounts["hcont"], $overwrite);
   }
   $response = [
       'data' => $data
@@ -101,6 +124,7 @@ public function reccfg_post(){
 public function recpanels_post(){
   $overwrite=$this->post('overwrite');
   $Fname=$this->post("folder");
+  $keycounts=$this->post("keycounts");
   if($overwrite){
     $mainGboard=true;
     $this->BackupClean->LaunchParcialClean_panels();
@@ -110,7 +134,7 @@ public function recpanels_post(){
   if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
     $data=$this->RecoverBackupWin->LaunchParcialRecover_panels($mainGboard,$Fname);
   } else {
-    $data=$this->RecoverBackup->LaunchParcialRecover_panels($mainGboard,$Fname);
+    $data=$this->RecoverBackup->LaunchParcialRecover_panels($mainGboard,$Fname, $keycounts["gbcont"], $keycounts["bcont"], $keycounts["scont"], $keycounts["fcont"], $keycounts["pcont"], $overwrite);
   }
   $response = [
       'data' => $data
