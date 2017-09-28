@@ -48,7 +48,8 @@ angular.module('controllers')
              * Show if not cookies set
             */
             $http.get($scope.baseurl + 'Register/getLatestUpdateChecked').success(function(response){
-                $scope.showUpdateFooter = (window.localStorage.getItem('updateAccepted') != 'true') && (response.latestUpdateChecked == 1);
+                $scope.version = response.latestUpdateChecked.version;
+                $scope.showUpdateFooter = (window.localStorage.getItem('updateAccepted') != 'true') && (response.latestUpdateChecked.showPopUp == 1);
                 $scope.footerUpdateClass = ($scope.showUpdateFooter) ? "footer-updates" : "footer-cookies-fade";
             });
 
