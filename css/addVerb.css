@@ -29,9 +29,9 @@
     background-clip: content-box;
 }
 .Sujeto{
-    height: 39%;
+    height: 34%;
     width: 44%;
-    padding: 1.5vh;
+    margin: 1.5vh;
     background-color: white;
     background-clip: content-box;
 }
@@ -39,10 +39,30 @@
     padding: 1.5vh;
 }
 
+.paddingDeletePattern{
+    padding: 3vh 1.5vh 1.5vh 1.5vh;
+}
+
 .Complemento{
-    height: 39%;
+    height: 34%;
     width: 33%;
-    padding: 1.5vh;
+    margin: 1.5vh;
+    background-color: white;
+    background-clip: content-box;
+}
+
+.ComplementoPattern2{
+    height: 34%;
+    width: 33%;
+    margin: 1.5vh 1.5vh 1.5vh 0vh;
+    background-color: white;
+    background-clip: content-box;
+}
+
+.DeletePattern2{
+    height: 34%;
+    width: 16%;
+    margin: 1.5vh 0vh 1.5vh 0vh;
     background-color: white;
     background-clip: content-box;
 }
@@ -50,14 +70,14 @@
 .Receiver{
     height: 39%;
     width: 38%;
-    padding: 1.5vh;
+    margin: 1.5vh;
     background-color: white;
     background-clip: content-box;
 }
 .Beneficiary{
     height: 52%;
     width: 38%;
-    padding: 1.5vh;
+    margin: 1.5vh;
     background-color: white;
     background-clip: content-box;
 }
@@ -65,7 +85,7 @@
 .Acomp{
     height: 40%;
     width: 38%;
-    padding: 1.5vh;
+    margin: 1.5vh;
     background-color: white;
     background-clip: content-box;
 }
@@ -73,7 +93,7 @@
 .Tool{
     height: 40%;
     width: 38%;
-    padding: 1.5vh;
+    margin: 1.5vh;
     background-color: white;
     background-clip: content-box;
 }
@@ -81,22 +101,22 @@
 .Modo{
     height: 40%;
     width: 38%;
-    padding: 1.5vh;
+    margin: 1.5vh;
     background-color: white;
     background-clip: content-box;
 }
 
 .Locativo{
-    height: 52%;
+    height: 47%;
     width: 38%;
-    padding: 1.5vh;
+    margin: 1.5vh;
     background-color: white;
     background-clip: content-box;
 }
 .ComplementoDirecto{
-    height: 52%;
+    height: 47%;
     width: 41%;
-    padding: 1.5vh;
+    margin: 1.5vh;
     background-color: white;
     background-clip: content-box;
 }
@@ -201,11 +221,11 @@
 .imgVerbResponsive {
     pointer-events: none;
     display: block;
-    max-width: 85%;
+    max-width: 31%;
     height: auto;
     max-height: 85%;
     width: auto;
-    top: 80%;
+    top: 44%;
     left: 50%;
     transform: translate(-50%,-50%);
     position: relative;
@@ -372,4 +392,22 @@
 
 .paddingPronCheckbox {
     padding-left: 1vh;
+}
+
+.ReqVerb{
+    border-style: solid;
+    border-color: rgb(230,25,25);
+    border-width: 2px;
+}
+
+.ReqImgVerb{
+    border-style: solid;
+    border-color: rgb(230,25,25);
+    border-width: 3px;
+}
+
+.ReqPatternVerb{
+    border-style: solid;
+    border-color: rgb(230,25,25);
+    border-width: 3px;
 }

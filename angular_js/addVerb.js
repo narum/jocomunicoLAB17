@@ -64,8 +64,6 @@ var app = angular.module('controllers');
             $scope.$broadcast('rebuild:verbPatternScrollbar');
         };
 
-
-
         $scope.imgPicto = 'arrow question.png';
         $scope.verb ='';
         $scope.pronominal = false;
@@ -94,231 +92,23 @@ var app = angular.module('controllers');
             this.persona = new persona();
         };
 
-            $scope.presente = new conjugation('presente');
-            $scope.perfecto = new conjugation('perfecto');
-            $scope.imperfecto = new conjugation('imperfecto');
-            $scope.pluscuamperfecto = new conjugation('pluscuamperfecto');
-            $scope.pasado = new conjugation('pasado');
-            $scope.futuro = new conjugation('futuro');
-            $scope.prsubj = new conjugation('prsubj');
-            $scope.impsubj = new conjugation('impsubj');
-            $scope.imperativo = {name:'imperativo', persona:{ps2:'', ps3:'', pp1:'', pp2:'', pp3:''}};
-            $scope.infinitivo = '';
-            $scope.gerundio = '';
-            $scope.participio = '';
+        $scope.presente = new conjugation('presente');
+        $scope.perfecto = new conjugation('perfecto');
+        $scope.imperfecto = new conjugation('imperfecto');
+        $scope.pluscuamperfecto = new conjugation('pluscuamperfecto');
+        $scope.pasado = new conjugation('pasado');
+        $scope.futuro = new conjugation('futuro');
+        $scope.prsubj = new conjugation('prsubj');
+        $scope.impsubj = new conjugation('impsubj');
+        $scope.imperativo = {name:'imperativo', persona:{ps2:'', ps3:'', pp1:'', pp2:'', pp3:''}};
+        $scope.infinitivo = '';
+        $scope.gerundio = '';
+        $scope.participio = '';
 
-        $scope.initAddWord = function () {
-            switch ($scope.addWordType)
-            {
-                case "verb":
-                    $scope.objAdd = {type: "verb", nomtext: null, mf: false, singpl: false, contabincontab: null, determinat: "1", ispropernoun: false, defaultverb: null, plural: null, femeni: null, fempl: null, imgPicto: 'arrow question.png', supExp: true};
-                    $scope.switchName = {s1: false, s2: false, s3: false, s4: false, s5: false, s6: false};
-                    $scope.NClassList = [];
-                    $scope.errAdd = {erradd1: false, erradd2: false,erradd3: false};
-                    $scope.classNoun = [{classType: "animate", numType: 1, nameType: $scope.content.classname1},
-                        {classType: "human", numType: 2, nameType: $scope.content.classname2},
-                        {classType: "pronoun", numType: 3, nameType: $scope.content.classname3},
-                        {classType: "animal", numType: 4, nameType: $scope.content.classname4},
-                        {classType: "planta", numType: 5, nameType: $scope.content.classname5},
-                        {classType: "vehicle", numType: 6, nameType: $scope.content.classname6},
-                        {classType: "event", numType: 7, nameType: $scope.content.classname7},
-                        {classType: "inanimate", numType: 8, nameType: $scope.content.classname8},
-                        {classType: "objecte", numType: 9, nameType: $scope.content.classname9},
-                        {classType: "color", numType: 10, nameType: $scope.content.classname10},
-                        {classType: "forma", numType: 11, nameType: $scope.content.classname11},
-                        {classType: "joc", numType: 12, nameType: $scope.content.classname12},
-                        {classType: "cos", numType: 13, nameType: $scope.content.classname13},
-                        {classType: "abstracte", numType: 14, nameType: $scope.content.classname14},
-                        {classType: "lloc", numType: 15, nameType: $scope.content.classname15},
-                        {classType: "menjar", numType: 16, nameType: $scope.content.classname16},
-                        {classType: "beguda", numType: 17, nameType: $scope.content.classname17},
-                        {classType: "time", numType: 18, nameType: $scope.content.classname18},
-                        {classType: "hora", numType: 19, nameType: $scope.content.classname19},
-                        {classType: "month", numType: 20, nameType: $scope.content.classname20},
-                        {classType: "week", numType: 21, nameType: $scope.content.classname21},
-                        {classType: "tool", numType: 22, nameType: $scope.content.classname22},
-                        {classType: "profession", numType: 23, nameType: $scope.content.classname23},
-                        {classType: "material", numType: 24, nameType: $scope.content.classname24}];
-                    break;
-                default:
-                    break;
-            }
-        };
-        $scope.initAddWordtest = function () {
-
-            if ($rootScope.addWordparam != null) {
-                $scope.NewModif = $rootScope.addWordparam.newmod;
-                $scope.addWordType = $rootScope.addWordparam.type;
-                $rootScope.addWordparam = null;
-                console.log($scope.addWordType);
-            } else {
-                $location.path("/panelGroups");
-            }
-
-            var URL = $scope.baseurl + "AddWord/getAllVerbs";
-            $http.post(URL).
-            success(function (response)
-            {
-                $scope.verbsList = response.data;
-                if ($scope.NewModif == 0) {
-                    $scope.idEditWord = $scope.addWordType;
-                    var postdata = {id: $scope.idEditWord};
-                    var URL = $scope.baseurl + "AddWord/EditWordType";
-                    $http.post(URL, postdata).
-                    success(function (response)
-                    {
-                        $scope.addWordType = response.data[0].type;
-                        $scope.initAddWord();
-                        $scope.editWordData();
-                    });
-                }
-                else{
-                    $scope.initAddWord();
-                }
-
-            });
-        };
-        $scope.editWordData = function () {
-            var postdata = {id: $scope.idEditWord, type: $scope.addWordType};
-            console.log(postdata);
-            var URL = $scope.baseurl + "AddWord/EditWordGetData";
-            $http.post(URL, postdata).
-            success(function (response)
-            {
-                $scope.addWordEditData = response.data[0];
-                console.log($scope.addWordEditData);
-
-                var postdata = {id: $scope.idEditWord, type: $scope.addWordType};
-                URL = $scope.baseurl + "AddWord/EditWordGetClass";
-                $http.post(URL, postdata).
-                success(function (response)
-                {
-                    switch ($scope.addWordType)
-                    {
-                        case "name":
-                            console.log(response.data);
-                            if (response.data){
-                                for(i = 0; i < response.data.length;i++){
-                                    $scope.addNClass(response.data[i].class);
-                                }
-                            }
-                            $scope.objAdd = {type: "name", nomtext: $scope.addWordEditData.nomtext, mf: $scope.addWordEditData.mf == "masc" ? false : true,
-                                singpl: $scope.addWordEditData.singpl == "sing" ? false : true, contabincontab: $scope.addWordEditData.contabincontab == "incontable" ? true : false,
-                                determinat: $scope.addWordEditData.determinat, ispropernoun: $scope.addWordEditData.ispropernoun == 1 ? true : false,
-                                defaultverb: $scope.addWordEditData.defaultverb == "0" ? null : $scope.addWordEditData.defaultverb, plural: $scope.addWordEditData.plural,
-                                femeni: $scope.addWordEditData.femeni, fempl: $scope.addWordEditData.fempl, imgPicto: $scope.addWordEditData.imgPicto,
-                                supExp: $scope.addWordEditData.supportsExpansion == "1" ? true : false};
-                            $scope.switchName = {s1: false, s2: $scope.objAdd.femeni != null ? true : false, s3: $scope.objAdd.plural != null ? true : false,
-                                s4: $scope.objAdd.fempl != null ? true : false, s5: $scope.objAdd.defaultverb != null ? true : false, s6: false};
-                            break;
-                        default:
-                            break;
-                    }
-                });
-            });
-        };
         $scope.cancelAddVerb = function () {
             $location.path("/panelGroups");
         };
 
-
-        $scope.saveAddWord = function () {
-            $scope.commit = 1;
-            switch ($scope.addWordType)
-            {
-                case "name":
-                    $scope.errAdd = {erradd1: false, erradd2: false,erradd3: false};
-                    if($scope.objAdd.nomtext == null){
-                        $scope.commit = 0;
-                        $scope.errAdd.erradd1 = true;
-                    }
-                    if($scope.NClassList.length < 1 && $scope.objAdd.supExp){
-                        $scope.commit = 0;
-                        $scope.errAdd.erradd2 = true;
-                    }
-                    if($scope.objAdd.imgPicto == 'arrow question.png' || $scope.objAdd.imgPicto == null){
-                        $scope.commit = 0;
-                        $scope.errAdd.erradd3 = true;
-                    }
-
-                    if($scope.commit == 1)
-                    {
-                        $scope.objAdd = {
-                            type: "name",
-                            nomtext: $scope.objAdd.nomtext,
-                            mf: $scope.objAdd.mf == false ? "masc" : "fem",
-                            singpl: $scope.objAdd.singpl == false ? "sing" : "pl",
-                            contabincontab: $scope.objAdd.contabincontab == true ? "incontable" : "contable",
-                            determinat: $scope.objAdd.determinat,
-                            ispropernoun: $scope.objAdd.ispropernoun == true ? "1" : "0",
-                            defaultverb: $scope.objAdd.defaultverb == null ? "0" : $scope.objAdd.defaultverb,
-                            plural: $scope.switchName.s3 == false ? $scope.objAdd.nomtext : $scope.objAdd.plural,
-                            femeni: $scope.switchName.s2 == false ? null : $scope.objAdd.femeni,
-                            fempl: $scope.switchName.s4 == false ? null : $scope.objAdd.fempl,
-                            imgPicto: $scope.objAdd.imgPicto,
-                            pictoid: $scope.idEditWord != null ? $scope.idEditWord : false,
-                            new: $scope.NewModif == 1 ? true : false,
-                            class: $scope.NClassList,
-                            supExp: $scope.objAdd.supExp == true ? "1" : "0"};
-
-                        if ($scope.objAdd.singpl == "pl"){
-                            $scope.objAdd.plural = $scope.objAdd.nomtext;
-                            $scope.objAdd.femeni = null;
-                            $scope.objAdd.fempl = null;
-                        }
-                        if ($scope.objAdd.mf == "fem"){
-                            $scope.objAdd.femeni = null;
-                            $scope.objAdd.fempl = null;
-                        }
-                        if ($scope.objAdd.plural == null) {
-                            $scope.objAdd.plural = $scope.objAdd.nomtext;
-                        }
-                        var URL = $scope.baseurl + "AddWord/InsertWordData";
-                        var postdata = {objAdd: $scope.objAdd};
-                        $http.post(URL, postdata).success(function (response)
-                        {
-
-                        });
-                        $location.path("/panelGroups");
-                    }
-                    break;
-                case "adj":
-                    $scope.errAdd = {erradd1: false, erradd2: false,erradd3: false};
-                    if($scope.objAdd.masc == null || $scope.objAdd.fem == null || $scope.objAdd.mascpl == null || $scope.objAdd.fempl == null){
-                        $scope.commit = 0;
-                        $scope.errAdd.erradd1 = true;
-                    }
-                    if($scope.AdjClassList.length < 1 && $scope.objAdd.supExp){
-                        $scope.commit = 0;
-                        $scope.errAdd.erradd2 = true;
-                    }
-                    if($scope.objAdd.imgPicto == 'arrow question.png' || $scope.objAdd.imgPicto == null){
-                        $scope.commit = 0;
-                        $scope.errAdd.erradd3 = true;
-                    }
-
-                    if($scope.commit == 1)
-                    {
-                        $scope.objAdd = {type: "adj", masc: $scope.objAdd.masc, fem: $scope.objAdd.fem, mascpl: $scope.objAdd.mascpl,
-                            fempl: $scope.objAdd.fempl, defaultverb: $scope.switchAdj.s1 == false ? "86" : "100", subjdef: $scope.switchAdj.s2 == false ? "1" : "3",
-                            imgPicto: $scope.objAdd.imgPicto, pictoid: $scope.idEditWord != null ? $scope.idEditWord : false, new: $scope.NewModif == 1 ? true : false,
-                            class: $scope.AdjClassList, supExp: $scope.objAdd.supExp == true ? "1" : "0"};
-                        var URL = $scope.baseurl + "AddWord/InsertWordData";
-                        var postdata = {objAdd: $scope.objAdd};
-                        $http.post(URL, postdata).success(function (response)
-                        {
-
-                        });
-                        $location.path("/panelGroups");
-                    }
-                    break;
-                default:
-                    break;
-            }
-
-
-
-        };
         $scope.uploadFileToWord = function () {
             $scope.myFile = document.getElementById('file-input').files;
             $scope.uploading = true;
@@ -334,9 +124,9 @@ var app = angular.module('controllers');
             })
                 .success(function (response) {
                     $scope.uploading = false;
-                    $scope.objAdd.imgPicto = response.url;
-                    $scope.objAdd.imgPicto = $scope.objAdd.imgPicto.split('/');
-                    $scope.objAdd.imgPicto = $scope.objAdd.imgPicto[2];
+                    $scope.imgPicto = response.url;
+                    $scope.imgPicto = $scope.imgPicto.split('/');
+                    $scope.imgPicto = $scope.imgPicto[2];
                     if (response.error) {
                         console.log(response.errorText);
                         $scope.errorText = response.errorText;
@@ -364,9 +154,11 @@ var app = angular.module('controllers');
             var postdata = {verb : $scope.verb};
             $http.post(URL, postdata).success(function (response) {
                 $scope.conjugations = response;
+                console.log("CONJUGACIONES: ");
                 console.log($scope.conjugations);
+                setConjugations();
             });
-            setConjugations();
+            //setConjugations();
         };
         function setConjugations(){
             setPresente();
@@ -461,6 +253,7 @@ var app = angular.module('controllers');
 
         $scope.verbPattern1 = false;
         $scope.verbPattern2 = false;
+        $scope.showVerbPattern2 = false;
 
         $scope.showPattern1 = {'CD':false,'Receiver':false,'Beneficiary':false,'Acomp':false,'Tool':false,'Modo':false,'Locto':false};
         $scope.showPattern2 = {'CD':false,'Receiver':false,'Beneficiary':false,'Acomp':false,'Tool':false,'Modo':false,'Locto':false};
@@ -486,27 +279,90 @@ var app = angular.module('controllers');
             'Locto': {'priority':0, 'type':"", 'preposition':""}
         };
 
+        $scope.deletePattern2 = function(){
+            $scope.Pattern2 = {
+                'Patron': {'pronominal': false, 'subj':"", 'subjdef':"", 'defaulttense':"", 'exemple':""},
+                'CD': {'priority': 0, 'type':"", 'preposition':""},
+                'Receiver': {'priority':0, 'preposition':""},
+                'Beneficiary': {'priority':0, 'type':"", 'preposition':""},
+                'Acomp': {'priority':0, 'preposition':""},
+                'Tool': {'priority':0, 'preposition':""},
+                'Modo': {'priority':0, 'type':""},
+                'Locto': {'priority':0, 'type':"", 'preposition':""}
+            };
+            $scope.showPattern2 = {'CD':false,'Receiver':false,'Beneficiary':false,'Acomp':false,'Tool':false,'Modo':false,'Locto':false};
+            $scope.$broadcast('rebuild:verbPatternScrollbar');
+        };
+
         $scope.subjOptions = function(){
             if ($scope.interfaceLanguageId == 1){//CAT
-                return [{value:"noun", name:"Substantiu", common:true},{value:"animate" ,name:"Animat", common:true},{value:"human", name:"Huma", common:true},
-                        {value:"pronoun", name:"Pronom", common:false},{value:"animal", name:"Animal", common:false},{value:"planta", name:"Planta", common:false},
-                        {value:"vehicle", name:"Vehicle", common:false},{value:"event", name:"Event", common:false},{value:"inanimate", name:"Inanimat", common:false},
-                        {value:"objecte", name:"Objecte", common:true},{value:"color", name:"Color", common:false},{value:"forma", name:"Forma", common:false},
-                        {value:"joc", name:"Joc", common:false},{value:"cos", name:"Cos", common:false},{value:"abstracte", name:"Abstracte", common:false},
-                        {value:"lloc", name:"Lloc", common:false},{value:"menjar", name:"Menjar", common:false},{value:"beguda", name:"Beguda", common:false},
-                        {value:"hora", name:"Hora", common:false},{value:"month", name:"Mes", common:false},
-                        {value: "week", name:"Setmana", common:false},{value:"tool", name:"Eina", common:false},{value:"profession", name:"Professió", common:false},
-                        {value:"material", name:"Material", common:false}, {value:"verb", name:"Verb", common:true}];
+                return [{value:"noun", name:"Substantiu", common:true, visible:true},{value:"animate" ,name:"Animat", common:true, visible:true},{value:"human", name:"Huma", common:true, visible:true},
+                    {value:"pronoun", name:"Pronom", common:false, visible:true},{value:"animal", name:"Animal", common:false, visible:true},{value:"planta", name:"Planta", common:false, visible:true},
+                    {value:"vehicle", name:"Vehicle", common:false, visible:true},{value:"event", name:"Event", common:false, visible:true},{value:"inanimate", name:"Inanimat", common:false, visible:true},
+                    {value:"objecte", name:"Objecte", common:true, visible:true},{value:"color", name:"Color", common:false, visible:true},{value:"forma", name:"Forma", common:false, visible:true},
+                    {value:"joc", name:"Joc", common:false, visible:true},{value:"cos", name:"Cos", common:false, visible:true},{value:"abstracte", name:"Abstracte", common:false, visible:true},
+                    {value:"lloc", name:"Lloc", common:false, visible:true},{value:"menjar", name:"Menjar", common:false, visible:true},{value:"beguda", name:"Beguda", common:false, visible:true},
+                    {value:"hora", name:"Hora", common:false, visible:true},{value:"month", name:"Mes", common:false, visible:true},
+                    {value: "week", name:"Setmana", common:false, visible:true},{value:"tool", name:"Eina", common:false, visible:true},{value:"profession", name:"Professió", common:false, visible:true},
+                    {value:"material", name:"Material", common:false, visible:true}, {value:"verb", name:"Verb", common:true, visible:true}];
             }else if($scope.interfaceLanguageId == 2){//ESP
-                return [{value:"noun", name:"Sustantivo", common:true},{value:"animate" ,name:"Animado", common:true},{value:"human", name:"Humano", common:true},
-                        {value:"pronoun", name:"Pronombre", common:false},{value:"animal", name:"Animal", common:false},{value:"planta", name:"Planta", common:false},
-                        {value:"vehicle", name:"Vehiculo", common:false},{value:"event", name:"Evento", common:false},{value:"inanimate", name:"Inanimado", common:false},
-                        {value:"objecte", name:"Objeto", common:true},{value:"color", name:"Color", common:false},{value:"forma", name:"Forma", common:false},
-                        {value:"joc", name:"Juego", common:false},{value:"cos", name:"Cosa", common:false},{value:"abstracte", name:"Abstracto", common:false},
-                        {value:"lloc", name:"Lugar", common:false},{value:"menjar", name:"Comida", common:false},{value:"beguda", name:"Bebida", common:false},
-                        {value:"hora", name:"Hora", common:false},{value:"month", name:"Mes", common:false},
-                        {value: "week", name:"Semana", common:false},{value:"tool", name:"Herramienta", common:false},{value:"profession", name:"Profesión", common:false},
-                        {value:"material", name:"Material", common:false}, {value:"verb", name:"Verbo", common:true}];
+                return [{value:"noun", name:"Sustantivo", common:true, visible:true},{value:"animate" ,name:"Animado", common:true, visible:true},{value:"human", name:"Humano", common:true, visible:true},
+                    {value:"pronoun", name:"Pronombre", common:false, visible:true},{value:"animal", name:"Animal", common:false, visible:true},{value:"planta", name:"Planta", common:false, visible:true},
+                    {value:"vehicle", name:"Vehiculo", common:false, visible:true},{value:"event", name:"Evento", common:false, visible:true},{value:"inanimate", name:"Inanimado", common:false, visible:true},
+                    {value:"objecte", name:"Objeto", common:true, visible:true},{value:"color", name:"Color", common:false, visible:true},{value:"forma", name:"Forma", common:false, visible:true},
+                    {value:"joc", name:"Juego", common:false, visible:true},{value:"cos", name:"Cosa", common:false, visible:true},{value:"abstracte", name:"Abstracto", common:false, visible:true},
+                    {value:"lloc", name:"Lugar", common:false, visible:true},{value:"menjar", name:"Comida", common:false, visible:true},{value:"beguda", name:"Bebida", common:false, visible:true},
+                    {value:"hora", name:"Hora", common:false, visible:true},{value:"month", name:"Mes", common:false, visible:true},
+                    {value: "week", name:"Semana", common:false, visible:true},{value:"tool", name:"Herramienta", common:false, visible:true},{value:"profession", name:"Profesión", common:false, visible:true},
+                    {value:"material", name:"Material", common:false, visible:true}, {value:"verb", name:"Verbo", common:true, visible:true}];
+            }
+        }();
+
+        $scope.CDOptionsPattern1 = function(){
+            if ($scope.interfaceLanguageId == 1){//CAT
+                return [{value:"noun", name:"Substantiu", common:true, visible:true},{value:"animate" ,name:"Animat", common:true, visible:true},{value:"human", name:"Huma", common:true, visible:true},
+                        {value:"pronoun", name:"Pronom", common:false, visible:true},{value:"animal", name:"Animal", common:false, visible:true},{value:"planta", name:"Planta", common:false, visible:true},
+                        {value:"vehicle", name:"Vehicle", common:false, visible:true},{value:"event", name:"Event", common:false, visible:true},{value:"inanimate", name:"Inanimat", common:false, visible:true},
+                        {value:"objecte", name:"Objecte", common:true, visible:true},{value:"color", name:"Color", common:false, visible:true},{value:"forma", name:"Forma", common:false, visible:true},
+                        {value:"joc", name:"Joc", common:false, visible:true},{value:"cos", name:"Cos", common:false, visible:true},{value:"abstracte", name:"Abstracte", common:false, visible:true},
+                        {value:"lloc", name:"Lloc", common:false, visible:true},{value:"menjar", name:"Menjar", common:false, visible:true},{value:"beguda", name:"Beguda", common:false, visible:true},
+                        {value:"hora", name:"Hora", common:false, visible:true},{value:"month", name:"Mes", common:false, visible:true},
+                        {value: "week", name:"Setmana", common:false, visible:true},{value:"tool", name:"Eina", common:false, visible:true},{value:"profession", name:"Professió", common:false, visible:true},
+                        {value:"material", name:"Material", common:false, visible:true}, {value:"verb", name:"Verb", common:true, visible:true}];
+            }else if($scope.interfaceLanguageId == 2){//ESP
+                return [{value:"noun", name:"Sustantivo", common:true, visible:true},{value:"animate" ,name:"Animado", common:true, visible:true},{value:"human", name:"Humano", common:true, visible:true},
+                        {value:"pronoun", name:"Pronombre", common:false, visible:true},{value:"animal", name:"Animal", common:false, visible:true},{value:"planta", name:"Planta", common:false, visible:true},
+                        {value:"vehicle", name:"Vehiculo", common:false, visible:true},{value:"event", name:"Evento", common:false, visible:true},{value:"inanimate", name:"Inanimado", common:false, visible:true},
+                        {value:"objecte", name:"Objeto", common:true, visible:true},{value:"color", name:"Color", common:false, visible:true},{value:"forma", name:"Forma", common:false, visible:true},
+                        {value:"joc", name:"Juego", common:false, visible:true},{value:"cos", name:"Cosa", common:false, visible:true},{value:"abstracte", name:"Abstracto", common:false, visible:true},
+                        {value:"lloc", name:"Lugar", common:false, visible:true},{value:"menjar", name:"Comida", common:false, visible:true},{value:"beguda", name:"Bebida", common:false, visible:true},
+                        {value:"hora", name:"Hora", common:false, visible:true},{value:"month", name:"Mes", common:false, visible:true},
+                        {value: "week", name:"Semana", common:false, visible:true},{value:"tool", name:"Herramienta", common:false, visible:true},{value:"profession", name:"Profesión", common:false, visible:true},
+                        {value:"material", name:"Material", common:false, visible:true}, {value:"verb", name:"Verbo", common:true, visible:true}];
+            }
+        }();
+
+        $scope.CDOptionsPattern2 = function(){
+            if ($scope.interfaceLanguageId == 1){//CAT
+                return [{value:"noun", name:"Substantiu", common:true, visible:true},{value:"animate" ,name:"Animat", common:true, visible:true},{value:"human", name:"Huma", common:true, visible:true},
+                    {value:"pronoun", name:"Pronom", common:false, visible:true},{value:"animal", name:"Animal", common:false, visible:true},{value:"planta", name:"Planta", common:false, visible:true},
+                    {value:"vehicle", name:"Vehicle", common:false, visible:true},{value:"event", name:"Event", common:false, visible:true},{value:"inanimate", name:"Inanimat", common:false, visible:true},
+                    {value:"objecte", name:"Objecte", common:true, visible:true},{value:"color", name:"Color", common:false, visible:true},{value:"forma", name:"Forma", common:false, visible:true},
+                    {value:"joc", name:"Joc", common:false, visible:true},{value:"cos", name:"Cos", common:false, visible:true},{value:"abstracte", name:"Abstracte", common:false, visible:true},
+                    {value:"lloc", name:"Lloc", common:false, visible:true},{value:"menjar", name:"Menjar", common:false, visible:true},{value:"beguda", name:"Beguda", common:false, visible:true},
+                    {value:"hora", name:"Hora", common:false, visible:true},{value:"month", name:"Mes", common:false, visible:true},
+                    {value: "week", name:"Setmana", common:false, visible:true},{value:"tool", name:"Eina", common:false, visible:true},{value:"profession", name:"Professió", common:false, visible:true},
+                    {value:"material", name:"Material", common:false, visible:true}, {value:"verb", name:"Verb", common:true, visible:true}];
+            }else if($scope.interfaceLanguageId == 2){//ESP
+                return [{value:"noun", name:"Sustantivo", common:true, visible:true},{value:"animate" ,name:"Animado", common:true, visible:true},{value:"human", name:"Humano", common:true, visible:true},
+                    {value:"pronoun", name:"Pronombre", common:false, visible:true},{value:"animal", name:"Animal", common:false, visible:true},{value:"planta", name:"Planta", common:false, visible:true},
+                    {value:"vehicle", name:"Vehiculo", common:false, visible:true},{value:"event", name:"Evento", common:false, visible:true},{value:"inanimate", name:"Inanimado", common:false, visible:true},
+                    {value:"objecte", name:"Objeto", common:true, visible:true},{value:"color", name:"Color", common:false, visible:true},{value:"forma", name:"Forma", common:false, visible:true},
+                    {value:"joc", name:"Juego", common:false, visible:true},{value:"cos", name:"Cosa", common:false, visible:true},{value:"abstracte", name:"Abstracto", common:false, visible:true},
+                    {value:"lloc", name:"Lugar", common:false, visible:true},{value:"menjar", name:"Comida", common:false, visible:true},{value:"beguda", name:"Bebida", common:false, visible:true},
+                    {value:"hora", name:"Hora", common:false, visible:true},{value:"month", name:"Mes", common:false, visible:true},
+                    {value: "week", name:"Semana", common:false, visible:true},{value:"tool", name:"Herramienta", common:false, visible:true},{value:"profession", name:"Profesión", common:false, visible:true},
+                    {value:"material", name:"Material", common:false, visible:true}, {value:"verb", name:"Verbo", common:true, visible:true}];
             }
         }();
 
@@ -552,15 +408,143 @@ var app = angular.module('controllers');
             }
         }();
 
-        $scope.LocatBenefOptions = function (){
-            var array = $scope.subjOptions;
+        $scope.BenefOptionsPattern1 = function (){
+            var array = $scope.CDOptionsPattern1;
             if ($scope.interfaceLanguageId == 1){
-                var b = [{value:"adv", name:"Adverbi", common:true}]
+                var b = [{value:"adv", name:"Adverbi", common:true, visible:true}]
             }else if ($scope.interfaceLanguageId == 2){
-                var b = [{value:"adv", name:"Adverbio", common:true}]
+                var b = [{value:"adv", name:"Adverbio", common:true, visible:true}]
             }
             return array.concat(b);
         }();
+
+        $scope.BenefOptionsPattern2 = function (){
+            var array = $scope.CDOptionsPattern2;
+            if ($scope.interfaceLanguageId == 1){
+                var b = [{value:"adv", name:"Adverbi", common:true, visible:true}]
+            }else if ($scope.interfaceLanguageId == 2){
+                var b = [{value:"adv", name:"Adverbio", common:true, visible:true}]
+            }
+            return array.concat(b);
+        }();
+
+        $scope.LocatOptionsPattern1 = function (){
+            var array = $scope.CDOptionsPattern1;
+            if ($scope.interfaceLanguageId == 1){
+                var b = [{value:"adv", name:"Adverbi", common:true, visible:true}]
+            }else if ($scope.interfaceLanguageId == 2){
+                var b = [{value:"adv", name:"Adverbio", common:true, visible:true}]
+            }
+            return array.concat(b);
+        }();
+
+        $scope.LocatOptionsPattern2 = function (){
+            var array = $scope.CDOptionsPattern2;
+            if ($scope.interfaceLanguageId == 1){
+                var b = [{value:"adv", name:"Adverbi", common:true, visible:true}]
+            }else if ($scope.interfaceLanguageId == 2){
+                var b = [{value:"adv", name:"Adverbio", common:true, visible:true}]
+            }
+            return array.concat(b);
+        }();
+
+        var verbValue = function(){
+            if ($scope.interfaceLanguageId == 1){//CAT
+               return 'Verb';
+            }else if ($scope.interfaceLanguageId == 2){
+                return 'Verbo';
+            }
+        };
+
+        $scope.checkVerbCDP1 = function (type){
+            var typeBenef = $scope.Pattern1.Beneficiary.type;
+            var typeLocto = $scope.Pattern1.Locto.type;
+            if(type === "verb") {
+                $scope.BenefOptionsPattern1[24] = {value:"verb", name: verbValue(), common:true, visible:false};
+                $scope.LocatOptionsPattern1[24] = {value:"verb", name: verbValue(), common:true, visible:false};
+            }else{
+                if(typeBenef !== "verb" && typeLocto !== "verb"){
+                    $scope.BenefOptionsPattern1[24] = {value:"verb", name: verbValue(), common:true, visible:true};
+                }if(typeLocto !== "verb" && typeBenef !== "verb"){
+                    $scope.LocatOptionsPattern1[24] = {value:"verb", name: verbValue(), common:true, visible:true};
+                }
+            }
+        };
+
+        $scope.checkVerbCDP2 = function (type){
+            var typeBenef = $scope.Pattern2.Beneficiary.type;
+            var typeLocto = $scope.Pattern2.Locto.type;
+            if(type === "verb") {
+                $scope.BenefOptionsPattern2[24] = {value:"verb", name: verbValue(), common:true, visible:false};
+                $scope.LocatOptionsPattern2[24] = {value:"verb", name: verbValue(), common:true, visible:false};
+            }else{
+                if(typeBenef !== "verb" && typeLocto !== "verb"){
+                    $scope.BenefOptionsPattern2[24] = {value:"verb", name: verbValue(), common:true, visible:true};
+                }if(typeLocto !== "verb" && typeBenef !== "verb"){
+                    $scope.LocatOptionsPattern2[24] = {value:"verb", name: verbValue(), common:true, visible:true};
+                }
+            }
+        };
+
+        $scope.checkVerbBenefP1 = function(type){
+            var typeCD = $scope.Pattern1.CD.type;
+            var typeLocto = $scope.Pattern1.Locto.type;
+            if(type === "verb" ) {
+                $scope.CDOptionsPattern1[24] = {value:"verb", name: verbValue(), common:true, visible:false};
+                $scope.LocatOptionsPattern1[24] = {value:"verb", name: verbValue(), common:true, visible:false};
+            }else{
+                if(typeCD !== "verb" && typeLocto !== "verb"){
+                    $scope.CDOptionsPattern1[24] = {value:"verb", name: verbValue(), common:true, visible:true};
+                }if (typeLocto !== "verb" && typeCD !== "verb"){
+                    $scope.LocatOptionsPattern1[24] = {value:"verb", name: verbValue(), common:true, visible:true};
+                }
+            }
+        };
+
+        $scope.checkVerbBenefP2 = function(type){
+            var typeCD = $scope.Pattern2.CD.type;
+            var typeLocto = $scope.Pattern2.Locto.type;
+            if(type === "verb" ) {
+                $scope.CDOptionsPattern2[24] = {value:"verb", name: verbValue(), common:true, visible:false};
+                $scope.LocatOptionsPattern2[24] = {value:"verb", name: verbValue(), common:true, visible:false};
+            }else{
+                if(typeCD !== "verb" && typeLocto !== "verb"){
+                    $scope.CDOptionsPattern2[24] = {value:"verb", name: verbValue(), common:true, visible:true};
+                }if (typeLocto !== "verb" && typeCD !== "verb"){
+                    $scope.LocatOptionsPattern2[24] = {value:"verb", name: verbValue(), common:true, visible:true};
+                }
+            }
+        };
+
+        $scope.checkVerbLoctoP1 = function (type){
+            var typeCD = $scope.Pattern1.CD.type;
+            var typeBenef = $scope.Pattern1.Beneficiary.type;
+            if(type === "verb") {
+                $scope.BenefOptionsPattern1[24] = {value:"verb", name: verbValue(), common:true, visible:false};
+                $scope.CDOptionsPattern1[24] = {value:"verb", name: verbValue(), common:true, visible:false};
+            }else{
+                if(typeBenef !== "verb" && typeCD !== "verb"){
+                    $scope.BenefOptionsPattern1[24] = {value:"verb", name: verbValue(), common:true, visible:true};
+                }if(typeCD !== "verb" && typeBenef !== "verb"){
+                    $scope.CDOptionsPattern1[24] = {value:"verb", name: verbValue(), common:true, visible:true};
+                }
+            }
+        };
+
+        $scope.checkVerbLoctoP2 = function (type){
+            var typeCD = $scope.Pattern2.CD.type;
+            var typeBenef = $scope.Pattern2.Beneficiary.type;
+            if(type === "verb") {
+                $scope.BenefOptionsPattern2[24] = {value:"verb", name: verbValue(), common:true, visible:false};
+                $scope.CDOptionsPattern2[24] = {value:"verb", name: verbValue(), common:true, visible:false};
+            }else{
+                if(typeBenef !== "verb" && typeCD !== "verb"){
+                    $scope.BenefOptionsPattern2[24] = {value:"verb", name: verbValue(), common:true, visible:true};
+                }if(typeCD !== "verb" && typeBenef !== "verb"){
+                    $scope.CDOptionsPattern2[24] = {value:"verb", name: verbValue(), common:true, visible:true};
+                }
+            }
+        };
 
         $scope.showComplement = function(showPattern, id){
           switch(id) {
@@ -635,24 +619,129 @@ var app = angular.module('controllers');
             }
         };
 
-        $scope.DeletePattern = function(pattern){
-            pattern = {
-                'Patron': {'pronominal': false, 'subj':"", 'subjdef':"", 'defaulttense':"", 'exemple':""},
-                'CD': {'priority': 0, 'type':"", 'preposition':""},
-                'Receiver': {'priority':0, 'preposition':""},
-                'Beneficiary': {'priority':0, 'type':"", 'preposition':""},
-                'Acomp': {'priority':0, 'preposition':""},
-                'Tool': {'priority':0, 'preposition':""},
-                'Modo': {'priority':0, 'type':""},
-                'Locto': {'priority':0, 'type':"", 'preposition':""}
+        //Guardado
+        $scope.addVerbErrors = {'verb': false, 'imgVerb': false };
+        $scope.addVerbErrorsP1 = {'Patron': false, 'CD': false, 'Receiver': false, 'Beneficiary': false, 'Acomp': false, 'Tool': false, 'Modo':false, 'Tool': false, 'Locto': false};
+        $scope.addVerbErrorsP2 = {'Patron': false, 'CD': false, 'Receiver': false, 'Beneficiary': false, 'Acomp': false, 'Tool': false, 'Modo':false, 'Tool': false, 'Locto': false};
+
+        function checkVerbErrors(addVerbErrors){
+            var verb = $scope.verb;
+            if(verb === ''){
+                addVerbErrors.verb = true;
+            }else {
+                addVerbErrors.verb = false;
             }
+            return addVerbErrors.verb;
+        };
+        function checkImgVerbErrors(addVerbErrors){
+            var imgPicto = $scope.imgPicto;
+            if(imgPicto === 'arrow question.png' || imgPicto === null){
+                addVerbErrors.imgVerb = true;
+            }else{
+                addVerbErrors.imgVerb = false;
+            }
+            return addVerbErrors.imgVerb;
+        };
+        function checkErrorsPattern(Pattern, showPattern, patternErrors){
+            var errors = false;
+            if(Pattern.Patron.subj === '' || Pattern.Patron.subjdef === '' || Pattern.Patron.defaulttense === '' ){
+                console.log("ERROR EN EL PATRÓN 1");
+                errors = true;
+                patternErrors.Patron = true;
+            }else {
+                patternErrors.Patron = false;
+            }
+            if (showPattern.CD === true){
+                if (Pattern.CD.priority === 0 || Pattern.CD.type === ''){
+                    errors = true;
+                    patternErrors.CD = true;
+                }else {
+                    patternErrors.CD = false;
+                }
+            }
+            if (showPattern.Receiver === true){
+                if (Pattern.Receiver.priority === 0){
+                    errors = true;
+                    patternErrors.Receiver = true;
+                }else {
+                    patternErrors.Receiver = false;
+                }
+            }
+            if (showPattern.Beneficiary === true){
+                if (Pattern.Beneficiary.priority === 0 || Pattern.Beneficiary.type === ''){
+                    errors = true;
+                    patternErrors.Beneficiary = true;
+                }else {
+                    patternErrors.Beneficiary = false;
+                }
+            }
+            if (showPattern.Acomp === true){
+                if (Pattern.Acomp.priority === 0){
+                    errors = true;
+                    patternErrors.Acomp = true;
+                }else {
+                    patternErrors.Acomp = false;
+                }
+            }
+            if (showPattern.Tool === true){
+                if (Pattern.Tool.priority === 0){
+                    errors = true;
+                    patternErrors.Tool = true;
+                }else {
+                    patternErrors.Tool = false;
+                }
+            }
+            if (showPattern.Modo === true){
+                if (Pattern.Modo.priority === 0 || Pattern.Modo.type === ''){
+                    errors = true;
+                    patternErrors.Modo = true;
+                }else {
+                    patternErrors.Modo = false;
+                }
+            }
+            if (showPattern.Locto == true){
+                if (Pattern.Locto.priority === 0 || Pattern.Locto.type === ''){
+                    errors = true;
+                    patternErrors.Locto = true;
+                }else {
+                    patternErrors.Locto = false;
+                }
+            }
+            //CHECK IF THERE IS MORE THAN ONE VERB (BENEF, LOCTO, CD)
+            return errors;
         };
 
-            $scope.guardar = function(){
+            $scope.addVerb = function(){
+            //CHECK IF VERB ALREADY EXISTS -> ACTIVAR POPUP
             console.log("GUARDANDO...");
             console.log($scope.Pattern1);
             console.log($scope.Pattern2);
             console.log($scope.content.buscarConj);
+
+            var isPattern2 = $scope.showVerbPattern2;
+            var verbErrors = checkVerbErrors($scope.addVerbErrors);
+            var Pattern1Errors = checkErrorsPattern($scope.Pattern1, $scope.showPattern1, $scope.addVerbErrorsP1);
+            var Pattern2Errors = checkErrorsPattern($scope.Pattern2, $scope.showPattern2, $scope.addVerbErrorsP2);
+            //CHECK IF PATTERN 2 EXISTS
+                /*
+                if (!isPattern2){//There is no Pattern2 Just send Pattern1
+                } else if (isPattern2){// Check errors on Pattern2
+                    var Pattern2Errors = checkErrorsPattern($scope.Pattern2, $scope.showPattern2, $scope.addVerbErrorsP2);
+                }
+                 */
+            //ADD Pattern1
+            if (checkImgVerbErrors($scope.addVerbErrors)) {
+                console.log("NO HAY IMAGEN!");
+            } else if (checkVerbErrors($scope.addVerbErrors)){
+                console.log("HAY ERRORES en los VERBOS");
+            }else if (Pattern1Errors){
+                console.log($scope.addVerbErrorsP1);
+                console.log("HAY ERRORES EN EL PATRÓN 1");
+            }
+            if(Pattern2Errors){
+                console.log($scope.addVerbErrorsP2);
+                console.log("HAY ERRORES EN EL PATRÓN 2");
+            }
         };
     });
 

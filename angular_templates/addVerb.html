@@ -25,7 +25,7 @@
                             </div>
                             <div class="paddingContainerAddVerbImg">
                                 <div class="imgAddWordVerbImg">
-                                    <div class="midheight"s>
+                                    <div class="fullheight" ng-class="{ReqImgVerb: addVerbErrors.imgVerb === true }">
                                         <img class="imgVerbResponsive" ng-src="{{'img/pictos/'+imgPicto}}"/>
                                     </div>
                                 </div>
@@ -33,7 +33,7 @@
                                     <label for="file-input" class="fullheight fullwidth">
                                         <img class="imgRounded buttonAddPhotoVerb" ng-src="img/icons/add_photo.png"width="100%" height="100%"/>
                                     </label>
-                                    <input type="file" id="file-input" onchange="angular.element(this).scope().uploadFileToWord()"/>
+                                    <input type="file" multiple id="file-input" onchange="angular.element(this).scope().uploadFileToWord()" ng-show="false"/>
                                 </div>
                             </div>
                         </div>
@@ -54,7 +54,8 @@
                                             <div class="col-xs-5 VerbContainer">
                                                 <form id="custom-search-form" class="form-search form-horizontal pull-right">
                                                     <div class="input-append span12">
-                                                        <input type="text" class="search-query mac-style" placeholder="{{content.buscarConj}}" ng-model="verb">
+                                                        <input type="text" class="search-query mac-style" placeholder="{{content.buscarConj}}" ng-model="verb"
+                                                               ng-class="{ReqVerb: addVerbErrors.verb === true }">
                                                         <button type="submit" class="btn"><i class="icon-search" ng-click="getConjugations();"></i></button>
                                                     </div>
                                                 </form>
@@ -82,10 +83,10 @@
                                 <div class="col-xs-10 headerTitle headerAdd">{{content.addVerbPattern}}</div>
                             </div>
                             <div class="scrollVerbPattern" ng-scrollbar rebuild-on-resize rebuild-on="rebuild:verbPatternScrollbar">
-                                <div class="row buttonAddVerbPattern" ng-click="verbPattern2=true;">+</div>
+                                <div class="row buttonAddVerbPattern" ng-click="verbPattern2=true; rebuildScrollBarPatterns();">+</div>
                                 <!-- Verb Pattern1 -->
                                 <div class="row verbPatternBar">
-                                    <div class="row verbHeaderBar verbButtonBar" ng-click="verbPattern1=!verbPattern1">
+                                    <div class="row verbHeaderBar verbButtonBar" ng-click="verbPattern1=!verbPattern1; rebuildScrollBarPatterns();">
                                         <div class="col-xs-11 text-indent-up">
                                             {{content.verbPattern}} 1
                                         </div>
@@ -95,7 +96,7 @@
                                     </div>
                                     <!-- Pattern1 -->
                                     <div class="row col-xs-12 verbContentBar" uib-collapse="!verbPattern1">
-                                        <div class="col-xs-4 Sujeto paddingPattern">
+                                        <div class="col-xs-4 Sujeto"  ng-class="{ReqPatternVerb: addVerbErrorsP1.Patron === true }">
                                             <div class="row">
                                                 <div class="col-xs-4 paddingPattern">{{content.sujeto}}</div>
                                                 <div class="col-xs-7" style="padding-top: 0.5vh">
@@ -134,7 +135,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-xs-4 Complemento paddingPattern">
+                                        <div class="col-xs-4 Complemento">
                                         <div class="row">
                                             <div class="col-xs-12 paddingPattern text-center">{{content.addComp}}</div>
                                         </div>
@@ -151,7 +152,7 @@
                                         </div>
                                         </div>
                                         <!-- CD -->
-                                        <div ng-if="showPattern1.CD" class="col-xs-4 ComplementoDirecto paddingPattern">
+                                        <div ng-if="showPattern1.CD" class="col-xs-4 ComplementoDirecto" ng-class="{ReqPatternVerb: addVerbErrorsP1.CD === true }">
                                             <div class="row">
                                                 <div class="col-xs-11 paddingPattern text-center">{{content.objetoDirecto}}</div>
                                                 <img class="img-responsive col-xs-1 removePattern" ng-src="{{baseurl}}img/srcWeb/Edit/cross.png" ng-click="cleanPattern(showPattern1, Pattern1, 'CD');"/>
@@ -169,14 +170,14 @@
                                             <div class="row">
                                                 <div class="col-xs-4 paddingPattern">{{content.tipo}}</div>
                                                 <div class="col-xs-7" style="padding: 0.5vh">
-                                                    <select ng-model="Pattern1.CD.type" class="boxEditFeature dropdown-arrow">
+                                                    <select ng-model="Pattern1.CD.type" class="boxEditFeature dropdown-arrow"  ng-change="checkVerbCDP1(Pattern1.CD.type);">
                                                         <optgroup label="{{content.comunes}}">
-                                                            <option ng-repeat="opt in subjOptions | filter: { common:true } | orderBy: 'name'" value="{{opt.value}}">
+                                                            <option ng-repeat="opt in CDOptionsPattern1 | filter: { common:true, visible:true } | orderBy: 'name'" value="{{opt.value}}">
                                                                 {{opt.name}}
                                                             </option>
                                                         </optgroup>
                                                         <optgroup label="{{content.otros}}">
-                                                            <option ng-repeat="opt in subjOptions | filter: { common:false } | orderBy: 'name'" value="{{opt.value}}">
+                                                            <option ng-repeat="opt in CDOptionsPattern1 | filter: { common:false, visible:true } | orderBy: 'name'" value="{{opt.value}}">
                                                                 {{opt.name}}
                                                             </option>
                                                         </optgroup>
@@ -191,7 +192,7 @@
                                             </div>
                                         </div>
                                         <!-- Receiver -->
-                                        <div ng-if="showPattern1.Receiver" class="col-xs-4 Receiver paddingPattern">
+                                        <div ng-if="showPattern1.Receiver" class="col-xs-4 Receiver" ng-class="{ReqPatternVerb: addVerbErrorsP1.Receiver === true }">
                                             <div class="row">
                                                 <div class="col-xs-11 paddingPattern text-center">{{content.receiver}}</div>
                                                 <img class="img-responsive col-xs-1 removePattern" ng-src="{{baseurl}}img/srcWeb/Edit/cross.png" ng-click="cleanPattern(showPattern1, Pattern1, 'Receiver');"/>
@@ -214,7 +215,7 @@
                                             </div>
                                         </div>
                                         <!-- Benef -->
-                                        <div ng-if="showPattern1.Beneficiary" class="col-xs-4 Beneficiary paddingPattern">
+                                        <div ng-if="showPattern1.Beneficiary" class="col-xs-4 Beneficiary" ng-class="{ReqPatternVerb: addVerbErrorsP1.Beneficiary === true }">
                                             <div class="row">
                                                 <div class="col-xs-11 paddingPattern text-center">{{content.beneficiary}}</div>
                                                 <img class="img-responsive col-xs-1 removePattern" ng-src="{{baseurl}}img/srcWeb/Edit/cross.png" ng-click="cleanPattern(showPattern1, Pattern1, 'Beneficiary');"/>
@@ -232,14 +233,14 @@
                                             <div class="row">
                                                 <div class="col-xs-4 paddingPattern">{{content.tipo}}</div>
                                                 <div class="col-xs-7" style="padding: 0.5vh">
-                                                    <select ng-model="Pattern1.Beneficiary.type" class="boxEditFeature dropdown-arrow">
+                                                    <select ng-model="Pattern1.Beneficiary.type" class="boxEditFeature dropdown-arrow" ng-change="checkVerbBenefP1(Pattern1.Beneficiary.type);">
                                                         <optgroup label="{{content.comunes}}">
-                                                            <option ng-repeat="opt in LocatBenefOptions | filter: { common:true } | orderBy: 'name'" value="{{opt.value}}">
+                                                            <option ng-repeat="opt in BenefOptionsPattern1 | filter: { common:true, visible:true } | orderBy: 'name'" value="{{opt.value}}">
                                                                 {{opt.name}}
                                                             </option>
                                                         </optgroup>
                                                         <optgroup label="{{content.otros}}">
-                                                            <option ng-repeat="opt in LocatBenefOptions | filter: { common:false } | orderBy: 'name'" value="{{opt.value}}">
+                                                            <option ng-repeat="opt in BenefOptionsPattern1 | filter: { common:false, visible:true } | orderBy: 'name'" value="{{opt.value}}">
                                                                 {{opt.name}}
                                                             </option>
                                                         </optgroup>
@@ -254,7 +255,7 @@
                                             </div>
                                         </div>
                                         <!-- Acomp -->
-                                        <div ng-if="showPattern1.Acomp" class="col-xs-4 Acomp paddingPattern">
+                                        <div ng-if="showPattern1.Acomp" class="col-xs-4 Acomp" ng-class="{ReqPatternVerb: addVerbErrorsP1.Acomp === true }">
                                             <div class="row">
                                                 <div class="col-xs-11 paddingPattern text-center">{{content.acomp}}</div>
                                                 <img class="img-responsive col-xs-1 removePattern" ng-src="{{baseurl}}img/srcWeb/Edit/cross.png" ng-click="cleanPattern(showPattern1, Pattern1, 'Acomp');"/>
@@ -277,7 +278,7 @@
                                             </div>
                                         </div>
                                         <!-- Tool -->
-                                        <div ng-if="showPattern1.Tool" class="col-xs-4 Tool paddingPattern">
+                                        <div ng-if="showPattern1.Tool" class="col-xs-4 Tool" ng-class="{ReqPatternVerb: addVerbErrorsP1.Tool === true }">
                                             <div class="row">
                                                 <div class="col-xs-11 paddingPattern text-center">{{content.tool}}</div>
                                                 <img class="img-responsive col-xs-1 removePattern" ng-src="{{baseurl}}img/srcWeb/Edit/cross.png" ng-click="cleanPattern(showPattern1, Pattern1, 'Tool');"/>
@@ -300,8 +301,8 @@
                                             </div>
                                         </div>
                                         <!-- Manera -->
-                                        <div ng-if="showPattern1.Modo" class="col-xs-4 Modo paddingPattern">
-                                            <div class="row">
+                                        <div ng-if="showPattern1.Modo" class="col-xs-4 Modo" ng-class="{ReqPatternVerb: addVerbErrorsP1.Modo === true }">
+                                                <div class="row">
                                                 <div class="col-xs-11 paddingPattern text-center">{{content.modo}}</div>
                                                 <img class="img-responsive col-xs-1 removePattern" ng-src="{{baseurl}}img/srcWeb/Edit/cross.png" ng-click="cleanPattern(showPattern1, Pattern1, 'Modo');"/>
                                             </div>
@@ -327,7 +328,7 @@
                                             </div>
                                         </div>
                                         <!-- Locativo -->
-                                        <div ng-if="showPattern1.Locto" class="col-xs-4 Locativo paddingPattern">
+                                        <div ng-if="showPattern1.Locto" class="col-xs-4 Locativo" ng-class="{ReqPatternVerb: addVerbErrorsP1.Locto === true }">
                                             <div class="row">
                                                 <div class="col-xs-11 paddingPattern text-center">{{content.locativo}}</div>
                                                 <img class="img-responsive col-xs-1 removePattern" ng-src="{{baseurl}}img/srcWeb/Edit/cross.png" ng-click="cleanPattern(showPattern1, Pattern1, 'Locto');"/>
@@ -345,14 +346,14 @@
                                             <div class="row">
                                                 <div class="col-xs-4 paddingPattern">{{content.tipo}}</div>
                                                 <div class="col-xs-7" style="padding: 0.5vh">
-                                                    <select ng-model="Pattern1.Locto.type" class="boxEditFeature dropdown-arrow">
+                                                    <select ng-model="Pattern1.Locto.type" class="boxEditFeature dropdown-arrow" ng-change="checkVerbLoctoP1(Pattern1.Locto.type);">
                                                         <optgroup label="{{content.comunes}}">
-                                                            <option ng-repeat="opt in LocatBenefOptions | filter: { common:true } | orderBy: 'name'" value="{{opt.value}}">
+                                                            <option ng-repeat="opt in LocatOptionsPattern1 | filter: { common:true, visible:true } | orderBy: 'name'" value="{{opt.value}}">
                                                                 {{opt.name}}
                                                             </option>
                                                         </optgroup>
                                                         <optgroup label="{{content.otros}}">
-                                                            <option ng-repeat="opt in LocatBenefOptions | filter: { common:false } | orderBy: 'name'" value="{{opt.value}}">
+                                                            <option ng-repeat="opt in LocatOptionsPattern1 | filter: { common:false, visible:true } | orderBy: 'name'" value="{{opt.value}}">
                                                                 {{opt.name}}
                                                             </option>
                                                         </optgroup>
@@ -378,8 +379,8 @@
                                     </div>
                                 </div>
                                 <!-- Verb Pattern2 -->
-                                <div ng-if="verbPattern2" class="row verbPatternBar">
-                                    <div class="row verbHeaderBar verbButtonBar" ng-click="verbPattern2=!verbPattern2; rebuildScrollBarPatterns();">
+                                <div ng-show="verbPattern2 === true" class="row verbPatternBar">
+                                    <div class="row verbHeaderBar verbButtonBar" ng-click="showVerbPattern2=!showVerbPattern2; rebuildScrollBarPatterns();">
                                         <div class="col-xs-11 text-indent-up">
                                             {{content.verbPattern}} 2
                                         </div>
@@ -388,8 +389,8 @@
                                         </div>
                                     </div>
                                     <!-- Pattern2 -->
-                                    <div class="row col-xs-12 verbContentBar" uib-collapse="verbPattern2">
-                                        <div class="col-xs-4 Sujeto paddingPattern">
+                                    <div class="row col-xs-12 verbContentBar" uib-collapse="!showVerbPattern2">
+                                        <div class="col-xs-4 Sujeto"  ng-class="{ReqPatternVerb: addVerbErrorsP2.Patron === true }">
                                             <div class="row">
                                                 <div class="col-xs-4 paddingPattern">{{content.sujeto}}</div>
                                                 <div class="col-xs-7" style="padding-top: 0.5vh">
@@ -428,7 +429,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-xs-4 Complemento paddingPattern">
+                                        <div class="col-xs-4 ComplementoPattern2">
                                             <div class="row">
                                                 <div class="col-xs-12 paddingPattern text-center">{{content.addComp}}</div>
                                             </div>
@@ -444,8 +445,18 @@
                                                         ng-click="showComplement(showPattern2, complementoSelected.id);"><span class="glyphicon glyphicon-plus"></span></button>
                                             </div>
                                         </div>
+                                        <!-- Delete Pattern2 -->
+                                        <div class="col-xs-2 DeletePattern2">
+                                            <div class="row">
+                                                <div class="col-xs-offset-2 col-xs-8 paddingDeletePattern text-center">{{content.deletePattern}}</div>
+                                            </div>
+                                            <div class="row col-xs-12 paddingComplementBtn">
+                                                <button type="button" class="center-block btn btn-danger btn-lg" style="padding: 1vh">
+                                                    <span class="glyphicon glyphicon-minus" ng-click="showVerbPattern2 = false; verbPattern2 = false; deletePattern2();"></span></button>
+                                            </div>
+                                        </div>
                                         <!-- CD -->
-                                        <div ng-if="showPattern2.CD" class="col-xs-4 ComplementoDirecto paddingPattern">
+                                        <div ng-if="showPattern2.CD" class="col-xs-4 ComplementoDirecto" ng-class="{ReqPatternVerb: addVerbErrorsP2.CD === true }">
                                             <div class="row">
                                                 <div class="col-xs-11 paddingPattern text-center">{{content.objetoDirecto}}</div>
                                                 <img class="img-responsive col-xs-1 removePattern" ng-src="{{baseurl}}img/srcWeb/Edit/cross.png" ng-click="cleanPattern(showPattern2, Pattern2, 'CD');"/>
@@ -463,14 +474,14 @@
                                             <div class="row">
                                                 <div class="col-xs-4 paddingPattern">{{content.tipo}}</div>
                                                 <div class="col-xs-7" style="padding: 0.5vh">
-                                                    <select ng-model="Pattern2.CD.type" class="boxEditFeature dropdown-arrow">
+                                                    <select ng-model="Pattern2.CD.type" class="boxEditFeature dropdown-arrow"  ng-change="checkVerbCDP2(Pattern2.CD.type);">
                                                         <optgroup label="{{content.comunes}}">
-                                                            <option ng-repeat="opt in subjOptions | filter: { common:true } | orderBy: 'name'" value="{{opt.value}}">
+                                                            <option ng-repeat="opt in CDOptionsPattern2 | filter: { common:true, visible:true } | orderBy: 'name'" value="{{opt.value}}">
                                                                 {{opt.name}}
                                                             </option>
                                                         </optgroup>
                                                         <optgroup label="{{content.otros}}">
-                                                            <option ng-repeat="opt in subjOptions | filter: { common:false } | orderBy: 'name'" value="{{opt.value}}">
+                                                            <option ng-repeat="opt in CDOptionsPattern2 | filter: { common:false, visible:true } | orderBy: 'name'" value="{{opt.value}}">
                                                                 {{opt.name}}
                                                             </option>
                                                         </optgroup>
@@ -485,7 +496,7 @@
                                             </div>
                                         </div>
                                         <!-- Receiver -->
-                                        <div ng-if="showPattern2.Receiver" class="col-xs-4 Receiver paddingPattern">
+                                        <div ng-if="showPattern2.Receiver" class="col-xs-4 Receiver" ng-class="{ReqPatternVerb: addVerbErrorsP2.Receiver === true }">
                                             <div class="row">
                                                 <div class="col-xs-11 paddingPattern text-center">{{content.receiver}}</div>
                                                 <img class="img-responsive col-xs-1 removePattern" ng-src="{{baseurl}}img/srcWeb/Edit/cross.png" ng-click="cleanPattern(showPattern2, Pattern2, 'Receiver');"/>
@@ -508,7 +519,7 @@
                                             </div>
                                         </div>
                                         <!-- Benef -->
-                                        <div ng-if="showPattern2.Beneficiary" class="col-xs-4 Beneficiary paddingPattern">
+                                        <div ng-if="showPattern2.Beneficiary" class="col-xs-4 Beneficiary" ng-class="{ReqPatternVerb: addVerbErrorsP2.Beneficiary === true }">
                                             <div class="row">
                                                 <div class="col-xs-11 paddingPattern text-center">{{content.beneficiary}}</div>
                                                 <img class="img-responsive col-xs-1 removePattern" ng-src="{{baseurl}}img/srcWeb/Edit/cross.png" ng-click="cleanPattern(showPattern2, Pattern2, 'Beneficiary');"/>
@@ -526,14 +537,14 @@
                                             <div class="row">
                                                 <div class="col-xs-4 paddingPattern">{{content.tipo}}</div>
                                                 <div class="col-xs-7" style="padding: 0.5vh">
-                                                    <select ng-model="Pattern2.Beneficiary.type" class="boxEditFeature dropdown-arrow">
+                                                    <select ng-model="Pattern2.Beneficiary.type" class="boxEditFeature dropdown-arrow" ng-change="checkVerbBenefP2(Pattern2.Beneficiary.type);">
                                                         <optgroup label="{{content.comunes}}">
-                                                            <option ng-repeat="opt in LocatBenefOptions | filter: { common:true } | orderBy: 'name'" value="{{opt.value}}">
+                                                            <option ng-repeat="opt in BenefOptionsPattern2 | filter: { common:true, visible:true } | orderBy: 'name'" value="{{opt.value}}">
                                                                 {{opt.name}}
                                                             </option>
                                                         </optgroup>
                                                         <optgroup label="{{content.otros}}">
-                                                            <option ng-repeat="opt in LocatBenefOptions | filter: { common:false } | orderBy: 'name'" value="{{opt.value}}">
+                                                            <option ng-repeat="opt in BenefOptionsPattern2 | filter: { common:false, visible:true } | orderBy: 'name'" value="{{opt.value}}">
                                                                 {{opt.name}}
                                                             </option>
                                                         </optgroup>
@@ -548,7 +559,7 @@
                                             </div>
                                         </div>
                                         <!-- Acomp -->
-                                        <div ng-if="showPattern2.Acomp" class="col-xs-4 Acomp paddingPattern">
+                                        <div ng-if="showPattern2.Acomp" class="col-xs-4 Acomp" ng-class="{ReqPatternVerb: addVerbErrorsP2.Acomp === true }">
                                             <div class="row">
                                                 <div class="col-xs-11 paddingPattern text-center">{{content.acomp}}</div>
                                                 <img class="img-responsive col-xs-1 removePattern" ng-src="{{baseurl}}img/srcWeb/Edit/cross.png" ng-click="cleanPattern(showPattern2, Pattern2, 'Acomp');"/>
@@ -571,7 +582,7 @@
                                             </div>
                                         </div>
                                         <!-- Tool -->
-                                        <div ng-if="showPattern2.Tool" class="col-xs-4 Tool paddingPattern">
+                                        <div ng-if="showPattern2.Tool" class="col-xs-4 Tool" ng-class="{ReqPatternVerb: addVerbErrorsP2.Tool === true }">
                                             <div class="row">
                                                 <div class="col-xs-11 paddingPattern text-center">{{content.tool}}</div>
                                                 <img class="img-responsive col-xs-1 removePattern" ng-src="{{baseurl}}img/srcWeb/Edit/cross.png" ng-click="cleanPattern(showPattern2, Pattern2, 'Tool');"/>
@@ -594,7 +605,7 @@
                                             </div>
                                         </div>
                                         <!-- Manera -->
-                                        <div ng-if="showPattern2.Modo" class="col-xs-4 Modo paddingPattern">
+                                        <div ng-if="showPattern2.Modo" class="col-xs-4 Modo" ng-class="{ReqPatternVerb: addVerbErrorsP2.Modo === true }">
                                             <div class="row">
                                                 <div class="col-xs-11 paddingPattern text-center">{{content.modo}}</div>
                                                 <img class="img-responsive col-xs-1 removePattern" ng-src="{{baseurl}}img/srcWeb/Edit/cross.png" ng-click="cleanPattern(showPattern2, Pattern2, 'Modo');"/>
@@ -621,7 +632,7 @@
                                             </div>
                                         </div>
                                         <!-- Locativo -->
-                                        <div ng-if="showPattern2.Locto" class="col-xs-4 Locativo paddingPattern">
+                                        <div ng-if="showPattern2.Locto" class="col-xs-4 Locativo" ng-class="{ReqPatternVerb: addVerbErrorsP2.Locto === true }">
                                             <div class="row">
                                                 <div class="col-xs-11 paddingPattern text-center">{{content.locativo}}</div>
                                                 <img class="img-responsive col-xs-1 removePattern" ng-src="{{baseurl}}img/srcWeb/Edit/cross.png" ng-click="cleanPattern(showPattern2, Pattern2, 'Locto');"/>
@@ -639,14 +650,14 @@
                                             <div class="row">
                                                 <div class="col-xs-4 paddingPattern">{{content.tipo}}</div>
                                                 <div class="col-xs-7" style="padding: 0.5vh">
-                                                    <select ng-model="Pattern2.Locto.type" class="boxEditFeature dropdown-arrow">
+                                                    <select ng-model="Pattern2.Locto.type" class="boxEditFeature dropdown-arrow" ng-change="checkVerbLoctoP2(Pattern2.Locto.type);">
                                                         <optgroup label="{{content.comunes}}">
-                                                            <option ng-repeat="opt in LocatBenefOptions | filter: { common:true } | orderBy: 'name'" value="{{opt.value}}">
+                                                            <option ng-repeat="opt in LocatOptionsPattern2 | filter: { common:true, visible:true } | orderBy: 'name'" value="{{opt.value}}">
                                                                 {{opt.name}}
                                                             </option>
                                                         </optgroup>
                                                         <optgroup label="{{content.otros}}">
-                                                            <option ng-repeat="opt in LocatBenefOptions | filter: { common:false } | orderBy: 'name'" value="{{opt.value}}">
+                                                            <option ng-repeat="opt in LocatOptionsPattern2 | filter: { common:false, visible:true } | orderBy: 'name'" value="{{opt.value}}">
                                                                 {{opt.name}}
                                                             </option>
                                                         </optgroup>
@@ -1098,7 +1109,7 @@
                             </div>
                         </div>
                         <div class="col-xs-offset-1 col-xs-5" style="padding-left: 1.5vh;">
-                            <div class=" imgRounded ButtonAddWord paddingButtonAddVerb fullheight row" ng-click="guardar();">
+                            <div class=" imgRounded ButtonAddWord paddingButtonAddVerb fullheight row" ng-click="addVerb();">
                                 <div class="col-xs-offset-2 col-xs-4 text-center TextAddWord">{{content.guardar}}</div>
                                 <div class="col-xs-2">
                                     <img class="imgResponsiveConfirmButton" ng-src="{{baseurl}}img/srcWeb/imagenesvarias/save_as_gris.png"/>
