@@ -55,6 +55,7 @@ class addVerbModel extends CI_Model {
          }else if ($language == 'ES'){
              $url = 'http://www.verbix.com/webverbix/Spanish/'.$infinitive.'.html';
              $xpath = $this->searchInfinitive($url);
+             return $xpath;
              $this->getPresentESP($verb, $xpath);
              $this->getPerfectoESP($verb, $xpath);
              $this->getImperfectoESP($verb, $xpath);
@@ -70,16 +71,23 @@ class addVerbModel extends CI_Model {
      }
 
     function searchInfinitive($url){
+
+        $url ="http://www.verbix.com/webverbix/Spanish/ir.html";
         $curl = curl_init($url);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
         curl_setopt($curl, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US) AppleWebKit/534.10 (KHTML, like Gecko) Chrome/8.0.552.224 Safari/534.10');
+        curl_setopt($curl, CURLOPT_URL,$url);
+        curl_setopt($curl, CURLOPT_FAILONERROR, true);
+        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($curl, CURLOPT_AUTOREFERER, true);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER,true);
+        curl_setopt($curl, CURLOPT_TIMEOUT, 60);
         $html = curl_exec($curl); curl_close($curl);
         $dom = new DOMDocument('1.0', 'UTF-8');
         $dom->substituteEntities = TRUE;
         @$dom->loadHTML(mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8'));
-        //file_put_contents('C:\Users\Hector\html.html', $dom->saveHTML($dom->documentElement));
-        $xpath = new DOMXPath($dom);
+        file_put_contents('C:\Users\Hector\DOMJOCOMUNICO.html', $dom->saveHTML($dom->documentElement));
+        $xpath = new DOMXPath($dom);//*[@id="verbixConjugations"]/div[3]/div/div[1]/table/tbody/tr[1]/td[2]/span
+        return $xpath->query('//*[@id="main"]/div[3]/div[1]/div[3]/div/div[4]/table/tr[1]/td[2]/span/text()')->item(0)->nodeValue;
         return $xpath;
     }
 
@@ -93,7 +101,7 @@ class addVerbModel extends CI_Model {
     }
 
     function getPresentESP($verb, $xpath){
-        $verb->presente->ps1 = $xpath->query('//*[@id="main"]/div[3]/div[1]/div[3]/div/div[1]/table/tr[1]/td[2]/span')->item(0)->nodeValue;
+        $verb->presente->ps1 = $xpath->query('//*[@id="main"]/div[3]/div[1]/div[3]/div/div[1]/table/tr[1]/td[2]/span/text()')->item(0)->nodeValue;
         $verb->presente->ps2 = $xpath->query('//*[@id="main"]/div[3]/div[1]/div[3]/div/div[1]/table/tr[2]/td[2]/span')->item(0)->nodeValue;
         $verb->presente->ps3 = $xpath->query('//*[@id="main"]/div[3]/div[1]/div[3]/div/div[1]/table/tr[3]/td[2]/span')->item(0)->nodeValue;
         $verb->presente->pp1 = $xpath->query('//*[@id="main"]/div[3]/div[1]/div[3]/div/div[1]/table/tr[4]/td[2]/span')->item(0)->nodeValue;
@@ -253,6 +261,188 @@ class addVerbModel extends CI_Model {
         $verb->gerundio = $xpath->query('//*[@id="main"]/div[3]/div[1]/div[2]/p/span[3]')->item(0)->nodeValue;
         $verb->participio = $xpath->query('//*[@id="main"]/div[3]/div[1]/div[2]/p/span[2]')->item(0)->nodeValue;
     }
+
+    //Check If the verb is already on the DB.
+    function verbExist($verb){
+        $verb = str_replace(' ', '', $verb);
+        $language = $this->session->userdata('ulangabbr');//CA or ES
+        $userid = $this->session->userdata('idusu');
+        if ($language == 'CA'){
+            $verbTable = 'verbca';
+        }else if ($language == 'ES'){
+            $verbTable = 'verbes';
+        }
+        $sql = "SELECT verbid FROM ".$verbTable." JOIN pictograms ON verbid = pictoid WHERE ID_PUser = ? AND verbtext ='".$verb."';";
+        $query = $this->db->query($sql, $userid);
+        $res = $query->result();
+        if(count($res) < 1){
+            return false;
+        }else {
+            return true;
+        }
+    }
+
+    function insertData($request){
+        $imgPicto = $request->img;
+        $pictotext = $request->verb;
+        $pictoid = $this->insertPictogram($imgPicto);
+        $this->insertPictogramsLanguage($pictoid, $pictotext);
+        $this->insertVerb($pictoid, $pictotext);
+        $this->insertVerbConjugation($pictoid, $request->conjugations);
+        return $this->insertVerbPatterns($pictoid, $request->patterns, $request->pronominal);
+    }
+
+    function insertPictogram($imgPicto){
+        $userid = $this->session->userdata('idusu');
+        $data = array(
+            'ID_PUser' => $userid,
+            'pictoType' => 'verb',
+            'supportsExpansion' => '1',
+            'imgPicto' => $imgPicto
+        );
+        $this->db->insert('Pictograms', $data);
+        $pictoid = $this->db->insert_id();
+        return $pictoid;
+
+    }
+
+    function insertPictogramsLanguage($pictoid, $pictotext){
+        $languageid = ($this->session->userdata('ulangabbr') == 'CA' ? 1:  2);
+        $data = array(
+            'pictoid' => $pictoid,
+            'languageid' => $languageid,
+            'insertdate' => mdate("%Y/%m/%d", time()),
+            'pictotext' => $pictotext,
+            'pictofreq' => 10.000
+        );
+        $this->db->insert('PictogramsLanguage', $data);
+    }
+
+    function insertVerb($verbid, $verbtext){
+        $table = ($this->session->userdata('ulangabbr') == 'CA' ? 'verbca': 'verbes');
+        $data = array(
+            'verbid' => $verbid,
+            'verbtext' => $verbtext,
+            'actiu' => '1'
+        );
+        $this->db->insert($table, $data);
+    }
+
+    function insertVerbConjugation($verbid, $conjugations){
+        $this->insertConjugations($verbid, $conjugations->presente);
+        $this->insertConjugations($verbid, $conjugations->perfecto);
+        $this->insertConjugations($verbid, $conjugations->imperfecto);
+        $this->insertConjugations($verbid, $conjugations->pluscuamperfecto);
+        $this->insertConjugations($verbid, $conjugations->pasado);
+        $this->insertConjugations($verbid, $conjugations->futuro);
+        $this->insertConjugations($verbid, $conjugations->prsubj);
+        $this->insertConjugations($verbid, $conjugations->impsubj);
+        $this->insertImperatiuConjugations($verbid, $conjugations->imperativo);
+        $this->insertFormasNoPersonales($verbid, $conjugations->formasNoPersonales);
+    }
+    function insertConjugations($verbid, $conj){
+        $this->insertTemp($verbid, $conj->name, 1, 'sing', $conj->persona->ps1);
+        $this->insertTemp($verbid, $conj->name, 2, 'sing', $conj->persona->ps2);
+        $this->insertTemp($verbid, $conj->name, 3, 'sing', $conj->persona->ps3);
+        $this->insertTemp($verbid, $conj->name, 1, 'pl', $conj->persona->pp1);
+        $this->insertTemp($verbid, $conj->name, 2, 'pl', $conj->persona->pp2);
+        $this->insertTemp($verbid, $conj->name, 3, 'pl', $conj->persona->pp3);
+    }
+    function insertImperatiuConjugations($verbid, $conj){
+        $this->insertTemp($verbid, $conj->name, 2, 'sing', $conj->persona->ps2);
+        $this->insertTemp($verbid, $conj->name, 3, 'sing', $conj->persona->ps3);
+        $this->insertTemp($verbid, $conj->name, 1, 'pl', $conj->persona->pp1);
+        $this->insertTemp($verbid, $conj->name, 2, 'pl', $conj->persona->pp2);
+        $this->insertTemp($verbid, $conj->name, 3, 'pl', $conj->persona->pp3);
+    }
+    function insertTemp($verbid, $tense, $pers, $singpl, $verbConj){
+        $table = ($this->session->userdata('ulangabbr') == 'CA' ? 'verbconjugationca': 'verbconjugationes');
+        $data = array(
+            'verbid' => $verbid,
+            'tense' => $tense,
+            'pers' => $pers,
+            'singpl' => $singpl,
+            'verbconj' => $verbConj
+        );
+        $this->db->insert($table, $data);
+    }
+    function insertFormasNoPersonales($verbid, $conj){
+        $table = ($this->session->userdata('ulangabbr') == 'CA' ? 'verbconjugationca': 'verbconjugationes');
+        $data = array(
+            'verbid' => $verbid,
+            'tense' => 'infinitiu',
+            'pers' => 0,
+            'singpl' => 'sing',
+            'verbconj' => $conj->infinitivo
+        );
+        $this->db->insert($table, $data);
+        $data = array(
+            'verbid' => $verbid,
+            'tense' => 'gerundi',
+            'pers' => 0,
+            'singpl' => 'sing',
+            'verbconj' => $conj->gerundio
+        );
+        $this->db->insert($table, $data);
+        $data = array(
+            'verbid' => $verbid,
+            'tense' => 'participi',
+            'pers' => 0,
+            'singpl' => 'sing',
+            'verbconj' => $conj->participio
+        );
+        $this->db->insert($table, $data);
+    }
+
+    function insertVerbPatterns($verbid, $patterns, $pronominal){
+        foreach ($patterns as $pattern){
+            $this->insertPattern($verbid, $pattern, $pronominal);
+        }
+    }
+    function insertPattern($verbid, $pattern, $pronominal){
+        $table = ($this->session->userdata('ulangabbr') == 'CA' ? 'patternca': 'patternes');
+        $subverb = $this->subVerb($pattern);
+        $data = array(
+            'verbid' => $verbid,
+            'pronominal' => $pronominal,
+            'pseudoimpersonal' => '0',
+            'copulatiu' => '0',
+            'tipusfrase' => 'enunciativa',
+            'defaulttense' => $pattern->Patron->defaulttense,
+            'subj' => $pattern->Patron->subj,
+            'subjdef' => $pattern->Patron->subjdef,
+            'theme' => $pattern->CD->priority,
+            'themetipus' => $pattern->CD->type,
+            'themeprep' => $pattern->CD->preposition,
+            'receiver' => $pattern->Receiver->priority,
+            'receiverdef' => $pattern->Receiver->type,
+            'receiverprep' => $pattern->Receiver->preposition,
+            'benef' => $pattern->Beneficiary->priority,
+            'beneftipus' => $pattern->Beneficiary->type,
+            'benefprep' => $pattern->Beneficiary->preposition,
+            'acomp' => $pattern->Acomp->priority,
+            'acompprep' => $pattern->Acomp->preposition,
+            'tool' => $pattern->Tool->priority,
+            'toolprep' => $pattern->Tool->preposition,
+            'manera' => $pattern->Modo->priority,
+            'maneratipus' => $pattern->Modo->type,
+            'locto' => $pattern->Locto->priority,
+            'loctotipus' => $pattern->Locto->type,
+            'loctoprep' => $pattern->Locto->preposition,
+            'subverb' => $subverb,
+            'exemple' => $pattern->Patron->exemple,
+        );
+        $this->db->insert($table, $data);
+    }
+
+    function subVerb($pattern){
+        if ($pattern->CD->type == 'verb' || $pattern->Beneficiary->type == 'verb' || $pattern->Locto->type == 'verb'){
+            return '1';
+        }else{
+            return '0';
+        }
+    }
+
 }
 class Verb {
     public $presente;

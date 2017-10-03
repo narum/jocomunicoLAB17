@@ -411,3 +411,7 @@
     border-color: rgb(230,25,25);
     border-width: 3px;
 }
+
+.deleteP2Button {
+    top: 2%;
+}

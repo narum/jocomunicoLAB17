@@ -26,4 +26,19 @@ class addVerb extends REST_Controller {
         $this->response($result, REST_Controller::HTTP_OK);
     }
 
+    public function verbExist_post() {
+        $postdata = file_get_contents("php://input");
+        $request = json_decode($postdata);
+        $verb = $request->verb;
+        $result = $this->addVerbModel->verbExist($verb);
+        $this->response($result, REST_Controller::HTTP_OK);
+    }
+
+    public function insertData_post() {
+        $postdata = file_get_contents("php://input");
+        $request = json_decode($postdata);
+        $result = $this->addVerbModel->insertData($request);
+        $this->response($result, REST_Controller::HTTP_OK);
+    }
+
 }

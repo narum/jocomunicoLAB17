@@ -9,6 +9,7 @@
 <style>html, body, .container-table{height: 100%;height: 100vh;background: url('{{img.fons}}') no-repeat center center fixed;-webkit-background-size: cover;-moz-background-size: cover;-o-background-size: cover;background-size: cover;}
 </style>
 <div ng-include="'/angular_templates/errorImgModal.html'"></div>
+<div ng-include="'/angular_templates/infoModal.html'"></div>
 <!-- menu superior dropdown -->
 <div ng-include="'/angular_templates/dropdownMenuBar.html'"></div>
 <div ng-include="'/angular_templates/logoutModal.html'"></div>
@@ -64,7 +65,7 @@
                                             <div class="col-xs-2 paddingPronominal"> {{content.pronominal}} </div>
                                             <div class="col-xs-3 paddingPronCheckbox">
                                                 <input id="switchPronominal" class="switchclear" type="checkbox"
-                                                       ng-model="Pattern1.Patron.pronominal" ng-init="Pattern1.Patron.pronominal=0" ng-true-value="1" ng-false-value="0">
+                                                       ng-model="pronominal" ng-init="pronominal =0" ng-true-value="1" ng-false-value="0">
                                                 <label for="switchPronominal">&nbsp;</label>
                                             </div>
                                         </div>
@@ -83,7 +84,7 @@
                                 <div class="col-xs-10 headerTitle headerAdd">{{content.addVerbPattern}}</div>
                             </div>
                             <div class="scrollVerbPattern" ng-scrollbar rebuild-on-resize rebuild-on="rebuild:verbPatternScrollbar">
-                                <div class="row buttonAddVerbPattern" ng-click="verbPattern2=true; rebuildScrollBarPatterns();">+</div>
+                                <div class="row buttonAddVerbPattern" ng-click="insertPattern2()">+</div>
                                 <!-- Verb Pattern1 -->
                                 <div class="row verbPatternBar">
                                     <div class="row verbHeaderBar verbButtonBar" ng-click="verbPattern1=!verbPattern1; rebuildScrollBarPatterns();">
@@ -450,9 +451,9 @@
                                             <div class="row">
                                                 <div class="col-xs-offset-2 col-xs-8 paddingDeletePattern text-center">{{content.deletePattern}}</div>
                                             </div>
-                                            <div class="row col-xs-12 paddingComplementBtn">
+                                            <div class="row col-xs-12 paddingComplementBtn deleteP2Button">
                                                 <button type="button" class="center-block btn btn-danger btn-lg" style="padding: 1vh">
-                                                    <span class="glyphicon glyphicon-minus" ng-click="showVerbPattern2 = false; verbPattern2 = false; deletePattern2();"></span></button>
+                                                    <span class="glyphicon glyphicon-minus" ng-click="deletePattern2();"></span></button>
                                             </div>
                                         </div>
                                         <!-- CD -->
@@ -1075,19 +1076,19 @@
                                     <div class="row" style="padding-top: 1vh">
                                         <div class="col-xs-4 conjugationL">{{content.infinitivo}}</div>
                                         <div class="col-xs-6 conjugationR">
-                                            <input type="text" class="addConjugationText"  name="infinitivo" ng-model="infinitivo" />
+                                            <input type="text" class="addConjugationText"  name="infinitivo" ng-model="formasNoPersonales.infinitivo" />
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-xs-4 conjugationL">{{content.gerundio}}</div>
                                         <div class="col-xs-6 conjugationR">
-                                            <input type="text" class="addConjugationText"  name="gerundio" ng-model="gerundio" />
+                                            <input type="text" class="addConjugationText"  name="gerundio" ng-model="formasNoPersonales.gerundio" />
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-xs-4 conjugationL">{{content.participio}}</div>
                                         <div class="col-xs-6 conjugationR">
-                                            <input type="text" class="addConjugationText"  name="participio" ng-model="participio" />
+                                            <input type="text" class="addConjugationText"  name="participio" ng-model="formasNoPersonales.participio" />
                                         </div>
                                     </div>
                                 </div>

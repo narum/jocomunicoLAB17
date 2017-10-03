@@ -6,10 +6,10 @@ var app = angular.module('controllers');
             $rootScope.dropdownMenuBarValue = '/home'; //Dropdown bar button selected on this view
         }
         // Pedimos los textos para cargar la pagina
+        var textBD = txtContent("addVerb").then(function (results) {return results.data});
+
         txtContent("addVerb").then(function (results) {
             $scope.content = results.data;
-            //$scope.initAddWordtest();
-
         });
         //Dropdown Menu Bar
         $rootScope.dropdownMenuBar = null;
@@ -66,19 +66,8 @@ var app = angular.module('controllers');
 
         $scope.imgPicto = 'arrow question.png';
         $scope.verb ='';
-        $scope.pronominal = false;
-        //var persona = {ps1:'', ps2:'', ps3:'', pp1:'', pp2:'', pp3:''};
-        function getContent() {
-            var array = [];
-            var obj = {};
-            angular.forEach($scope.content, function (value, key) {
-                    obj[key]=value;
-                    array.push(obj);
-            });
-            return array;
-        };
+        $scope.pronominal = 0;
 
-        //var content = $scope.content;
         function persona (){
             this.ps1 = '';
             this.ps2 = '';
@@ -92,18 +81,16 @@ var app = angular.module('controllers');
             this.persona = new persona();
         };
 
-        $scope.presente = new conjugation('presente');
-        $scope.perfecto = new conjugation('perfecto');
-        $scope.imperfecto = new conjugation('imperfecto');
-        $scope.pluscuamperfecto = new conjugation('pluscuamperfecto');
-        $scope.pasado = new conjugation('pasado');
-        $scope.futuro = new conjugation('futuro');
+        $scope.presente = new conjugation('present');
+        $scope.perfecto = new conjugation('perfet');
+        $scope.imperfecto = new conjugation('imperfecte');
+        $scope.pluscuamperfecto = new conjugation('perifrastic');
+        $scope.pasado = new conjugation('passat');
+        $scope.futuro = new conjugation('futur');
         $scope.prsubj = new conjugation('prsubj');
         $scope.impsubj = new conjugation('impsubj');
-        $scope.imperativo = {name:'imperativo', persona:{ps2:'', ps3:'', pp1:'', pp2:'', pp3:''}};
-        $scope.infinitivo = '';
-        $scope.gerundio = '';
-        $scope.participio = '';
+        $scope.imperativo = {name:'imperatiu', persona:{ps2:'', ps3:'', pp1:'', pp2:'', pp3:''}};
+        $scope.formasNoPersonales = {infinitivo: '', gerundio: '', participio: ''};
 
         $scope.cancelAddVerb = function () {
             $location.path("/panelGroups");
@@ -148,6 +135,7 @@ var app = angular.module('controllers');
             $scope.style_changes_title = 'padding-top: 2vh;';
             $('#infoModal').modal('toggle');
         };
+        $scope.verbConjugations;
 
         $scope.getConjugations = function (){
             var URL = $scope.baseurl + "addVerb/getConjugations";
@@ -158,7 +146,6 @@ var app = angular.module('controllers');
                 console.log($scope.conjugations);
                 setConjugations();
             });
-            //setConjugations();
         };
         function setConjugations(){
             setPresente();
@@ -244,9 +231,9 @@ var app = angular.module('controllers');
             $scope.imperativo.persona.pp3 = $scope.conjugations.imperativo.pp3;
         }
         function setFormasNoPersonales(){
-            $scope.infinitivo = $scope.conjugations.infinitivo;
-            $scope.gerundio = $scope.conjugations.gerundio;
-            $scope.participio = $scope.conjugations.participio;
+            $scope.formasNoPersonales.infinitivo = $scope.conjugations.infinitivo;
+            $scope.formasNoPersonales.gerundio = $scope.conjugations.gerundio;
+            $scope.formasNoPersonales.participio = $scope.conjugations.participio;
         }
 
         //PATRONES VERBALES
@@ -279,7 +266,13 @@ var app = angular.module('controllers');
             'Locto': {'priority':0, 'type':"", 'preposition':""}
         };
 
+        $scope.insertPattern2 = function(){
+            $scope.verbPattern2 = true;
+            $scope.$broadcast('rebuild:verbPatternScrollbar');
+        }
         $scope.deletePattern2 = function(){
+            $scope.showVerbPattern2 = false;
+            $scope.verbPattern2 = false;
             $scope.Pattern2 = {
                 'Patron': {'pronominal': false, 'subj':"", 'subjdef':"", 'defaulttense':"", 'exemple':""},
                 'CD': {'priority': 0, 'type':"", 'preposition':""},
@@ -711,36 +704,46 @@ var app = angular.module('controllers');
             return errors;
         };
 
-            $scope.addVerb = function(){
-            //CHECK IF VERB ALREADY EXISTS -> ACTIVAR POPUP
-            console.log("GUARDANDO...");
-            console.log($scope.Pattern1);
-            console.log($scope.Pattern2);
-            console.log($scope.content.buscarConj);
+        $scope.editMode = false;
 
-            var isPattern2 = $scope.showVerbPattern2;
-            var verbErrors = checkVerbErrors($scope.addVerbErrors);
-            var Pattern1Errors = checkErrorsPattern($scope.Pattern1, $scope.showPattern1, $scope.addVerbErrorsP1);
-            var Pattern2Errors = checkErrorsPattern($scope.Pattern2, $scope.showPattern2, $scope.addVerbErrorsP2);
-            //CHECK IF PATTERN 2 EXISTS
-                /*
-                if (!isPattern2){//There is no Pattern2 Just send Pattern1
-                } else if (isPattern2){// Check errors on Pattern2
-                    var Pattern2Errors = checkErrorsPattern($scope.Pattern2, $scope.showPattern2, $scope.addVerbErrorsP2);
+        $scope.addVerb = function(){
+            if($scope.editMode === false){
+                if(!checkVerbErrors($scope.addVerbErrors)){
+                    var URL = $scope.baseurl + "addVerb/verbExist";
+                    var postdata = {verb : $scope.verb};
+                    $http.post(URL, postdata).success(function (response) {
+                        if(response === true){
+                            var textBD = $scope.content;
+                            $scope.infoModalContent = textBD.modalVerbExists;
+                            $scope.infoModalTitle = textBD.modalInfoTitle;
+                            $scope.style_changes_title = 'padding-top: 2vh;';
+                            $('#infoModal').modal('toggle');
+                        }else{
+                            if(!checkImgVerbErrors($scope.addVerbErrors) && !checkErrorsPattern($scope.Pattern1, $scope.showPattern1, $scope.addVerbErrorsP1)){
+                                if($scope.verbPattern2 === true){
+                                    if(!checkErrorsPattern($scope.Pattern2, $scope.showPattern2, $scope.addVerbErrorsP2)){
+                                        var patterns = [$scope.Pattern1, $scope.Pattern2];
+                                    }
+                                }else{
+                                    var patterns = [$scope.Pattern1];
+                                }
+                                var conjugations = {presente: $scope.presente, perfecto: $scope.perfecto, imperfecto: $scope.imperfecto, pluscuamperfecto: $scope.pluscuamperfecto,
+                                                    pasado: $scope.pasado, futuro: $scope.futuro, prsubj: $scope.prsubj, impsubj: $scope.impsubj, imperativo: $scope.imperativo,
+                                                    formasNoPersonales: $scope.formasNoPersonales};
+
+                                var URL = $scope.baseurl + "addVerb/insertData";
+                                var postdata = {img: $scope.imgPicto, verb: $scope.verb, pronominal: $scope.pronominal, conjugations: conjugations, patterns: patterns};
+                                console.log(postdata);
+                                $http.post(URL, postdata).success(function (response){
+                                    console.log(response);
+                                    $location.path("/panelGroups");
+                                });
+                            }
+                        }
+                    });
                 }
-                 */
-            //ADD Pattern1
-            if (checkImgVerbErrors($scope.addVerbErrors)) {
-                console.log("NO HAY IMAGEN!");
-            } else if (checkVerbErrors($scope.addVerbErrors)){
-                console.log("HAY ERRORES en los VERBOS");
-            }else if (Pattern1Errors){
-                console.log($scope.addVerbErrorsP1);
-                console.log("HAY ERRORES EN EL PATRÓN 1");
-            }
-            if(Pattern2Errors){
-                console.log($scope.addVerbErrorsP2);
-                console.log("HAY ERRORES EN EL PATRÓN 2");
+            }else{
+                //EDIT MODE
             }
         };
     });
