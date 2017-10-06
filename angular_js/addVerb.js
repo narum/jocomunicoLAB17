@@ -10,6 +10,7 @@ var app = angular.module('controllers');
 
         txtContent("addVerb").then(function (results) {
             $scope.content = results.data;
+            $scope.editMode();
         });
         //Dropdown Menu Bar
         $rootScope.dropdownMenuBar = null;
@@ -64,9 +65,9 @@ var app = angular.module('controllers');
             $scope.$broadcast('rebuild:verbPatternScrollbar');
         };
 
-        $scope.imgPicto = 'arrow question.png';
-        $scope.verb ='';
-        $scope.pronominal = 0;
+        $scope.imgPicto = {value: 'arrow question.png'};
+        $scope.verb = {name: ''};
+        $scope.pronominal = {value: 0};
 
         function persona (){
             this.ps1 = '';
@@ -111,9 +112,9 @@ var app = angular.module('controllers');
             })
                 .success(function (response) {
                     $scope.uploading = false;
-                    $scope.imgPicto = response.url;
-                    $scope.imgPicto = $scope.imgPicto.split('/');
-                    $scope.imgPicto = $scope.imgPicto[2];
+                    var imgPicto = response.url;
+                    //var imgPicto = imgPicto.split('/');
+                    $scope.imgPicto.value = imgPicto;
                     if (response.error) {
                         console.log(response.errorText);
                         $scope.errorText = response.errorText;
@@ -139,11 +140,11 @@ var app = angular.module('controllers');
 
         $scope.getConjugations = function (){
             var URL = $scope.baseurl + "addVerb/getConjugations";
-            var postdata = {verb : $scope.verb};
+            var postdata = {verb : $scope.verb.name};
             $http.post(URL, postdata).success(function (response) {
                 $scope.conjugations = response;
-                console.log("CONJUGACIONES: ");
                 console.log($scope.conjugations);
+                setVerbInfo();
                 setConjugations();
             });
         };
@@ -617,8 +618,101 @@ var app = angular.module('controllers');
         $scope.addVerbErrorsP1 = {'Patron': false, 'CD': false, 'Receiver': false, 'Beneficiary': false, 'Acomp': false, 'Tool': false, 'Modo':false, 'Tool': false, 'Locto': false};
         $scope.addVerbErrorsP2 = {'Patron': false, 'CD': false, 'Receiver': false, 'Beneficiary': false, 'Acomp': false, 'Tool': false, 'Modo':false, 'Tool': false, 'Locto': false};
 
+        $scope.editMode = function(){
+            $scope.isEdit = $rootScope.addWordparam.newmod;
+           if ($scope.isEdit === true){
+               console.log("START EDIT MODE");
+               var URL = $scope.baseurl + "addVerb/getAllData";
+               var postdata = {verbID : $rootScope.addWordparam.type};
+               $http.post(URL, postdata).success(function (response) {
+                   console.log(response);
+                   $scope.conjugations = response.conjugations;
+                   setVerbInfo(response.verbText, response.imgPicto, response.pronominal);
+                   setConjugations();
+                   setPattern('Pattern1', response.patterns[0]);
+                   if(response.patterns.length > 1){
+                       setPattern('Pattern2', response.patterns[1]);
+                   }
+                   $scope.$broadcast('rebuild:verbPatternScrollbar');
+               });
+           }else{
+               console.log("NO START EDIT MODE");
+           }
+        };
+
+        function setVerbInfo(verbName, imgPicto, pronominal){
+            $scope.verb.name = verbName;
+            $scope.imgPicto.value = imgPicto;
+            if(pronominal === '1'){
+                $scope.pronominal.value = 1;
+            }else if (pronominal === '0'){
+                $scope.pronominal.value = 0;
+            }
+        }
+
+        function setPattern(pattern, data){
+            console.log(data);
+            if(pattern === 'Pattern1'){
+                $scope.Pattern1 = {
+                    'Patron': {'pronominal': data.pronominal, 'subj': data.subj, 'subjdef': data.subjdef, 'defaulttense': data.defaulttense, 'exemple': data.exemple},
+                    'CD': {'priority': data.theme === '' ? 0 : data.theme, 'type': data.themetipus, 'preposition': data.themeprep},
+                    'Receiver': {'priority': data.receiver === '' ? 0 : data.receiver, 'preposition': data.receiverprep},
+                    'Beneficiary': {'priority': data.benef === '' ? 0 : data.benef, 'type':  data.beneftipus, 'preposition': data.benefprep},
+                    'Acomp': {'priority': data.acomp === '' ? 0 : data.acomp, 'preposition': data.acompprep},
+                    'Tool': {'priority': data.tool === '' ? 0 : data.tool, 'preposition': data.toolprep},
+                    'Modo': {'priority': data.manera === '' ? 0 : data.manera, 'type': data.maneratipus},
+                    'Locto': {'priority': data.locto === '' ? 0 : data.locto, 'type': data.loctotipus, 'preposition': data.loctoprep}
+                };
+                showEditPattern($scope.Pattern1, $scope.showPattern1);
+                $scope.verbPattern1 = true;
+            }else if (pattern === 'Pattern2'){
+                $scope.Pattern2 = {
+                    'Patron': {'pronominal': data.pronominal, 'subj': data.subj, 'subjdef': data.subjdef, 'defaulttense': data.defaulttense, 'exemple': data.exemple},
+                    'CD': {'priority': data.theme === '' ? 0 : data.theme, 'type': data.themetipus, 'preposition': data.themeprep},
+                    'Receiver': {'priority': data.receiver === '' ? 0 : data.receiver, 'preposition': data.receiverprep},
+                    'Beneficiary': {'priority': data.benef === '' ? 0 : data.benef, 'type':  data.beneftipus, 'preposition': data.benefprep},
+                    'Acomp': {'priority': data.acomp === '' ? 0 : data.acomp, 'preposition': data.acompprep},
+                    'Tool': {'priority': data.tool === '' ? 0 : data.tool, 'preposition': data.toolprep},
+                    'Modo': {'priority': data.manera === '' ? 0 : data.manera, 'type': data.maneratipus},
+                    'Locto': {'priority': data.locto === '' ? 0 : data.locto, 'type': data.loctotipus, 'preposition': data.loctoprep}
+                };
+                showEditPattern($scope.Pattern2, $scope.showPattern2);
+                $scope.showVerbPattern2 = true;
+                $scope.verbPattern2 = true;
+            }
+            console.log("PATRÓN 1: ");
+            console.log($scope.Pattern1);
+            console.log("PATRÓN 2: ");
+            console.log($scope.Pattern2);
+        }
+
+        function showEditPattern(Pattern, showPattern){
+                if (Pattern.CD.priority !== 0){
+                    showPattern.CD = true;
+                }
+                if (Pattern.Receiver.priority !== 0){
+                    showPattern.Receiver = true;
+                }
+                if (Pattern.Beneficiary.priority !== 0){
+                    showPattern.Beneficiary = true;
+                }
+                if (Pattern.Acomp.priority !== 0){
+                    showPattern.Acomp = true;
+                }
+                if (Pattern.Tool.priority !== 0){
+                    showPattern.Tool = true;
+                }
+                if (Pattern.Modo.priority !== 0){
+                    showPattern.Modo = true;
+                }
+            if (Pattern.Locto.priority !== 0){
+                showPattern.Locto = true;
+            }
+
+        }
+
         function checkVerbErrors(addVerbErrors){
-            var verb = $scope.verb;
+            var verb = $scope.verb.name;
             if(verb === ''){
                 addVerbErrors.verb = true;
             }else {
@@ -627,7 +721,7 @@ var app = angular.module('controllers');
             return addVerbErrors.verb;
         };
         function checkImgVerbErrors(addVerbErrors){
-            var imgPicto = $scope.imgPicto;
+            var imgPicto = $scope.imgPicto.value;
             if(imgPicto === 'arrow question.png' || imgPicto === null){
                 addVerbErrors.imgVerb = true;
             }else{
@@ -637,15 +731,17 @@ var app = angular.module('controllers');
         };
         function checkErrorsPattern(Pattern, showPattern, patternErrors){
             var errors = false;
+            console.log("SHOW PATTERN:");
+            console.log(showPattern);
+            console.log("CHECK ERRORS PATTERN");
             if(Pattern.Patron.subj === '' || Pattern.Patron.subjdef === '' || Pattern.Patron.defaulttense === '' ){
-                console.log("ERROR EN EL PATRÓN 1");
                 errors = true;
                 patternErrors.Patron = true;
             }else {
                 patternErrors.Patron = false;
             }
             if (showPattern.CD === true){
-                if (Pattern.CD.priority === 0 || Pattern.CD.type === ''){
+                if (Pattern.CD.priority === 0 || Pattern.CD.type === '' || Pattern.CD.type === null){
                     errors = true;
                     patternErrors.CD = true;
                 }else {
@@ -661,7 +757,7 @@ var app = angular.module('controllers');
                 }
             }
             if (showPattern.Beneficiary === true){
-                if (Pattern.Beneficiary.priority === 0 || Pattern.Beneficiary.type === ''){
+                if (Pattern.Beneficiary.priority === 0 || Pattern.Beneficiary.type === '' || Pattern.Beneficiary.type === null){
                     errors = true;
                     patternErrors.Beneficiary = true;
                 }else {
@@ -685,15 +781,15 @@ var app = angular.module('controllers');
                 }
             }
             if (showPattern.Modo === true){
-                if (Pattern.Modo.priority === 0 || Pattern.Modo.type === ''){
+                if (Pattern.Modo.priority === 0 || Pattern.Modo.type === '' || Pattern.Modo.type === null){
                     errors = true;
                     patternErrors.Modo = true;
                 }else {
                     patternErrors.Modo = false;
                 }
             }
-            if (showPattern.Locto == true){
-                if (Pattern.Locto.priority === 0 || Pattern.Locto.type === ''){
+            if (showPattern.Locto === true){
+                if (Pattern.Locto.priority === 0 || Pattern.Locto.type === '' || Pattern.Locto.type === null){
                     errors = true;
                     patternErrors.Locto = true;
                 }else {
@@ -704,21 +800,19 @@ var app = angular.module('controllers');
             return errors;
         };
 
-        $scope.editMode = false;
-
         $scope.addVerb = function(){
-            if($scope.editMode === false){
                 if(!checkVerbErrors($scope.addVerbErrors)){
                     var URL = $scope.baseurl + "addVerb/verbExist";
-                    var postdata = {verb : $scope.verb};
+                    var postdata = {verb : $scope.verb.name};
                     $http.post(URL, postdata).success(function (response) {
-                        if(response === true){
+                        if(response === true && $scope.isEdit !== true){
                             var textBD = $scope.content;
                             $scope.infoModalContent = textBD.modalVerbExists;
                             $scope.infoModalTitle = textBD.modalInfoTitle;
                             $scope.style_changes_title = 'padding-top: 2vh;';
                             $('#infoModal').modal('toggle');
                         }else{
+                            console.log("CHECKING IMAGES ERRORS...");
                             if(!checkImgVerbErrors($scope.addVerbErrors) && !checkErrorsPattern($scope.Pattern1, $scope.showPattern1, $scope.addVerbErrorsP1)){
                                 if($scope.verbPattern2 === true){
                                     if(!checkErrorsPattern($scope.Pattern2, $scope.showPattern2, $scope.addVerbErrorsP2)){
@@ -732,19 +826,18 @@ var app = angular.module('controllers');
                                                     formasNoPersonales: $scope.formasNoPersonales};
 
                                 var URL = $scope.baseurl + "addVerb/insertData";
-                                var postdata = {img: $scope.imgPicto, verb: $scope.verb, pronominal: $scope.pronominal, conjugations: conjugations, patterns: patterns};
+                                var postdata = {img: $scope.imgPicto.value, verb: $scope.verb.name, pronominal: $scope.pronominal.value, conjugations: conjugations, patterns: patterns};
                                 console.log(postdata);
+
                                 $http.post(URL, postdata).success(function (response){
                                     console.log(response);
                                     $location.path("/panelGroups");
                                 });
+
                             }
                         }
                     });
                 }
-            }else{
-                //EDIT MODE
-            }
         };
     });
 

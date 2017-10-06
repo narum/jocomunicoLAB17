@@ -27,14 +27,10 @@ class BackupClean extends CI_Model {
       $this->cleanImages();
     }
     function LaunchParcialClean_Pictograms(){
-      $this->cleanPictogramLanguage();
-      $this->cleanPictograms();
-
-    }
-      //llama a la recuperacion parcial de imagenes
-    function LaunchParcialClean_vocabulary(){
       $this->cleanAdjectives();
       $this->cleanNames();
+      $this->cleanPictogramLanguage();
+      $this->cleanPictograms();
     }
       //llama a la recuperacion parcial de la carpetas tematicas
     function LaunchParcialClean_Folder(){
@@ -45,8 +41,8 @@ class BackupClean extends CI_Model {
     }
       //llama a la recuperacion parcial de paneles
     function LaunchParcialClean_panels(){
-      $this->cleanRBoardCell();
       $this->cleanCells();
+      $this->cleanRBoardCell();
       $this->cleanBoards();
       $this->cleanGroupBoards();
     }

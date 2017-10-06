@@ -9,7 +9,7 @@ angular.module('app', [
         'ngDialog',
         'ngScrollbar',
         'angular-bind-html-compile',
-        
+
 	//Modules
 	'controllers',
 	'services',
@@ -63,7 +63,7 @@ angular.module('app', [
 			controller:'addWordCtrl',
 			templateUrl:'../../angular_templates/addWord.html'
 		})
-        		.when('/addVerb', {
+        .when('/addVerb', {
             controller:'addVerb',
             templateUrl:'../../angular_templates/addVerb.html'
         })
@@ -107,6 +107,20 @@ angular.module('app', [
 			controller:'downloadCtrl',
 			templateUrl:'../../angular_templates/Download.html'
 		})
+
+
+		//Nuevas llamadas a la pagina tutoriales y la pagina actualizaciones. Tarea 7 y 8.
+						.when('/tutorials',{
+				controller:'infoCtrl',
+				templateUrl: '../../angular_templates/Tutorials.html'
+			})
+						.when('/updates',{
+				controller: 'updatesCtrl',
+				templateUrl: '../../angular_templates/Updates.html'
+			})
+
+
+
 		.otherwise({ redirectTo:'/' });
 })
 .run(function(AuthService){
@@ -117,7 +131,7 @@ angular.module('app', [
 //Function to filter Duplicates From ng-repeat List
 .filter('unique', function() {
     return function(collection, keyname) {
-       var output = [], 
+       var output = [],
            keys = [];
 
        angular.forEach(collection, function(item) {
@@ -131,4 +145,3 @@ angular.module('app', [
        return output;
     };
 });
-

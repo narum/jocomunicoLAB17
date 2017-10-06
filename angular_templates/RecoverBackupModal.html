@@ -5,27 +5,33 @@
         <div class="row marginModalTopOwl"><img class="img-owl pull-right" src={{img.lowSorpresaFlecha}}/></div>
         <div class="row" id="boxUserConfig" style="background-image: url(img/srcWeb/patterns/pattern6.png)">
             <div id="header" class="row">
-                <div class="col-xs-10 headerTitle">{{content.title}}</div>
+                <div class="col-xs-10 headerTitle">{{content.recbtitle}}</div>
             </div>
             <div class="row backgroundUserConfigBox">
+              <div class="row infoIconBox" style="float:left;margin-left:10px;margin-top:10px;">
+                <input type="image" class="img-icon" ng-src="/img/icons/info.png" ng-click="toggleInfoModal(content.modalInfoTitle, content.restoreBackupInfo);">
+              </div>
                 <div ng-init="searchAddWord('', 'Tots')" class="fonsAlert row">
                   <div class="col-xs-6 contentEditWordPadding">
                       <div class="col-xs-12" style="display: block; position: relative; margin-top: 1vh;">
                           <div class="col-xs-offset-1 col-xs-11 text-left radioEditWord">
                               <label id='limgrec' class="radio-inline">
-                                  <input type="checkbox" ng-model="images" ng-init="images=true"/>
+                                  <input type="checkbox" ng-model="images" ng-disabled="panelb"
+                                   ng-init="images=true"/>
                                   {{content.imagenesbackup}}
                               </label>
                           </div>
                           <div class="col-xs-offset-1 col-xs-11 text-left radioEditWord">
                               <label id='lvoc' class="radio-inline">
-                                  <input id='voc' type="checkbox" ng-model="voc" ng-init="voc=true"/>
+                                  <input id='voc' type="checkbox" ng-disabled="panelb"
+                                  ng-model="voc" ng-init="voc=true"/>
                                   {{content.vocabulariobackup}}
                               </label>
                           </div>
                           <div class="col-xs-offset-1 col-xs-11 text-left radioEditWord">
                               <label id='lfold' class="radio-inline">
-                                  <input id='fold' type="checkbox"  ng-model="folder" ng-init="folder=true" />
+                                  <input id='fold' type="checkbox" ng-disabled="panelb"
+                                  ng-model="folder" ng-init="folder=true" />
                                   {{content.carpetabackup}}
                               </label>
                           </div>
@@ -51,10 +57,10 @@
                 <div class="row dadesUsuariCentre">
                   <div class="col-xs-6">
                       <button type="reset" id="recparcial" class="btn-gray" data-dismiss="modal"
-                      ng-click="showparcialBackup(images,voc,folder,cfg,panelb)">{{content.parcial}}</button>
+                      ng-click="showparcialBackup(images,voc,folder,cfg,panelb,foldername)">{{content.parcial}}</button>
                   </div>
                     <div class="col-xs-6">
-                        <button type="reset" class="btn-gray" data-dismiss="modal" ng-click="closeThisDialog();">{{content.cancel}}</button>
+                        <button type="reset" class="btn-gray" data-dismiss="modal" ng-click="closeThisDialog();" style="float:right;">{{content.cancel}}</button>
                     </div>
                 </div>
             </div>

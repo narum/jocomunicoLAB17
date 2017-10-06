@@ -28,6 +28,21 @@ class ImgUploader extends REST_Controller {
             }
         }
     }
+    function getImagesArasaac_post() {
+$postdata = file_get_contents("php://input");
+$request = json_decode($postdata);
+$name = $request->name;
+$idusu = $this->session->userdata('idusu');
+$languageInt = $this->session->userdata('uinterfacelangauge');
+$data = $this->ImgUploader_model->getImagesArasaac($idusu, $name, $languageInt);
+for ($i = 0; $i < count($data); $i++) {
+    $data[$i]["imgPath"] = "img/pictos/" . $data[$i]["imgPath"];
+}
+$response = [
+    'data' => $data
+];
+$this->response($response, REST_Controller::HTTP_OK);
+}
     public function uploadBackupWin_post(){
       $errorText = array();
       $ID_User=$this->session->idusu;
@@ -60,7 +75,7 @@ class ImgUploader extends REST_Controller {
               $error = true;
               continue;
           }
-          $dir12=substr(substr($_FILES['file' . $i]['name'],0,-4),0)."-".$ID_User;
+          $dir12=md5(date('l jS \of F Y h:i:s A'));
               mkdir("/xampp/htdocs/Temp/$dir12");
             $this->unzip->extract('/xampp/htdocs/Temp/'.basename($_FILES['file' . $i]['name']),"/xampp/htdocs/Temp/$dir12");
       }
@@ -107,7 +122,7 @@ class ImgUploader extends REST_Controller {
                 $error = true;
                 continue;
             }
-            $dir12=substr(substr($_FILES['file' . $i]['name'],0,-4),9)."-".$ID_User;
+               $dir12=md5(date('l jS \of F Y h:i:s A'));
                 mkdir("./Temp/$dir12");
                $this->unzip->extract('./Temp/'.basename($_FILES['file' . $i]['name']),
                 "./Temp/$dir12");
@@ -164,8 +179,16 @@ class ImgUploader extends REST_Controller {
             }
         }
 
+        $imgpath = "";
+
+        if (filter_input(INPUT_POST, 'vocabulary') == "true") {
+            $imgpath = $md5Name;
+        } else {
+            $imgpath = $target_dir . $md5Name;
+        }
+
         $response = [
-            'url' => $target_dir . $md5Name,
+            'url' => $imgpath,
             'errorText' => $errorText,
             'error' => $error
         ];

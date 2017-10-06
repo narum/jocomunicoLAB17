@@ -41,4 +41,12 @@ class addVerb extends REST_Controller {
         $this->response($result, REST_Controller::HTTP_OK);
     }
 
+    public function getAllData_post() {
+        $postdata = file_get_contents("php://input");
+        $request = json_decode($postdata);
+        $verbID = $request->verbID;
+        $result = $this->addVerbModel->getAllData($verbID);
+        $this->response($result, REST_Controller::HTTP_OK);
+    }
+
 }

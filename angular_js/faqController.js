@@ -1,6 +1,6 @@
 angular.module('controllers')
     .controller('faqCtrl', function ($http, $scope, $rootScope, Resources, AuthService, txtContent, $location, $timeout, dropdownMenuBarInit) {
-        
+
         //Dropdown Menu Bar
             $rootScope.dropdownMenuBar = null;
             if($rootScope.isLogged){
@@ -50,12 +50,12 @@ angular.module('controllers')
                             dropdownMenuBarInit(value);
                         });
             };
-        
-        
+
+
         $scope.linkHome = function () {
             $location.path('/home');
         };
-        
+
         $scope.contentBar11 = false;
         $scope.contentBar21 = false;
         $scope.contentBar22 = false;
@@ -67,6 +67,7 @@ angular.module('controllers')
         $scope.contentBar36 = false;
         $scope.contentBar37 = false;
         $scope.contentBar38 = false;
+        $scope.contentBar39 = false;
         $scope.contentBar41 = false;
 
         //Imagenes
@@ -76,17 +77,17 @@ angular.module('controllers')
         $scope.img.Patterns1_08 = '/img/srcWeb/patterns/pattern3.png';
         $scope.img.whiteLoading = '/img/icons/whiteLoading.gif';
         $scope.img.Loading_icon = '/img/icons/Loading_icon.gif';
-        $scope.img.orangeArrow = '/img/srcWeb/UserConfig/orangeArrow.png';  
+        $scope.img.orangeArrow = '/img/srcWeb/UserConfig/orangeArrow.png';
 
         // Language
         $rootScope.langabbr = $rootScope.contentLanguageUserNonLogedAbbr;
 
-        // Get content for the home view from ddbb           
+        // Get content for the home view from ddbb
         Resources.register.get({'section': 'faq', 'idLanguage': $rootScope.contentLanguageUserNonLoged}, {'funct': "content"}).$promise
         .then(function (results) {
             $scope.text = results.data;
             $scope.viewActived = true;
         });
 
-        $scope.viewActived = false; // para activar el gif del loading        
+        $scope.viewActived = false; // para activar el gif del loading
     });

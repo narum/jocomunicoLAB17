@@ -17,7 +17,6 @@ class BackupInserts extends CI_Model{
   public function createBackupFolder(){
   $Fname=date("d:m:Y H:i:s");
   mkdir("./backups/$Fname");
-
   $this->generateAdjectivesClassJson($Fname);
   $this->generateAdjectivesJson($Fname);
   $this->generateBoardsJson($Fname);
@@ -43,7 +42,6 @@ class BackupInserts extends CI_Model{
   private function generateAdjectivesClassJson($Fname){
     $data=$this->BackupSelects->getAdjectives();
     $ID_Language=$this->session->uinterfacelangauge;
-
     switch($ID_Language){
       case 1:
       $table="AdjClassCA";
@@ -56,7 +54,6 @@ class BackupInserts extends CI_Model{
       'adjid'=>$data['adjid'],
       'class'=>$data['class']
     );
-
     $fp = fopen('./backups/'.$Fname.'/'.$table.'.json', 'w');
   fwrite($fp, json_encode($Classdata));
   fclose($fp);
@@ -65,7 +62,6 @@ class BackupInserts extends CI_Model{
   private function generateAdjectivesJson($Fname){
     $data=$this->BackupSelects->getAdjectives();
     $ID_Language=$this->session->uinterfacelangauge;
-
     switch($ID_Language){
       case 1:
       $table="AdjectiveCA";
@@ -84,7 +80,6 @@ class BackupInserts extends CI_Model{
         'subjdef'=>$data['subjdef'],
         'pictoid'=>$data['pictoid']
     );
-
     $fp = fopen('./backups/'.$Fname.'/'.$table.'.json', 'w');
   fwrite($fp, json_encode($Adjdata));
   fclose($fp);
@@ -95,6 +90,7 @@ class BackupInserts extends CI_Model{
     $fp = fopen('./backups/'.$Fname.'/Boards.json', 'w');
   fwrite($fp, json_encode($data));
   fclose($fp);
+  return $data;
   }
   //Genera json de la tabla cell
   private function generateCellJson($Fname){
@@ -129,7 +125,6 @@ class BackupInserts extends CI_Model{
       $table="NameES";
       break;
     }
-
   $Namedata=array(
     'nomtext'=>$data['nomtext'],
     'mf'=>$data['mf'],
@@ -170,7 +165,6 @@ class BackupInserts extends CI_Model{
     'class'=>$data['class'],
     'nameid'=>$data['pictoid']
   );
-
     $fp = fopen('./backups/'.$Fname.'/'.$table.'.json', 'w');
   fwrite($fp, json_encode($Classdata));
   fclose($fp);
@@ -250,5 +244,4 @@ class BackupInserts extends CI_Model{
 }
 }
   }
-
   ?>

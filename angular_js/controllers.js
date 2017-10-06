@@ -314,34 +314,21 @@ angular.module('controllers', [])
                     emailOk = false;
                     return;
                 }
-                if (String(formData.email).search(emailFormat) == -1) {
-                    $scope.state.email = 'has-warning';
+                if (String(formData.email).search(emailFormat) != -1) {
+                    $scope.state.email = 'has-success';
                     //#Raul
                     $scope.confirmEmail = 'has-warning';
                     emailOk = false;
-                } else {
-                    Resources.register.get({//enviamos los datos de la tabla de la base de datos donde queremos comprobar el nombre
-                        'table': "SuperUser",
-                        'column': "email",
-                        'data': formData.email}, {'funct': "checkData"}
-                        ).$promise
-                            .then(function (results) {
-                                if (results.exist == "false") {
-                                    $scope.state.email = 'has-success'; //Si no exixte el nombre ponemos el checkbox en success
-                                } else if (results.exist == "true") {
-                                    $scope.state.email = 'has-error'; //Si exixte el nombre ponemos el checkbox en error
-                                    emailOk = false;
-                                }
-                            });
-                  /* Check matching password
-                  * @rjlopezdev
-                  */
-                } if(formData.email != formData.confirmEmail && !formData.confirmEmail.$dirty){
-                  $scope.state.confirmEmail = 'has-error';
-                  emailOk = false;
-                }else{
-                  $scope.state.confirmEmail = 'has-success';
-                  emailOk = true;
+                }
+                /* Check matching password
+                 * @rjlopezdev
+                */
+                if(formData.email != formData.confirmEmail && $scope.registerForm.confirmEmail.$dirty){
+                    $scope.state.confirmEmail = 'has-error';
+                    emailOk = false;
+                }else if(formData.email == formData.confirmEmail){
+                    $scope.state.confirmEmail = 'has-success';
+                    emailOk = true;
                 }
 
             };
@@ -1330,7 +1317,7 @@ angular.module('controllers', [])
             //SentenceBar button to open dropdown menu bar when hover
             $("#idSentenceBar").hover(function () {
                 console.log('hover');
-                $scope.dropdownMenuOpen = true;
+                $rootScope.dropdownMenuOpen = true;
             });
             //Choose the buttons to show on bar
             dropdownMenuBarInit($rootScope.interfaceLanguageId)
@@ -1344,24 +1331,6 @@ angular.module('controllers', [])
                             }
                         });
                     });
-            $scope.getArasaacPictos=function(pictoaras,bw){
-                      var postdata = {picto: pictoaras,ByN:bw};
-                      $http.post("PanelGroup/getArasaacPictos",postdata).success(function (results) {
-                        var pics=results.data;
-                        console.log(pics);
-                        var picasarashow=[];
-                            for(var i=0;i<results.data.length;i++){
-                              if(pics[i]!=null){
-                                picasarashow.push(true);
-                              }else{
-                                picasarashow.push(false);
-                              }
-                            }
-                            $scope.imgData=picasarashow;
-                            $scope.picsara=pics;
-                            console.log(pics);
-                          });
-                    }
             //function to change html view
             $scope.go = function (path) {
                 if (path == '/') {
@@ -1428,6 +1397,32 @@ angular.module('controllers', [])
 
             // JORGE: #Tarea 3. Esta función sirve para comprobar si el usuario y la contraseña que usamos para acceder al menu es correcta.
           $scope.confirmPassword = function (){
+
+            if($scope.cfgMenuBlock == false){
+              var eventLaunched = false;
+              $rootScope.dropdownMenuOpen = true;
+
+              if($rootScope.dropdownMenuOpen){
+                //console.log("Menu abierto");
+
+                $("#clkOutside").bind("click", function() {
+                    eventLaunched = true;
+                    //console.log("Evento lanzado");
+                    //console.log("Menu cerrado");
+                    $timeout.cancel($scope.timerPassword);
+                  });
+
+                $scope.timerPassword = $timeout(function(){
+                  angular.element('#clkOutside').triggerHandler('click');
+                  $rootScope.dropdownMenuOpen = false;
+                  eventLaunched = true;
+                  //console.log("Menu cerrado");
+                },10000);
+
+                return;
+              }
+
+            }
 
             var url = $scope.baseurl +  "Main/confirmPassword";
             var postdata = {user: $scope.usernameCopyPanel, pass: $scope.passwordCopyPanel};
@@ -2033,7 +2028,10 @@ angular.module('controllers', [])
                             break;
                         case "read":
                             $scope.generate();
-                            $scope.InitScan();
+                            // only initialize the scan if the FeedBack popup is not there
+                            if (!$scope.cfgUserExpansionFeedback) {
+                                $scope.InitScan();
+                            }
                             break;
                         case "deletelast":
                             $scope.deleteLast();
@@ -2120,7 +2118,18 @@ angular.module('controllers', [])
             $scope.selectScannedCell = function ()
             {
                 $scope.clickOnCell($scope.arrayScannedCells[$scope.indexScannedCells]);
-                $scope.InitScan();
+                if ($scope.inScan) {
+                    // wait for clickoncell function to finish
+                    // if the cell is a function that moves the scan, InitScan should not be called
+                    $timeout(function () {
+                        if ($scope.isScanning !== "sentencebar") {
+                            $scope.InitScan();
+                        }
+                    }, 400);
+                }
+                else {
+                    $scope.InitScan();
+                }
             };
 
             // Select the current cell (the index point to the array with all the cells)
@@ -2645,7 +2654,11 @@ angular.module('controllers', [])
                         if (readed === true) {
                             text = "";
                         } else {
-                            text = cell.textInCell;
+                            if (cell.textInCell !== null) text = cell.textInCell;
+                            else {
+                                if (cell.ID_CFunction !== null && cell.functType === "link") text = cell.textFunction;
+                                else text = cell.Bname;
+                            }
                         }
 
                         $scope.showBoard(cell.boardLink);
@@ -2855,19 +2868,23 @@ angular.module('controllers', [])
              */
             $scope.clickOnFunction = function (id, text, readed) {
                 var url = $scope.baseurl + "Board/getFunction";
-                var postdata = {id: id, tense: $scope.tense, tipusfrase: $scope.tipusfrase, negativa: $scope.negativa};
+                var postdata = {id: id, tense: $scope.tense, tipusfrase: $scope.tipusfrase, negativa: $scope.negativa, pos: $scope.chooseElementDeleted};
 
-                $http.post(url, postdata).success(function (response)
-                {
+                $http.post(url, postdata).success(function (response){
                     var control = response.control;
                     console.log(control);
                     $scope.dataTemp = response.data;
                     $scope.tense = response.tense;
                     $scope.tipusfrase = response.tipusfrase;
                     $scope.negativa = response.negativa;
+
+                    /*New code*/
+                    $scope.chooseElementDeleted = response.pos;
+                    /*New code*/
+
                     if ((control !== "") && (control !== "home") && (control !== "historic") && (control !== "stopAudio")) {
                         var url = $scope.baseurl + "Board/" + control;
-                        var postdata = {tense: $scope.tense, tipusfrase: $scope.tipusfrase, negativa: $scope.negativa};
+                        var postdata = {tense: $scope.tense, tipusfrase: $scope.tipusfrase, negativa: $scope.negativa, pos: $scope.chooseElementDeleted};
 
                         $http.post(url, postdata).success(function (response)
                         {
@@ -2882,6 +2899,42 @@ angular.module('controllers', [])
                                 } else if (control === "deleteLastWord") {
                                     $scope.getPred();
                                 }
+
+
+                                 /*New code*/
+                                 else if(control === "deleteSelectedWord"){
+                                   console.log($scope.inScan);
+                                   /* Hay que hacer dos formas de activar la función. La primera es la activar la función sin escaneo y la segunda es activando la función con escaneo */
+                                   if(!$scope.inScan){
+                                     var ngDeleteSelectedPicto = angular.element($window.document.getElementById('txtImgContainer'));
+                                     var children = ngDeleteSelectedPicto.children();
+                                     var s = children.length;
+                                     for(i = 0; i < s; i++){
+                                       var chooseChild = children[i];
+                                       $scope.chooseAngularChildElement = angular.element(chooseChild);
+                                       $scope.chooseAngularChildElement.toggleClass('selectedDeletePicto');
+                                     }
+
+                                     if($scope.deleteButtonActive == false){
+                                       $scope.deleteButtonActive = true;
+                                     }
+                                     else{
+                                       $scope.deleteButtonActive = false;
+                                       $scope.chooseAngularChildElement.toggleClass('selectedDeletePicto', !$scope.deleteButtonActive);
+                                     }
+
+                                     $scope.getPred();
+                                   }
+
+                                   else{
+                                     $scope.isScanning = "deleteselectedpicto";
+                                     //$scope.isScanning = "deleteselectedpicto";
+                                     $scope.selectBlockScan();
+
+                                   }
+
+                                 }
+
                                 if (!readed) {
                                     $scope.readText(text, true);
                                 }
@@ -3237,29 +3290,23 @@ angular.module('controllers', [])
             /*
              * Return uploaded images from database. There are two types, the users images an the arasaac (not user images)
              */
-            $scope.searchImg = function (name, typeImgEditSearch,bw) {
-                var URL = "";
-                switch (typeImgEditSearch)
+             $scope.searchImg = function (name, typeImgEditSearch) {
+               var URL = "";
+               switch (typeImgEditSearch){
+                 case "Arasaac":
+                 URL = $scope.baseurl + "ImgUploader/getImagesArasaac";
+                 break;
+                 case "Uploads":
+                 URL = $scope.baseurl + "ImgUploader/getImagesUploads";
+                 break;
+               }
+        var postdata = {name: name};
+        $http.post(URL, postdata).
+                success(function (response)
                 {
-                    case "Arasaac":
-                        if(name!=''){
-                        $scope.getArasaacPictos(name,bw);
-                        }
-                        $scope.BW=true;
-                        break;
-                    case "Uploads":
-                        URL = $scope.baseurl + "ImgUploader/getImagesUploads";
-                        $scope.BW=false;
-                        break;
-                }
-                var postdata = {name: name};
-
-                $http.post(URL, postdata).
-                        success(function (response){
-                          console.log(response.data)
-                          $scope.picsara=response.data;
-                        });
-            }
+                    $scope.imgData = response.data;
+                });
+    }
 
             //get all the photos attached to the pictos
             $scope.searchFoto = function (name)
@@ -3613,6 +3660,14 @@ angular.module('controllers', [])
                 $scope.uploadedFile = $scope.Editinfo.imgCell;
                 $scope.imgFunct = $scope.Editinfo.imgFunct;
                 // Check the values in order to active checkbox and this stuff
+                $scope.checkboxTextInCell = false;
+                $scope.changeCheckboxTextInCell = function(){
+                    if($scope.checkboxTextInCell === true){
+                        $scope.checkboxTextInCell = false;
+                    }else if($scope.checkboxTextInCell === false){
+                        $scope.checkboxTextInCell = true;
+                    }
+                };
                 if ($scope.Editinfo.textInCell !== null) {
                     $scope.checkboxTextInCell = true;
                     $scope.textInCell = $scope.Editinfo.textInCell;
@@ -3646,7 +3701,7 @@ angular.module('controllers', [])
                     if (!$scope.checkboxBoardsGroup) {
                         postdata.boardLink = null;
                     }
-                    if (!$scope.checkboxTextInCell) {
+                    if (!$scope.checkboxTextInCell || $scope.cellType === 'picto') {
                         postdata.textInCell = null;
                     }
                     if (!$scope.checkboxVisible) {
@@ -3750,7 +3805,7 @@ angular.module('controllers', [])
             //SentenceBar button to open dropdown menu bar when hover
             $("#idSentenceBar").hover(function () {
                 console.log('hover');
-                $scope.dropdownMenuOpen = true;
+                $rootScope.dropdownMenuOpen = true;
             });
             //Choose the buttons to show on bar
             dropdownMenuBarInit($rootScope.interfaceLanguageId)
@@ -3793,6 +3848,32 @@ angular.module('controllers', [])
 
             // JORGE: Esta función sirve para comprobar si el usuario y la contraseña que usamos para acceder al menu es correcta.
             $scope.confirmPassword = function (){
+
+              if($scope.cfgMenuBlock == false){
+                var eventLaunched = false;
+                $rootScope.dropdownMenuOpen = true;
+
+                if($rootScope.dropdownMenuOpen){
+                  console.log("Menu abierto");
+
+                  $("#clkOutside").bind("click", function() {
+                      eventLaunched = true;
+                      console.log("Evento lanzado");
+                      console.log("Menu cerrado");
+                      $timeout.cancel($scope.timerPassword);
+                    });
+
+                  $scope.timerPassword = $timeout(function(){
+                    angular.element('#clkOutside').triggerHandler('click');
+                    $rootScope.dropdownMenuOpen = false;
+                    eventLaunched = true;
+                    console.log("Menu cerrado");
+                  },10000);
+
+                  return;
+                }
+
+              }
 
               var url = $scope.baseurl +  "Main/confirmPassword";
               var postdata = {user: $scope.usernameCopyPanel, pass: $scope.passwordCopyPanel};

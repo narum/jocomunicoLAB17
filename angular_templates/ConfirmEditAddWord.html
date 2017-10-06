@@ -35,6 +35,12 @@
                             </div>
                             <div class="col-xs-offset-1 col-xs-11 text-left radioEditWord">
                                 <label class="radio-inline">
+                                    <input type="radio" ng-model="SearchTypeAddWord" ng-click="searchAddWord(pictoEditSearchAddWord, SearchTypeAddWord);" value="Verb"/>
+                                    {{content.editVerb}}
+                                </label>
+                            </div>
+                            <div class="col-xs-offset-1 col-xs-11 text-left radioEditWord">
+                                <label class="radio-inline">
                                     <input type="radio" ng-model="SearchTypeAddWord" ng-click="searchAddWord(pictoEditSearchAddWord, SearchTypeAddWord);" value="Adj" />
                                     {{content.editAdj}}
                                 </label>
@@ -46,7 +52,7 @@
                         <div bind-html-compile="dataword" class='col-xs-4' ng-repeat="picto in dataWordAddWord| limitTo: 6" style="margin-left: 0 !important">
                             <div class="imgRounded" style="cursor: pointer">
                                 <div ng-if="cfgTextInCell && picto.text !== null" class="textCellAddWord" >{{picto.text}}</div>
-                                <div ng-style="cfgTextInCell ? {'height': '13vh'} : {'height': '13vh'}" style="border: 1px grey solid; margin: 2px; border-radius: 10px;" data-dismiss="modal" ng-click="selectAddWordEdit(0, picto.id)">
+                                <div ng-style="cfgTextInCell ? {'height': '13vh'} : {'height': '13vh'}" style="border: 1px grey solid; margin: 2px; border-radius: 10px;" data-dismiss="modal" ng-click="selectAddWordEdit(0, picto.id, picto.type)">
                                     <div style="height: 80%">
                                         <img class="imgRounded imgResponsive" ng-src="{{baseurl}}img/pictos/{{picto.imgPicto}}"/>
                                     </div>

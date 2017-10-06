@@ -134,24 +134,20 @@
                 <div class="col-xs-6 titleText">
                     {{content.text}}
                 </div>
-                <div class="col-xs-offset-2 col-xs-1 buttonTitle">
-                    <input ng-if="cellType != 'picto'"
-                           id="switch3" class="switch" type="checkbox"
-                           ng-model="checkboxTextInCell" ng-show="false"
-
+                <div ng-if="cellType != 'picto'" class="col-xs-offset-2 col-xs-1 buttonTitle">
+                    <input id="switch3" class="switch" type="checkbox"
+                           name="checkboxTextInCell" ng-model="checkboxTextInCell"
+                           ng-click="changeCheckboxTextInCell();"
                     />
                     <label for="switch3">&nbsp;</label>
                 </div>
             </div>
             <div ng-if="cellType === 'picto'" class="col-xs-12 content1 contentNull1">
-                <input ng-if="cellType != 'picto'" id="textInCell" class="boxEdit" type="text" ng-model="textInCell" ng-disabled="!checkboxTextInCell "placeholder="{{textInCell == null ? Editinfo.pictotext : null}}"
-                />
+                <input ng-if="cellType != 'picto'" ng-show="false" id="textInCell" class="boxEdit" type="text" ng-model="textInCell" ng-value="textInCell= null"  ng-disabled="cellType === 'picto'" placeholder="{{textInCell == null ? Editinfo.pictotext : null}}"/>
             </div>
-            <div ng-if="cellType != 'picto'" class="col-xs-12 content1" ng-click="checkboxTextInCell = true;">
-                <input ng-if="cellType != 'picto'" id="textInCell" class="boxEdit" type="text" ng-model="textInCell" ng-disabled="!checkboxTextInCell "placeholder="{{textInCell == null ? Editinfo.pictotext : null}}"
-                />
+            <div ng-hide="cellType === 'picto'" class="col-xs-12 content1">
+                <input ng-hide="cellType === 'picto'" id="textInCell" class="boxEdit" type="text" ng-model="textInCell"  ng-disabled="!checkboxTextInCell" placeholder="{{textInCell == null ? Editinfo.pictotext : null}}"/>
             </div>
-
         </div>
     </div>
     <div class="col-xs-6 fullheight paddingEditcell">
@@ -253,4 +249,3 @@
         </div>
     </div>
 </div>
-

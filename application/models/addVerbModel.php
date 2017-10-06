@@ -401,6 +401,7 @@ class addVerbModel extends CI_Model {
     }
     function insertPattern($verbid, $pattern, $pronominal){
         $table = ($this->session->userdata('ulangabbr') == 'CA' ? 'patternca': 'patternes');
+        $pronominal = ($pronominal == 0 ? '0': '1');
         $subverb = $this->subVerb($pattern);
         $data = array(
             'verbid' => $verbid,
@@ -415,7 +416,6 @@ class addVerbModel extends CI_Model {
             'themetipus' => $pattern->CD->type,
             'themeprep' => $pattern->CD->preposition,
             'receiver' => $pattern->Receiver->priority,
-            'receiverdef' => $pattern->Receiver->type,
             'receiverprep' => $pattern->Receiver->preposition,
             'benef' => $pattern->Beneficiary->priority,
             'beneftipus' => $pattern->Beneficiary->type,
@@ -443,6 +443,73 @@ class addVerbModel extends CI_Model {
         }
     }
 
+    function getAllData($verbid){
+        $result = new stdClass();
+        $result->verbText = $this->getVerbText($verbid);
+        $result->imgPicto = $this->getPictoImg($verbid);
+        $result->pronominal = $this->isPronominal($verbid);
+        $result->conjugations = $this->getConjugationsBD($verbid);
+        //get Patterns
+        $result->patterns = $this->getPatterns($verbid);
+        return $result;
+    }
+    function getVerbText($verbid){
+        $table = ($this->session->userdata('ulangabbr') == 'CA' ? 'verbca': 'verbes');
+        return $this->db->query("SELECT verbtext FROM ".$table." WHERE verbid = ?", $verbid)->row('verbtext');
+    }
+    function getPictoImg($verbid){
+        return $this->db->query("SELECT imgPicto FROM pictograms WHERE pictoid = ?", $verbid)->row('imgPicto');
+    }
+    function isPronominal($verbid){
+        $table = ($this->session->userdata('ulangabbr') == 'CA' ? 'patternca': 'patternes');
+        return $this->db->query("SELECT pronominal FROM ".$table." WHERE verbid = ?", $verbid)->row('pronominal');
+    }
+    function getConjugationsBD($verbid){
+        $verb = new Verb();
+        $this->getTimeBD($verb->presente, $verbid, 'present');
+        $this->getTimeBD($verb->perfecto, $verbid, 'perfet');
+        $this->getTimeBD($verb->imperfecto, $verbid, 'imperfecte');
+        $this->getTimeBD($verb->pluscuamperfecto, $verbid, 'perifrastic');
+        $this->getTimeBD($verb->pasado, $verbid, 'passat');
+        $this->getTimeBD($verb->futuro, $verbid, 'futur');
+        $this->getTimeBD($verb->prsubj, $verbid, 'prsubj');
+        $this->getTimeBD($verb->impsubj, $verbid, 'impsubj');
+        $this->getImperativoBD($verb->imperativo, $verbid);
+        $this->getFormasNoPersonalesBD($verb, $verbid);
+        return $verb;
+    }
+
+    function getTimeBD($verbTime, $verbid, $tense){
+        $table = ($this->session->userdata('ulangabbr') == 'CA' ? 'verbconjugationca': 'verbconjugationes');
+        $verbTime->ps1 = $this->db->query("SELECT verbconj FROM ".$table." WHERE verbid = ? AND tense = '".$tense."' AND pers = 1 AND singpl = 'sing'", $verbid)->row('verbconj');
+        $verbTime->ps2 = $this->db->query("SELECT verbconj FROM ".$table." WHERE verbid = ? AND tense = '".$tense."' AND pers = 2 AND singpl = 'sing'", $verbid)->row('verbconj');
+        $verbTime->ps3 = $this->db->query("SELECT verbconj FROM ".$table." WHERE verbid = ? AND tense = '".$tense."' AND pers = 3 AND singpl = 'sing'", $verbid)->row('verbconj');
+        $verbTime->pp1 = $this->db->query("SELECT verbconj FROM ".$table." WHERE verbid = ? AND tense = '".$tense."' AND pers = 1 AND singpl = 'pl'", $verbid)->row('verbconj');
+        $verbTime->pp2 = $this->db->query("SELECT verbconj FROM ".$table." WHERE verbid = ? AND tense = '".$tense."' AND pers = 2 AND singpl = 'pl'", $verbid)->row('verbconj');
+        $verbTime->pp3 = $this->db->query("SELECT verbconj FROM ".$table." WHERE verbid = ? AND tense = '".$tense."' AND pers = 3 AND singpl = 'pl'", $verbid)->row('verbconj');
+    }
+    function getImperativoBD($verbTime, $verbid){
+        $table = ($this->session->userdata('ulangabbr') == 'CA' ? 'verbconjugationca': 'verbconjugationes');
+        $verbTime->ps2 = $this->db->query("SELECT verbconj FROM ".$table." WHERE verbid = ? AND tense = 'imperatiu' AND pers = 2 AND singpl = 'sing'", $verbid)->row('verbconj');
+        $verbTime->ps3 = $this->db->query("SELECT verbconj FROM ".$table." WHERE verbid = ? AND tense = 'imperatiu' AND pers = 3 AND singpl = 'sing'", $verbid)->row('verbconj');
+        $verbTime->pp1 = $this->db->query("SELECT verbconj FROM ".$table." WHERE verbid = ? AND tense = 'imperatiu' AND pers = 1 AND singpl = 'pl'", $verbid)->row('verbconj');
+        $verbTime->pp2 = $this->db->query("SELECT verbconj FROM ".$table." WHERE verbid = ? AND tense = 'imperatiu' AND pers = 2 AND singpl = 'pl'", $verbid)->row('verbconj');
+        $verbTime->pp3 = $this->db->query("SELECT verbconj FROM ".$table." WHERE verbid = ? AND tense = 'imperatiu' AND pers = 3 AND singpl = 'pl'", $verbid)->row('verbconj');
+    }
+    function getFormasNoPersonalesBD($verb, $verbid){
+        $table = ($this->session->userdata('ulangabbr') == 'CA' ? 'verbconjugationca': 'verbconjugationes');
+        $verb->infinitivo = $this->db->query("SELECT verbconj FROM ".$table." WHERE verbid = ? AND tense = 'infinitiu'", $verbid)->row('verbconj');
+        $verb->gerundio = $this->db->query("SELECT verbconj FROM ".$table." WHERE verbid = ? AND tense = 'gerundi'", $verbid)->row('verbconj');
+        $verb->participio = $this->db->query("SELECT verbconj FROM ".$table." WHERE verbid = ? AND tense = 'participi'", $verbid)->row('verbconj');
+    }
+
+    function getPatterns($verbid){
+        $table = ($this->session->userdata('ulangabbr') == 'CA' ? 'patternca': 'patternes');
+        $sql = "SELECT verbid, pronominal, defaulttense, subj, subjdef, theme, themetipus, themeprep, receiver, 
+        receiverprep, benef, beneftipus, benefprep, acomp, acompprep, tool, toolprep, manera, maneratipus,
+        locto, loctotipus, loctoprep, exemple FROM ".$table." WHERE verbid = ?";
+        return $this->db->query($sql, $verbid)->result_array();
+    }
 }
 class Verb {
     public $presente;

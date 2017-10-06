@@ -276,7 +276,7 @@
                 <div class="col-xs-2">
                     {{content.classWord}}
                 </div>
-                <div class="col-xs-6 input-group input-group-auto inputMarginRigth">
+                <div class="col-xs-6 input-group input-group-auto inputMarginRigth ">
                     <select
                         class="classBoxAddWord"
                         name="className"
@@ -287,11 +287,11 @@
                     </select>
                 </div>
             </div>
-            <div class="inputMarginLeft" style=" height:60%">
+            <div class="inputMarginLeft" style=" height: 60%">
                 <table class="table table-condensed taula">
                     <div class="col-xs-4 classPaddingAddWord" ng-repeat="item in NClassList">
                         <div class="row colorBoxClass">
-                            <div class="col-xs-8 llenguatgeAddWord" >{{item.nameType}}</div>
+                            <div class="col-xs-8 llenguatgeAddWord" >{{ item.nameType}}</div>
                             <div class="col-xs-4 butoAddWord text-right"><div class="icon-minus btn-borrarAddWord" ng-click="removeNounclass($index)"></div></div>
                         </div>
                     </div>

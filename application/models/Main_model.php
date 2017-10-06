@@ -22,19 +22,6 @@ class Main_model extends CI_Model {
         return $query->result_array();// retornem l'array query amb els resultats
     }
 
-    public function downloadImageArasaac($url){
-      $imgname=substr($url,-9);
-      $imgSFolder=str_replace('/','',$imgname);
-      $location="img/pictos/".$imgSFolder;
-      $ch = curl_init($url);
-      $fp = fopen($location, 'wb');
-      curl_setopt($ch, CURLOPT_FILE, $fp);
-      curl_setopt($ch, CURLOPT_HEADER, 0);
-      curl_exec($ch);
-      curl_close($ch);
-      fclose($fp);
-      return $location;
-    }
 
     /* @rjlopezdev
      * Languages that cannot Expand will be filtered in the Interface, if needs be, and will not be shown
@@ -420,4 +407,54 @@ class Main_model extends CI_Model {
         $this->db->where('ID_User', $idusu);
         $this->db->update('User', $data);
     }
+
+    function getVideotutoriales($idLanguage) {
+      $output = array();
+
+      /*return $this-> db-> query('SELECT Description, Url FROM videotutoriales WHERE ID_ULanguage = ?'
+      , array($idLanguage))->result();*/
+
+      $this-> db->from('videotutoriales');
+      $this -> db->order_by('grupoID', 'ASC');
+      $this-> db->order_by('ordenID', 'ASC');
+      $this-> db-> where('ID_ULanguage', $idLanguage);
+      $query = $this->db->get();
+      if ($query->num_rows() > 0) {
+          $output = $query->result();
+      } else{
+          $output = null;
+      }
+      return $output;
+
+    }
+
+
+  function getUpdates($idLanguage) {
+    $output = array();
+    $this-> db->select('idUpdate, ID_ULanguage, title, version, descripcion, urlWin, urlMac, dateUpdate');
+    $this-> db->select("DATE_FORMAT(dateUpdate, '%d/%m/%Y') AS dateUpdate", FALSE);
+    $this-> db->from('updates');
+    $this -> db->order_by('version', 'DESC');
+    $this-> db-> where('ID_ULanguage', $idLanguage);
+    $query = $this->db->get();
+    if ($query->num_rows() > 0) {
+        $output = $query->result();
+    } else{
+        $output = null;
+    }
+    return $output;
+
+  }
+
+public function getLatestUpdateChecked(){
+      return $this->db->query(
+        'SELECT showPopUp, version
+        FROM Updates u
+        WHERE u.version >= (SELECT version
+                            FROM Updates
+                            LIMIT 1
+					        )
+        LIMIT 1'
+      )->result()[0];
+  }
 }

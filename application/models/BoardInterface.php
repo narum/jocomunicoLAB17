@@ -301,12 +301,6 @@ class BoardInterface extends CI_Model {
       return $output[$pos];
     }
 
-
-
-
-
-
-
     /*
      * Remove the sentence from the tabla temp
      */
@@ -590,7 +584,7 @@ class BoardInterface extends CI_Model {
         return $output;
     }
     public function AddBoards(){
-      $this->LaunchClean();
+      // $this->LaunchClean();
       $GBID=$this->createGroupBoard();
       $this->InsertBoards($GBID);
       $this->InsertCells();
@@ -606,9 +600,9 @@ class BoardInterface extends CI_Model {
       $ID_User=$this->session->idusu;
       $ID_Language=$this->session->uinterfacelangauge;
       if($ID_Language==1){
-        $GBname='nous Grups';
+        $GBname='Exemple';
       }else{
-        $GBname='Grupos nuevos';
+        $GBname='Ejemplo';
       }
        $sql="INSERT INTO `GroupBoards` (`ID_GBUser`, `GBname`, `primaryGroupBoard`, `defWidth`, `defHeight`, `imgGB`)
        VALUES (?,?,?,?,?,?)";
@@ -653,31 +647,34 @@ class BoardInterface extends CI_Model {
       Boards.Bname NOT LIKE '%P. 1%' AND Boards.Bname NOT LIKE '%P. 2%'";
       $this->db->query($sql,$ID_User);
     }
-    private function InsertBoards($gbkey){
-      $ID_Language=$this->session->uinterfacelangauge;
-      if($ID_Language==1){
-        $filename='./boards/BoardsC.json';
-      }else{
-        $filename='./boards/Boards.json';
-      }
-     $file = file_get_contents($filename);
-     $boards=json_decode($file);
-     $count=count($boards->ID_Board);
-     for($i=0;$i<$count;$i++){
-      $sql="INSERT INTO Boards(ID_GBBoard,primaryboard,Bname,width,height,autoReturn,autoReadSentence)
-       VALUES (?,?,?,?,?,?,?)";
-      $this->db->query($sql,array(
-        $gbkey,
-        $boards->primaryboard[$i],
-        $boards->Bname[$i],
-        $boards->width[$i],
-        $boards->height[$i],
-        $boards->autoReturn[$i],
-        $boards->autoReadSentence[$i]
-      ));
-    }
-    return $count;
-    }
+    //Inserta en la base de datos los registros correspondientes a boards
+private function InsertBoards($gbid){
+ $ID_Language=$this->session->uinterfacelangauge;
+    if($ID_Language==1){
+      $filename='./boards/BoardsC.json';
+    }else{
+      $filename='./boards/Boards.json';
+ }
+  
+ $file = file_get_contents($filename);
+ $boards=json_decode($file);
+ $count=count($boards->ID_Board);
+  
+ for($i=0;$i<$count;$i++){
+  $sql="INSERT INTO Boards(ID_GBBoard,primaryboard,Bname,width,height,autoReturn,autoReadSentence)
+   VALUES (?,?,?,?,?,?,?)";
+  $this->db->query($sql,array(
+    $gbid,
+    $boards->primaryboard[$i],
+    $boards->Bname[$i],
+    $boards->width[$i],
+    $boards->height[$i],
+    $boards->autoReturn[$i],
+    $boards->autoReadSentence[$i]
+  ));
+}
+return $count;
+}
     private function getBoardkey(){
       $keys=array();
       $ID_User=$this->session->idusu;
@@ -690,88 +687,105 @@ class BoardInterface extends CI_Model {
       }
       return $keys;
     }
-    private function InsertCells(){
-     $ID_Cell=array();
-     $boardkey=$this->getBoardkey();
-     $ID_Language=$this->session->uinterfacelangauge;
+    
+    //Inserta en la base de datos los registros correspondientes a cells
+private function InsertCells(){
+ $ID_Cell=array();
+ $boardkeys=$this->getBoardkey();
+  
+ $ID_Language=$this->session->uinterfacelangauge;
      if($ID_Language==1){
-       $file = file_get_contents("./boards/CellC.json");
-       $fileb=file_get_contents("./boards/BoardsC.json");
+       $filepath = file_get_contents("./boards/CellC.json");
+       $filebpath=file_get_contents("./boards/BoardsC.json");
      }else{
-       $file = file_get_contents("./boards/Cell.json");
-       $fileb=file_get_contents("./boards/Boards.json");
+       $filepath = file_get_contents("./boards/Cell.json");
+       $filebpath=file_get_contents("./boards/Boards.json");
      }
 
-     $boards=json_decode($fileb);
-     $cells=json_decode($file);
-     $count=count($cells->ID_Cell);
-     for($i=0;$i<$count;$i++){
-       if(!(is_null($cells->boardLink[$i]))){
-           $posc=array_search($cells->boardLink[$i],$boards->ID_Board);
-       }else{
-           $posc=null;
-       }
-        $sql="INSERT INTO Cell(isFixedInGroupBoards,imgCell,ID_CPicto,ID_CSentence,sentenceFolder,boardLink,color,
-        ID_CFunction,textInCell,textInCellTextOnOff,cellType,activeCell)VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
-        $this->db->query($sql,array(
-        $cells->isFixedInGroupBoards[$i],
-        $cells->imgCell[$i],
-        $cells->ID_CPicto[$i],
-        $cells->ID_CSentence[$i],
-        $cells->sentenceFolder[$i],
-        $boardkey[$posc],
-        $cells->color[$i],
-        $cells->ID_CFunction[$i],
-        $cells->textInCell[$i],
-        $cells->textInCellTextOnOff[$i],
-        $cells->cellType[$i],
-        $cells->activeCell[$i]
-      ));
-      array_push($a,$sentencekey[$poscs]);
-        $query=$this->db->query("SELECT LAST_INSERT_ID() as s2");
-        $res=$query->result();
-        array_push($ID_Cell,$res[0]->s2);
-    }
-     return $this->InsertRBoardCell($ID_Cell);
-    }
-    private function InsertRBoardCell($ID_Cell){
-       $boardkey=$this->getBoardkey();
-       $ID_Language=$this->session->uinterfacelangauge;
+ $cells=json_decode($filepath);
+ 
+ print_r($cells);
+ $boards=json_decode($filebpath);
+ 
+ $boardkeys=array_slice($boardkeys,-34);
+  
+ $count=count($cells->ID_Cell);
+ 
+ echo "NUM. CELLS: ".$count;
+ for($i=0;$i<$count;$i++){
+   if(!(is_null($cells->boardLink[$i]))){
+       $posc=array_search($cells->boardLink[$i],$boards->ID_Board);
+   }else{
+       $posc=null;
+   }
+      
+   $newcell = array(
+    $cells->isFixedInGroupBoards[$i],
+    $cells->imgCell[$i],
+    $cells->ID_CPicto[$i],
+    $cells->ID_CSentence[$i],
+    $cells->sentenceFolder[$i],
+    $boardkeys[$posc],
+    $cells->color[$i],
+    $cells->ID_CFunction[$i],
+    $cells->textInCell[$i],
+    $cells->textInCellTextOnOff[$i],
+    $cells->cellType[$i],
+    $cells->activeCell[$i]
+  );
+         
+    $sql="INSERT INTO Cell(isFixedInGroupBoards,imgCell,ID_CPicto,ID_CSentence,sentenceFolder,boardLink,color,
+    ID_CFunction,textInCell,textInCellTextOnOff,cellType,activeCell)VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
+    $this->db->query($sql,$newcell);
+    $query=$this->db->query("SELECT LAST_INSERT_ID() as s2");
+    $res=$query->result();
+    array_push($ID_Cell,$res[0]->s2);
+}
+ $this->InsertRBoardCell($ID_Cell);
+ return $boardkeys;
+}
+    
+    //Inserta en la base de datos los registros correspondientes a R_BoardCell
+private function InsertRBoardCell($ID_Cell){
+   $boardkeys=$this->getBoardkey();
+   
+   $ID_Language=$this->session->uinterfacelangauge;
        if($ID_Language==1){
-         $file = file_get_contents("./boards/R_BoardCellC.json");
+         $filepath = file_get_contents("./boards/R_BoardCellC.json");
+         $filebpath=file_get_contents("./boards/BoardsC.json");
        }else{
-         $file = file_get_contents("./boards/R_BoardCell.json");
+         $filepath = file_get_contents("./boards/R_BoardCell.json");
+         $filebpath=file_get_contents("./boards/Boards.json");
        }
-
-       $rbcell=json_decode($file);
-       $count=count($rbcell->ID_RBoard);
-       sort($rbcell->ID_RBoard);
-       $a=array();
-       $posc=-1;
-       for($i=0;$i<$count;$i++){
-       if($rbcell->ID_RBoard[$i]>$ant){
-         $posc++;
-         $ant=$rbcell->ID_RBoard[$i];
-       }else{
-         $ant=$rbcell->ID_RBoard[$i];
-       }
-        $sql="INSERT INTO R_BoardCell(ID_RBoard,ID_RCell,posInBoard,isMenu,posInMenu,customScanBlock1,customScanBlockText1,customScanBlock2,
-          customScanBlockText2)VALUES (?,?,?,?,?,?,?,?,?)";
-          array_push($a,$boardkey[$posc]);
-        $this->db->query($sql,array(
-          $boardkey[$posc],
-          $ID_Cell[$i],
-          $rbcell->posInBoard[$i],
-          $rbcell->isMenu[$i],
-          $rbcell->posInMenu[$i],
-          $rbcell->customScanBlock1[$i],
-          $rbcell->customScanBlockText1[$i],
-          $rbcell->customScanBlock2[$i],
-          $rbcell->customScanBlockText2[$i]
-        ));
-      }
-      return $boardkey;
-    }
+   
+   $rbcell=json_decode($filepath);
+   $boards=json_decode($filebpath);
+   
+   $count=count($rbcell->ID_RBoard);
+   $boardkeys=array_slice($boardkeys, -34);
+   for($i=0;$i<$count;$i++){
+     if(!(is_null($rbcell->ID_RBoard[$i]))){
+         $posc=array_search($rbcell->ID_RBoard[$i],$boards->ID_Board);
+     }else{
+         $posc=null;
+     }
+    $sql="INSERT INTO R_BoardCell(ID_RBoard,ID_RCell,posInBoard,isMenu,posInMenu,customScanBlock1,customScanBlockText1,customScanBlock2,
+      customScanBlockText2)VALUES (?,?,?,?,?,?,?,?,?)";
+    $this->db->query($sql,array(
+      $boardkeys[$posc],
+      $ID_Cell[$i],
+      $rbcell->posInBoard[$i],
+      $rbcell->isMenu[$i],
+      $rbcell->posInMenu[$i],
+      $rbcell->customScanBlock1[$i],
+      $rbcell->customScanBlockText1[$i],
+      $rbcell->customScanBlock2[$i],
+      $rbcell->customScanBlockText2[$i]
+    ));
+  }
+}
+    
+    
     function copyBoardTables(&$idDst, &$sameGroupBoard, &$row) {
         if ($sameGroupBoard === 0) {
             $row->boardLink = null;

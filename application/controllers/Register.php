@@ -4,7 +4,7 @@
 require APPPATH . '/libraries/REST_Controller.php';
 
 class Register extends REST_Controller {
-    
+
     public function __construct()
     {
         parent::__construct('rest', TRUE);
@@ -16,7 +16,7 @@ class Register extends REST_Controller {
         $this->load->model('BoardInterface');
         $this->load->model('AddWordInterface');
     }
-    
+
     public function runningLocalOrServer_get()
     {
         $audio = new Myaudio();
@@ -24,7 +24,7 @@ class Register extends REST_Controller {
         $response = [
             'appRunning'=>$appRunning
             ];
-        
+
         $this->response($response, REST_Controller::HTTP_OK); // OK (200) being the HTTP response code
     }
     public function allContent_get()
@@ -60,7 +60,7 @@ class Register extends REST_Controller {
         $this->response($response, REST_Controller::HTTP_OK); // OK (200) being the HTTP response code
         }
     }
-    
+
     public function languagesAvailable_get()
     {
         $languages = $this->main_model->getLanguagesAvailable();
@@ -81,12 +81,12 @@ class Register extends REST_Controller {
         //comprobación de los parametros
         if($section == NULL || $section == "" || $idLanguage == NULL || $idLanguage == "") {
             $this->response("missing argument startswith", 400);
-        } 
+        }
         else {
 
             //Petición al modelo
             $saveResult = $this->main_model->getContent($section, $idLanguage);
-            
+
             //Cojemos los datos de las dos columnas de la petición y lo convertimos en un objecto clave:valor
             $array1 = array_column($saveResult, 'tagString');
             $array2 = array_column($saveResult, 'content');
@@ -97,7 +97,7 @@ class Register extends REST_Controller {
             $response = [
                 "data" => $keyValue
             ];
-            
+
             //respuesta
             $this->response($response, REST_Controller::HTTP_OK); // OK (200) being the HTTP response code
         }
@@ -118,7 +118,7 @@ class Register extends REST_Controller {
         $this->response($response, REST_Controller::HTTP_OK); // OK (200) being the HTTP response code
 
     }
-    
+
     public function saveData_post()
     {
         $data = json_decode($this->query("data"), true); // convertimos el string json del post en array.
@@ -129,10 +129,10 @@ class Register extends REST_Controller {
         $response = [
                 "saved" => $saved
             ];
-        
+
         $this->response($response, REST_Controller::HTTP_OK); // OK (200) being the HTTP response code
     }
-    
+
     public function saveUserData_post()
     {
         $SUname = $this->query("SUname");
@@ -167,7 +167,7 @@ class Register extends REST_Controller {
                 "passChanged" => $changed,
                 "userExist" => $userExist
             ];
-        
+
         $this->response($response, REST_Controller::HTTP_OK); // OK (200) being the HTTP response code
     }
     public function emailValidation_post()
@@ -214,22 +214,22 @@ class Register extends REST_Controller {
                     $userName=$data["realname"];
                     $ID_SU=$data["ID_SU"];
                     $pass=$data["pswd"];
-                    
-                    $idLang=$this->main_model->getFirstData('User', 'ID_USU', $ID_SU);                
+
+                    $idLang=$this->main_model->getFirstData('User', 'ID_USU', $ID_SU);
                     $language=$idLang["ID_ULanguage"];
-                
+
                     $hash=md5($pass . $ID_SU);
                     $url= base_url() . '#/emailValidation/' . $hash . '/' . $ID_SU;
 
-                    $dataResponse = $this->getData($language);          
+                    $dataResponse = $this->getData($language);
                     $subject = $dataResponse["data"]["AsuntoRegistro"];
                     $preprebody = $dataResponse["data"]["BodyPreNameRegistro"];
                     $prebody = $dataResponse["data"]["Body1Registro"];
-                    $postbody = $dataResponse["data"]["Body2Registro"];        
+                    $postbody = $dataResponse["data"]["Body2Registro"];
                     $message = $preprebody.$userName.$prebody.$url.$postbody;
-                    
+
                     $sended = $this->sendEmail($email, $userName, $subject, $message);
-                    
+
                 }
             }
             $response = [
@@ -241,7 +241,7 @@ class Register extends REST_Controller {
             $this->response($response, REST_Controller::HTTP_OK); // OK (200) being the HTTP response code
         }
     }
-    
+
     public function passRecoveryMail_post()
     {
         $sended=false;
@@ -279,20 +279,20 @@ class Register extends REST_Controller {
             }
 
             if($exist){
-                
+
                 //User data for email
                 $email=$data["email"];
                 $userName=$data["realname"];
                 $ID_SU=$data["ID_SU"];
                 $pass=$data["pswd"];
-                
-                $idLang=$this->main_model->getFirstData('User', 'ID_USU', $ID_SU);                
+
+                $idLang=$this->main_model->getFirstData('User', 'ID_USU', $ID_SU);
                 $language=$idLang["ID_ULanguage"];
-                
+
                 $hash=md5($pass . $ID_SU);
                 $path= '/passRecovery/' . $hash . '/' . $ID_SU;
                 $url= base_url() . '#/passRecovery/' . $hash . '/' . $ID_SU;
-                
+
                 //Check server is local or online
                 $audio = new Myaudio();
                 $appRunning = $audio->AppLocalOrServer();
@@ -304,7 +304,7 @@ class Register extends REST_Controller {
                     $dataResponse = $this->getData($language);
                     $subject = $dataResponse["data"]["AsuntoPassword"];
                     $prebody = $dataResponse["data"]["Body1Password"];
-                    $postbody = $dataResponse["data"]["Body2Password"];        
+                    $postbody = $dataResponse["data"]["Body2Password"];
                     $message = $prebody.$url.$postbody;
 
                     $sended = $this->sendEmail($email, $userName, $subject, $message);
@@ -324,13 +324,13 @@ class Register extends REST_Controller {
         }
 
     }
-    
-    private function sendEmail($mail, $userName, $subject, $message){           
+
+    private function sendEmail($mail, $userName, $subject, $message){
         //Cargamos la libreria de codeigniter
         $this->load->library('email');
 
         $config = array(
-            //Indicamos el protocolo a utilizar  
+            //Indicamos el protocolo a utilizar
             'protocol' => 'sendmail',
             //El servidor de correo que utilizaremos
             'smtp_host' => '',
@@ -339,8 +339,8 @@ class Register extends REST_Controller {
             //Nuestra contraseña
             'smtp_pass' => '',
             //El email debe ser valido
-            'mailtype' => 'html'  
-        ); 
+            'mailtype' => 'html'
+        );
 
         //Establecemos esta configuración
         $this->email->initialize($config);
@@ -363,7 +363,7 @@ class Register extends REST_Controller {
             return false;
         }
     }
-    
+
     private function getData($language) {
         //Petición al modelo
         $saveResult = $this->main_model->getContent('emailValidation', $language);
@@ -436,6 +436,45 @@ class Register extends REST_Controller {
             'idusu' => $idusu
         ];
         $this->response($response, REST_Controller::HTTP_OK);
+    }
+
+    public function getVideotutoriales_post(){
+
+      $idLanguage = $this->post('idLanguage');
+      $videotutoriales = $this->main_model->getVideotutoriales($idLanguage);
+
+      $response = [
+        "videotutoriales" => $videotutoriales
+      ];
+      //$response = [];
+
+      $this->response($response, REST_Controller::HTTP_OK);
+
+
+      }
+
+      public function getUpdates_post(){
+
+        $idLanguage = $this->post('idLanguage');
+        $updates = $this->main_model->getUpdates($idLanguage);
+
+        $response = [
+          "updates" => $updates
+        ];
+        //$response = [];
+
+        $this->response($response, REST_Controller::HTTP_OK);
+
+
+      }
+
+    public function getLatestUpdateChecked_get(){
+
+        $this->response(
+            [
+                "latestUpdateChecked" => $this->main_model->getLatestUpdateChecked()
+            ],
+            REST_Controller::HTTP_OK);
     }
 
 }

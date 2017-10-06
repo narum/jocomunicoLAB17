@@ -2,6 +2,7 @@
 <link rel="stylesheet" type="text/css" href="{{baseurl}}css/generico.css">
 <link rel="stylesheet" type="text/css" href="{{baseurl}}css/editHistorialFolder.css">
 <link rel="stylesheet" type="text/css" href="{{baseurl}}/libraries/scrollbarPanel.css">
+<link rel="stylesheet" type="text/css" href="css/home.css">
 
 <div ng-include="'/angular_templates/RecoverBackupModal.html'"></div>
 <div ng-include="'/angular_templates/RecoverParcialBackupModal.html'"></div>
@@ -11,6 +12,7 @@
 <div ng-include="'/angular_templates/ConfirmCreateBoard.html'"></div>
 <div ng-include="'/angular_templates/editHistoricFolder.html'"></div>
 <div ng-include="'/angular_templates/infoModal.html'"></div>
+<div ng-include="'/angular_templates/ConfirmRemoveBoardP.html'"></div>
 <div ng-include="'/angular_templates/logoutModal.html'"></div>
 <div ng-include="'/angular_templates/DownloadBackup.html'"></div>
 <div ng-include="'/angular_templates/AddGroupsInfo.html'"></div>
@@ -41,7 +43,7 @@
                     <div ng-if="finished" class="col-xs-offset-1 scrollMenuPanels" ng-style="!isScroll ? {'width': '98%'} : {'width': '84%'}" ng-scrollbar rebuild-on-resize rebuild-on="rebuild:me" is-bar-shown="isScroll">
                         <div class="scrollWidth">
                             <div class="col-xs-12 buttonAddFolder" ng-click="newPanellGroup()">+</div>
-                            <div class="col-xs-12 addGroups" ng-click="ShowAddGroupsInfo()">
+                            <div ng-if="!alreadyExamplePanels" class="col-xs-12 addGroups" ng-click="ShowAddGroupsInfo()">
                             {{content.addgroups}}
                             </div>
                             <div class="col-xs-12 panelContainer" ng-repeat="panel in panels" on-Finish-Loop="scrollbarPanel">
@@ -61,8 +63,8 @@
                                 <div class="col-xs-4 nouPanel" ng-click="CreateBoard(panel.ID_GB)">
                                     {{content.new}} <div class="icon-th"></div>
                                 </div>
-                                <div class="col-xs-4 copyPanel" ng-click="copyGroupBoard(panel.ID_GB)">
-                                    {{content.copy}} <div class="icon-copy"></div>
+                                <div class="col-xs-4 copyPanel" ng-click="showRemoveBoardP(panel.ID_GB)">
+                                    {{content.delete}} <div class="icon-copy"></div>
                                 </div>
                             </div>
                         </div>
@@ -71,7 +73,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!--historical box-->
         <div class="col-xs-6 leftPadding">
             <div class="historicContainer" id="boxUserConfig" style="background-image: url({{img.Patterns4}})">
@@ -132,7 +134,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                 <div class="row verticalMarginTop"></div>
                 </div>
             </div>
@@ -195,7 +197,7 @@
             <div id="header" class="row">
                 <div class="col-xs-6">
                     <div class="col-xs-offset-1 col-xs-1 infoIconBox">
-                        <input type="image" class="img-icon" ng-src="/img/icons/info-blanc.png" ng-click="toggleInfoModal(content.modalInfoTitle, backupinfo);">
+                        <input type="image" class="img-icon" ng-src="/img/icons/info-blanc.png" ng-click="toggleInfoModal(content.modalInfoTitle, content.backupinfo);">
                     </div>
                     <div class="col-xs-9 headerTitle-panelgroup">{{content.Mtitle}}</div>
                 </div>
@@ -222,4 +224,8 @@
             </div>
         </div>
     </div>
+</div>
+
+<div class="{{footerUpdateClass}}" ng-show="showUpdateFooter" ng-click="okUpdates()">
+    <span bind-html-compile="text.updatesPopup"></span>
 </div>
