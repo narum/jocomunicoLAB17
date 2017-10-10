@@ -451,7 +451,7 @@ angular.module('controllers')
 
             $scope.addVerb = function (newModif){
                 if (newModif == 1) {
-                    $rootScope.addWordparam = {newmod: newModif};
+                    $rootScope.addWordparam = {newmod: false, type: false};
                     $timeout(function () {
                         $location.path('/addVerb');
                     }, 1000);

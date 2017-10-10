@@ -141,10 +141,10 @@ var app = angular.module('controllers');
         $scope.getConjugations = function (){
             var URL = $scope.baseurl + "addVerb/getConjugations";
             var postdata = {verb : $scope.verb.name};
+            console.log(postdata);
             $http.post(URL, postdata).success(function (response) {
+                console.log(response);
                 $scope.conjugations = response;
-                console.log($scope.conjugations);
-                setVerbInfo();
                 setConjugations();
             });
         };
@@ -617,13 +617,15 @@ var app = angular.module('controllers');
         $scope.addVerbErrors = {'verb': false, 'imgVerb': false };
         $scope.addVerbErrorsP1 = {'Patron': false, 'CD': false, 'Receiver': false, 'Beneficiary': false, 'Acomp': false, 'Tool': false, 'Modo':false, 'Tool': false, 'Locto': false};
         $scope.addVerbErrorsP2 = {'Patron': false, 'CD': false, 'Receiver': false, 'Beneficiary': false, 'Acomp': false, 'Tool': false, 'Modo':false, 'Tool': false, 'Locto': false};
+        $scope.isEdit = false;
+        $scope.verbID = false;
 
         $scope.editMode = function(){
             $scope.isEdit = $rootScope.addWordparam.newmod;
+            $scope.verbID = $rootScope.addWordparam.type;
            if ($scope.isEdit === true){
-               console.log("START EDIT MODE");
                var URL = $scope.baseurl + "addVerb/getAllData";
-               var postdata = {verbID : $rootScope.addWordparam.type};
+               var postdata = {verbID : $scope.verbID};
                $http.post(URL, postdata).success(function (response) {
                    console.log(response);
                    $scope.conjugations = response.conjugations;
@@ -635,8 +637,6 @@ var app = angular.module('controllers');
                    }
                    $scope.$broadcast('rebuild:verbPatternScrollbar');
                });
-           }else{
-               console.log("NO START EDIT MODE");
            }
         };
 
@@ -731,9 +731,6 @@ var app = angular.module('controllers');
         };
         function checkErrorsPattern(Pattern, showPattern, patternErrors){
             var errors = false;
-            console.log("SHOW PATTERN:");
-            console.log(showPattern);
-            console.log("CHECK ERRORS PATTERN");
             if(Pattern.Patron.subj === '' || Pattern.Patron.subjdef === '' || Pattern.Patron.defaulttense === '' ){
                 errors = true;
                 patternErrors.Patron = true;
@@ -796,7 +793,6 @@ var app = angular.module('controllers');
                     patternErrors.Locto = false;
                 }
             }
-            //CHECK IF THERE IS MORE THAN ONE VERB (BENEF, LOCTO, CD)
             return errors;
         };
 
@@ -812,7 +808,6 @@ var app = angular.module('controllers');
                             $scope.style_changes_title = 'padding-top: 2vh;';
                             $('#infoModal').modal('toggle');
                         }else{
-                            console.log("CHECKING IMAGES ERRORS...");
                             if(!checkImgVerbErrors($scope.addVerbErrors) && !checkErrorsPattern($scope.Pattern1, $scope.showPattern1, $scope.addVerbErrorsP1)){
                                 if($scope.verbPattern2 === true){
                                     if(!checkErrorsPattern($scope.Pattern2, $scope.showPattern2, $scope.addVerbErrorsP2)){
@@ -826,9 +821,8 @@ var app = angular.module('controllers');
                                                     formasNoPersonales: $scope.formasNoPersonales};
 
                                 var URL = $scope.baseurl + "addVerb/insertData";
-                                var postdata = {img: $scope.imgPicto.value, verb: $scope.verb.name, pronominal: $scope.pronominal.value, conjugations: conjugations, patterns: patterns};
+                                var postdata = {isEdit: $scope.isEdit, verbID: $scope.verbID, img: $scope.imgPicto.value, verb: $scope.verb.name, pronominal: $scope.pronominal.value, conjugations: conjugations, patterns: patterns};
                                 console.log(postdata);
-
                                 $http.post(URL, postdata).success(function (response){
                                     console.log(response);
                                     $location.path("/panelGroups");
