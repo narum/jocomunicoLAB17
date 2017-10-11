@@ -46,9 +46,7 @@ class addVerbModel extends CI_Model {
          }
          $xpath = $this->getXpathConjugations($url);
          $this->getPresent($verb, $xpath);
-         $this->getPerfecto($verb, $xpath);
          $this->getImperfecto($verb, $xpath);
-         $this->getPluscuamperfecto($verb, $xpath);
          $this->getPasado($verb, $xpath);
          $this->getFuturo($verb, $xpath);
          $this->getPrsubj($verb, $xpath);
@@ -81,15 +79,6 @@ class addVerbModel extends CI_Model {
         $verb->presente->pp3 = $xpath->query('/html/body/table[2]/tr[3]/td[1]/table/tr[1]/td[1]/table/tr[6]/td[2]')->item(0)->nodeValue;
     }
 
-    function getPerfecto($verb, $xpath){
-        $verb->perfecto->ps1 = $xpath->query('/html/body/table[2]/tr[3]/td[1]/table/tr[1]/td[2]/table/tr[1]/td[2]')->item(0)->nodeValue;
-        $verb->perfecto->ps2 = $xpath->query('/html/body/table[2]/tr[3]/td[1]/table/tr[1]/td[2]/table/tr[2]/td[2]')->item(0)->nodeValue;
-        $verb->perfecto->ps3 = $xpath->query('/html/body/table[2]/tr[3]/td[1]/table/tr[1]/td[2]/table/tr[3]/td[2]')->item(0)->nodeValue;
-        $verb->perfecto->pp1 = $xpath->query('/html/body/table[2]/tr[3]/td[1]/table/tr[1]/td[2]/table/tr[4]/td[2]')->item(0)->nodeValue;
-        $verb->perfecto->pp2 = $xpath->query('/html/body/table[2]/tr[3]/td[1]/table/tr[1]/td[2]/table/tr[5]/td[2]')->item(0)->nodeValue;
-        $verb->perfecto->pp3 = $xpath->query('/html/body/table[2]/tr[3]/td[1]/table/tr[1]/td[2]/table/tr[6]/td[2]')->item(0)->nodeValue;
-    }
-
     function getImperfecto($verb, $xpath){
         $verb->imperfecto->ps1 = $xpath->query('/html/body/table[2]/tr[3]/td[1]/table/tr[2]/td[1]/table/tr[1]/td[2]')->item(0)->nodeValue;
         $verb->imperfecto->ps2 = $xpath->query('/html/body/table[2]/tr[3]/td[1]/table/tr[2]/td[1]/table/tr[2]/td[2]')->item(0)->nodeValue;
@@ -97,15 +86,6 @@ class addVerbModel extends CI_Model {
         $verb->imperfecto->pp1 = $xpath->query('/html/body/table[2]/tr[3]/td[1]/table/tr[2]/td[1]/table/tr[4]/td[2]')->item(0)->nodeValue;
         $verb->imperfecto->pp2 = $xpath->query('/html/body/table[2]/tr[3]/td[1]/table/tr[2]/td[1]/table/tr[5]/td[2]')->item(0)->nodeValue;
         $verb->imperfecto->pp3 = $xpath->query('/html/body/table[2]/tr[3]/td[1]/table/tr[2]/td[1]/table/tr[6]/td[2]')->item(0)->nodeValue;
-    }
-
-    function getPluscuamperfecto($verb, $xpath){
-        $verb->pluscuamperfecto->ps1 = $xpath->query('/html/body/table[2]/tr[3]/td[1]/table/tr[2]/td[2]/table/tr[1]/td[2]')->item(0)->nodeValue;
-        $verb->pluscuamperfecto->ps2 = $xpath->query('/html/body/table[2]/tr[3]/td[1]/table/tr[2]/td[2]/table/tr[2]/td[2]')->item(0)->nodeValue;
-        $verb->pluscuamperfecto->ps3 = $xpath->query('/html/body/table[2]/tr[3]/td[1]/table/tr[2]/td[2]/table/tr[3]/td[2]')->item(0)->nodeValue;
-        $verb->pluscuamperfecto->pp1 = $xpath->query('/html/body/table[2]/tr[3]/td[1]/table/tr[2]/td[2]/table/tr[4]/td[2]')->item(0)->nodeValue;
-        $verb->pluscuamperfecto->pp2 = $xpath->query('/html/body/table[2]/tr[3]/td[1]/table/tr[2]/td[2]/table/tr[5]/td[2]')->item(0)->nodeValue;
-        $verb->pluscuamperfecto->pp3 = $xpath->query('/html/body/table[2]/tr[3]/td[1]/table/tr[2]/td[2]/table/tr[6]/td[2]')->item(0)->nodeValue;
     }
 
     function getPasado($verb, $xpath){
@@ -252,11 +232,10 @@ class addVerbModel extends CI_Model {
     }
 
     function insertVerbConjugation($verbid, $conjugations, $isEdit){
+        $language = $this->session->userdata('ulangabbr');
         $this->insertConjugations($verbid, $conjugations->presente, $isEdit);
-        $this->insertConjugations($verbid, $conjugations->perfecto, $isEdit);
         $this->insertConjugations($verbid, $conjugations->imperfecto, $isEdit);
-        $this->insertConjugations($verbid, $conjugations->pluscuamperfecto, $isEdit);
-        $this->insertConjugations($verbid, $conjugations->pasado, $isEdit);
+        if($language == 'ES'){$this->insertConjugations($verbid, $conjugations->pasado, $isEdit);}
         $this->insertConjugations($verbid, $conjugations->futuro, $isEdit);
         $this->insertConjugations($verbid, $conjugations->prsubj, $isEdit);
         $this->insertConjugations($verbid, $conjugations->impsubj, $isEdit);
@@ -430,9 +409,7 @@ class addVerbModel extends CI_Model {
     function getConjugationsBD($verbid){
         $verb = new Verb();
         $this->getTimeBD($verb->presente, $verbid, 'present');
-        $this->getTimeBD($verb->perfecto, $verbid, 'perfet');
         $this->getTimeBD($verb->imperfecto, $verbid, 'imperfecte');
-        $this->getTimeBD($verb->pluscuamperfecto, $verbid, 'perifrastic');
         $this->getTimeBD($verb->pasado, $verbid, 'passat');
         $this->getTimeBD($verb->futuro, $verbid, 'futur');
         $this->getTimeBD($verb->prsubj, $verbid, 'prsubj');
@@ -476,9 +453,7 @@ class addVerbModel extends CI_Model {
 }
 class Verb {
     public $presente;
-    public $perfecto;
     public $imperfecto;
-    public $pluscuamperfecto;
     public $pasado;
     public $futuro;
     public $prsubj;
@@ -490,9 +465,7 @@ class Verb {
 
     function __construct(){
         $this->presente = new Persona();
-        $this->perfecto = new Persona();
         $this->imperfecto = new Persona();
-        $this->pluscuamperfecto = new Persona();
         $this->pasado = new Persona();
         $this->futuro = new Persona();
         $this->prsubj = new Persona();

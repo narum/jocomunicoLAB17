@@ -43,6 +43,10 @@
     padding: 3vh 1.5vh 1.5vh 1.5vh;
 }
 
+.no-padding{
+    padding: 0 !important;
+}
+
 .Complemento{
     height: 34%;
     width: 33%;
@@ -183,11 +187,17 @@
 .conjugation{
     height: 26%;
     width: 100%;
-    padding-bottom: 1.5vh;
     background-color: white;
     background-clip: content-box;
 }
 .conjugationElement{
+    height: 62%;
+    width: 100%;
+    padding-bottom: 1.5vh;
+    background-color: white;
+    background-clip: content-box;
+}
+.conjugationImperativoElement{
     height: 55%;
     width: 100%;
     padding-bottom: 1.5vh;
@@ -207,16 +217,22 @@
     padding: 1vh;
 }
 .conjugationL{
-    padding-top: 0;
-    padding-bottom: 1vh;
-    padding-left: 1.7vh;
-    padding-right: 1vh;
+    margin-right: 1vh;
+    margin-left: 1.5vh;
 }
 .conjugationR{
     padding-top: 0;
     padding-bottom: 1vh;
     padding-left: 1vh;
     padding-right: 1vh;
+    width: 70%;
+}
+.formasNoPersonales{
+    padding-top: 0;
+    padding-bottom: 1vh;
+    padding-left: 1vh;
+    padding-right: 1vh;
+    width: 54%;
 }
 .imgVerbResponsive {
     pointer-events: none;
@@ -270,7 +286,7 @@
     height:25%;
 }
 .conjugationHeight{
-    height:90%;
+    height:80%;
 }
 .verbPatternHeight{
     height: 73%;
@@ -284,16 +300,16 @@
     padding-left: 0;
 }
 .confirmVerbContainer{
-    padding: 1vh;
+    height: 20%;
+    padding-top: 1vh;
+    padding-left: 1vh;
+    padding-right: 1vh;
 }
 .paddingConfirmVerb{
-    height: 9%;
-    padding-top: 1vh;
-    padding-bottom: 1vh;
+    height: 100%;
 }
-.paddingButtonAddVerb{
-    padding-top: 1.5vh;
-    padding-bottom: 1.5vh;
+.ButtonAddVerb {
+    margin-top: 8px;
 }
 /* Scroll bar */
 .scrollMenuPanels{
@@ -310,11 +326,12 @@
     margin-top: 4.4%;
 }
 .addVerbPadding{
-    padding-top: 0.4vh;
-    padding-left: 6vh;
+    margin-left: 6vh;
+    margin-top: 3px;
+    padding-left: 1%;
 }
 .VerbContainer{
-    padding-left: 1vh;
+    width: 36%;
 }
 
 .buttonAddVerbPattern{
@@ -387,7 +404,7 @@
 }
 .paddingPronominal {
     padding-top: 0.4vh;
-    padding-left: 1.5vh;
+    padding-left: 27px;
 }
 
 .paddingPronCheckbox {
@@ -414,4 +431,90 @@
 
 .deleteP2Button {
     top: 2%;
+}
+
+.conjugationPadding {
+    padding: 1vh;
+    margin-left: 10%;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.fixText {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.no-margin-left {
+  margin-left: 0 !important;
+}
+
+.margin-prsubj {
+    margin-left: 1.5vh;
+}
+
+.backgroundConfirmVerb{
+    height: 100%;
+}
+
+.ButtonAddVerb{
+    background: -moz-linear-gradient(top, rgba(74, 74, 74,0) 0%, rgba(74, 74, 74,0.20) 20%, rgba(74, 74, 74,0.40) 40%, rgba(74, 74, 74,0.60) 60%, rgba(74, 74, 74,00) 80%, rgba(74, 74, 74,1) 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(74, 74, 74,0)), color-stop(20%,rgba(74, 74, 74,0.20)), color-stop(40%,rgba(74, 74, 74,0.40)), color-stop(60%,rgba(74, 74, 74,0.60)), color-stop(80%,rgba(74, 74, 74,0.80)), color-stop(100%,rgba(74, 74, 74,1)));
+    background: -webkit-linear-gradient(top, rgba(74, 74, 74,0) 0%,rgba(74, 74, 74,0.2) 20%,rgba(74, 74, 74,0.4) 40%,rgba(74, 74, 74,0.6) 60%,rgba(74, 74, 74,0.8) 80%,rgba(74, 74, 74,1) 100%);
+    background: -o-linear-gradient(top, rgba(74, 74, 74,0) 0%,rgba(74, 74, 74,0.2) 20%,rgba(74, 74, 74,0.4) 40%,rgba(74, 74, 74,0.6) 60%,rgba(74, 74, 74,0.8) 80%,rgba(74, 74, 74,1) 100%);
+    background: -ms-linear-gradient(top, rgba(74, 74, 74,0) 0%,rgba(74, 74, 74,0.2) 20%,rgba(74, 74, 74,0.4) 40%,rgba(74, 74, 74,0.6) 60%,rgba(74, 74, 74,0.8) 80%,rgba(74, 74, 74,1) 100%);
+    background: linear-gradient(to bottom, rgba(74, 74, 74,0) 0%,rgba(74, 74, 74,0.2) 20%,rgba(74, 74, 74,0.4) 40%,rgba(74, 74, 74,0.6) 60%,rgba(74, 74, 74,0.8) 80%,rgba(74, 74, 74,1) 100%);
+    height: 25%;
+    color: white;
+    cursor: pointer;
+    background-color: #2d2d2d;
+    max-width: 75%;
+    min-width: 60%;
+    margin: 0 auto;
+}
+.ButtonAddVerb:active{
+    box-shadow: 0px -0px 0px 1px #333;
+    transform: translate(2px, -2px);
+}
+
+.paddingButtonAddVerb{
+    margin-top: 12px;
+}
+
+.paddingButtonAddVerb2{
+    margin-top: 4px;
+}
+
+.paddingTextConfirm{
+    left: 10%;
+    margin-top: 5px;
+}
+.paddingTextConfirm2{
+    left: 9%;
+    margin-top: 5px;
+}
+.paddingImg{
+    padding: 5px;
+}
+
+.headerTitleVerb{
+    color:white;
+    padding-top: 10px;
+}
+.infoIconBoxPatterns {
+    width: 4%;
+    margin: 10px 0px 0px 12px;
+}
+.infoIconBoxVerb{
+    width: 5%;
+    margin: 10px 0px 0px 10px;
+}
+.infoIconBoxConjugations {
+    width: 12%;
+    margin: 10px 0px 0px 12px;
+}
+.addImgPadding{
+    margin-left: 8%;
 }

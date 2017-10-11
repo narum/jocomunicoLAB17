@@ -64,10 +64,15 @@ var app = angular.module('controllers');
         $scope.rebuildScrollBarPatterns = function () {
             $scope.$broadcast('rebuild:verbPatternScrollbar');
         };
-
         $scope.imgPicto = {value: 'arrow question.png'};
         $scope.verb = {name: ''};
         $scope.pronominal = {value: 0};
+
+        $scope.borrarImperativo = function(value){
+            if(value == 1){
+                $scope.imperativo = {name:'imperatiu', persona:{ps2:'', ps3:'', pp1:'', pp2:'', pp3:''}};
+            }
+        };
 
         function persona (){
             this.ps1 = '';
@@ -83,9 +88,7 @@ var app = angular.module('controllers');
         };
 
         $scope.presente = new conjugation('present');
-        $scope.perfecto = new conjugation('perfet');
         $scope.imperfecto = new conjugation('imperfecte');
-        $scope.pluscuamperfecto = new conjugation('perifrastic');
         $scope.pasado = new conjugation('passat');
         $scope.futuro = new conjugation('futur');
         $scope.prsubj = new conjugation('prsubj');
@@ -150,9 +153,7 @@ var app = angular.module('controllers');
         };
         function setConjugations(){
             setPresente();
-            setPerfecto();
             setImperfecto();
-            setPluscuamperfecto();
             setPasado();
             setFuturo();
             setPrsubj();
@@ -168,14 +169,6 @@ var app = angular.module('controllers');
             $scope.presente.persona.pp2 = $scope.conjugations.presente.pp2;
             $scope.presente.persona.pp3 = $scope.conjugations.presente.pp3;
         }
-        function setPerfecto(){
-            $scope.perfecto.persona.ps1 = $scope.conjugations.perfecto.ps1;
-            $scope.perfecto.persona.ps2 = $scope.conjugations.perfecto.ps2;
-            $scope.perfecto.persona.ps3 = $scope.conjugations.perfecto.ps3;
-            $scope.perfecto.persona.pp1 = $scope.conjugations.perfecto.pp1;
-            $scope.perfecto.persona.pp2 = $scope.conjugations.perfecto.pp2;
-            $scope.perfecto.persona.pp3 = $scope.conjugations.perfecto.pp3;
-        }
         function setImperfecto(){
             $scope.imperfecto.persona.ps1 = $scope.conjugations.imperfecto.ps1;
             $scope.imperfecto.persona.ps2 = $scope.conjugations.imperfecto.ps2;
@@ -183,14 +176,6 @@ var app = angular.module('controllers');
             $scope.imperfecto.persona.pp1 = $scope.conjugations.imperfecto.pp1;
             $scope.imperfecto.persona.pp2 = $scope.conjugations.imperfecto.pp2;
             $scope.imperfecto.persona.pp3 = $scope.conjugations.imperfecto.pp3;
-        }
-        function setPluscuamperfecto(){
-            $scope.pluscuamperfecto.persona.ps1 = $scope.conjugations.perfecto.ps1;
-            $scope.pluscuamperfecto.persona.ps2 = $scope.conjugations.perfecto.ps2;
-            $scope.pluscuamperfecto.persona.ps3 = $scope.conjugations.perfecto.ps3;
-            $scope.pluscuamperfecto.persona.pp1 = $scope.conjugations.perfecto.pp1;
-            $scope.pluscuamperfecto.persona.pp2 = $scope.conjugations.perfecto.pp2;
-            $scope.pluscuamperfecto.persona.pp3 = $scope.conjugations.perfecto.pp3;
         }
         function setPasado(){
             $scope.pasado.persona.ps1 = $scope.conjugations.pasado.ps1;
@@ -225,11 +210,17 @@ var app = angular.module('controllers');
             $scope.impsubj.persona.pp3 = $scope.conjugations.impsubj.pp3;
         }
         function setImperativo(){
-            $scope.imperativo.persona.ps2 = $scope.conjugations.imperativo.ps2;
-            $scope.imperativo.persona.ps3 = $scope.conjugations.imperativo.ps3;
-            $scope.imperativo.persona.pp1 = $scope.conjugations.imperativo.pp1;
-            $scope.imperativo.persona.pp2 = $scope.conjugations.imperativo.pp2;
-            $scope.imperativo.persona.pp3 = $scope.conjugations.imperativo.pp3;
+            var pronominal = $scope.pronominal.value;
+            console.log(pronominal);
+            if(pronominal === 0) {
+                $scope.imperativo.persona.ps2 = $scope.conjugations.imperativo.ps2;
+                $scope.imperativo.persona.ps3 = $scope.conjugations.imperativo.ps3;
+                $scope.imperativo.persona.pp1 = $scope.conjugations.imperativo.pp1;
+                $scope.imperativo.persona.pp2 = $scope.conjugations.imperativo.pp2;
+                $scope.imperativo.persona.pp3 = $scope.conjugations.imperativo.pp3;
+            }else if(pronominal === 1){
+                $scope.imperativo = {name:'imperatiu', persona:{ps2:'', ps3:'', pp1:'', pp2:'', pp3:''}};
+            }
         }
         function setFormasNoPersonales(){
             $scope.formasNoPersonales.infinitivo = $scope.conjugations.infinitivo;
@@ -304,7 +295,7 @@ var app = angular.module('controllers');
                     {value:"pronoun", name:"Pronombre", common:false, visible:true},{value:"animal", name:"Animal", common:false, visible:true},{value:"planta", name:"Planta", common:false, visible:true},
                     {value:"vehicle", name:"Vehiculo", common:false, visible:true},{value:"event", name:"Evento", common:false, visible:true},{value:"inanimate", name:"Inanimado", common:false, visible:true},
                     {value:"objecte", name:"Objeto", common:true, visible:true},{value:"color", name:"Color", common:false, visible:true},{value:"forma", name:"Forma", common:false, visible:true},
-                    {value:"joc", name:"Juego", common:false, visible:true},{value:"cos", name:"Cosa", common:false, visible:true},{value:"abstracte", name:"Abstracto", common:false, visible:true},
+                    {value:"joc", name:"Juego", common:false, visible:true},{value:"cos", name:"Cuerpo", common:false, visible:true},{value:"abstracte", name:"Abstracto", common:false, visible:true},
                     {value:"lloc", name:"Lugar", common:false, visible:true},{value:"menjar", name:"Comida", common:false, visible:true},{value:"beguda", name:"Bebida", common:false, visible:true},
                     {value:"hora", name:"Hora", common:false, visible:true},{value:"month", name:"Mes", common:false, visible:true},
                     {value: "week", name:"Semana", common:false, visible:true},{value:"tool", name:"Herramienta", common:false, visible:true},{value:"profession", name:"Profesión", common:false, visible:true},
@@ -364,7 +355,7 @@ var app = angular.module('controllers');
             if ($scope.interfaceLanguageId == 1){
                 return [{value:1, name:"jo"},{value:2, name:"tu"},{value:"una cosa", name:"objecte"}]
             }else if($scope.interfaceLanguageId == 2){
-                return [{value:1, name:"yo"},{value:2, name:"tu"},{value:"una cosa", name:"objeto"}]
+                return [{value:1, name:"yo"},{value:2, name:"tú"},{value:"una cosa", name:"objeto"}]
             }
         }();
 
@@ -378,11 +369,11 @@ var app = angular.module('controllers');
 
         $scope.complementos = function (){
             if ($scope.interfaceLanguageId == 1){
-                return [{id:1, name:"Complement directe"},{id:2, name:"Receiver"},{id:3, name:"Beneficiary"},
-                    {id:4, name:"Acompanyant"}, {id: 5, name:"Tool"}, {id:6, name:"Complement de manera"}, {id:7, name:"Complement de lloc"}]
+                return [{id:1, name:"Complement directe"},{id:2, name:"Rebedor"},{id:3, name:"Beneficiari"},
+                    {id:4, name:"Acompanyant"}, {id: 5, name:"Eina"}, {id:6, name:"Complement de manera"}, {id:7, name:"Complement de lloc"}]
             }else if($scope.interfaceLanguageId == 2){
-                return [{id:1, name:"Complemento directo"},{id:2, name:"Receiver"},{id:3, name:"Beneficiary"},
-                        {id:4, name:"Acompañante"}, {id: 5, name:"Tool"}, {id:6, name:"Complemento de modo"}, {id:7, name:"Complemento de lugar"}]
+                return [{id:1, name:"Complemento directo"},{id:2, name:"Recibidor"},{id:3, name:"Beneficiario"},
+                        {id:4, name:"Acompañante"}, {id: 5, name:"Herramienta"}, {id:6, name:"Complemento de modo"}, {id:7, name:"Complemento de lugar"}]
             }
         }();
 
@@ -816,7 +807,7 @@ var app = angular.module('controllers');
                                 }else{
                                     var patterns = [$scope.Pattern1];
                                 }
-                                var conjugations = {presente: $scope.presente, perfecto: $scope.perfecto, imperfecto: $scope.imperfecto, pluscuamperfecto: $scope.pluscuamperfecto,
+                                var conjugations = {presente: $scope.presente, imperfecto: $scope.imperfecto,
                                                     pasado: $scope.pasado, futuro: $scope.futuro, prsubj: $scope.prsubj, impsubj: $scope.impsubj, imperativo: $scope.imperativo,
                                                     formasNoPersonales: $scope.formasNoPersonales};
 
