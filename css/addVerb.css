@@ -185,7 +185,7 @@
     padding-left: 5px;
 }
 .conjugation{
-    height: 26%;
+    height: 27%;
     width: 100%;
     background-color: white;
     background-clip: content-box;
@@ -193,14 +193,14 @@
 .conjugationElement{
     height: 62%;
     width: 100%;
-    padding-bottom: 1.5vh;
+    margin-bottom: 1.5vh;
     background-color: white;
     background-clip: content-box;
 }
 .conjugationImperativoElement{
     height: 55%;
     width: 100%;
-    padding-bottom: 1.5vh;
+    margin-bottom: 1.5vh;
     background-color: white;
     background-clip: content-box;
 }
@@ -517,4 +517,8 @@
 }
 .addImgPadding{
     margin-left: 8%;
+}
+.paddingNoPersonales{
+    padding-top: 1vh;
+    padding-bottom: 1vh;
 }

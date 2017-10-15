@@ -10,6 +10,7 @@ var app = angular.module('controllers');
 
         txtContent("addVerb").then(function (results) {
             $scope.content = results.data;
+            console.log(results.data.infoVerb);
             $scope.editMode();
         });
         //Dropdown Menu Bar
@@ -278,7 +279,13 @@ var app = angular.module('controllers');
             $scope.showPattern2 = {'CD':false,'Receiver':false,'Beneficiary':false,'Acomp':false,'Tool':false,'Modo':false,'Locto':false};
             $scope.$broadcast('rebuild:verbPatternScrollbar');
         };
-
+        $scope.pronombres = function(){
+            if ($scope.interfaceLanguageId == 1){//CAT
+                return['em ', 'et ', 'es ', 'ens ', 'us ', 'es '];
+            }else if($scope.interfaceLanguageId == 2){//ESP
+                return['me ', 'te ', 'se ', 'nos ', 'os ', 'se '];
+            }
+        }();
         $scope.subjOptions = function(){
             if ($scope.interfaceLanguageId == 1){//CAT
                 return [{value:"noun", name:"Substantiu", common:true, visible:true},{value:"animate" ,name:"Animat", common:true, visible:true},{value:"human", name:"Huma", common:true, visible:true},
@@ -608,6 +615,7 @@ var app = angular.module('controllers');
         $scope.addVerbErrors = {'verb': false, 'imgVerb': false };
         $scope.addVerbErrorsP1 = {'Patron': false, 'CD': false, 'Receiver': false, 'Beneficiary': false, 'Acomp': false, 'Tool': false, 'Modo':false, 'Tool': false, 'Locto': false};
         $scope.addVerbErrorsP2 = {'Patron': false, 'CD': false, 'Receiver': false, 'Beneficiary': false, 'Acomp': false, 'Tool': false, 'Modo':false, 'Tool': false, 'Locto': false};
+        $scope.conjugationsErrors = {'Presente': false, 'Imperfecto': false,  'Pasado': false, 'Futuro': false, 'Prsubj': false, 'Impsubj': false, 'Imperativo': false, 'NoPersonales': false};
         $scope.isEdit = false;
         $scope.verbID = false;
 
@@ -720,6 +728,55 @@ var app = angular.module('controllers');
             }
             return addVerbErrors.imgVerb;
         };
+
+        function checkErrorsConjugations(){
+            $scope.conjugationsErrors.Presente = checkConjugation($scope.presente);
+            $scope.conjugationsErrors.Imperfecto = checkConjugation($scope.imperfecto);
+            if($scope.interfaceLanguageId == 2) {//ESP
+                $scope.conjugationsErrors.Pasado = checkConjugation($scope.pasado);
+            }
+            $scope.conjugationsErrors.Futuro = checkConjugation($scope.futuro);
+            $scope.conjugationsErrors.Prsubj = checkConjugation($scope.prsubj);
+            $scope.conjugationsErrors.Impsubj = checkConjugation($scope.impsubj);
+            $scope.conjugationsErrors.Imperativo = checkImperativoConjugation($scope.imperativo);
+            $scope.conjugationsErrors.NoPersonales = checkFormasNoPersonales($scope.formasNoPersonales);
+            var errors = $scope.conjugationsErrors;
+            if( errors.Presente == false && errors.Imperfecto == false &&
+                errors.Pasado == false && errors.Futuro == false &&
+                errors.Prsubj == false && errors.Impsubj == false &&
+                errors.Imperativo == false && errors.NoPersonales == false){
+                //NO ERRORS
+                return false;
+            }else {
+                return true;
+            }
+        };
+        function checkConjugation(Conjugation){
+            if (Conjugation.persona.ps1 == '' || Conjugation.persona.ps2 == '' ||
+                Conjugation.persona.ps3 == '' || Conjugation.persona.pp1 == '' ||
+                Conjugation.persona.pp2 == '' || Conjugation.persona.pp3 == ''){
+                return true;
+            }
+            else{
+                return false;
+            }
+        };
+        function checkImperativoConjugation(Conjugation){
+            if (Conjugation.persona.ps2 == '' || Conjugation.persona.ps3 == '' ||
+                Conjugation.persona.pp1 == '' || Conjugation.persona.pp2 == '' ||
+                Conjugation.persona.pp3 == ''){
+                return true;
+            }else{
+                return false;
+            }
+        };
+        function checkFormasNoPersonales(Conjugation){
+            if (Conjugation.infinitivo == '' || Conjugation.gerundio == '' || Conjugation.participio == ''){
+                return true;
+            }else {
+                return false;
+            }
+        };
         function checkErrorsPattern(Pattern, showPattern, patternErrors){
             var errors = false;
             if(Pattern.Patron.subj === '' || Pattern.Patron.subjdef === '' || Pattern.Patron.defaulttense === '' ){
@@ -788,7 +845,7 @@ var app = angular.module('controllers');
         };
 
         $scope.addVerb = function(){
-                if(!checkVerbErrors($scope.addVerbErrors)){
+                if(!checkVerbErrors($scope.addVerbErrors) && !checkErrorsConjugations()){
                     var URL = $scope.baseurl + "addVerb/verbExist";
                     var postdata = {verb : $scope.verb.name};
                     $http.post(URL, postdata).success(function (response) {
@@ -823,6 +880,14 @@ var app = angular.module('controllers');
                         }
                     });
                 }
+        };
+        $scope.EditWordRemove = function () {
+            var postdata = {id: $scope.verbID, type: 'verb'};
+            console.log(postdata);
+            var URL = $scope.baseurl + "AddWord/EditWordRemove";
+            $http.post(URL, postdata).success(function (response){
+                $location.path("/panelGroups");
+            });
         };
     });
 

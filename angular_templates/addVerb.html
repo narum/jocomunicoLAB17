@@ -46,7 +46,7 @@
                         <div class="imgRounded" style="background-image: url(img/srcWeb/patterns/pattern3.png)">
                             <div id="header" class="row headerAddWord">
                                 <div class="col-xs-1 infoIconBoxVerb">
-                                    <input type="image" class="img-icon" ng-src="/img/icons/info-blanc.png" ng-click="toggleInfoModal(content.modalInfoTitle, content.panelGroupInfo);">
+                                    <input type="image" class="img-icon" ng-src="/img/icons/info-blanc.png" ng-click="toggleInfoModal(content.modalInfoTitle, content.infoVerb);">
                                 </div>
                                 <div class="col-xs-11 headerTitleVerb headerAdd fixText"><strong>{{content.addVerb}}</strong></div>
                             </div>
@@ -701,7 +701,7 @@
                     <div class="fullheight imgRounded" style="background-image: url(img/srcWeb/patterns/pattern1.png)">
                         <div id="header" class="row headerAddWord">
                             <div class="col-xs-1 infoIconBoxConjugations">
-                                <input type="image" class="img-icon" ng-src="/img/icons/info-blanc.png" ng-click="toggleInfoModal(content.modalInfoTitle, content.panelGroupInfo);">
+                                <input type="image" class="img-icon" ng-src="/img/icons/info-blanc.png" ng-click="toggleInfoModal(content.modalInfoTitle, content.infoConjugations);">
                             </div>
                             <div class="col-xs-11 headerTitleVerb headerAdd fixText" style="width: 75%"><strong>{{content.conjugations}}</strong></div>
                         </div>
@@ -709,7 +709,7 @@
                         <div id="scroll" class="col-xs-offset-1 scrollMenuPanels" ng-scrollbar rebuild-on-resize rebuild-on="rebuild:conjugationScrollbar">
                             <div class="scrollWidth">
                                 <!-- presente -->
-                                <div class="row col-xs-offset-1 conjugationElement">
+                                <div class="row col-xs-offset-1 conjugationElement" ng-class="{ReqPatternVerb: conjugationsErrors.Presente === true }">
                                         <div class="row" style="padding-bottom: 1vh">
                                             <div class="col-xs-12 conjugationPadding"><strong> {{content.presente}}</strong> </div>
                                         </div>
@@ -751,7 +751,7 @@
                                     </div>
                                 </div>
                                 <!-- imperfecto -->
-                                <div class="row col-xs-offset-1 conjugationElement">
+                                <div class="row col-xs-offset-1 conjugationElement" ng-class="{ReqPatternVerb: conjugationsErrors.Imperfecto === true }">
                                     <div class="row" style="padding-bottom: 1vh">
                                         <div class="col-xs-12 conjugationPadding"><strong>{{content.imperfecto}}</strong></div>
                                     </div>
@@ -793,7 +793,7 @@
                                     </div>
                                 </div>
                                 <!-- pasado -->
-                                <div ng-hide="interfaceLanguageId==1" class="row col-xs-offset-1 conjugationElement">
+                                <div ng-hide="interfaceLanguageId==1" class="row col-xs-offset-1 conjugationElement" ng-class="{ReqPatternVerb: conjugationsErrors.Pasado === true }">
                                     <div class="row" style="padding-bottom: 1vh">
                                         <div class="col-xs-12 conjugationPadding"><strong>{{content.pasado}}</strong></div>
                                     </div>
@@ -835,7 +835,7 @@
                                     </div>
                                 </div>
                                 <!-- futuro -->
-                                <div class="row col-xs-offset-1 conjugationElement">
+                                <div class="row col-xs-offset-1 conjugationElement" ng-class="{ReqPatternVerb: conjugationsErrors.Futuro === true }">
                                     <div class="row" style="padding-bottom: 1vh">
                                         <div class="col-xs-12 conjugationPadding"><strong>{{content.futuro}}</strong></div>
                                     </div>
@@ -877,7 +877,7 @@
                                     </div>
                                 </div>
                                 <!-- prsubj -->
-                                <div class="row col-xs-offset-1 conjugationElement">
+                                <div class="row col-xs-offset-1 conjugationElement" ng-class="{ReqPatternVerb: conjugationsErrors.Prsubj === true }">
                                     <div class="row" style="padding-bottom: 1vh">
                                         <div class="col-xs-12 conjugationPadding margin-prsubj"><strong>{{content.prsubj}}</strong></div>
                                     </div>
@@ -919,7 +919,7 @@
                                     </div>
                                 </div>
                                 <!-- impsubj -->
-                                <div class="row col-xs-offset-1 conjugationElement">
+                                <div class="row col-xs-offset-1 conjugationElement" ng-class="{ReqPatternVerb: conjugationsErrors.Impsubj === true }">
                                     <div class="row" style="padding-bottom: 1vh">
                                         <div class="col-xs-12 conjugationPadding no-margin-left"><strong> {{content.impsubj}}</strong></div>
                                     </div>
@@ -961,7 +961,7 @@
                                     </div>
                                 </div>
                                 <!-- imperativo -->
-                                <div class="row col-xs-offset-1 conjugationImperativoElement">
+                                <div class="row col-xs-offset-1 conjugationImperativoElement" ng-class="{ReqPatternVerb: conjugationsErrors.Imperativo === true }">
                                     <div class="row" style="padding-bottom: 1vh">
                                         <div class="col-xs-12 conjugationPadding"><strong>{{content.imperativo}}</strong></div>
                                     </div>
@@ -997,7 +997,7 @@
                                     </div>
                                 </div>
                                 <!-- infinitivo, gerundio y participio -->
-                                <div class="row col-xs-offset-1 conjugation" style="padding-top: 0vh">
+                                <div class="row col-xs-offset-1 conjugation" style="padding-top: 0vh" ng-class="{ReqPatternVerb: conjugationsErrors.NoPersonales === true }">
                                     <div class="row" style="padding-top: 1vh">
                                         <div class="col-xs-4 conjugationL"><strong>{{content.infinitivo}}</strong></div>
                                         <div class="col-xs-6 formasNoPersonales">
@@ -1010,7 +1010,7 @@
                                             <input type="text" class="addConjugationText"  name="gerundio" ng-model="formasNoPersonales.gerundio" />
                                         </div>
                                     </div>
-                                    <div class="row">
+                                    <div class="row"  style="padding-bottom: 1vh">
                                         <div class="col-xs-4 conjugationL"><strong>{{content.participio}}</strong></div>
                                         <div class="col-xs-6 formasNoPersonales">
                                             <input type="text" class="addConjugationText"  name="participio" ng-model="formasNoPersonales.participio" />
@@ -1041,8 +1041,8 @@
                                 </div>
                             </div>
                         </div>
-                        <div ng-if="!isEdit" class="row paddingButtonAddVerb2">
-                            <div class="imgRounded ButtonAddVerb no-padding" ng-click="cancelAddVerb()">
+                        <div ng-if="isEdit" class="row paddingButtonAddVerb2">
+                            <div class="imgRounded ButtonAddVerb no-padding" ng-click="EditWordRemove()">
                                 <div class="col-xs-offset-2 col-xs-4 text-center TextAddWord paddingTextConfirm">Eliminar</div>
                                 <div class="col-xs-2">
                                     <img class="imgResponsiveConfirmButton paddingImg" ng-src="{{baseurl}}img/srcWeb/imagenesvarias/trashnou_gris.png"/>
