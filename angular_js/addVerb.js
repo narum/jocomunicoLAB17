@@ -70,10 +70,41 @@ var app = angular.module('controllers');
         $scope.pronominal = {value: 0};
 
         $scope.borrarImperativo = function(value){
-            if(value == 1){
+            if(value === 1){
                 $scope.imperativo = {name:'imperatiu', persona:{ps2:'', ps3:'', pp1:'', pp2:'', pp3:''}};
             }
         };
+
+        $scope.addPronombres = function(value){
+            if(value === 1){
+                setPronombre($scope.presente);
+                setPronombre($scope.imperfecto);
+                setPronombre($scope.pasado);
+                setPronombre($scope.futuro);
+                setPronombre($scope.prsubj);
+                setPronombre($scope.impsubj);
+                setPronombre($scope.imperativo);
+                $scope.formasNoPersonales = {infinitivo: '', gerundio: '', participio: ''};
+            } else {
+                $scope.presente = new conjugation('present');
+                $scope.imperfecto = new conjugation('imperfecte');
+                $scope.pasado = new conjugation('passat');
+                $scope.futuro = new conjugation('futur');
+                $scope.prsubj = new conjugation('prsubj');
+                $scope.impsubj = new conjugation('impsubj');
+                $scope.imperativo = {name:'imperatiu', persona:{ps2:'', ps3:'', pp1:'', pp2:'', pp3:''}};
+                $scope.formasNoPersonales = {infinitivo: '', gerundio: '', participio: ''};
+            }
+        };
+
+        function setPronombre(Conjugation){
+            Conjugation.persona.ps1 = $scope.pronombres[0];
+            Conjugation.persona.ps2 = $scope.pronombres[1];
+            Conjugation.persona.ps3 = $scope.pronombres[2];
+            Conjugation.persona.pp1 = $scope.pronombres[3];
+            Conjugation.persona.pp2 = $scope.pronombres[4];
+            Conjugation.persona.pp3 = $scope.pronombres[5];
+        }
 
         function persona (){
             this.ps1 = '';
@@ -163,56 +194,114 @@ var app = angular.module('controllers');
             setFormasNoPersonales();
         }
         function setPresente(){
-            $scope.presente.persona.ps1 = $scope.conjugations.presente.ps1;
-            $scope.presente.persona.ps2 = $scope.conjugations.presente.ps2;
-            $scope.presente.persona.ps3 = $scope.conjugations.presente.ps3;
-            $scope.presente.persona.pp1 = $scope.conjugations.presente.pp1;
-            $scope.presente.persona.pp2 = $scope.conjugations.presente.pp2;
-            $scope.presente.persona.pp3 = $scope.conjugations.presente.pp3;
+            if($scope.pronominal.value === 1){
+                $scope.presente.persona.ps1 = $scope.presente.persona.ps1+$scope.conjugations.presente.ps1;
+                $scope.presente.persona.ps2 = $scope.presente.persona.ps2+$scope.conjugations.presente.ps2;
+                $scope.presente.persona.ps3 = $scope.presente.persona.ps3+$scope.conjugations.presente.ps3;
+                $scope.presente.persona.pp1 = $scope.presente.persona.pp1+$scope.conjugations.presente.pp1;
+                $scope.presente.persona.pp2 = $scope.presente.persona.pp2+$scope.conjugations.presente.pp2;
+                $scope.presente.persona.pp3 = $scope.presente.persona.pp3+$scope.conjugations.presente.pp3;
+            }else {
+                $scope.presente.persona.ps1 = $scope.conjugations.presente.ps1;
+                $scope.presente.persona.ps2 = $scope.conjugations.presente.ps2;
+                $scope.presente.persona.ps3 = $scope.conjugations.presente.ps3;
+                $scope.presente.persona.pp1 = $scope.conjugations.presente.pp1;
+                $scope.presente.persona.pp2 = $scope.conjugations.presente.pp2;
+                $scope.presente.persona.pp3 = $scope.conjugations.presente.pp3;
+            }
         }
         function setImperfecto(){
-            $scope.imperfecto.persona.ps1 = $scope.conjugations.imperfecto.ps1;
-            $scope.imperfecto.persona.ps2 = $scope.conjugations.imperfecto.ps2;
-            $scope.imperfecto.persona.ps3 = $scope.conjugations.imperfecto.ps3;
-            $scope.imperfecto.persona.pp1 = $scope.conjugations.imperfecto.pp1;
-            $scope.imperfecto.persona.pp2 = $scope.conjugations.imperfecto.pp2;
-            $scope.imperfecto.persona.pp3 = $scope.conjugations.imperfecto.pp3;
+            if($scope.pronominal.value === 1){
+                $scope.imperfecto.persona.ps1 = $scope.imperfecto.persona.ps1+$scope.conjugations.imperfecto.ps1;
+                $scope.imperfecto.persona.ps2 = $scope.imperfecto.persona.ps2+$scope.conjugations.imperfecto.ps2;
+                $scope.imperfecto.persona.ps3 = $scope.imperfecto.persona.ps3+$scope.conjugations.imperfecto.ps3;
+                $scope.imperfecto.persona.pp1 = $scope.imperfecto.persona.pp1+$scope.conjugations.imperfecto.pp1;
+                $scope.imperfecto.persona.pp2 = $scope.imperfecto.persona.pp2+$scope.conjugations.imperfecto.pp2;
+                $scope.imperfecto.persona.pp3 = $scope.imperfecto.persona.pp3+$scope.conjugations.imperfecto.pp3;
+            }
+            else{
+                $scope.imperfecto.persona.ps1 = $scope.conjugations.imperfecto.ps1;
+                $scope.imperfecto.persona.ps2 = $scope.conjugations.imperfecto.ps2;
+                $scope.imperfecto.persona.ps3 = $scope.conjugations.imperfecto.ps3;
+                $scope.imperfecto.persona.pp1 = $scope.conjugations.imperfecto.pp1;
+                $scope.imperfecto.persona.pp2 = $scope.conjugations.imperfecto.pp2;
+                $scope.imperfecto.persona.pp3 = $scope.conjugations.imperfecto.pp3;
+            }
         }
         function setPasado(){
-            $scope.pasado.persona.ps1 = $scope.conjugations.pasado.ps1;
-            $scope.pasado.persona.ps2 = $scope.conjugations.pasado.ps2;
-            $scope.pasado.persona.ps3 = $scope.conjugations.pasado.ps3;
-            $scope.pasado.persona.pp1 = $scope.conjugations.pasado.pp1;
-            $scope.pasado.persona.pp2 = $scope.conjugations.pasado.pp2;
-            $scope.pasado.persona.pp3 = $scope.conjugations.pasado.pp3;
+            if($scope.pronominal.value === 1){
+                $scope.pasado.persona.ps1 = $scope.pasado.persona.ps1+$scope.conjugations.pasado.ps1;
+                $scope.pasado.persona.ps2 = $scope.pasado.persona.ps2+$scope.conjugations.pasado.ps2;
+                $scope.pasado.persona.ps3 = $scope.pasado.persona.ps3+$scope.conjugations.pasado.ps3;
+                $scope.pasado.persona.pp1 = $scope.pasado.persona.pp1+$scope.conjugations.pasado.pp1;
+                $scope.pasado.persona.pp2 = $scope.pasado.persona.pp2+$scope.conjugations.pasado.pp2;
+                $scope.pasado.persona.pp3 = $scope.pasado.persona.pp3+$scope.conjugations.pasado.pp3;
+            }
+            else{
+                $scope.pasado.persona.ps1 = $scope.conjugations.pasado.ps1;
+                $scope.pasado.persona.ps2 = $scope.conjugations.pasado.ps2;
+                $scope.pasado.persona.ps3 = $scope.conjugations.pasado.ps3;
+                $scope.pasado.persona.pp1 = $scope.conjugations.pasado.pp1;
+                $scope.pasado.persona.pp2 = $scope.conjugations.pasado.pp2;
+                $scope.pasado.persona.pp3 = $scope.conjugations.pasado.pp3;
+            }
         }
         function setFuturo(){
-            $scope.futuro.persona.ps1 = $scope.conjugations.futuro.ps1;
-            $scope.futuro.persona.ps2 = $scope.conjugations.futuro.ps2;
-            $scope.futuro.persona.ps3 = $scope.conjugations.futuro.ps3;
-            $scope.futuro.persona.pp1 = $scope.conjugations.futuro.pp1;
-            $scope.futuro.persona.pp2 = $scope.conjugations.futuro.pp2;
-            $scope.futuro.persona.pp3 = $scope.conjugations.futuro.pp3;
+            if($scope.pronominal.value === 1){
+                $scope.futuro.persona.ps1 = $scope.futuro.persona.ps1+$scope.conjugations.futuro.ps1;
+                $scope.futuro.persona.ps2 = $scope.futuro.persona.ps2+$scope.conjugations.futuro.ps2;
+                $scope.futuro.persona.ps3 = $scope.futuro.persona.ps3+$scope.conjugations.futuro.ps3;
+                $scope.futuro.persona.pp1 = $scope.futuro.persona.pp1+$scope.conjugations.futuro.pp1;
+                $scope.futuro.persona.pp2 = $scope.futuro.persona.pp2+$scope.conjugations.futuro.pp2;
+                $scope.futuro.persona.pp3 = $scope.futuro.persona.pp3+$scope.conjugations.futuro.pp3;
+            }
+            else{
+                $scope.futuro.persona.ps1 = $scope.conjugations.futuro.ps1;
+                $scope.futuro.persona.ps2 = $scope.conjugations.futuro.ps2;
+                $scope.futuro.persona.ps3 = $scope.conjugations.futuro.ps3;
+                $scope.futuro.persona.pp1 = $scope.conjugations.futuro.pp1;
+                $scope.futuro.persona.pp2 = $scope.conjugations.futuro.pp2;
+                $scope.futuro.persona.pp3 = $scope.conjugations.futuro.pp3;
+            }
         }
         function setPrsubj(){
-            $scope.prsubj.persona.ps1 = $scope.conjugations.prsubj.ps1;
-            $scope.prsubj.persona.ps2 = $scope.conjugations.prsubj.ps2;
-            $scope.prsubj.persona.ps3 = $scope.conjugations.prsubj.ps3;
-            $scope.prsubj.persona.pp1 = $scope.conjugations.prsubj.pp1;
-            $scope.prsubj.persona.pp2 = $scope.conjugations.prsubj.pp2;
-            $scope.prsubj.persona.pp3 = $scope.conjugations.prsubj.pp3;
+            if($scope.pronominal.value === 1){
+                $scope.prsubj.persona.ps1 = $scope.prsubj.persona.ps1+$scope.conjugations.prsubj.ps1;
+                $scope.prsubj.persona.ps2 = $scope.prsubj.persona.ps2+$scope.conjugations.prsubj.ps2;
+                $scope.prsubj.persona.ps3 = $scope.prsubj.persona.ps3+$scope.conjugations.prsubj.ps3;
+                $scope.prsubj.persona.pp1 = $scope.prsubj.persona.pp1+$scope.conjugations.prsubj.pp1;
+                $scope.prsubj.persona.pp2 = $scope.prsubj.persona.pp2+$scope.conjugations.prsubj.pp2;
+                $scope.prsubj.persona.pp3 = $scope.prsubj.persona.pp3+$scope.conjugations.prsubj.pp3;
+            }
+            else{
+                $scope.prsubj.persona.ps1 = $scope.conjugations.prsubj.ps1;
+                $scope.prsubj.persona.ps2 = $scope.conjugations.prsubj.ps2;
+                $scope.prsubj.persona.ps3 = $scope.conjugations.prsubj.ps3;
+                $scope.prsubj.persona.pp1 = $scope.conjugations.prsubj.pp1;
+                $scope.prsubj.persona.pp2 = $scope.conjugations.prsubj.pp2;
+                $scope.prsubj.persona.pp3 = $scope.conjugations.prsubj.pp3;
+            }
         }
         function setImpsubj(){
-            $scope.impsubj.persona.ps1 = $scope.conjugations.impsubj.ps1;
-            $scope.impsubj.persona.ps2 = $scope.conjugations.impsubj.ps2;
-            $scope.impsubj.persona.ps3 = $scope.conjugations.impsubj.ps3;
-            $scope.impsubj.persona.pp1 = $scope.conjugations.impsubj.pp1;
-            $scope.impsubj.persona.pp2 = $scope.conjugations.impsubj.pp2;
-            $scope.impsubj.persona.pp3 = $scope.conjugations.impsubj.pp3;
+            if($scope.pronominal.value === 1){
+                $scope.impsubj.persona.ps1 = $scope.impsubj.persona.ps1+$scope.conjugations.impsubj.ps1;
+                $scope.impsubj.persona.ps2 = $scope.impsubj.persona.ps2+$scope.conjugations.impsubj.ps2;
+                $scope.impsubj.persona.ps3 = $scope.impsubj.persona.ps3+$scope.conjugations.impsubj.ps3;
+                $scope.impsubj.persona.pp1 = $scope.impsubj.persona.pp1+$scope.conjugations.impsubj.pp1;
+                $scope.impsubj.persona.pp2 = $scope.impsubj.persona.pp2+$scope.conjugations.impsubj.pp2;
+                $scope.impsubj.persona.pp3 = $scope.impsubj.persona.pp3+$scope.conjugations.impsubj.pp3;
+            }
+            else{
+                $scope.impsubj.persona.ps1 = $scope.conjugations.impsubj.ps1;
+                $scope.impsubj.persona.ps2 = $scope.conjugations.impsubj.ps2;
+                $scope.impsubj.persona.ps3 = $scope.conjugations.impsubj.ps3;
+                $scope.impsubj.persona.pp1 = $scope.conjugations.impsubj.pp1;
+                $scope.impsubj.persona.pp2 = $scope.conjugations.impsubj.pp2;
+                $scope.impsubj.persona.pp3 = $scope.conjugations.impsubj.pp3;
+            }
         }
         function setImperativo(){
             var pronominal = $scope.pronominal.value;
-            console.log(pronominal);
             if(pronominal === 0) {
                 $scope.imperativo.persona.ps2 = $scope.conjugations.imperativo.ps2;
                 $scope.imperativo.persona.ps3 = $scope.conjugations.imperativo.ps3;
